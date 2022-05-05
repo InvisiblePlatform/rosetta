@@ -20,6 +20,8 @@ data to use in the newest Invisible Voice iteration.
 - Wikipedia scrape
 - Mediabiasfactcheck
     - https://mediabiasfactcheck.com/
+- Glass Door 
+    - https://www.glassdoor.com/
 
 ## Potential:
 - Yahoo Finance
