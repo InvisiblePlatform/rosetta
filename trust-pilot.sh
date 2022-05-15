@@ -17,13 +17,28 @@ do_category(){
     --compressed  -o trust_page_${1}_${2}.json
 }
 
-do_brand(){
-    wget -nv "https://directory.goodonyou.eco/_next/data/nAgaZnRF0uEQ1T4s4MapV/brand/$1.json" -O brand_$1.json
+do_site(){
+    lynx -dump https://www.trustpilot.com/review/$1 | grep "•" -A 3 | sed -e "/TrustScore/d" -e "s/ //g" -e "s/•.*//g" -e "/^$/d" | paste - - -d';'
 }
 
+count=0
 pushd trust-pilot
-for i in ${categories[@]}; do
-    echo $i
-done
+while read -a site; do
+    id=${site[1]//\"/}
+    domain=$(echo ${site[0]} | sed -e "s@/.*@@g" -e "s/\"//g" -e "s/,//g" )
+    
+    if ! $(grep -q "$id;" wikiid_domain_datetaken_reviewcount_score.csv); then
+        if [[ $count -gt 100 ]]; then
+            sleep 2m
+            count=0
+        else
+            count=$(( count += 1))
+            echo $count
+        fi
+        reviewsandscore=$(do_site $domain)
+        echo "$id;$domain;$EPOCHSECONDS;$reviewsandscore" | tee -a wikiid_domain_datetaken_reviewcount_score.csv
+        sleep 1s
+    fi
 
+done < ../wikidata/website_id_list.csv
 popd
