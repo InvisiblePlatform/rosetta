@@ -29,7 +29,7 @@ while read -a site; do
     
     if ! $(grep -q "$id;" wikiid_domain_datetaken_reviewcount_score.csv); then
         if [[ $count -gt 100 ]]; then
-            sleep 2m
+            sleep 5m
             count=0
         else
             count=$(( count += 1))

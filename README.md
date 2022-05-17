@@ -9,14 +9,14 @@ data to use in the newest Invisible Voice iteration.
 - Wikidata
 - bcorporation
 - good on you
-- Trustpilot [1]
-
-## TODO:
 - World Benchmark Alliance
     - https://www.worldbenchmarkingalliance.org/research/2022-social-transformation-baseline-assessment/
     - https://www.worldbenchmarkingalliance.org/food-and-agriculture-benchmark/
     - https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/
     - https://www.worldbenchmarkingalliance.org/nature-benchmark/
+- Trustpilot [1]
+
+## TODO:
 - Wikipedia scrape
 - Mediabiasfactcheck
     - https://mediabiasfactcheck.com/
@@ -35,4 +35,4 @@ data to use in the newest Invisible Voice iteration.
     - https://www.allsides.com/media-bias/ratings
 
 ---
-[1]: trustpilot is a unique case and will be done last
+[1]: trustpilot is a unique case and will be done last, also they employ rate limiting so the crawling takes more time than previously assumed, napkin is around but can be made faster with smarter scripts after initial grab (frequent updating on known entries and less frequent updating on non-entries)

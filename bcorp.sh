@@ -45,4 +45,4 @@ done
 jq .results[].hits[].slug bcorp_page_* | sort -u | wc -l
 jq .results[].hits[].slug bcorp_page_* | wc -l
 
-
+jq -s "map(.results[].hits[]) | unique_by(.id) " bcorp/raw_data/*.json > bcorp/combined_data.json
