@@ -24,6 +24,8 @@ data to use in the newest Invisible Voice iteration.
     - https://www.glassdoor.com/
 
 ## Potential:
+- Crunchbase
+- OpenSecret
 - Yahoo Finance
 - OpenCorporates
 - OpenOwnership
