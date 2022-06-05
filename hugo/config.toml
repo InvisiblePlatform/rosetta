@@ -1,0 +1,8 @@
+baseURL = "https://invisible-voice.com/"
+languageCode = "en-gb"
+title = "Invisible Vocals"
+plugins_css = ["custom"]
+[outputs]
+  home = ["HTML", "json"]
+  page = ["HTML", "json"]
+  section = ["JSON"]

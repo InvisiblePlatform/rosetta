@@ -1,0 +1,5 @@
+{ {{ range $key, $val := .Params }}
+    {{ dict $key $val | jsonify | strings.TrimRight "}" | strings.TrimLeft "{" }},{{ end }}
+    {{ dict "Content" .Content | jsonify | strings.TrimRight "}" | strings.TrimLeft "{" }},
+    "permalink" : "{{ .Permalink }}"
+}

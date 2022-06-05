@@ -1,0 +1,4 @@
+{
+    "data" : {{ block "response" .}}{{ end }}
+}
+

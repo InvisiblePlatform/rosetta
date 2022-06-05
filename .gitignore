@@ -1,0 +1,4 @@
+hugo/public
+hugo/sync.sh
+hugo/.*
+hugo/content/*
