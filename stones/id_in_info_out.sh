@@ -2,6 +2,7 @@
 
 ID=$1
 
+pushd $(dirname $0) >/dev/null
 
 if grep -q "\"$ID\"" ../wikidata/website_id_list.csv; then
     while read site; do
@@ -26,6 +27,10 @@ if grep -q "\"$ID\"" ../wikidata/website_id_list.csv; then
             echo goodonyou_animalLabel: ${info[7]}
             echo goodonyou_lastRated: ${info[8]}
         fi
+        if grep -q "$site" ../mbfc/website_bias.csv; then
+            mediabiasfc=$(grep "$site" ../mbfc/website_bias.csv | sed -e "s/[^,]*,//g")
+            echo mediabiasfc: $mediabiasfc
+        fi
 
     if grep -q "\"$ID\"" ../wikidata/isin_wikidataid.csv; then
         ISIN=$(grep "\"$ID\"" ../wikidata/isin_wikidataid.csv| sed -e "s/,[^,]*$//g" -e "s/\"//g")
@@ -43,8 +48,9 @@ if grep -q "\"$ID\"" ../wikidata/website_id_list.csv; then
     fi
     if grep -q "$ID" ../trust-pilot/wikiid_domain_datetaken_reviewcount_score.csv; then
         trustpilot=$(grep "^$ID" ../trust-pilot/wikiid_domain_datetaken_reviewcount_score.csv | cut -d';' -f 4)
-        [[ $trustpilot != "" ]] && echo trustpilot_score: $trustpilot
-
+        [[ $trustpilot != "" ]] && echo trustpilot_score: [$site, \"$trustpilot\"]
     fi
     done < <(grep "\"$ID\"" ../wikidata/website_id_list.csv | sed -e "s/,.*//g")
 fi
+
+popd >/dev/null
