@@ -15,13 +15,18 @@ data to use in the newest Invisible Voice iteration.
     - https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/
     - https://www.worldbenchmarkingalliance.org/nature-benchmark/
 - Trustpilot [1]
-
-## TODO:
-- Wikipedia scrape
 - Mediabiasfactcheck
     - https://mediabiasfactcheck.com/
 - Glass Door 
     - https://www.glassdoor.com/
+    - Not full data yet, scraper is mostly a spider at them moment with
+      partial data collection
+
+## TODO:
+- Wikipedia scrape with new data
+- Tying together in Hugo
+- Key for datasources
+- New data score of
 
 ## Potential:
 - Crunchbase

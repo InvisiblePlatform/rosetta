@@ -420,23 +420,27 @@ if __name__ == '__main__':
     # allURL = allURL[116:]
     for index,rows in allURL.iterrows():
         if rows['cik'] not in cik:
-            url = rows['url']
-            name = rows['conm']
-            print(url)
-            browser.get(url)
-            time.sleep(random.uniform(1.5,2))
-            path = './data'
-            # name = 'AAL'
-            save_path = os.path.join(path,name)
             try:
-                os.stat(save_path)
-            except:
-                os.mkdir(save_path)
-            try:
-                overviewUrl = browser.find_element_by_xpath("//a[@data-label='Overview']").get_attribute('href')
-            except Exception:
-                overviewUrl = browser.find_element_by_xpath("//a[@data-selector='orgStructureCompanyOverviewOption']").get_attribute('href')
-            scrape_overview(browser, save_path, overviewUrl)
-            # reviewsUrl = browser.find_element_by_xpath("//a[@data-label='Reviews']").get_attribute('href')
-            # scrape_review(reviewsUrl,browser,save_path)
-            cik.append(rows['cik'])
+                url = rows['url']
+                name = rows['conm']
+                print(url)
+                browser.get(url)
+                time.sleep(random.uniform(1.5,2))
+                path = './data'
+                # name = 'AAL'
+                save_path = os.path.join(path,name)
+                try:
+                    os.stat(save_path)
+                except:
+                    os.mkdir(save_path)
+                try:
+                    overviewUrl = browser.find_element_by_xpath("//a[@data-label='Overview']").get_attribute('href')
+                except Exception:
+                    overviewUrl = browser.find_element_by_xpath("//a[@data-selector='orgStructureCompanyOverviewOption']").get_attribute('href')
+                scrape_overview(browser, save_path, overviewUrl)
+                # reviewsUrl = browser.find_element_by_xpath("//a[@data-label='Reviews']").get_attribute('href')
+                # scrape_review(reviewsUrl,browser,save_path)
+                cik.append(rows['cik'])
+                rows.to_csv('./data/done_list.csv', header=None, index=False, mode='a', sep=',')
+            except selenium.common.exceptions.WebDriverException:
+                continue
