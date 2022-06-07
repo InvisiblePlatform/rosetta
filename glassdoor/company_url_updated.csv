@@ -150,7 +150,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 2573,2014,CSPI,126389105,CSP INC,14,356037.0,"https://www.glassdoor.com/Overview/Working-at-Computer-Service-Partners-EI_IE439930.11,36.htm"
 2574,2012,CSX,126408103,CSX CORP,14,277948.0,https://www.glassdoor.com/Reviews/CSX-Reviews-E124.htm
 2577,2013,CTS,126501105,CTS CORP,11,26058.0,https://www.glassdoor.com/Reviews/CTS-Corporation-Reviews-E125.htm
-2578,2012,TLS,87969B101,TELOS CORP/MD,14,320121.0,https://www.glassdoor.com/Reviews/Telos-Corporation-Reviews-E4038.htm
 2581,2010,CVV,126601103,CVD EQUIPMENT CORP,14,766792.0,"https://www.glassdoor.com/Overview/Working-at-CVD-Equipment-Corporation-EI_IE13405.11,36.htm"
 2589,2010,HTRN,42222L107,HEALTHTRONICS INC,14,1018871.0,"https://www.glassdoor.com/Overview/Working-at-HealthTronics-EI_IE11143.11,24.htm"
 2593,2014,CBT,127055101,CABOT CORP,11,16040.0,https://www.glassdoor.com/Reviews/Cabot-Reviews-E126.htm
@@ -200,7 +199,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 3105,2012,IHRT,45174J509,IHEARTMEDIA INC,14,1400891.0,https://www.glassdoor.com/Reviews/iHeartMedia-Reviews-E354635.htm
 3107,2015,CLF,185899101,CLEVELAND-CLIFFS INC,11,764065.0,https://www.glassdoor.com/Reviews/Cleveland-Cliffs-Reviews-E157.htm
 3116,2010,CLDA,18725U109,CLINICAL DATA INC,14,716646.0,"https://www.glassdoor.com/Salaries/clinical-data-associate-salary-SRCH_KO0,23.htm"
-3121,2013,CLX,189054109,CLOROX CO/DE,11,21076.0,"https://www.glassdoor.com/Overview/Working-at-The-Clorox-Company-EI_IE158.11,29.htm"
 3138,2012,COKE,191098102,COCA COLA CONSOLIDATED INC,14,317540.0,https://www.glassdoor.com/Reviews/Coca-Cola-Consolidated-Reviews-E1272.htm
 3144,2013,KO,191216100,COCA-COLA CO,11,21344.0,https://www.glassdoor.com/Reviews/The-Coca-Cola-Company-Reviews-E161.htm
 3153,2012,CDE,192108504,COEUR MINING INC,11,215466.0,https://www.glassdoor.com/Reviews/Coeur-Mining-Reviews-E817.htm
@@ -250,7 +248,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 3619,2013,CCK,228368106,CROWN HOLDINGS INC,11,1219601.0,https://www.glassdoor.com/Reviews/Crown-Holdings-Reviews-E186.htm
 3622,2013,CRWS,228309100,CROWN CRAFTS INC,14,25895.0,https://www.glassdoor.com/Reviews/Crown-Crafts-Reviews-E827.htm
 3639,2014,CUB,229669106,CUBIC CORP,11,26076.0,https://www.glassdoor.com/Reviews/Cubic-Reviews-E829.htm
-3643,2012,CFR,229899109,CULLEN/FROST BANKERS INC,11,39263.0,https://www.glassdoor.com/Reviews/Frost-Bank-Reviews-E1311.htm
 3647,2013,CULP,230215105,CULP INC,11,723603.0,"https://www.glassdoor.com/Overview/Working-at-Culp-EI_IE1312.11,15.htm"
 3650,2012,CMI,231021106,CUMMINS INC,11,26172.0,https://www.glassdoor.com/Reviews/Cummins-Reviews-E187.htm
 3662,2013,CW,231561101,CURTISS-WRIGHT CORP,11,26324.0,https://www.glassdoor.com/Reviews/Curtiss-Wright-Reviews-E188.htm
@@ -258,7 +255,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 3708,2013,WEN,95058W100,WENDY'S CO,14,30697.0,https://www.glassdoor.com/Reviews/Wendy-s-Reviews-E728.htm
 3734,2013,DAN,235825205,DANA INC,11,26780.0,https://www.glassdoor.com/Reviews/Dana-Incorporated-Reviews-E192.htm
 3735,2013,DHR,235851102,DANAHER CORP,11,313616.0,https://www.glassdoor.com/Reviews/Danaher-Reviews-E193.htm
-3761,2012,DAIO,237690102,DATA I/O CORP,14,351998.0,https://www.glassdoor.com/Reviews/Data-I-O-Reviews-E1321.htm
 3785,2013,DRAM.1,23899E931,DATARAM CORP - OLD,14,,https://www.glassdoor.com/Reviews/Dataram-Reviews-E834.htm
 3806,2012,DWSN,239360100,DAWSON GEOPHYSICAL CO,14,799165.0,https://www.glassdoor.com/Reviews/Dawson-Geophysical-Reviews-E1324.htm
 3813,2015,TGT,8.76E+110,TARGET CORP,11,27419.0,"https://www.glassdoor.com/Reviews/Target-Corporate-Reviews-EI_IE194.0,6_KO7,16.htm"
@@ -420,7 +416,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 5568,2012,KHC,500754106,KRAFT HEINZ CO,14,1637459.0,https://www.glassdoor.com/Reviews/Kraft-Heinz-Company-Reviews-E1026712.htm
 5572,2012,HELE,G4388N106,HELEN OF TROY LTD,14,916789.0,https://www.glassdoor.com/Reviews/Helen-of-Troy-Reviews-E1482.htm
 5581,2012,HP,423452101,HELMERICH & PAYNE,11,46765.0,https://www.glassdoor.com/Reviews/Helmerich-and-Payne-Reviews-E23254.htm
-5594,2010,HRLY,427398102,HERLEY INDUSTRIES INC/DE,14,47035.0,https://www.glassdoor.com/Reviews/Ultra-Electronics-Reviews-E16014.htm
 5597,2013,HSY,427866108,HERSHEY CO,11,47111.0,https://www.glassdoor.com/Reviews/The-Hershey-Company-Reviews-E326.htm
 5606,2012,HPQ,40434L105,HP INC,11,47217.0,"https://www.glassdoor.com/Overview/Working-at-HP-Inc-EI_IE1093161.11,17.htm"
 5608,2013,HXL,428291108,HEXCEL CORP,11,717605.0,https://www.glassdoor.com/Reviews/Hexcel-Reviews-E328.htm
@@ -643,7 +638,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 8001,2013,NWE,668074305,NORTHWESTERN CORP,14,73088.0,https://www.glassdoor.com/Reviews/NorthWestern-Energy-Reviews-E14929.htm
 8007,2012,WFC,949746101,WELLS FARGO & CO,11,72971.0,https://www.glassdoor.com/Reviews/Wells-Fargo-Reviews-E8876.htm
 8017,2010,NUHC,669908105,NU HORIZONS ELECTRONICS CORP,14,718074.0,"https://www.glassdoor.com/Overview/Working-at-Nu-Horizons-Electronics-EI_IE963.11,34.htm"
-8020,2014,NVO,670100205,NOVO NORDISK A/S,11,353278.0,https://www.glassdoor.com/Reviews/Novo-Nordisk-Reviews-E3498.htm
 8030,2012,NUE,670346105,NUCOR CORP,11,73309.0,https://www.glassdoor.com/Reviews/Nucor-Reviews-E489.htm
 8031,2011,SUR,12612L108,CNA SURETY CORP,11,1044566.0,"https://www.glassdoor.com/Overview/Working-at-CNA-Surety-EI_IE2408.11,21.htm"
 8047,2010,OICO,670841105,O I CORP,14,73773.0,https://www.glassdoor.com/Reviews/Owens-Illinois-Reviews-E2129.htm
@@ -740,7 +734,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 8958,2012,RAVN,754212108,RAVEN INDUSTRIES INC,14,82166.0,https://www.glassdoor.com/Reviews/Raven-Industries-Reviews-E993.htm
 8972,2013,RTN,755111507,RAYTHEON CO,11,1047122.0,https://www.glassdoor.com/Reviews/Raytheon-Technologies-Reviews-E561.htm
 9016,2012,RBC,758750103,REGAL BELOIT CORP,11,82811.0,https://www.glassdoor.com/Reviews/Regal-Beloit-Reviews-E994.htm
-9023,2015,RGS,758932107,REGIS CORP/MN,11,716643.0,https://www.glassdoor.com/Reviews/Regis-Corporation-Reviews-E2076.htm
 9063,2014,AN,05329W102,AUTONATION INC,11,350698.0,https://www.glassdoor.com/Reviews/AutoNation-Reviews-E2593.htm
 9083,2011,REXI,761195205,RESOURCE AMERICA INC,14,83402.0,"https://www.glassdoor.com/Overview/Working-at-Resource-America-EI_IE1829.11,27.htm"
 9125,2012,RELL,763165107,RICHARDSON ELECTRONICS LTD,14,355948.0,https://www.glassdoor.com/Reviews/Richardson-Electronics-Reviews-E1832.htm
@@ -815,7 +808,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 10030,2013,SCX,855668109,STARRETT (L.S.) CO  -CL A,11,93676.0,"https://www.glassdoor.com/Overview/Working-at-Starrett-EI_IE388.11,19.htm"
 10035,2014,STT,857477103,STATE STREET CORP,11,93751.0,https://www.glassdoor.com/Reviews/State-Street-Reviews-E1911.htm
 10056,2013,SCL,858586100,STEPAN CO,11,94049.0,https://www.glassdoor.com/Reviews/Stepan-Reviews-E1018.htm
-10063,2011,STL.2,859158107,STERLING BANCORP/NY -OLD,11,93451.0,https://www.glassdoor.com/Reviews/Sterling-Bancorp-Reviews-E623.htm
 10086,2012,STC,860372101,STEWART INFORMATION SERVICES,11,94344.0,https://www.glassdoor.com/Reviews/Stewart-Title-Reviews-E19759.htm
 10096,2013,PSA,74460D109,PUBLIC STORAGE,11,1393311.0,https://www.glassdoor.com/Reviews/Public-Storage-Reviews-E626.htm
 10115,2012,SYK,863667101,STRYKER CORP,11,310764.0,https://www.glassdoor.com/Reviews/Stryker-Reviews-E1918.htm
@@ -902,14 +894,12 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 10916,2014,UMBF,902788108,UMB FINANCIAL CORP,14,101382.0,https://www.glassdoor.com/Reviews/UMB-Financial-Corporation-Reviews-E1993.htm
 10917,2012,UMH,903002103,UMH PROPERTIES INC,11,752642.0,"https://www.glassdoor.com/Overview/Working-at-UMH-Properties-EI_IE675.11,25.htm"
 10920,2012,UPS,911312106,UNITED PARCEL SERVICE INC,11,1090727.0,https://www.glassdoor.com/Reviews/UPS-Reviews-E3012.htm
-10938,2012,USEG,911805307,U S ENERGY CORP/WY,14,101594.0,"https://www.glassdoor.com/Overview/Working-at-U-S-Energy-EI_IE1976.11,21.htm"
 10981,2012,ESND,296689102,ESSENDANT INC,14,355999.0,https://www.glassdoor.com/Reviews/Essendant-Reviews-E1014171.htm
 10983,2013,RTX,7.55E+105,RAYTHEON TECHNOLOGIES CORP,11,101829.0,https://www.glassdoor.com/Reviews/Raytheon-Technologies-Reviews-E561.htm
 10984,2013,S,85207U105,SPRINT CORP,11,101830.0,https://www.glassdoor.com/Reviews/Sprint-Reviews-E13345.htm
 10991,2015,SGMS,80874P109,SCIENTIFIC GAMES CORP,14,750004.0,https://www.glassdoor.com/Reviews/Scientific-Games-Reviews-E1998.htm
 10999,2014,UTL,913259107,UNITIL CORP,11,755001.0,"https://www.glassdoor.com/Overview/Working-at-Unitil-EI_IE1043.11,17.htm"
 11012,2012,SXT,81725T100,SENSIENT TECHNOLOGIES CORP,11,310142.0,https://www.glassdoor.com/Reviews/Sensient-Technologies-Reviews-E700.htm
-11017,2012,UVV,913456109,UNIVERSAL CORP/VA,11,102037.0,"https://www.glassdoor.com/Overview/Working-at-Universal-Corporation-EI_IE699.11,32.htm"
 11032,2013,UHS,913903100,UNIVERSAL HEALTH SVCS INC,11,352915.0,https://www.glassdoor.com/Reviews/Universal-Health-Services-Reviews-E2001.htm
 11051,2014,UTMD,917488108,UTAH MEDICAL PRODUCTS INC,14,706698.0,https://www.glassdoor.com/Reviews/Utah-Medical-Reviews-E2004.htm
 11060,2013,VFC,918204108,VF CORP,11,103379.0,https://www.glassdoor.com/Reviews/VF-Reviews-E703.htm
@@ -997,7 +987,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 12026,2012,INXB,G4772R101,INFINITY CROSS BORDER ACQ CP,14,,"https://www.glassdoor.com/Overview/Working-at-Infinity-Air-Group-EI_IE1255306.11,29.htm"
 12035,2015,RBB,74930B105,RBB BANCORP,14,1499422.0,https://www.glassdoor.com/Reviews/Royal-Business-Bank-Reviews-E762931.htm
 12046,2010,TMR,58977Q109,MERIDIAN RESOURCE CORP,11,869369.0,"https://www.glassdoor.com/Overview/Working-at-Meridian-Resource-EI_IE1034.11,28.htm"
-12053,2011,EMC,268648102,EMC CORP/MA,11,790070.0,"https://www.glassdoor.com/Job/hopkinton-emc-corporation-jobs-SRCH_IL.0,9_IC1154589_KO10,25.htm"
 12075,2012,BYI,05874B107,BALLY TECHNOLOGIES INC,11,2491.0,https://www.glassdoor.com/Reviews/Bally-Technologies-Reviews-E1990.htm
 12081,2013,LAND,376549101,GLADSTONE LAND CORP,14,1495240.0,"https://www.glassdoor.com/Overview/Working-at-Gladstone-Land-EI_IE354639.11,25.htm"
 12091,2011,MTOX,584977201,MEDTOX SCIENTIFIC INC,14,739944.0,https://www.glassdoor.com/Reviews/MEDTOX-Reviews-E2429.htm
@@ -1041,7 +1030,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 12433,2013,VIVO,589584101,MERIDIAN BIOSCIENCE INC,14,794172.0,https://www.glassdoor.com/Reviews/Meridian-Bioscience-Reviews-E1639.htm
 12441,2012,IT,366651107,GARTNER INC,11,749251.0,https://www.glassdoor.com/Reviews/Gartner-Reviews-E2465.htm
 12445,2012,WTS,942749102,WATTS WATER TECHNOLOGIES INC,11,795403.0,https://www.glassdoor.com/Reviews/Watts-Water-Technologies-Reviews-E2030.htm
-12458,2015,PDEX,74265M205,PRO-DEX INC/CO,14,788920.0,"https://www.glassdoor.com/Overview/Working-at-Pro-Dex-EI_IE5003.11,18.htm"
 12459,2015,NVR,62944T105,NVR INC,11,906163.0,https://www.glassdoor.com/Reviews/NVR-Reviews-E954.htm
 12471,2013,INT,981475106,WORLD FUEL SERVICES CORP,11,789460.0,https://www.glassdoor.com/Reviews/World-Fuel-Services-Reviews-E910.htm
 12478,2011,JRN,481130102,JOURNAL COMMUNICATIONS INC,11,1232241.0,https://www.glassdoor.com/Reviews/Journal-Communications-Inc-Reviews-E376079.htm
@@ -1060,7 +1048,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 12597,2013,LAKE,511795106,LAKELAND INDUSTRIES INC,14,798081.0,https://www.glassdoor.com/Reviews/Lakeland-Industries-Reviews-E1581.htm
 12598,2012,PTSI,693149106,P.A.M. TRANSPORTATION SVCS,14,798287.0,https://www.glassdoor.com/Reviews/PAM-Transport-Reviews-E1743.htm
 12603,2013,CNO,1.26E+107,CNO FINANCIAL GROUP INC,11,1224608.0,https://www.glassdoor.com/Reviews/CNO-Financial-Group-Reviews-E173.htm
-12615,2012,MHO,55305B101,M/I HOMES INC,11,799292.0,https://www.glassdoor.com/Reviews/M-I-Homes-Reviews-E2547.htm
 12625,2012,MRTN,573075108,MARTEN TRANSPORT LTD,14,799167.0,https://www.glassdoor.com/Reviews/Marten-Transport-Reviews-E1621.htm
 12635,2012,FISV,337738108,FISERV INC,14,798354.0,https://www.glassdoor.com/Reviews/Fiserv-Reviews-E1384.htm
 12669,2011,CKEC,143436400,CARMIKE CINEMAS INC,14,799088.0,"https://www.glassdoor.com/Salaries/carmike-cinemas-salary-SRCH_KE0,15.htm"
@@ -1161,7 +1148,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 13649,2012,NHLD,636375206,NATIONAL HOLDINGS CORP,14,1023844.0,"https://www.glassdoor.com/Overview/Working-at-National-Holdings-EI_IE4958.11,28.htm"
 13657,2011,AIQ.1,18606301,ALLIANCE HEALTHCARE SVCS INC,14,817135.0,https://www.glassdoor.com/Reviews/Alliance-HealthCare-Services-Reviews-E4740.htm
 13664,2013,GLIBA,36164V305,GCI LIBERTY INC,14,808461.0,https://www.glassdoor.com/Reviews/GCI-Reviews-E635.htm
-13665,2012,HBK,407015106,HAMILTON BANCORP INC/MD,14,1551739.0,"https://www.glassdoor.com/Overview/Working-at-Hamilton-Bank-EI_IE1805731.11,24.htm"
 13683,2013,TEF,879382208,TELEFONICA SA,11,814052.0,"https://www.glassdoor.com/Overview/Working-at-Telef%C3%B3nica-EI_IE3511.11,21.htm"
 13695,2014,MDIV,33738R100,FIRST TR ETF IV MULTI ASSET,14,,https://www.glassdoor.com/Reviews/Firstrust-Bank-Reviews-E28390.htm
 13696,2016,TDIV,33738R118,FIRST TR ETF IV NASDAQ TECH,14,,https://www.glassdoor.com/Reviews/First-Tech-Federal-Credit-Union-Reviews-E235979.htm
@@ -1312,7 +1298,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 14822,2013,WRB,84423102,BERKLEY (W R) CORP,11,11544.0,https://www.glassdoor.com/Reviews/W-R-Berkley-Reviews-E2020.htm
 14824,2012,CINF,172062101,CINCINNATI FINANCIAL CORP,14,20286.0,https://www.glassdoor.com/Reviews/The-Cincinnati-Insurance-Company-Reviews-E1255.htm
 14828,2012,ORI,680223104,OLD REPUBLIC INTL CORP,11,74260.0,https://www.glassdoor.com/Reviews/Old-Republic-International-Reviews-E25946.htm
-14846,2014,BGB,09257R101,BLACKSTONE/GSO STRATEGIC CRD,11,1546429.0,"https://www.glassdoor.com/Jobs/The-Blackstone-Group-gso-analyst-Jobs-EI_IE4022.0,20_KO21,32.htm"
 14847,2015,SZC,231647207,CUSHING NEXTGEN INFRSTR INC,11,1506488.0,"https://www.glassdoor.com/Overview/Working-at-Cushing-EI_IE2113914.11,18.htm"
 14891,2014,MGPI,55303J106,MGP INGREDIENTS INC,14,835011.0,"https://www.glassdoor.com/Overview/Working-at-MGP-Ingredients-EI_IE1654.11,26.htm"
 14894,2014,VOD,92857W308,VODAFONE GROUP PLC,14,839923.0,https://www.glassdoor.com/Reviews/Vodafone-Reviews-E5775.htm
@@ -1330,7 +1315,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 15054,2010,SGLX,82933Q102,SINGULEX INC-REDH,11,1323620.0,"https://www.glassdoor.com/Overview/Working-at-Singulex-EI_IE674205.11,19.htm"
 15055,2013,CNQ,136385101,CANADIAN NATURAL RESOURCES,11,1017413.0,https://www.glassdoor.com/Reviews/Canadian-Natural-Reviews-E7998.htm
 15056,2013,MESG,98420V107,XURA INC,14,1549872.0,https://www.glassdoor.com/Reviews/Employee-Review-Mavenir-RVW16363203.htm
-15060,2013,CPE,13123X508,CALLON PETROLEUM CO/DE,11,928022.0,"https://www.glassdoor.com/Overview/Working-at-Callon-Petroleum-EI_IE1223.11,27.htm"
 15070,2014,SU,867224107,SUNCOR ENERGY INC,11,311337.0,https://www.glassdoor.com/Reviews/Suncor-Reviews-E6818.htm
 15087,2012,LWAY,531914109,LIFEWAY FOODS INC,14,814586.0,"https://www.glassdoor.com/Overview/Working-at-Lifeway-Foods-EI_IE4931.11,24.htm"
 15093,2012,CVRR,12663P107,CVR REFINING LP,11,1558785.0,https://www.glassdoor.com/Reviews/CVR-Reviews-E38009.htm
@@ -1476,12 +1460,8 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 16721,2012,EA,285512109,ELECTRONIC ARTS INC,14,712515.0,https://www.glassdoor.com/Reviews/Electronic-Arts-Reviews-E1628.htm
 16738,2015,HMHC,44157R109,HOUGHTON MIFFLIN HARCOURT CO,14,1580156.0,https://www.glassdoor.com/Reviews/Houghton-Mifflin-Harcourt-Reviews-E275.htm
 16745,2012,PRTA,G72800108,PROTHENA CORP PLC,14,1559053.0,"https://www.glassdoor.com/Overview/Working-at-Prothena-EI_IE1036145.11,19.htm"
-16748,2013,CNBKA,156432106,CENTURY BANCORP INC/MA,14,812348.0,https://www.glassdoor.com/Reviews/Century-Bank-Reviews-E1240.htm
-16763,2011,FSBI,315831107,FIDELITY BANCORP INC/PA,14,769207.0,https://www.glassdoor.com/Reviews/Fidelity-Deposit-and-Discount-Bank-Reviews-E927739.htm
 16775,2012,CIA,174740100,CITIZENS INC,11,24090.0,"https://www.glassdoor.com/Overview/Working-at-Citizens-EI_IE1264.11,19.htm"
-16777,2013,FBNC,318910106,FIRST BANCORP/NC,14,811589.0,"https://www.glassdoor.com/Overview/Working-at-First-Bank-EI_IE1270041.11,21.htm"
 16781,2012,CHCO,177835105,CITY HOLDING CO,14,726854.0,https://www.glassdoor.com/Reviews/City-Holding-Reviews-E1265.htm
-16785,2010,CEBK,152418109,CENTRAL BANCORP INC/MA,14,1076394.0,"https://www.glassdoor.com/Overview/Working-at-Central-Bancorp-EI_IE1238.11,26.htm"
 16790,2012,CBU,203607106,COMMUNITY BANK SYSTEM INC,11,723188.0,https://www.glassdoor.com/Reviews/Community-Bank-System-Reviews-E1287.htm
 16798,2014,GHY,69346J106,PGIM GLOBAL HI YIELD FND INC,11,1554697.0,"https://www.glassdoor.com/Overview/Working-at-PGIM-EI_IE2288338.11,15.htm"
 16821,2012,FBP,318672706,FIRST BANCORP P R,11,1057706.0,https://www.glassdoor.com/Reviews/First-BanCorp-Puerto-Rico-Reviews-E3557.htm
@@ -1493,13 +1473,10 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 16848,2013,TVTX,89422G107,TRAVERE THERAPEUTICS INC,14,1438533.0,"https://www.glassdoor.com/Overview/Working-at-Travere-Therapeutics-EI_IE1145555.11,31.htm"
 16884,2014,LFT,55025L108,LUMENT FINANCE TRUST INC,11,1547546.0,https://www.bloomberg.com/profile/company/HCFT:US
 16886,2013,BFYT,08182C106,BENEFYTT TECHNOLOGIES INC,14,1561387.0,"https://www.glassdoor.com/Overview/Working-at-Benefytt-EI_IE3288355.11,19.htm"
-16889,2014,INDB,453836108,INDEPENDENT BANK CORP/MA,14,776901.0,https://www.glassdoor.com/Reviews/Independent-Bank-MI-Reviews-E1510.htm
-16890,2013,IBCP,453838609,INDEPENDENT BANK CORP/MI,14,39311.0,https://www.glassdoor.com/Reviews/Independent-Bank-MI-Reviews-E1510.htm
 16892,2010,TPH.3,87299F939,TRI POINTE HOMES INC  -OLD,11,1674745.0,"https://www.glassdoor.com/Overview/Working-at-TRI-Pointe-EI_IE423132.11,21.htm"
 16898,2010,LSBX,50215P100,LSB CORP,14,1143848.0,https://www.glassdoor.com/Reviews/LSB-Industries-Reviews-E919.htm
 16910,2011,NBBC,65080T102,NEWBRIDGE BANCORP,14,714530.0,"https://www.glassdoor.com/Overview/Working-at-NewBridge-Bancorp-EI_IE1577.11,28.htm"
 16926,2009,MFLR,578321101,MAYFLOWER BANCORP INC,14,1381639.0,"https://www.glassdoor.co.in/Overview/Working-at-Mayflower-Bancorp-EI_IE1626.11,28.htm"
-16929,2011,MBVT,588448100,MERCHANTS BANCSHARES INC/VT,14,726517.0,"https://www.glassdoor.com/Overview/Working-at-Merchants-Bank-VT-EI_IE887666.11,28.htm"
 16955,2010,HGIC,412824104,HARLEYSVILLE GROUP INC,14,792013.0,https://www.glassdoor.com/Reviews/Harleysville-Group-Reviews-E1471.htm
 16967,2013,HIFS,433323102,HINGHAM INSTN FOR SAVINGS,14,,https://www.glassdoor.com/Reviews/Hingham-Institution-for-Savings-Reviews-E1489.htm
 16972,2014,ANY,84841L308,SPHERE 3D CORP,14,1591956.0,"https://www.glassdoor.com/Overview/Working-at-Sphere-3D-EI_IE1079526.11,20.htm"
@@ -1528,7 +1505,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17103,2010,NCP,67062Q106,NUVEEN CAL PERFORM PLUS MUN,11,856227.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
 17104,2010,NNP,67062R104,NUVEEN N Y PERFORM PLUS MUN,11,856226.0,https://www.glassdoor.com/Salary/Nuveen-Salaries-E3563.htm
 17105,2010,PBCI,697738102,PAMRAPO BANCORP INC,14,854071.0,"https://www.glassdoor.com/Overview/Working-at-Pamrapo-Bancorp-EI_IE1073.11,26.htm"
-17106,2013,PEBO,709789101,PEOPLES BANCORP INC/OH,14,318300.0,https://www.glassdoor.com/Reviews/Peoples-Bancorp-OH-Reviews-E1339.htm
 17115,2012,SIGI,816300107,SELECTIVE INS GROUP INC,14,230557.0,https://www.glassdoor.com/Reviews/Selective-Insurance-Reviews-E1867.htm
 17120,2012,SIVB,78486Q101,SVB FINANCIAL GROUP,14,719739.0,https://www.glassdoor.com/Reviews/Silicon-Valley-Bank-Reviews-E107161.htm
 17121,2011,QGOG,L7877X919,QGOG CONSTELLATION SA  -REDH,11,1548086.0,https://www.glassdoor.com.br/Sal%C3%A1rio/Constellation-Brazil-Sal%C3%A1rios-E2843328.htm
@@ -1539,12 +1515,9 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17148,2011,WSB,92934C101,WSB HOLDINGS INC,14,1415022.0,"https://www.glassdoor.com/Overview/Working-at-WSB-Holdings-EI_IE2027.11,23.htm"
 17150,2012,WBS,947890109,WEBSTER FINANCIAL CORP,11,801337.0,"https://www.glassdoor.com/Overview/Working-at-Webster-Financial-EI_IE2032.11,28.htm"
 17151,2012,WSBC,950810101,WESBANCO INC,14,203596.0,https://www.glassdoor.com/Reviews/WesBanco-Reviews-E2035.htm
-17168,2013,RBPAA,780081105,ROYAL BANCSHARES/PA  -CL A,14,922487.0,https://www.glassdoor.com/Salary/Royal-Bank-America-Salaries-E290542.htm
 17173,2013,ACNB,868109,ACNB CORP,14,715579.0,"https://www.glassdoor.com/Overview/Working-at-ACNB-EI_IE6924.11,15.htm"
 17175,2015,KTRA,49720K101,KINTARA THERAPEUTICS INC,14,1498382.0,"https://www.glassdoor.com/Overview/Working-at-Talaris-Therapeutics-EI_IE3262215.11,31.htm"
 17180,2012,SNFCA,814785309,SECURITY NATL FINL CP  -CL A,14,318673.0,https://www.glassdoor.com/Reviews/Stanley-Security-Solutions-Reviews-E19375.htm
-17184,2012,SBCF,811707801,SEACOAST BANKING CORP/FL,14,730708.0,"https://www.glassdoor.com/Overview/Working-at-Seacoast-Bank-EI_IE1863.11,24.htm"
-17195,2014,FFBC,320209109,FIRST FINL BANCORP INC/OH,14,708955.0,https://www.glassdoor.com/Reviews/First-Financial-Bank-Reviews-E1410.htm
 17199,2013,BLFS,09062W204,BIOLIFE SOLUTIONS INC,14,834365.0,"https://www.glassdoor.com/Overview/Working-at-BioLife-Solutions-EI_IE2189.11,28.htm"
 17200,2012,DSM,9.66E+112,BNY MELLON STRG MNPL BD FD,11,855887.0,https://www.glassdoor.com/Reviews/BNY-Mellon-Reviews-E78.htm
 17210,2014,PCI,72202D106,PIMCO DYNAMIC CREDIT AND MTG,11,1558629.0,https://www.glassdoor.com/Reviews/PIMCO-Reviews-E3585.htm
@@ -1552,12 +1525,9 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17228,2019,TALO,87484T108,TALOS ENERGY INC,11,1724965.0,"https://www.glassdoor.com/Overview/Working-at-Talos-Energy-EI_IE2103066.11,23.htm"
 17233,2011,SUSQ,869099101,SUSQUEHANNA BANCSHARES INC,14,700863.0,https://www.glassdoor.com/Reviews/Susquehanna-Bancshares-Reviews-E1930.htm
 17239,2013,KND,494580103,KINDRED HEALTHCARE INC,11,1060009.0,https://www.glassdoor.com/Reviews/Kindred-Healthcare-Reviews-E8220.htm
-17245,2014,TRST,898349105,TRUSTCO BANK CORP/NY,14,357301.0,https://www.glassdoor.com/Reviews/TrustCo-Bank-Corp-NY-Reviews-E1970.htm
-17248,2012,UBSI,909907107,UNITED BANKSHARES INC/WV,14,729986.0,https://www.glassdoor.com/Reviews/United-Bankshares-Reviews-E1987.htm
 17252,2013,UFCS,910340108,UNITED FIRE GROUP INC,14,101199.0,https://www.glassdoor.com/Reviews/UFG-Insurance-Reviews-E1989.htm
 17258,2015,CRDT,97717X693,WISDOMTREE STRATEGIC CORP BD,14,,https://www.glassdoor.com/Reviews/WisdomTree-Investments-Reviews-E4887.htm
 17266,2011,UAM,9.13E+105,UNIVERSAL AMERICAN CORP,11,1514128.0,https://www.glassdoor.com/Reviews/Universal-American-Reviews-E2002.htm
-17269,2013,ASRV,03074A102,AMERISERV FINANCIAL INC/PA,14,707605.0,https://www.glassdoor.com/Reviews/AmeriServ-Financial-Reviews-E1980.htm
 17277,2014,NVEE,62945V109,NV5 GLOBAL INC,14,1532961.0,https://www.glassdoor.com/Reviews/NV5-Reviews-E623882.htm
 17280,2015,FUND,85208J109,SPROTT FOCUS TRUST INC,14,825202.0,https://www.glassdoor.com/Reviews/Sprott-Reviews-E8802.htm
 17287,2012,SBSW,82575P107,SIBANYE-STILLWATER LIMITED,11,1786909.0,"https://www.glassdoor.com/Overview/Working-at-Sibanye-Stillwater-EI_IE2445305.11,29.htm"
@@ -1582,7 +1552,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17498,2013,CMRX,16934W106,CHIMERIX INC,14,1117480.0,"https://www.glassdoor.com/Overview/Working-at-Chimerix-EI_IE38247.11,19.htm"
 17500,2012,OMTH,68217A103,OMTHERA PHARMACEUTICALS,14,1477598.0,https://www.astrazeneca.com/media-centre/press-releases/2013/astrazeneca-omthera-pharmaceuticals-dyslipidemia-treatment-cardiovascular-28052013.html
 17505,2012,RALY,751198102,RALLY SOFTWARE DEV CORP,11,1313911.0,"https://www.glassdoor.com/Overview/Working-at-Rally-Software-EI_IE229979.11,25.htm"
-17534,2013,CCNE,126128107,CNB FINANCIAL CORP/PA,14,736772.0,https://www.glassdoor.com/Reviews/CNB-Financial-PA-Reviews-E8894.htm
 17550,2012,HAWK,9.24E+107,BLACKHAWK NETWORK HLDGS INC,14,1411488.0,https://www.glassdoor.com/Reviews/Blackhawk-Network-Reviews-E105675.htm
 17553,2014,MODN,607525102,MODEL N INC,11,1118417.0,https://www.glassdoor.com/Reviews/Model-N-Reviews-E13771.htm
 17556,2012,BPY,G16249107,BROOKFIELD PROPERTY PRTRS LP,14,1545772.0,https://www.glassdoor.com/Reviews/Brookfield-Properties-Reviews-E8707.htm
@@ -1606,7 +1575,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17689,2014,UCP,90265Y106,UCP INC,11,1572684.0,https://www.glassdoor.com/Reviews/UCP-of-Central-Florida-Reviews-E880664.htm
 17692,2013,CYNI,23247W104,CYAN INC,11,1391636.0,"https://www.glassdoor.com/Overview/Working-at-Cyan-Worlds-EI_IE3814.11,22.htm"
 17693,2013,MKTO,57063L107,MARKETO INC,14,1490660.0,"https://www.glassdoor.com/Overview/Working-at-Marketo-EI_IE3336212.11,18.htm"
-17694,2011,CRRB.1,14599A931,CARROLLTON BANCORP/MD -OLD,14,,"https://www.glassdoor.com/Overview/Working-at-Carrollton-Bancorp-EI_IE3824.11,29.htm"
 17695,2012,DATA,87336U105,TABLEAU SOFTWARE INC,11,1303652.0,https://www.glassdoor.com/Reviews/Tableau-Software-Reviews-E38125.htm
 17696,2013,TSC,89678F100,TRISTATE CAPITAL HLDGS INC,14,1380846.0,"https://www.glassdoor.com/Overview/Working-at-Tri-State-Financial-EI_IE1369841.11,30.htm"
 17699,2012,CST,12646R105,CST BRANDS INC,11,1562039.0,https://www.glassdoor.com/Reviews/CST-Brands-Reviews-E717969.htm
@@ -1615,7 +1583,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17727,2014,EKSO,282644301,EKSO BIONICS HOLDINGS INC,14,1549084.0,https://www.glassdoor.com/Reviews/Ekso-Bionics-Reviews-E323897.htm
 17754,2016,AEYE,50734201,AUDIOEYE INC,14,1362190.0,https://www.glassdoor.com/Reviews/AudioEye-Reviews-E1015776.htm
 17769,2015,HASI,41068X100,HANNON ARMSTRONG SUST INFR,11,1561894.0,"https://www.glassdoor.com/Overview/Working-at-Hannon-Armstrong-EI_IE409999.11,27.htm"
-17780,2011,WCBO,952145209,WEST COAST BANCORP/OR,14,717059.0,https://www.glassdoor.com/Reviews/Bank-of-the-West-Reviews-E3085.htm
 17807,2013,LITB,53225G102,LIGHTINTHEBOX HLDG  -ADR,11,1523836.0,"https://www.glassdoor.com/Overview/Working-at-LightInTheBox-EI_IE470853.11,24.htm"
 17808,2013,EPZM,29428V104,EPIZYME INC,14,1571498.0,"https://www.glassdoor.com/Overview/Working-at-Epizyme-EI_IE1191360.11,18.htm"
 17811,2013,ECOM,159179100,CHANNELADVISOR CORP,11,1169652.0,https://www.glassdoor.com/Reviews/ChannelAdvisor-Reviews-E140231.htm
@@ -1623,7 +1590,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17815,2013,BYBK,07203T106,BAY BANCORP INC,14,859222.0,"https://www.glassdoor.com/Overview/Working-at-Community-Bank-of-the-Bay-EI_IE35259.11,36.htm"
 17839,2014,DMB,09662W109,BNY MELLON MUN BD INFRASTRUC,11,1565381.0,"https://www.glassdoor.com/Salary/BNY-Mellon-Infrastructure-Architect-Salaries-E78_D_KO11,35.htm"
 17840,2014,DSL,258622109,DOUBLELINE INCOME SOLTNS FD,11,1566388.0,"https://www.glassdoor.com/Overview/Working-at-DoubleLine-EI_IE1395029.11,21.htm"
-17861,2011,CFFC,20365L100,COMMUNITY FINANCIAL CORP/VA,14,850606.0,"https://www.glassdoor.com/Overview/Working-at-Community-Financial-VA-EI_IE4800.11,33.htm"
 17866,2016,EARN,288578107,ELLINGTON RESIDENTIAL MTG,11,1560672.0,"https://www.glassdoor.com/Overview/Working-at-Ellington-Financial-EI_IE354244.11,30.htm"
 17874,2014,TMUS,872590104,T-MOBILE US INC,14,1283699.0,https://www.glassdoor.com/Reviews/T-Mobile-Reviews-E9302.htm
 17875,2014,NCBS,6.54E+106,NICOLET BANKSHARES INC,14,1174850.0,"https://www.glassdoor.com/Overview/Working-at-Nicolet-National-Bank-EI_IE644438.11,32.htm"
@@ -1633,7 +1599,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17890,2013,IKNX,45172K102,IKONICS CORP,14,1083301.0,"https://www.glassdoor.com/Overview/Working-at-IKONICS-EI_IE12077.11,18.htm"
 17896,2013,HCAP,41753F109,HARVEST CAPITAL CREDIT CORP,14,1559909.0,"https://www.glassdoor.com/Overview/Working-at-Harvest-Capital-EI_IE827609.11,26.htm"
 17897,2014,QIWI,74735M108,QIWI PLC,14,1561566.0,https://www.glassdoor.com/Reviews/QIWI-Reviews-E705985.htm
-17908,2011,ALNC,19205103,ALLIANCE FINANCIAL CORP/NY,14,796317.0,"https://www.glassdoor.com/Reviews/alliance-financial-group-reviews-SRCH_KE0,24.htm"
 17910,2016,HTBX,42237K409,HEAT BIOLOGICS INC,14,1476963.0,"https://www.glassdoor.com/Overview/Working-at-Heat-Biologics-EI_IE3034368.11,25.htm"
 17912,2016,SFR,85572F105,STARWOOD WAYPOINT HOMES,11,1579471.0,"https://www.glassdoor.com/Reviews/homes-waypoint-reviews-SRCH_KO0,5_KE6,14.htm"
 17928,2013,IQV,46266C105,IQVIA HOLDINGS INC,11,1478242.0,https://www.glassdoor.com/Reviews/IQVIA-Reviews-E8347.htm
@@ -1643,7 +1608,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 17941,2012,QEPM,74735R115,QEP MIDSTREAM PARTNERS LP,11,1576044.0,https://www.glassdoor.com/Reviews/QEP-Resources-Reviews-E24542.htm
 17947,2012,GFI,38059T106,GOLD FIELDS LTD,11,1172724.0,https://www.glassdoor.com/Reviews/Gold-Fields-Reviews-E7700.htm
 17956,2013,FI,N33462107,FRANK'S INTL NV,11,1575828.0,https://www.glassdoor.com/Reviews/Frank-s-International-Reviews-E293007.htm
-17987,2012,ESBK,289660102,ELMIRA SVGS BANK ELMIRA/NY,14,877808.0,"https://www.glassdoor.com/Overview/Working-at-Elmira-Savings-Bank-EI_IE4823.11,30.htm"
 17997,2014,CSTM,F21107101,CONSTELLIUM SE,11,1563411.0,https://www.glassdoor.com/Reviews/Constellium-Reviews-E802654.htm
 17998,2013,BLUE,09609G100,BLUEBIRD BIO INC,14,1293971.0,https://www.glassdoor.com/Reviews/bluebird-bio-Reviews-E729710.htm
 18003,2012,PGEM,72941W100,PLY GEM HOLDINGS INC,11,1284807.0,https://www.glassdoor.com/Reviews/Ply-Gem-Reviews-E983.htm
@@ -1661,7 +1625,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 18046,2014,IVH,465893105,IVY HI INCM OPPORTUNITIES FD,11,1568292.0,https://www.glassdoor.com/Reviews/Ivy-Investments-Reviews-E39121.htm
 18047,2015,NDLS,65540B105,NOODLES & CO,14,1275158.0,https://www.glassdoor.com/Reviews/Noodles-and-Company-Reviews-E13609.htm
 18048,2012,GDCT,36162G102,GDC TECHNOLOGY LTD -ADR-REDH,14,1564601.0,"https://www.glassdoor.com/Overview/Working-at-GDC-Technology-EI_IE815484.11,25.htm"
-18049,2012,FNB,302520101,F N B CORP/FL,11,37808.0,https://www.glassdoor.com/Reviews/F-N-B-Corporation-Reviews-E4832.htm
 18050,2012,LXFT,G57279104,LUXOFT HOLDING INC,11,1538375.0,https://www.glassdoor.com/Reviews/Luxoft-Reviews-E116344.htm
 18066,2013,TLRA,879181105,TELARIA INC,11,1375796.0,"https://www.glassdoor.com/Overview/Working-at-Telaria-EI_IE1819262.11,18.htm"
 18071,2014,REXR,76169C100,REXFORD INDUS REALTY,11,1571283.0,"https://www.glassdoor.com/Overview/Working-at-Rexford-Industrial-Realty-EI_IE746114.11,36.htm"
@@ -1692,7 +1655,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 18226,2012,IRKO,G49497103,IROKO PHARMACEUTICALS-REDH,14,1566717.0,https://www.glassdoor.com/Reviews/Iroko-Pharmaceuticals-Reviews-E323478.htm
 18227,2012,CTYV,178716106,CITY VENTURES INC-REDH,11,1575878.0,"https://www.glassdoor.com/Overview/Working-at-City-Ventures-EI_IE540360.11,24.htm"
 18231,2014,WTER,01643A207,ALKALINE WATER COMPANY INC,14,1532390.0,"https://www.glassdoor.com/Overview/Working-at-The-Alkaline-Water-Company-EI_IE1651730.11,37.htm"
-18241,2014,FCF,319829107,FIRST COMMONWLTH FINL CP/PA,11,712537.0,https://www.glassdoor.com/Reviews/First-Commonwealth-Bank-Reviews-E2180.htm
 18242,2014,CBA,184691103,CLEARBRIDGE AMERN ENERGY MLP,11,1570318.0,https://www.glassdoor.com/Reviews/ClearBridge-Investments-Reviews-E719193.htm
 18243,2014,EFF,278284104,EATON VANCE FLTG-RT INCM PL,11,1573698.0,https://www.glassdoor.com/Reviews/Eaton-Vance-Reviews-E3553.htm
 18244,2015,JPW,67075B104,NUVEEN FLEXIBLE INVT INCM FD,11,1573312.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
@@ -1704,7 +1666,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 18264,2014,FVCB,36120Q101,FVCBANKCORP INC,14,1675644.0,"https://www.glassdoor.com/job-listing/teller-fvcbank-JV_IC1130404_KO0,6_KE7,14.htm?jl=3815348228"
 18270,2013,MBII,57165B106,MARRONE BIO INNOVTIONS,14,1441693.0,https://www.glassdoor.com/Reviews/Marrone-Bio-Innovations-Reviews-E284966.htm
 18271,2012,YUME,98872B104,YUME INC,11,1415624.0,https://www.glassdoor.com/Reviews/YuMe-Reviews-E341233.htm
-18276,2012,THFF,320218100,FIRST FINANCIAL CORP/IN,14,714562.0,"https://www.glassdoor.com/Overview/Working-at-First-Financial-Group-Guardian-EI_IE321820.11,41.htm"
 18287,2012,SGM,86181Q300,STONEGATE MORTGAGE CORP,11,1454389.0,https://www.glassdoor.com/Reviews/Stonegate-Mortgage-Reviews-E680279.htm
 18289,2013,ASC,Y0207T100,ARDMORE SHIPPING CORP,11,1577437.0,"https://www.glassdoor.com/Overview/Working-at-Ardmore-Shipping-EI_IE2417611.11,27.htm"
 18291,2014,CTRL,21240D107,CONTROL4 CORP,14,1259515.0,"https://www.glassdoor.com/Overview/Working-at-Control4-EI_IE302478.11,19.htm"
@@ -1761,7 +1722,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 18571,2012,COVS,22357R103,COVISINT CORP,14,1563699.0,"https://www.glassdoor.com/Overview/Working-at-Covisint-EI_IE12080.11,19.htm"
 18572,2014,ISEE,46583P102,IVERIC BIO INC,14,1410939.0,https://www.salary.com/research/employer/iveric-bio-inc
 18573,2013,QTS,74736A103,QTS REALTY TRUST INC,11,1577368.0,https://www.glassdoor.com/Reviews/QTS-Reviews-E293688.htm
-18578,2013,RMAX,75524W108,RE/MAX HOLDINGS INC,11,1581091.0,https://www.glassdoor.com/Reviews/RE-MAX-Reviews-E3867.htm
 18580,2014,ROIQ,74966G101,ROI ACQUISITION CORP II,14,1581607.0,https://www.glassdoor.com/Reviews/ROI-Healthcare-Solutions-Reviews-E1481330.htm
 18584,2012,FUEL,773111109,ROCKET FUEL INC,14,1477200.0,https://www.glassdoor.com/Reviews/Rocket-Fuel-Reviews-E286428.htm
 18593,2012,MONT,G6209T105,MONTAGE TECHNOLOGY GROUP LTD,14,1375514.0,"https://www.glassdoor.com/Overview/Working-at-Montage-Technology-EI_IE1399797.11,29.htm"
@@ -1858,7 +1818,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 19142,2013,SWAY,85571W109,STARWOOD WAYPOINT RES TR,11,,"https://www.glassdoor.com/Overview/Working-at-Waypoint-Residential-EI_IE944127.11,31.htm"
 19143,2013,KIN,494577109,KINDRED BIOSCIENCES INC,14,1561743.0,https://www.glassdoor.com/Reviews/Kindred-Biosciences-Reviews-E961661.htm
 19149,2014,RARE,90400D108,ULTRAGENYX PHARMACEUTICAL,14,1515673.0,https://www.glassdoor.com/Reviews/Ultragenyx-Pharmaceutical-Reviews-E739483.htm
-19150,2014,OSBC,680277100,OLD SECOND BANCORP INC/IL,14,357173.0,"https://www.glassdoor.com/Overview/Working-at-Old-Second-National-Bank-EI_IE2457.11,35.htm"
 19152,2010,PNNW,708254206,PENNICHUCK CORP,14,788885.0,https://www.glassdoor.com/Salary/Pennichuck-Salaries-E4993.htm
 19153,2012,THNX,G4001L107,GLOBOFORCE GROUP PLC  -REDH,14,1565152.0,"https://www.glassdoor.com/Job/ierland-help-desk-jobs-SRCH_IL.0,7_IN70_KO8,17.htm"
 19154,2015,CARA,140755109,CARA THERAPEUTICS INC,14,1346830.0,"https://www.glassdoor.com/Overview/Working-at-Cara-Therapeutics-EI_IE4569605.11,28.htm"
@@ -1914,7 +1873,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 19488,2015,FTLB,33738R407,FIRST TRST HDGD BUYWRITE ETF,14,,https://www.glassdoor.com/Interview/Given-this-ETF-made-of-3-stocks-and-these-available-trades-what-should-you-do-to-generate-risk-free-profit-Something-cha-QTN_2324139.htm
 19489,2017,RDVY,33738R506,FIRST TR RISING DIV ACHV,14,,https://www.glassdoor.com/Reviews/First-American-Financial-Corporation-Reviews-E2526.htm
 19507,2013,OUT,69007J106,OUTFRONT MEDIA INC,11,1579877.0,https://www.glassdoor.com/Reviews/Outfront-Media-Reviews-E930001.htm
-19508,2010,STBC,855716106,STATE BANCORP/NY,14,723458.0,https://www.glassdoor.com/Reviews/New-York-Community-Bancorp-Reviews-E2492.htm
 19510,2012,KNMD,49499J939,KINEMED INC  -REDH,14,1167058.0,"https://www.glassdoor.com/Overview/Working-at-KineMed-EI_IE259859.11,18.htm"
 19511,2013,FLXN,33938J106,FLEXION THERAPEUTICS INC,14,1419600.0,"https://www.glassdoor.com/Overview/Working-at-Flexion-Therapeutics-EI_IE1164162.11,31.htm"
 19516,2014,IBP,45780R101,INSTALLED BLDG PRODUCTS INC,11,1580905.0,https://www.glassdoor.com/Reviews/Installed-Building-Products-Reviews-E389453.htm
@@ -1926,7 +1884,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 19528,2015,FGF,30259W104,FG FINANCIAL GROUP INC,14,1591890.0,"https://www.glassdoor.com/Overview/Working-at-F-and-G-EI_IE448405.11,18.htm"
 19529,2012,CWAY,190632109,COASTWAY BANCORP INC,14,1585023.0,https://www.glassdoor.com/Reviews/Coastway-Community-Bank-Reviews-E326229.htm
 19534,2014,CNCE,206022105,CONCERT PHARMACEUTICLS INC,14,1367920.0,https://www.glassdoor.com/Reviews/Concert-Pharmaceuticals-Reviews-E277541.htm
-19538,2011,STSA.1,859319303,STERLING FINANCIAL CORP/WA,14,891106.0,"https://www.glassdoor.com/Overview/Working-at-Sterling-Financial-WA-EI_IE2126.11,32.htm"
 19565,2012,RIO,767204100,RIO TINTO GROUP,11,863064.0,https://www.glassdoor.com/Reviews/Rio-Tinto-Reviews-E6685.htm
 19570,2013,STBA,783859101,S & T BANCORP INC,14,719220.0,https://www.glassdoor.com/Reviews/S-and-T-Bancorp-Reviews-E2164.htm
 19574,2013,GCI,36472T109,GANNETT CO INC,11,1579684.0,https://www.glassdoor.com/Reviews/Gannett-Reviews-E272.htm
@@ -1993,7 +1950,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 19935,2014,ENLC,29336T100,ENLINK MIDSTREAM LLC,11,1592000.0,"https://www.glassdoor.com/Overview/Working-at-EnLink-Midstream-EI_IE824488.11,27.htm"
 19944,2015,AIRR,33738R704,FIRST TR AM INDL RENAISSANCE,14,,"https://www.glassdoor.com/Overview/Working-at-Renaissance-Learning-EI_IE6746.11,31.htm"
 19945,2015,DDIV,33738R696,FIRST TRUST DRSY WRHT MTM,14,,https://www.glassdoor.com/Reviews/First-Trust-Portfolios-L-P-Reviews-E232811.htm
-19965,2013,POPE,732857107,POPE RESOURCES/DE  -LP,14,784011.0,https://www.glassdoor.com/Reviews/Pope-Golf-Reviews-E1003296.htm
 19966,2015,CMCT,125525584,CIM COMMERICAL TRUST,14,908311.0,https://www.glassdoor.com/Reviews/CIM-Group-Reviews-E261247.htm
 19967,2014,AGTC,03820J100,APPLIED GENETIC TECHNOLOGIES,14,1273636.0,"https://www.glassdoor.com/Overview/Working-at-Applied-Genetic-Technologies-EI_IE33997.11,39.htm"
 19974,2015,TSLX,83012A109,SIXTH STREET SPECIALTY LENDI,11,1508655.0,https://www.glassdoor.com/Reviews/TPG-Reviews-E6060.htm
@@ -2217,7 +2173,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 21223,2013,CFRX,212326300,CONTRAFECT CORP,14,1478069.0,"https://www.glassdoor.com/Overview/Working-at-ContraFect-EI_IE780889.11,21.htm"
 21227,2014,LBRDK,530307305,LIBERTY BROADBAND CORP,14,1611983.0,"https://www.glassdoor.com/Overview/Working-at-Liberty-Global-EI_IE38776.11,25.htm"
 21236,2016,THQ,879105104,TEKLA HEALTHCARE OPPTYS FUND,11,1604522.0,"https://www.glassdoor.com/Job/us-tekla-jobs-SRCH_IL.0,2_IN1_KO3,8.htm"
-21237,2015,TTI,88162F105,TETRA TECHNOLOGIES INC/DE,11,844965.0,https://www.glassdoor.com/Reviews/TETRA-Technologies-Reviews-E1962.htm
 21238,2012,VICR,925815102,VICOR CORP,14,751978.0,https://www.glassdoor.com/Reviews/Vicor-Corp-Reviews-E2017.htm
 21241,2014,CGA,16943W204,CHINA GREEN AGRICULTURE INC,11,857949.0,"https://www.glassdoor.com/Overview/Working-at-China-Green-Agriculture-EI_IE457360.11,34.htm"
 21261,2014,VA,92765X208,VIRGIN AMERICA INC,14,1614436.0,https://www.glassdoor.com/Reviews/Virgin-America-Reviews-E35336.htm
@@ -2239,12 +2194,9 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 21431,2015,CRC,13057Q305,CALIFORNIA RESOURCES CORP,11,1609253.0,https://www.glassdoor.com/Reviews/California-Resources-Reviews-E921287.htm
 21433,2017,ZAYO,98919V105,ZAYO GROUP HOLDINGS INC,11,1608249.0,https://www.glassdoor.com/Reviews/Zayo-Reviews-E235326.htm
 21440,2013,LSTR,515098101,LANDSTAR SYSTEM INC,14,853816.0,https://www.glassdoor.com/Reviews/Landstar-Reviews-E2335.htm
-21452,2013,FWP,34986J204,FORWARD PHARMA A/S  -ADR,14,1604924.0,https://www.glassdoor.com/Reviews/AVANIR-Pharmaceuticals-Reviews-E2461.htm
 21470,2015,FDIV,33739Q309,FIRST TRUST STRATEGIC INCOME,14,,https://www.glassdoor.com/Salary/First-Trust-Portfolios-L-P-Salaries-E232811.htm
-21487,2011,BEAV,73302101,B/E AEROSPACE INC,14,861361.0,https://www.glassdoor.com/Reviews/BE-Aerospace-Reviews-E727.htm
 21496,2011,ORB,685564106,ORBITAL SCIENCES CORP,11,820736.0,https://www.glassdoor.com/Reviews/Orbital-Sciences-Reviews-E1285.htm
 21499,2010,PLCC,703797100,PAULSON CAPITAL CORP,14,,https://www.glassdoor.com/Reviews/Paulson-Investment-Company-Reviews-E981851.htm
-21503,2015,KMPR,488401100,KEMPER CORP/DE,11,860748.0,"https://www.glassdoor.com/Overview/Working-at-Kemper-EI_IE3676.11,17.htm"
 21515,2013,UNVR,91336L107,UNIVAR SOLUTIONS INC,11,1494319.0,https://www.glassdoor.com/Reviews/Univar-Solutions-Reviews-E14183.htm
 21522,2014,VYNE,92941V100,VYNE THERAPEUTICS INC,14,1566044.0,https://www.glassdoor.com/Reviews/Employee-Review-Vyne-RVW18286435.htm
 21524,2015,PRQR,N71542109,PROQR THERAPEUTICS NV,14,1612940.0,"https://www.glassdoor.com/Overview/Working-at-ProQR-Therapeutics-EI_IE2884091.11,29.htm"
@@ -2380,7 +2332,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 22266,2013,AAAP,00790T100,ADVANCED ACCELERATR APP -ADR,14,1611787.0,"https://www.glassdoor.com/Overview/Working-at-Advanced-Accelerator-Applications-EI_IE979245.11,44.htm"
 22284,2014,SND,83191H107,SMART SAND INC,14,1529628.0,"https://www.glassdoor.com/Overview/Working-at-Smart-Sand-EI_IE2420101.11,21.htm"
 22306,2012,ESBF,26884F102,ESB FINANCIAL CORP,14,872835.0,https://www.glassdoor.com/Salary/ESB-Financial-Salaries-E1064.htm
-22307,2014,HIE,600379101,MILLER/HOWARD HGH INCM EQ FD,11,1519505.0,"https://www.glassdoor.com/Overview/Working-at-Miller-Howard-Investments-EI_IE1100054.11,36.htm"
 22308,2010,ATSI,2083103,ATS MEDICAL INC,14,824068.0,"https://www.glassdoor.com/Overview/Working-at-ATS-Medical-Services-EI_IE1309112.11,31.htm"
 22310,2016,JGH,67075G103,NUVEEN GLOBAL HIGH INCOME FD,11,1615905.0,https://www.glassdoor.com/Salary/Nuveen-Salaries-E3563.htm
 22316,2015,ARWA,G05011104,AROWANA INC,14,1622577.0,https://www.glassdoor.com/Reviews/Arowana-Consulting-Reviews-E572375.htm
@@ -2448,7 +2399,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 22927,2013,BLPH,78771300,BELLEROPHON THERAPEUTICS INC,14,1600132.0,"https://www.glassdoor.com/Overview/Working-at-Bellerophon-Therapeutics-EI_IE1060943.11,35.htm"
 22964,2014,EPIX,29668H708,ESSA PHARMA INC,14,1633932.0,"https://www.glassdoor.com/Overview/Working-at-ESSA-EI_IE909540.11,15.htm"
 22975,2014,FNWB,335834107,FIRST NORTHWEST BANCRP,14,1556727.0,https://www.glassdoor.com/Reviews/First-Financial-Northwest-Reviews-E229976.htm
-22982,2016,BHAC,06759V101,BARINGTON/HILCO ACQ CORP,14,1622175.0,https://www.hilcoglobal.com/news/spotlight-archive/barington-hilco-acquisition-corp
 22983,2014,XHR,984017103,XENIA HOTELS & RESORTS INC,11,1616000.0,"https://www.glassdoor.com/Overview/Working-at-Xenia-Hotels-and-Resorts-EI_IE1270967.11,35.htm"
 23002,2012,CRK.5,20599D932,COMSTOCK RESOURCES INC -OLD,11,,"https://www.glassdoor.com/Overview/Working-at-Comstock-Resources-EI_IE1291.11,29.htm"
 23006,2010,TRH,893521104,TRANSATLANTIC HOLDINGS INC,11,862510.0,"https://www.glassdoor.com/Overview/Working-at-TransRe-EI_IE7220.11,18.htm"
@@ -2598,7 +2548,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 23998,2015,VXDN,00439V763,ACCUSHARES SPOT CBOE VIX DWN,14,,https://www.bloomberg.com/quote/VXDN:US
 24001,2016,VXUP,00439V771,ACCUSHARES SPOT CBOE VIX UP,14,,https://www.bloomberg.com/quote/VXUP:US
 24003,2013,LCRT,53999Q930,LOANCORE REALTY TR INC -REDH,11,1632172.0,"https://www.glassdoor.com/Salaries/us-commercial-real-estate-analyst-salary-SRCH_IL.0,2_IN1_KO3,33.htm"
-24005,2012,AXAS,3830304,ABRAXAS PETROLEUM CORP/NV,14,867665.0,"https://www.glassdoor.com/Overview/Working-at-Abraxas-Petroleum-EI_IE2459.11,28.htm"
 24021,2012,HAE,405024100,HAEMONETICS CORP,11,313143.0,https://www.glassdoor.com/Reviews/Haemonetics-Reviews-E786.htm
 24032,2010,JNY,48020T101,JONES GROUP INC,11,874016.0,https://www.glassdoor.com/Reviews/The-Jones-Group-Reviews-E1971.htm
 24040,2013,IONS,462222100,IONIS PHARMACEUTICALS INC,14,874015.0,https://www.glassdoor.com/Reviews/Ionis-Pharmaceuticals-Reviews-E1268882.htm
@@ -2651,7 +2600,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 24363,2010,BUCY,118759109,BUCYRUS INTERNATIONAL INC,14,740761.0,"https://www.glassdoor.com/Reviews/bucyrus-international-inc-reviews-SRCH_KE0,25.htm"
 24370,2015,CCJ,13321L108,CAMECO CORP,11,1009001.0,https://www.glassdoor.com/Reviews/Cameco-Reviews-E6100.htm
 24378,2011,MEDW,584946107,MEDIWARE INFORMATION SYSTEMS,14,874733.0,https://www.glassdoor.com/Reviews/WellSky-Reviews-E4942.htm
-24379,2013,MTG,552848103,MGIC INVESTMENT CORP/WI,11,876437.0,https://www.glassdoor.com/Reviews/MGIC-Investment-Reviews-E1508.htm
 24396,2013,TVTY,88870R102,TIVITY HEALTH INC,14,704415.0,https://www.glassdoor.com/Reviews/Tivity-Health-Reviews-E1524666.htm
 24405,2012,ZBRA,989207105,ZEBRA TECHNOLOGIES CP  -CL A,14,877212.0,"https://www.glassdoor.com/Jobs/The-Nature-s-Bounty-Co-cp-engineer-Jobs-EI_IE1686.0,22_KO23,34.htm"
 24409,2010,SY.3,871130100,SYBASE INC,11,768262.0,https://www.glassdoor.com/Reviews/Sybase-Reviews-E2088.htm
@@ -2718,7 +2666,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 24718,2011,NUN,670986108,NUVEEN NY QLTY INCM MUN FD,11,879819.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
 24720,2012,WNC,929566107,WABASH NATIONAL CORP,11,879526.0,https://www.glassdoor.com/Reviews/Wabash-National-Reviews-E2009.htm
 24724,2016,LILAK,G9001E128,LIBERTY LATIN AMERICA LTD,14,1712184.0,"https://www.glassdoor.com/Overview/Working-at-Liberty-Latin-America-EI_IE2503202.11,32.htm"
-24725,2015,WRLD,981419104,WORLD ACCEPTANCE CORP/DE,14,108385.0,https://www.glassdoor.com/Reviews/World-Finance-Reviews-E1840.htm
 24727,2010,CWG,138906300,CANWEST GLOBAL COM  -NVTG,11,1003565.0,"https://www.glassdoor.com/Salaries/toronto-hr-generalist-salary-SRCH_IL.0,7_IM976_KO8,21.htm"
 24729,2012,DTF,23334J107,DTF TAX FREE INCOME,11,879535.0,https://www.sec.gov/Archives/edgar/data/879535/000119312516808106/d297296dncsr.htm
 24731,2014,KIM,49446R109,KIMCO REALTY CORP,11,879101.0,https://www.glassdoor.com/Reviews/Kimco-Realty-Reviews-E2116.htm
@@ -2847,7 +2794,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 25377,2014,NEOS,64052L106,NEOS THERAPEUTICS INC,14,1467652.0,"https://www.glassdoor.com/Overview/Working-at-Neos-EI_IE17303.11,15.htm"
 25389,2012,GPK,388689101,GRAPHIC PACKAGING HOLDING CO,11,1408075.0,https://www.glassdoor.com/Reviews/Graphic-Packaging-International-Reviews-E2199.htm
 25396,2011,BIOC.1,09071B100,BIOCLINICA INC,14,822418.0,https://www.glassdoor.com/Reviews/Bioclinica-Reviews-E4765.htm
-25405,2013,BGC,369300108,GENERAL CABLE CORP/DE,11,886035.0,https://www.glassdoor.com/Reviews/General-Cable-Reviews-E6763.htm
 25406,2014,JCTCF,47733C207,JEWETT-CAMERON TRADING CO,14,885307.0,"https://www.glassdoor.com/Overview/Working-at-Jewett-Cameron-Trading-EI_IE7341.11,33.htm"
 25412,2012,LDF,51828C106,LATIN AMERICAN DISCOVERY FD,11,884461.0,https://www.glassdoor.com/Salary/The-Latin-American-Legal-Defense-and-Education-Fund-Salaries-E3153556.htm
 25415,2013,NXC,67063R103,NUVEEN CA SEL TAX FREE INCM,11,885732.0,https://www.glassdoor.com/Salary/Nuveen-Salaries-E3563_P2.htm
@@ -2917,7 +2863,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 25850,2013,TRIB,896438306,TRINITY BIOTECH PLC,14,888721.0,"https://www.glassdoor.com/Overview/Working-at-Trinity-Biotech-EI_IE5761.11,26.htm"
 25852,2013,CPSS,210502100,CONSUMER PORTFOLIO SVCS INC,14,889609.0,https://www.glassdoor.com/Reviews/Consumer-Portfolio-Services-Reviews-E4806.htm
 25859,2011,EPIC,29426L108,EPICOR SOFTWARE CORP -OLD,14,891178.0,https://www.glassdoor.com/Reviews/Epicor-Software-Reviews-E1421.htm
-25860,2010,SBIB,858907108,STERLING BANCSHARES INC/TX,14,891098.0,"https://www.glassdoor.com/Overview/Working-at-Sterling-Bancshares-EI_IE1503.11,30.htm"
 25870,2013,MTX,603158106,MINERALS TECHNOLOGIES INC,11,891014.0,https://www.glassdoor.com/Reviews/Minerals-Technologies-Reviews-E1014.htm
 25877,2011,HCC.1,404132102,HCC INSURANCE HOLDINGS INC,11,888919.0,"https://www.glassdoor.com/Reviews/insurance-hcc-insurance-holdings-inc-reviews-SRCH_KO0,9_KE10,36.htm"
 25880,2013,PDCO,703395103,PATTERSON COS INC,14,891024.0,https://www.glassdoor.com/Reviews/Patterson-Companies-Reviews-E1923.htm
@@ -3056,7 +3001,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 26509,2014,ELVT,28621V101,ELEVATE CREDIT INC,11,1651094.0,https://www.glassdoor.com/Reviews/Elevate-Credit-Reviews-E853573.htm
 26514,2013,MSDI.2,61199B934,MONSTER DIGITAL INC -OLD,14,,"https://www.glassdoor.com/Overview/Working-at-Monster-Digital-EI_IE1099383.11,26.htm"
 26519,2013,INPL,45499E938,INPELLIS INC -REDH,14,1638851.0,https://www.pinterest.com/pellishomes/palmer-place/
-26520,2013,SMIT,806870200,SCHMITT INDUSTRIES INC/OR,14,922612.0,"https://www.glassdoor.com/Overview/Working-at-Schmitt-Industries-EI_IE6209.11,29.htm"
 26528,2014,XGN,30068X103,EXAGEN INC,14,1274737.0,https://www.glassdoor.com/Reviews/Exagen-Reviews-E785582.htm
 26537,2014,YRD,98585L100,YIREN DIGITAL LTD -ADR,11,1631761.0,https://sg.linkedin.com/in/ohserwah
 26539,2012,EGO,284902509,ELDORADO GOLD CORP,11,918608.0,https://www.glassdoor.com/Reviews/Eldorado-Gold-Reviews-E8732.htm
@@ -3236,7 +3180,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 27876,2020,JHB,67077N106,NUVEEN HI INCM NOV 2021 TARG,11,1647933.0,"https://www.glassdoor.com/Overview/Working-at-Nuveen-EI_IE3563.11,17.htm"
 27882,2010,PRM,74157K846,PRIMEDIA INC,11,884382.0,https://www.glassdoor.com/Reviews/PriMedia-Reviews-E697181.htm
 27885,2015,TTD,88339J105,TRADE DESK INC,14,1671933.0,https://www.glassdoor.com/Reviews/The-Trade-Desk-Reviews-E779832.htm
-27886,2012,UBCP,909911109,UNITED BANCORP INC/OH,14,731653.0,"https://www.glassdoor.com/Overview/Working-at-United-Bancorp-EI_IE5068.11,25.htm"
 27887,2017,SCAC,78516C106,SABAN CAPITAL ACQUISITION CP,14,1671854.0,"https://www.glassdoor.com/Overview/Working-at-Saban-Capital-EI_IE1669234.11,24.htm"
 27905,2017,NOVN,66988N106,NOVAN INC,14,1467154.0,"https://www.glassdoor.com/Overview/Working-at-Novan-EI_IE1410762.11,16.htm"
 27907,2015,ELF,26856L103,E.L.F. BEAUTY INC,11,1600033.0,https://www.glassdoor.com/Reviews/E-L-F-BEAUTY-Reviews-E946595.htm
@@ -3271,7 +3214,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 27997,2010,APSG.1,38237103,APPLIED SIGNAL TECHNOLOGY,14,741696.0,https://www.glassdoor.com/Reviews/Raytheon-Applied-Signal-Technology-Reviews-E2305.htm
 28012,2016,FLGT,359664109,FULGENT GENETICS INC,14,1674930.0,"https://www.glassdoor.com/Overview/Working-at-Fulgent-EI_IE2019745.11,18.htm"
 28021,2016,AHPA,G0726L125,AVISTA HEALTHCARE PUBLIC ACQ,14,,https://www.glassdoor.com/Reviews/Avista-Reviews-E720.htm
-28022,2012,BANF,05945F103,BANCFIRST CORP/OK,14,760498.0,https://www.glassdoor.com/Reviews/BancFirst-Reviews-E2307.htm
 28027,2015,AMRN,23111206,AMARIN CORP,14,897448.0,"https://www.glassdoor.com/Overview/Working-at-Amarin-EI_IE7326.11,17.htm"
 28034,2014,CB,H1467J104,CHUBB LTD,11,896159.0,https://www.glassdoor.com/Reviews/Chubb-Reviews-E150.htm
 28063,2018,BOTZ,37954Y715,GLOBAL X ROBOTICS & ART INTL,14,,https://www.glassdoor.com/Reviews/GlobalX-Information-Reviews-E1041138.htm
@@ -3377,7 +3319,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 28605,2014,MSD,61744H105,MORGAN STAN EMG MKT DEBT FD,11,904112.0,https://www.glassdoor.com/Reviews/Employee-Review-Morgan-Stanley-RVW19487953.htm
 28606,2011,MUA,09254J102,BLACKROCK MUNIASSETS FUND,11,901243.0,"https://www.glassdoor.com/Overview/Working-at-BlackRock-EI_IE9331.11,20.htm"
 28608,2013,PPS,737464107,POST PROPERTIES INC,11,903127.0,"https://www.glassdoor.com/Overview/Working-at-Crescendo-Properties-Inc-EI_IE1019558.11,35.htm"
-28616,2011,RURL,781748108,RURAL/METRO CORP,14,906326.0,https://www.glassdoor.com/Reviews/Rural-Metro-Fire-Reviews-E2425.htm
 28620,2012,PFC,74052F108,PREMIER FINANCIAL CORP,14,946647.0,"https://www.glassdoor.com/Overview/Working-at-Premier-Financial-Corp-EI_IE2426.11,33.htm"
 28629,2013,CPT,133131102,CAMDEN PROPERTY TRUST,11,906345.0,https://www.glassdoor.com/Reviews/Camden-Property-Trust-Reviews-E2418.htm
 28634,2011,NPX,6706D8104,NUVEEN PREM INCM MUNI OPPY,11,906959.0,"https://www.glassdoor.com/Overview/Working-at-Nuveen-EI_IE3563.11,17.htm"
@@ -3553,7 +3494,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 29755,2012,BZH,07556Q881,BEAZER HOMES USA INC,11,915840.0,https://www.glassdoor.com/Reviews/Beazer-Homes-Reviews-E2560.htm
 29760,2016,KRP,49435R102,KIMBELL ROYALTY PARTNERS LP,11,1657788.0,https://www.salary.com/research/employer/kimbell-royalty-partnrs-lp
 29762,2014,ARTX,42682203,AROTECH CORP,14,916529.0,https://www.glassdoor.com/Reviews/Aerotech-Inc-Reviews-E463602.htm
-29770,2017,SWIN,00162Q486,ALPS/DORSEY WRGHT SCTR MMNTM,14,,"https://www.glassdoor.com/Overview/Working-at-ALPS-EI_IE374367.11,15.htm"
 29771,2018,DFNL,23908L108,DAVIS FNDMTL TST-SLT FNL ETF,14,,https://www.glassdoor.com/Reviews/Davis-Standard-Reviews-E17954.htm
 29778,2010,DGF,245916101,DELAWARE INVST GLOBL DIV INC,11,916713.0,https://www.glassdoor.com/Salary/Delaware-Investments-Salaries-E40103.htm
 29790,2019,DUSA,23908L207,DAVIS FTL TST-SLT US ETY ETF,14,,https://www.glassdoor.com/Reviews/Davis-Street-Reviews-E827952.htm
@@ -3566,7 +3506,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 29835,2015,FBM,350392106,FOUNDATION BLDG MRL INC,11,1688941.0,https://www.glassdoor.com/Reviews/Foundation-Building-Materials-Reviews-E1038755.htm
 29837,2015,BCRX,09058V103,BIOCRYST PHARMACEUTICALS INC,14,882796.0,https://www.glassdoor.com/Reviews/BioCryst-Pharmaceuticals-Reviews-E2614.htm
 29850,2013,TV,40049J206,GRUPO TELEVISA SAB,11,912892.0,https://www.glassdoor.com/Reviews/Televisa-Reviews-E5854.htm
-29855,2012,FMNB,309627107,FARMERS NATL BANC CORP/OH,14,709337.0,"https://www.glassdoor.com/Overview/Working-at-Farmers-National-EI_IE22911.11,27.htm"
 29868,2014,MAC,554382101,MACERICH CO,11,912242.0,https://www.glassdoor.com/Reviews/Macerich-Reviews-E3939.htm
 29870,2014,ZEUS,68162K106,OLYMPIC STEEL INC,14,917470.0,https://www.glassdoor.com/Reviews/Olympic-Steel-Reviews-E2618.htm
 29875,2012,AVB,53484101,AVALONBAY COMMUNITIES INC,11,915912.0,https://www.glassdoor.com/Reviews/AvalonBay-Communities-Reviews-E2616.htm
@@ -3579,7 +3518,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 29930,2014,MPAA,620071100,MOTORCAR PARTS OF AMER INC,14,918251.0,https://www.glassdoor.com/Reviews/Motorcar-Parts-Reviews-E2627.htm
 29939,2010,BSMD,09066V103,BIOSPHERE MEDICAL INC,14,919015.0,"https://www.glassdoor.com/Overview/Working-at-BioSphere-Medical-EI_IE2647.11,28.htm"
 29942,2011,RAH,751028101,RALCORP HOLDINGS INC,11,1029506.0,"https://www.indeed.com/cmp/Ralcorp-Holdings,-Inc/reviews"
-29946,2012,LARK,51504L107,LANDMARK BANCORP INC/KS,14,1141688.0,"https://www.glassdoor.com/Overview/Working-at-Landmark-Bancorp-EI_IE4593.11,27.htm"
 29955,2014,BHC,71734107,BAUSCH HEALTH COMPANIES INC,11,885590.0,https://www.glassdoor.com/Reviews/Bausch-Health-Reviews-E2180969.htm
 29962,2012,LMNR,532746104,LIMONEIRA CO,14,1342423.0,"https://www.glassdoor.com/Overview/Working-at-Limoneira-EI_IE3839329.11,20.htm"
 29964,2012,GPIC,36467A107,GAMING PARTNERS INTL CORP,14,918580.0,https://www.glassdoor.com/Reviews/Gaming-Partners-International-Reviews-E2634.htm
@@ -3662,7 +3600,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 30547,2017,SOI,83418M103,SOLARIS OILFIELD IF INC,11,1697500.0,"https://www.glassdoor.com/Overview/Working-at-Solaris-Oilfield-Infrastructure-EI_IE1554700.11,42.htm"
 30551,2017,MPAC,57682V106,MATLIN & PARTNERS ACQ,14,,http://uswellservices.com/2018/07/business-combination-announcement/
 30554,2013,TARO,M8737E108,TARO PHARMACEUTICL INDS LTD,11,906338.0,"https://www.glassdoor.com/Overview/Working-at-Taro-Pharmaceuticals-EI_IE10094.11,31.htm"
-30558,2012,MLR,600551204,MILLER INDUSTRIES INC/TN,11,924822.0,https://www.glassdoor.com/Reviews/Miller-Industries-Reviews-E3897.htm
 30560,2015,GOOS,135086106,CANADA GOOSE HLDG,11,1690511.0,https://www.glassdoor.com/Reviews/Canada-Goose-Reviews-E1007380.htm
 30571,2016,ARD,L0223L101,ARDAGH GROUP SA,11,1689662.0,https://www.glassdoor.com/Reviews/Ardagh-Group-Reviews-E665181.htm
 30576,2014,ADTN,00738A106,ADTRAN INC,14,926282.0,https://www.glassdoor.com/Reviews/ADTRAN-Reviews-E3056.htm
@@ -3800,14 +3737,12 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 31657,2017,DOVA,25985T102,DOVA PHARMACEUTICAL INC,14,1685071.0,"https://www.glassdoor.com/Overview/Working-at-Dova-Pharmaceuticals-EI_IE1728927.11,31.htm"
 31673,2014,ABC,3.07E+108,AMERISOURCEBERGEN CORP,11,1140859.0,https://www.glassdoor.com/Reviews/AmerisourceBergen-Reviews-E2703.htm
 31674,2012,PCMI,69323K100,PCM INC,14,937941.0,https://www.glassdoor.com/Reviews/PCM-Reviews-E722602.htm
-31692,2012,MBFI,55264U108,MB FINANCIAL INC/MD,14,1139812.0,"https://www.glassdoor.com/Reviews/Morgan-Stanley-Baltimore-Reviews-EI_IE2282.0,14_IL.15,24_IM63.htm"
 31702,2011,YCB,98779U106,YOUR COMMUNITY BANKSHARES,14,933590.0,"https://www.glassdoor.com/Overview/Working-at-Community-Bancshares-of-Mississippi-EI_IE24169.11,46.htm"
 31703,2012,GFED,40108P101,GUARANTY FED BANCSHARES INC,14,1046203.0,https://www.glassdoor.com/Reviews/Guaranty-Bank-MO-Reviews-E4154.htm
 31717,2014,IRS,450047204,IRSA INVERSIONES Y REPSTN SA,11,933267.0,https://www.glassdoor.com/Reviews/IRSA-Reviews-E5914.htm
 31718,2012,ATLO,31001100,AMES NATIONAL CORP,14,1132651.0,"https://www.glassdoor.com/Overview/Working-at-Ames-National-EI_IE22072.11,24.htm"
 31738,2012,TAIT,874028103,TAITRON COMPONENTS  -CL A,14,942126.0,"https://www.glassdoor.com/Overview/Working-at-Taitron-Components-EI_IE4144.11,29.htm"
 31743,2011,ANAD,32515108,ANADIGICS INC,14,940332.0,https://www.glassdoor.com/Reviews/ANADIGICS-Reviews-E3068.htm
-31744,2011,JXSB,46924R106,JACKSONVILLE BANCORP INC/MD,14,1484949.0,"https://www.glassdoor.com/Reviews/Deutsche-Bank-Jacksonville-Reviews-EI_IE3150.0,13_IL.14,26_IM416.htm"
 31752,2012,CBZ,124805102,CBIZ INC,11,944148.0,https://www.glassdoor.com/Reviews/CBIZ-Reviews-E4183.htm
 31764,2014,BMRC,63425102,BANK OF MARIN BANCORP,14,1403475.0,https://www.glassdoor.com/Reviews/Bank-of-Marin-Reviews-E11376.htm
 31772,2017,NEWA,G64335105,NEWATER TECHNOLOGY INC,14,1678022.0,"https://www.glassdoor.com/Overview/Working-at-North-East-Water-EI_IE3851817.11,27.htm"
@@ -4842,7 +4777,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 36685,2020,CEFA,37954Y368,GLOBAL X S&P CATH VAL DEV EX,14,,https://www.glassdoor.com/Reviews/GlobalX-Information-Reviews-E1041138.htm
 36686,2020,DMXF,46436E759,ISHARES ESG AD MSCI EAFE ETF,14,,"https://www.glassdoor.com/Reviews/MSCI-ESG-Analyst-Reviews-EI_IE14616.0,4_KO5,16.htm"
 36688,2020,MLAC,G5859B117,MALACCA STRAITS ACQ CO LTD,14,1807594.0,https://sec.report/Document/0001213900-21-017719/
-36691,2020,IAC,44891N109,IAC/INTERACTIVECORP,14,1800227.0,https://www.glassdoor.com/Reviews/IAC-Reviews-E6672.htm
 36692,2018,LMND,52567D107,LEMONADE INC,11,1691421.0,"https://www.glassdoor.com/Overview/Working-at-Lemonade-EI_IE1736285.11,19.htm"
 36695,2020,SPQQ,829658103,SIREN LARGE BLEND INDEX ETF,14,,"https://www.glassdoor.com/Overview/Working-at-Siren-Care-EI_IE2131746.11,21.htm"
 36704,2019,ALXO,00166B105,ALX ONCOLOGY HOLDI INC,14,1810182.0,https://www.glassdoor.com/Reviews/ALX-Reviews-E2399338.htm
@@ -5162,7 +5096,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 61766,2015,ASTC,46484200,ASTROTECH CORP,14,1001907.0,https://www.glassdoor.com/Reviews/Employee-Review-ASTC-RVW11071959.htm
 61774,2010,CDTI.,18499U962,CLEAN DIESEL TECHNOLOGIS-OLD,14,,"https://www.glassdoor.com/Overview/Working-at-Clean-Diesel-Specialists-EI_IE491906.11,35.htm"
 61811,2012,SCCO,84265V105,SOUTHERN COPPER CORP,11,1001838.0,"https://www.glassdoor.com/Overview/Working-at-Southern-Copper-EI_IE3916.11,26.htm"
-61815,2015,BYFC,111444105,BROADWAY FINANCIAL CORP/DE,14,1001171.0,https://www.glassdoor.com/Reviews/Broadway-Financial-Reviews-E5712.htm
 61836,2014,TTNP,888314606,TITAN PHARMACEUTICALS INC,14,910267.0,"https://www.glassdoor.com/Overview/Working-at-Titan-Pharmaceuticals-EI_IE5572.11,32.htm"
 61839,2012,APU,30975106,AMERIGAS PARTNERS  -LP,11,932628.0,"https://www.glassdoor.com/Salary/AmeriGas-Finance-Business-Partner-Salaries-E3917_D_KO9,33.htm"
 61870,2013,OTEX,683715106,OPEN TEXT CORP,14,1002638.0,https://www.glassdoor.com/Reviews/OpenText-Reviews-E5694.htm
@@ -5261,7 +5194,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 63123,2012,GWR,371559105,GENESEE & WYOMING INC  -CL A,11,1012620.0,https://www.glassdoor.com/Reviews/Genesee-and-Wyoming-Reviews-E6165.htm
 63135,2013,DCOM,25432X102,DIME COMMUNITY BANCSHARES,14,846617.0,https://www.glassdoor.com/Reviews/Dime-Community-Bank-Reviews-E6163.htm
 63139,2012,TRQ,900435207,TURQUOISE HILL RESOURCES LTD,11,1158041.0,"https://www.glassdoor.com/Overview/Working-at-Oyu-Tolgoi-EI_IE709516.11,21.htm"
-63166,2010,CLFC,1.51E+106,CENTER FINANCIAL CORP/CA,14,1174820.0,"https://www.glassdoor.com/Salaries/san-francisco-financial-center-manager-salary-SRCH_IL.0,13_IM759_KO14,38.htm"
 63172,2012,FDS,303075105,FACTSET RESEARCH SYSTEMS INC,11,1013237.0,"https://www.glassdoor.com/Overview/Working-at-FactSet-EI_IE6066.11,18.htm"
 63178,2014,PROV,743868101,PROVIDENT FINANCIAL HOLDINGS,14,1010470.0,https://www.glassdoor.com/Reviews/Provident-Financial-Holdings-Reviews-E6169.htm
 63185,2012,CHKP,M22465104,CHECK POINT SOFTWARE TECHN,14,1015922.0,https://www.glassdoor.com/Reviews/Check-Point-Software-Technologies-Reviews-E6161.htm
@@ -5271,7 +5203,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 63281,2011,VSNT,925284309,VERSANT CORP,14,865917.0,"https://www.glassdoor.com/Overview/Working-at-Versant-Holdings-EI_IE1336706.11,27.htm"
 63288,2012,FFG,30239F106,FBL FINANCIAL GROUP INC-CL A,11,1012771.0,https://www.glassdoor.com/Reviews/FBL-Financial-Reviews-E6760.htm
 63290,2012,PEGA,705573103,PEGASYSTEMS INC,14,1013857.0,https://www.glassdoor.com/Reviews/Pegasystems-Reviews-E5936.htm
-63291,2010,STRC,78464W104,SRI/SURGICAL EXPRESS INC,14,1014041.0,"https://www.glassdoor.com/Overview/Working-at-Surgical-Express-EI_IE5937.11,27.htm"
 63338,2012,STRA,86272C103,STRATEGIC EDUCATION INC,14,1013934.0,"https://www.glassdoor.com/Overview/Working-at-Strategic-Education-Inc-EI_IE2436603.11,34.htm"
 63388,2013,WHLM,968235200,WILHELMINA INTERNATIONAL INC,14,1013706.0,https://www.glassdoor.com/Reviews/Wilhelmina-International-Inc-Reviews-E982101.htm
 63405,2012,GERN,374163103,GERON CORP,14,886744.0,https://www.glassdoor.com/Reviews/Geron-Reviews-E6019.htm
@@ -5290,7 +5221,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 63520,2014,TACT,892918103,TRANSACT TECHNOLOGIES INC,14,1017303.0,https://www.glassdoor.com/Reviews/TransAct-Technologies-Reviews-E6089.htm
 63527,2013,SRCL,858912108,STERICYCLE INC,14,861878.0,https://www.glassdoor.com/Reviews/Stericycle-Reviews-E6009.htm
 63531,2012,MVIS,594960304,MICROVISION INC,14,65770.0,https://www.glassdoor.com/Reviews/Microvision-Reviews-E6316.htm
-63538,2011,SNBC,86663B201,SUN BANCORP INC/NJ,14,1017793.0,"https://www.glassdoor.com/Overview/Working-at-Sun-National-Bank-EI_IE6325.11,28.htm"
 63541,2014,MMAC,55315D105,MMA CAPITAL HOLDINGS,14,1003201.0,"https://www.glassdoor.com/Salary/MMA-Analyst-Salaries-E1133907_D_KO4,11.htm"
 63551,2011,FMFC,320744105,FIRST M&F CORP,14,320387.0,https://www.glassdoor.com/Reviews/First-M-and-F-Reviews-E6785.htm
 63562,2012,AEZS,7975402,AETERNA ZENTARIS INC,14,1113423.0,https://www.glassdoor.com/Reviews/%C3%86terna-Zentaris-Reviews-E12110.htm
@@ -5399,7 +5329,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 64554,2010,GSLA,362274102,GS FINANCIAL CORP,14,1029630.0,https://www.glassdoor.com/Reviews/Goldman-Sachs-Reviews-E2800.htm
 64568,2012,GIFI,402307102,GULF ISLAND FABRICATION INC,14,1031623.0,https://www.glassdoor.com/Reviews/Gulf-Island-Fabrication-Reviews-E6728.htm
 64577,2013,ELP,20441B407,COPEL-CIA PARANAENSE ENERGIA,11,1041792.0,"https://www.glassdoor.com/Overview/Working-at-COPEL-EI_IE10952.11,16.htm"
-64584,2011,FSBK,33646W100,FIRST SOUTH BANCORP INC/VA,14,1027183.0,"https://www.glassdoor.com/Overview/Working-at-First-South-Bancorp-NC-EI_IE7353.11,33.htm"
 64595,2011,MEAD,583062203,MEADE INSTRUMENTS CORP,14,1032067.0,"https://www.glassdoor.com/Overview/Working-at-Meade-EI_IE6712.11,16.htm"
 64626,2012,SYNM,871630208,SYNTROLEUM CORP,14,1029023.0,"https://www.glassdoor.com/Overview/Working-at-Syntroleum-EI_IE8704.11,21.htm"
 64630,2013,TTWO,874054109,TAKE-TWO INTERACTIVE SFTWR,14,946581.0,https://www.glassdoor.com/Reviews/Take-Two-Reviews-E7413.htm
@@ -5451,7 +5380,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 65105,2010,BJ.1,05548J106,BJ'S WHOLESALE CLUB INC,11,1037461.0,https://www.glassdoor.com/Reviews/BJ-s-Wholesale-Club-Reviews-E6813.htm
 65106,2014,OZK,06417N103,BANK OZK,14,1569650.0,https://www.glassdoor.com/Reviews/Bank-OZK-Reviews-E6939.htm
 65108,2015,JLL,48020Q107,JONES LANG LASALLE INC,11,1037976.0,https://www.glassdoor.com/Reviews/JLL-Reviews-E5779.htm
-65133,2011,CBKN,139793103,CAPITAL BANK CORP/NC,14,1071992.0,https://www.glassdoor.com/Reviews/Capital-Bank-Reviews-E7583.htm
 65142,2010,CTV.1,203372107,COMMSCOPE INC,11,1035884.0,https://www.glassdoor.com/Reviews/CommScope-Reviews-E7061.htm
 65189,2013,EDAP,268311107,EDAP TMS SA  -ADR,14,1041934.0,https://www.glassdoor.com/Jobs/EDAP-TMS-Jobs-E7880.htm
 65218,2011,CGNT.1,19243A104,COGENTIX MEDICAL INC,14,894237.0,"https://www.glassdoor.com/Overview/Working-at-Cogentix-Medical-EI_IE1521866.11,27.htm"
@@ -5571,7 +5499,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 66313,2013,OPOF,680194107,OLD POINT FINANCIAL CORP,14,740971.0,"https://www.glassdoor.com/Overview/Working-at-Old-Point-Financial-EI_IE13384.11,30.htm"
 66326,2012,DSGX,249906108,DESCARTES SYSTEMS GROUP INC,14,1050140.0,https://www.glassdoor.com/Reviews/Descartes-Systems-Reviews-E9070.htm
 66354,2013,WPC,92936U109,W P CAREY INC,11,1025378.0,https://www.glassdoor.com/Reviews/W-P-Carey-Reviews-E7682.htm
-66355,2014,FXNC,32106V107,FIRST NATIONAL CORP/VA,14,719402.0,"https://www.glassdoor.com/Overview/Working-at-First-National-EI_IE21888.11,25.htm"
 66366,2012,RMTI,774374102,ROCKWELL MEDICAL INC,14,1041024.0,https://www.glassdoor.com/Reviews/Rockwell-Medical-Reviews-E7056.htm
 66368,2013,VRSN,9.23E+106,VERISIGN INC,14,1014473.0,https://www.glassdoor.com/Reviews/Verisign-Reviews-E7492.htm
 66371,2012,IESC,44951W106,IES HOLDINGS INC,14,1048268.0,"https://www.glassdoor.com/Overview/Working-at-IES-Holdings-TX-EI_IE2480453.11,26.htm"
@@ -5626,7 +5553,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 105089,2014,CX,151290889,CEMEX SAB DE CV,11,1076378.0,https://www.glassdoor.com/Reviews/CEMEX-USA-Reviews-E23139.htm
 105365,2012,AMT,03027X100,AMERICAN TOWER CORP,11,1053507.0,https://www.glassdoor.com/Reviews/American-Tower-Reviews-E8043.htm
 105394,2016,PAYS,70451A104,PAYSIGN INC,14,1496443.0,"https://www.glassdoor.com/Overview/Working-at-Paysign-EI_IE2854847.11,18.htm"
-105538,2014,BSRR,82620P102,SIERRA BANCORP/CA,14,1130144.0,"https://www.glassdoor.com/Overview/Working-at-Bank-of-the-Sierra-EI_IE674252.11,29.htm"
 105547,2014,BCS.PD,06739H362,BARCLAYS BANK PLC,11,312070.0,"https://www.glassdoor.com/Overview/Working-at-Barclays-EI_IE3456.11,19.htm"
 105574,2011,BPAX.1,09099R939,BIOSANTE PHARMACEUTICALS-OLD,14,,"https://www.glassdoor.com/Overview/Working-at-BioSante-EI_IE20170.11,19.htm"
 105661,2013,KL,4.97E+104,KIRKLAND LAKE GOLD LTD,11,1713443.0,https://www.glassdoor.com/Reviews/Kirkland-Lake-Gold-Reviews-E23180.htm
@@ -5657,7 +5583,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 108306,2010,SCMF,842632101,SOUTHERN CMNTY FINL CORP,14,1159427.0,https://www.glassdoor.com/Salary/Community-and-Southern-Bank-Salaries-E494814.htm
 108449,2012,TAYC,876851106,TAYLOR CAPITAL GROUP INC,14,1025536.0,"https://www.glassdoor.com/Overview/Working-at-Taylor-Capital-EI_IE15028.11,25.htm"
 108482,2011,EQU,29390Q109,EQUAL ENERGY LTD,11,1492832.0,https://www.glassdoor.com/Reviews/ENGIE-Reviews-E1052655.htm
-108664,2012,UBOH,909458101,UNITED BANCSHARES INC/OH,14,1087456.0,"https://www.glassdoor.com/Overview/Working-at-United-Bancshares-EI_IE13292.11,28.htm"
 108740,2011,MBND.1,62544X209,MULTIBAND CORP,14,732412.0,"https://www.glassdoor.com/Job/installation-technician-multiband-jobs-SRCH_KO0,23_KE24,33.htm"
 108768,2012,AG,32076V103,FIRST MAJESTIC SILVER CORP,11,1308648.0,"https://www.glassdoor.com/Overview/Working-at-First-Majestic-Silver-EI_IE23901.11,32.htm"
 108831,2013,WPRT,960908309,WESTPORT FUEL SYSTEMS INC,14,1370416.0,https://www.glassdoor.com/Reviews/Westport-Fuel-Systems-Reviews-E1375837.htm
@@ -5708,13 +5633,11 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 111534,2013,MSTR,594972408,MICROSTRATEGY INC,14,1050446.0,https://www.glassdoor.com/Reviews/MicroStrategy-Reviews-E8018.htm
 111537,2013,UNB,905400107,UNION BANKSHARES INC,14,706863.0,https://www.glassdoor.com/Reviews/United-Bankshares-Reviews-E1987.htm
 111629,2012,CXDO,226552107,CREXENDO INC,14,1075736.0,https://www.glassdoor.com/Reviews/Crexendo-Reviews-E417416.htm
-111721,2013,EGBN,268948106,EAGLE BANCORP INC/MD,14,1050441.0,https://www.glassdoor.com/Reviews/EagleBank-Reviews-E325688.htm
 111779,2012,COBZ,190897108,COBIZ FINANCIAL INC,14,1028734.0,https://www.glassdoor.com/Reviews/CoBiz-Financial-Reviews-E8044.htm
 111819,2014,ORRF,687380105,ORRSTOWN FINANCIAL SVCS INC,14,826154.0,https://www.glassdoor.com/Reviews/Orrstown-Bank-Reviews-E522315.htm
 111864,2012,CTSH,192446102,COGNIZANT TECH SOLUTIONS,14,1058290.0,"https://www.glassdoor.com/Overview/Working-at-Cognizant-Technology-Solutions-EI_IE8014.11,41.htm"
 111873,2013,RH,74967X103,RH,11,1528849.0,https://www.glassdoor.com/Reviews/RH-Reviews-E8200.htm
 111880,2015,DOX,G02602103,AMDOCS,14,1062579.0,https://www.glassdoor.com/Reviews/Amdocs-Reviews-E8418.htm
-111940,2014,FNLC,31866P102,FIRST BANCORP INC/ME,14,765207.0,https://www.glassdoor.com/Reviews/First-BanCorp-Puerto-Rico-Reviews-E3557.htm
 111941,2012,GGB,373737105,GERDAU SA,11,1073404.0,https://www.glassdoor.com/Reviews/Gerdau-Reviews-E7569.htm
 111965,2011,GNVC,37246C406,GENVEC INC,14,934473.0,"https://www.glassdoor.com/Overview/Working-at-GenVec-EI_IE8221.11,17.htm"
 111974,2013,TSQ,892231101,TOWNSQUARE MEDIA INC,11,1499832.0,https://www.glassdoor.com/Reviews/Townsquare-Media-Reviews-E328673.htm
@@ -5732,17 +5655,14 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 112158,2013,CLS,15101Q108,CELESTICA INC,11,1030894.0,https://www.glassdoor.com/Reviews/Celestica-Reviews-E7890.htm
 112168,2012,RSG,760759100,REPUBLIC SERVICES INC,11,1060391.0,https://www.glassdoor.com/Reviews/Republic-Services-Reviews-E8328.htm
 112171,2010,XPITX,616971107,MORGAN STANLEY PRIME INCM TR,14,854904.0,"https://www.glassdoor.com/Reviews/Morgan-Stanley-Prime-Brokerage-Reviews-EI_IE2282.0,14_KO15,30.htm"
-112295,2013,FCCO,319835104,FIRST COMMUNITY CORP/SC,14,932781.0,"https://www.glassdoor.com/Overview/Working-at-First-Community-EI_IE35139.11,26.htm"
 112362,2012,BCSB,55367106,BCSB BANCORP INC,14,1391137.0,https://www.glassdoor.com/Reviews/Employee-Review-Bristol-County-Savings-Bank-RVW7825786.htm
 112366,2011,KCG.1,499005106,KNIGHT CAPITAL GROUP INC,11,1060749.0,https://www.glassdoor.com/Reviews/Knight-Capital-Reviews-E8224.htm
 112410,2012,UCFC,909839102,UNITED COMMUNITY FINL CORP,14,707886.0,https://www.glassdoor.com/Reviews/United-Community-Banks-Reviews-E14930.htm
 112413,2011,RTLX,M8215W109,RETALIX LTD,14,1064060.0,https://www.glassdoor.com/Reviews/Retalix-Reviews-E8507_P5.htm
 112473,2010,ADGF,6228209,ADAMS GOLF INC,14,1059763.0,"https://www.glassdoor.com/Overview/Working-at-Adams-Golf-EI_IE8227.11,21.htm"
-112572,2013,FMAO,30779N105,FARMERS & MERCHANTS BCP/OH,14,792966.0,https://www.glassdoor.com/Reviews/Farmers-and-Merchants-Bank-Reviews-E300981.htm
 112618,2010,SBP,802809103,SANTANDER BANCORP,11,1099958.0,https://www.glassdoor.com/Reviews/Santander-Reviews-E828048.htm
 112624,2010,BIRT,00508B102,ACTUATE CORP,14,1062478.0,https://www.glassdoor.com/Reviews/Actuate-Reviews-E7344.htm
 112626,2011,CFNL,14149F109,CARDINAL FINANCIAL CORP,14,1060523.0,"https://www.glassdoor.com/Overview/Working-at-Cardinal-Financial-Company-EI_IE822911.11,37.htm"
-112721,2012,RBCAA,760281204,REPUBLIC BANCORP INC/KY,14,921557.0,https://www.glassdoor.com/Reviews/Republic-Bancorp-KY-Reviews-E8388.htm
 112754,2011,DYAX,2.67E+107,DYAX CORP,14,907562.0,https://www.glassdoor.com/Reviews/Dyax-Reviews-E7931.htm
 112773,2012,HHY,11272P102,BROOKFIELD HIGH INCOME FUND,11,1062978.0,https://www.glassdoor.com/Reviews/Brookfield-Asset-Management-Reviews-E5824.htm
 112774,2014,ELON,27874N303,ECHELON CORP,14,31347.0,https://www.glassdoor.com/Reviews/Echelon-Corporation-Reviews-E8356.htm
@@ -5810,7 +5730,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 117902,2012,ETM,293639100,ENTERCOM COMMUNICATIONS CORP,11,1067837.0,https://www.glassdoor.com/Reviews/Entercom-Reviews-E8688.htm
 117903,2011,EF,27943Q105,EDELMAN FINANCIAL GROUP INC,14,1071341.0,https://www.glassdoor.com/Reviews/Edelman-Financial-Engines-Reviews-E7852.htm
 118042,2012,EWBC,27579R104,EAST WEST BANCORP INC,14,1069157.0,https://www.glassdoor.com/Reviews/East-West-Bank-Reviews-E9089.htm
-118046,2011,FCVA,319438107,FIRST CAPITAL BANCORP INC/VA,14,1373525.0,"https://www.glassdoor.com/Overview/Working-at-First-Capital-Bank-EI_IE9004.11,29.htm"
 118081,2011,AMRI,12423109,ALBANY MOLECULAR RESH INC,14,1065087.0,"https://www.glassdoor.com/Overview/Working-at-AMRI-EI_IE8490.11,15.htm"
 118122,2012,APTV,G6095L109,APTIV PLC,11,1521332.0,https://www.glassdoor.com/Reviews/Aptiv-Reviews-E1891089.htm
 118125,2010,MIGP,587902107,MERCER INSURANCE GROUP INC,14,1050690.0,https://www.glassdoor.com/Reviews/Mercer-Reviews-E35818.htm
@@ -5819,7 +5738,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 118264,2013,GBL,361438104,GAMCO INVESTORS INC,11,1060349.0,https://www.glassdoor.com/Reviews/GAMCO-Investors-Reviews-E8201.htm
 118267,2012,KFY,500643200,KORN FERRY,11,56679.0,https://www.glassdoor.com/Reviews/Korn-Ferry-Reviews-E5644.htm
 118502,2013,CEB,125134106,CEB INC,11,1066104.0,https://www.glassdoor.com/Reviews/Employee-Review-Gartner-RVW14559413.htm
-118525,2013,EBTC,293668109,ENTERPRISE BANCORP INC/MA,14,1018399.0,https://www.glassdoor.com/Reviews/Enterprise-Bancorp-Reviews-E38006.htm
 118577,2011,LIFE.3,53217V109,LIFE TECHNOLOGIES CORP,14,1073431.0,https://www.glassdoor.com/Reviews/Life-Tech-Reviews-E259142.htm
 118936,2013,QQQ,4.61E+107,INVESCO QQQ TRUST SERIES 1,14,,https://www.glassdoor.com/Reviews/Invesco-Reviews-E4518.htm
 119082,2012,MUE,09254C107,BLACKROCK MUNIHLDGS QLTY II,11,1071899.0,"https://www.glassdoor.com/Overview/Working-at-BlackRock-EI_IE9331.11,20.htm"
@@ -5909,7 +5827,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 123215,2012,BSD,09248T109,BLACKROCK STRATEGIC MUN TR,11,1089094.0,"https://www.glassdoor.com/Salary/BlackRock-Strategy-Associate-Salaries-E9331_D_KO10,28.htm"
 123455,2013,AGI,11532108,ALAMOS GOLD INC,11,1078217.0,"https://www.glassdoor.com/Overview/Working-at-Alamos-Gold-EI_IE23529.11,22.htm"
 123495,2010,ATBC,48221105,ATLANTIC BANCGROUP INC,14,1087790.0,"https://www.glassdoor.com/Overview/Working-at-Atlantic-BancGroup-EI_IE23216.11,29.htm"
-123720,2012,JAXB,469249205,JACKSONVILLE BANCORP INC/FL,14,1071264.0,"https://www.glassdoor.com/Reviews/Bank-of-America-Jacksonville-Reviews-EI_IE8874.0,15_IL.16,28_IM416.htm"
 123998,2014,SWKH,78501P203,SWK HOLDINGS CORP,14,1089907.0,https://www.glassdoor.com/Reviews/SWK-Technologies-Reviews-E599878.htm
 124036,2015,EGAN,28225C806,EGAIN CORP,14,1066194.0,https://www.glassdoor.com/Reviews/eGain-Reviews-E9240.htm
 124038,2013,ININ,45841V109,INTERACTIVE INTELLIGENCE GRP,14,1517650.0,"https://www.glassdoor.com/Reviews/Genesys-interactive-intelligence-Reviews-EI_IE10078.0,7_KH8,32.htm"
@@ -6119,7 +6036,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 140759,2011,XXIA,45071R109,IXIA,14,1120295.0,https://www.glassdoor.com/Reviews/Ixia-Reviews-E9341.htm
 140760,2012,MON,61166W101,MONSANTO CO,11,1110783.0,"https://www.glassdoor.com/Reviews/monsanto-company-reviews-SRCH_KE0,16.htm"
 140761,2011,CTFO,169453107,CHINA TRANSINFO TECHNOLOGY,14,1081206.0,https://www.glassdoor.com/Reviews/Employee-Review-China-TransInfo-RVW3049497.htm
-140821,2014,POC.2,15199C938,CARNIVAL CORP/PLC (GBR),11,1125259.0,https://www.glassdoor.com/Reviews/Carnival-Reviews-E806.htm
 140897,2010,PEET,705560100,PEET'S COFFEE & TEA INC,14,917968.0,https://www.glassdoor.com/Reviews/Peet-s-Reviews-E6860.htm
 140902,2012,NIHD,62913F508,NII HOLDINGS INC,14,1037016.0,https://www.glassdoor.com/Reviews/NII-Holdings-Reviews-E12471.htm
 140905,2012,EPL,26883D108,EPL OIL & GAS INC,11,750199.0,"https://www.glassdoor.com/Overview/Working-at-Energy-Partners-EI_IE12348.11,26.htm"
@@ -6232,7 +6148,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 145416,2012,SRLS,81747T104,SERACARE LIFE SCIENCES INC,14,1156295.0,https://www.glassdoor.com/Reviews/SeraCare-Life-Sciences-Reviews-E7933.htm
 145427,2010,HCH,12616K106,MERRILL LYNCH CANADA CP HLDR,11,,"https://www.glassdoor.com/Salary/Merrill-Lynch-Toronto-Salaries-EI_IE440.0,13_IL.14,21_IM976.htm"
 145552,2013,CNC,15135B101,CENTENE CORP,11,1071739.0,https://www.glassdoor.com/Reviews/Centene-Reviews-E13542.htm
-145636,2013,CHFN,16122W108,CHARTER FINANCIAL CORP/MD,14,1478726.0,"https://www.glassdoor.com/Overview/Working-at-Charter-Financial-EI_IE15292.11,28.htm"
 145701,2010,PFG,74251V102,PRINCIPAL FINANCIAL GRP INC,14,1126328.0,https://www.glassdoor.com/Reviews/Principal-Financial-Group-Reviews-E2941.htm
 145729,2010,PVR.1,70799Y939,PENN VIRGINIA RES PRTNR -OLD,11,,http://building.li.4rte.biz/
 145766,2012,BPK,09248C106,BLACKROCK MUNI 2018 TERM TR,11,1159040.0,https://www.glassdoor.com/Reviews/BlackRock-Reviews-E9331.htm
@@ -6388,7 +6303,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 152013,2011,JHP,67072W101,NUVEEN QUALITY PFD INCM FD 3,11,1200446.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
 152028,2011,FPT,31423M105,FEDERATED PREM INTR MUN INC,11,1202806.0,https://www.glassdoor.com/Reviews/Federated-Investors-Reviews-E5340.htm
 152029,2012,FMN,31423P108,FEDERATED HERMES PREMIER MUN,11,1199004.0,"https://www.glassdoor.com/Overview/Working-at-Hermes-Investment-Management-EI_IE322074.11,39.htm"
-152049,2015,FBMS,318916103,FIRST BANCSHARES INC/MS,14,947559.0,"https://www.glassdoor.com/Overview/Working-at-First-Bancshares-MS-EI_IE34825.11,30.htm"
 152071,2014,PTY,72201B101,PIMCO CORP & INCM OPPTY FUND,11,1190935.0,"https://www.glassdoor.com/Overview/Working-at-PIMCO-EI_IE3585.11,16.htm"
 152109,2015,BIMI,99501108,BOQI INTERNATIONAL MEDCL INC,14,1213660.0,https://www.glassdoor.com/Reviews/International-Medical-Group-Reviews-E439692.htm
 152149,2012,MOH,60855R100,MOLINA HEALTHCARE INC,11,1179929.0,https://www.glassdoor.com/Reviews/Molina-Healthcare-Reviews-E15828.htm
@@ -6424,7 +6338,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 154595,2011,MNRK,60907Q100,MONARCH FINANCIAL HLDGS INC,14,1364856.0,https://www.glassdoor.com/Salary/Monarch-Financial-Holdings-Inc-Salaries-E19330.htm
 154638,2011,HIH,42327X204,HELIOS HIGH INCOME FUND INC,11,1227122.0,https://www.glassdoor.com/Reviews/Helios-Reviews-E252068.htm
 154673,2013,JQC,67073D102,NUVEEN CREDIT STRATEGIES,11,1227476.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
-154714,2012,JFBI,472375104,JEFFERSON BANCSHARES INC/TN,14,1222915.0,"https://www.glassdoor.com/Reviews/first-tennessee-bank-reviews-SRCH_KE0,20.htm"
 154739,2013,GOOD,376536108,GLADSTONE COMMERCIAL CORP,14,1234006.0,"https://www.glassdoor.com/Overview/Working-at-Gladstone-Commercial-EI_IE16298.11,31.htm"
 154755,2011,CSE,14055X102,CAPITALSOURCE INC,11,1241199.0,"https://www.glassdoor.com/Overview/Working-at-CapitalSource-Healthcare-REIT-EI_IE135933.11,40.htm"
 154757,2011,CSBK,186873105,CLIFTON BANCORP INC,14,1592329.0,https://www.glassdoor.com/Reviews/Clifton-Savings-Reviews-E38675.htm
@@ -6476,7 +6389,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 156859,2010,HRBN,41145W109,HARBIN ELECTRIC INC,14,1266719.0,"https://www.glassdoor.com/Overview/Working-at-Harbin-Electric-EI_IE229922.11,26.htm"
 156861,2012,TPX,88023U101,TEMPUR SEALY INTL INC,11,1206264.0,https://www.glassdoor.com/Reviews/Tempur-Sealy-International-Reviews-E26592.htm
 156953,2014,HTH,432748101,HILLTOP HOLDINGS INC,11,1265131.0,"https://www.glassdoor.com/Overview/Working-at-Hilltop-Holdings-EI_IE29440.11,27.htm"
-156998,2010,CTBC,207546102,CONNECTICUT BANK&TRUST CO/NE,14,,https://www.glassdoor.com/Reviews/Connecticut-Community-Bank-Reviews-E1271843.htm
 157040,2014,FRA,09255X100,BLACKROCK FLTG RATE INCM STR,11,1259708.0,https://www.glassdoor.com/Salary/BlackRock-Salaries-E9331.htm
 157057,2012,AIZ,04621X108,ASSURANT INC,11,1267238.0,https://www.glassdoor.com/Salary/Assurant-Salaries-E13793.htm
 157058,2011,AACC,04543P100,ASSET ACCEPTANCE CAPITL CP,14,1264707.0,https://www.glassdoor.com/Reviews/Asset-Acceptance-Capital-Reviews-E30129.htm
@@ -6591,7 +6503,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 160742,2013,JVA,192176105,COFFEE HOLDING CO INC,14,1007019.0,"https://www.glassdoor.com/Overview/Working-at-Coffee-Holding-Co-EI_IE24629.11,28.htm"
 160749,2013,EFT,278279104,EATON VANCE FLT RATE INCM TR,11,1288992.0,https://www.glassdoor.com/Reviews/Eaton-Vance-Reviews-E3553.htm
 160770,2012,MRTX,60468T105,MIRATI THERAPEUTICS INC,14,1576263.0,"https://www.glassdoor.com/Overview/Working-at-Mirati-Therapeutics-EI_IE3194873.11,30.htm"
-160776,2012,SBNY,82669G104,SIGNATURE BANK/NY,14,1288784.0,https://www.glassdoor.com/Reviews/Signature-Bank-Reviews-E35084.htm
 160781,2011,FCLF,31969M105,FIRST CLOVER LEAF FINANCIAL,14,1283582.0,"https://www.glassdoor.com/Overview/Working-at-First-Clover-Leaf-Financial-EI_IE38415.11,38.htm"
 160785,2014,VVI,92552R406,VIAD CORP,11,884219.0,https://www.glassdoor.com/Reviews/Viad-Reviews-E300.htm
 160797,2012,IKAN,4.52E+208,IKANOS COMMUNICATIONS INC,14,1219210.0,https://www.glassdoor.com/Salary/Ikanos-Salaries-E14802.htm
@@ -6642,7 +6553,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 161942,2012,BFIN,06643P104,BANKFINANCIAL CORP,14,1303942.0,https://www.glassdoor.com/Reviews/BankFinancial-Reviews-E38970.htm
 161952,2011,NATL,63654U100,NATIONAL INTERSTATE CORP,14,1301106.0,https://www.glassdoor.com/Reviews/National-Interstate-Reviews-E37656.htm
 161953,2012,EDR.1,28140H203,EDUCATION REALTY TRUST INC,11,1302343.0,https://www.glassdoor.com/Salary/Realty-Trust-Group-Salaries-E1159874.htm
-161954,2015,KYN,486606106,KAYNE ANDERSON MLP/MD INV CO,11,1293613.0,https://www.glassdoor.com/Reviews/Kayne-Anderson-Capital-Advisors-Reviews-E340784.htm
 161965,2010,STST.1,40149106,ARGON ST INC,14,26537.0,https://www.glassdoor.com/Reviews/Argon-ST-Reviews-E9178.htm
 161966,2012,ARCC,04010L103,ARES CAPITAL CORP,14,1287750.0,https://www.glassdoor.com/Reviews/Ares-Management-Reviews-E35082.htm
 161996,2014,PBBI,70454T100,PB BANCORP INC,14,1652106.0,https://www.glassdoor.com/Reviews/Public-Bank-Reviews-E40726.htm
@@ -6699,7 +6609,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 162568,2013,BGR,09250U101,BLACKROCK ENERGY AND RES TR,11,1306550.0,"https://www.glassdoor.com/Overview/Working-at-BlackRock-Resources-EI_IE814950.11,30.htm"
 162571,2012,PHD,72369J102,PIONEER FLOATING RATE TR,11,1305767.0,https://www.glassdoor.com/Reviews/Pioneer-Reviews-E1786.htm
 162576,2010,BFSB,114039100,BROOKLYN FEDERAL BANCORP,14,1310313.0,"https://www.glassdoor.com/Salary/Abacus-Federal-Savings-Bank-Brooklyn-Salaries-EI_IE727889.0,27_IL.28,36_IC1132200.htm"
-162577,2013,FMO,31647Q205,FIDUCIARY/CLAYMR EGY INFR FD,11,1305197.0,"https://www.glassdoor.com/Overview/Working-at-Fiduciary-Management-EI_IE977956.11,31.htm"
 162585,2012,SNSS,867328874,SUNESIS PHARMACEUTICALS INC,14,1061027.0,https://www.glassdoor.com/Reviews/Sunesis-Pharmaceuticals-Reviews-E14331.htm
 162649,2018,TECTP,87217L208,TECTONIC FINANCIAL INC,14,1766526.0,https://www.glassdoor.com/Reviews/tectonic-Reviews-E1450116.htm
 162717,2012,GTWN,372591107,GEORGETOWN BANCORP INC,14,1542299.0,https://www.glassdoor.com/Reviews/Bank-of-Georgetown-Reviews-E768789.htm
@@ -6712,10 +6621,8 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 162770,2011,SNTA,87162T206,SYNTA PHARMACEUTICALS CORP,14,,https://www.glassdoor.com/Reviews/Synta-Pharmaceuticals-Reviews-E24189.htm
 162809,2011,XNPT,98411C100,XENOPORT INC,14,1130591.0,"https://www.glassdoor.com/Overview/Working-at-XenoPort-EI_IE13720.11,19.htm"
 162814,2013,GRVY,38911N206,GRAVITY CO LTD -ADR,14,1313310.0,https://www.glassdoor.com/Reviews/GRAVITY-Co-Reviews-E37967.htm
-162825,2012,HFBL,43708L108,HOME FEDERAL BANCORP INC/LA,14,1500375.0,"https://www.glassdoor.com/Overview/Working-at-Home-Federal-Bancorp-EI_IE38429.11,31.htm"
 162854,2012,DVM,19248G106,COHEN & STEERS DIV MAJORS FD,11,1302868.0,https://www.glassdoor.com/Reviews/Cohen-and-Steers-Reviews-E35098.htm
 162855,2011,DVF,09255W102,BLACKROCK DIVRSIFD INC STRAT,11,1303649.0,"https://www.glassdoor.com/Salary/BlackRock-Strategy-Associate-Salaries-E9331_D_KO10,28.htm"
-162858,2013,LCM,7.65E+106,ADVENT/CLAYMORE ENCD GRWTH,11,1278460.0,https://www.glassdoor.com/Reviews/Advent-Capital-Management-Reviews-E255326.htm
 162859,2013,EOS,278277108,EATON VANCE ENHNCD EQ INC II,11,1308335.0,https://www.glassdoor.com/Reviews/Eaton-Vance-Reviews-E3553.htm
 162861,2011,JSN,6706EM102,NUVEEN EQUITY PREMIUM OPP FD,11,1308658.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
 162870,2014,DOOO,05577W200,BRP INC,14,1748797.0,https://www.glassdoor.com/Reviews/BRP-Reviews-E314918.htm
@@ -6770,7 +6677,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 163844,2013,DIAX,67075F105,NUVEEN DOW 30SM DYN OVRWRITE,11,1608742.0,https://www.nuveen.com/en-us/closed-end-funds/diax-nuveen-dow-30-sm-dynamic-overwrite-fund
 163846,2014,MSP.1,558268108,MADISON STRAT SECTOR PREM FD,11,1317080.0,"https://www.glassdoor.com/Overview/Working-at-Madison-Strategies-Group-EI_IE3108597.11,35.htm"
 163847,2011,NAI,01882X108,ALLIANZGI INTL & PREM STRAT,11,1319332.0,https://www.glassdoor.com/Reviews/Allianz-Global-Investors-Reviews-E39250.htm
-163867,2011,SGBK,861811107,STONEGATE BANK/FL,14,,"https://www.glassdoor.com/Reviews/Stonegate-Mortgage-Clearwater-Reviews-EI_IE680279.0,18_IL.19,29_IC1154388.htm"
 163872,2013,SQBK,85223W101,SQUARE 1 FINANCIAL INC,14,1329799.0,"https://www.glassdoor.com/Overview/Working-at-Square-One-Financial-Group-EI_IE2028847.11,37.htm"
 163877,2012,PIKE,721283109,PIKE CORP,11,1317577.0,https://www.glassdoor.com/Reviews/Pike-Corporation-Reviews-E19099.htm
 163878,2011,CPLA,139594105,CAPELLA EDUCATION CO,14,1104349.0,"https://www.glassdoor.com/Overview/Working-at-Capella-University-EI_IE2472988.11,29.htm"
@@ -6801,14 +6707,12 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 164010,2013,FMY,3.37E+107,FIRST TRUST MORTGAGE INCM FD,11,1319183.0,https://www.glassdoor.com/Reviews/First-Trust-Portfolios-L-P-Reviews-E232811.htm
 164011,2012,BOE,92501105,BLACKROCK ENHANCED GL DVD TR,11,1320375.0,https://www.glassdoor.com/Reviews/BlackRock-Reviews-E9331.htm
 164012,2012,PGP,722011103,PIMCO GLBL STOCKSPLUS & INCM,11,1318025.0,https://www.glassdoor.com/Salary/PIMCO-Salaries-E3585.htm
-164059,2013,CUNB,126534106,CU BANCORP/CA,14,1543643.0,https://www.glassdoor.com/Reviews/California-Credit-Union-Reviews-E260705.htm
 164075,2010,BRNC,112211107,BRONCO DRILLING CO,14,1328650.0,https://www.glassdoor.com/Salary/Bronco-Salaries-E659888.htm
 164086,2014,CMPR,G2143T103,CIMPRESS PLC,14,1262976.0,https://www.glassdoor.com/Reviews/Cimpress-Reviews-E917184.htm
 164099,2010,ATNY,1.87E+205,API TECHNOLOGIES CORP,14,1081078.0,https://www.glassdoor.com/Reviews/API-Technologies-Reviews-E677321.htm
 164116,2012,OFLX,682095104,OMEGA FLEX INC,14,1317945.0,https://www.glassdoor.com/Reviews/Omega-Flex-Reviews-E40001.htm
 164132,2015,RPAI,76131V202,RETAIL PPTYS OF AMERICA INC,11,1222840.0,https://www.glassdoor.com/Reviews/Retail-Properties-of-America-Reviews-E704966.htm
 164143,2010,RCC,83165P101,SMALL CAP PREM & DIV INCM FD,11,1322979.0,"https://www.glassdoor.com/Job/small-cap-equity-analyst-jobs-SRCH_KO0,24.htm"
-164155,2012,GAIN,376546107,GLADSTONE INVESTMENT CORP/DE,14,1321741.0,"https://www.glassdoor.com/Overview/Working-at-Gladstone-Investment-EI_IE354650.11,31.htm"
 164189,2014,LOR,521076109,LAZARD WORLD DIV & INC FUND,11,1323206.0,https://www.glassdoor.com/Reviews/Lazard-Reviews-E5784.htm
 164192,2013,KYE,48660P104,KAYNE ANDERSON ENGY TTL RTN,11,1322652.0,https://www.glassdoor.com/Reviews/Employee-Review-Kayne-Anderson-Capital-Advisors-RVW2155750.htm
 164197,2013,ETV,27828Y108,EATON VANCE TX MNGD OPPTY FD,11,1322436.0,https://www.glassdoor.com/Reviews/Eaton-Vance-Reviews-E3553.htm
@@ -6970,7 +6874,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 166730,2011,FHY,337353304,FIRST TR STRATEGIC HIGH II,11,1329388.0,https://www.glassdoor.com/Reviews/Strategic-Financial-Solutions-Reviews-E1027494.htm
 166747,2012,UCBA,90984R101,UNITED COMMUNITY BANCORP,14,1514131.0,https://www.glassdoor.com/Reviews/United-Community-Banks-Reviews-E14930.htm
 166751,2014,FCFP,31985Q106,FIRST CMNTY FINL PARTNERS,14,1469134.0,https://www.glassdoor.com/Reviews/Financial-Partners-Credit-Union-Reviews-E643263.htm
-166789,2013,GFN,369822101,GENERAL FINANCE CORP/DE,14,1342287.0,"https://www.glassdoor.com/Overview/Working-at-General-Finance-EI_IE140230.11,26.htm"
 170297,2012,NTI,665826103,NORTHERN TIER ENERGY LP,11,1533454.0,https://www.zippia.com/northern-tier-energy-lp-careers-33175/
 170322,2010,COSK,22199Z917,COSKATA INC -REDH,14,1536893.0,"https://www.glassdoor.com/Overview/Working-at-Coskata-Inc-EI_IE147308.11,22.htm"
 170327,2011,ROIQ.1,74966A104,ROI ACQUISITION CORP,14,,https://www.glassdoor.com/Reviews/ROI-Healthcare-Solutions-Reviews-E1481330.htm
@@ -7594,7 +7497,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 180256,2013,NNA,Y62159143,NAVIOS MARITIME ACQUISITION,11,1437260.0,"https://www.glassdoor.com/Overview/Working-at-Navios-Maritime-EI_IE40277.11,26.htm"
 180272,2013,BKI,09215C105,BLACK KNIGHT INC,11,1627014.0,https://www.glassdoor.com/Reviews/Black-Knight-Reviews-E767011.htm
 180279,2010,AGAM,8368102,AGA MEDICAL HOLDINGS INC,14,1421419.0,https://www.glassdoor.com/Reviews/AGA-Reviews-E425435.htm
-180304,2015,WOOD,464288174,ISHARES GBL TIMBER/FORST ETF,14,,"https://www.glassdoor.com/Jobs/BlackRock-ishares-Jobs-EI_IE9331.0,9_KO10,17.htm"
 180305,2012,FCHI,464288190,ISHARES FTSE CHINA ETF,14,,"https://www.glassdoor.com/Jobs/BlackRock-ishares-Jobs-EI_IE9331.0,9_KO10,17.htm"
 180306,2013,ICLN,464288224,ISHARES GLBL CLEAN ENRGY ETF,14,,https://www.glassdoor.com/Salary/FE-Global-Clean-Energy-Salaries-E288798.htm
 180307,2012,NUCL,464288232,ISHARES GBL NUCLEAR ENRG ETF,14,,"https://www.glassdoor.com/Jobs/BlackRock-ishares-Jobs-EI_IE9331.0,9_KO10,17.htm"
@@ -7637,7 +7539,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 181104,2012,MDRX,01988P108,ALLSCRIPTS HEALTHCARE SOLTNS,14,1124804.0,https://www.glassdoor.com/Reviews/Allscripts-Reviews-E4625.htm
 181269,2013,GPRE,393222104,GREEN PLAINS INC,14,1309402.0,https://www.glassdoor.com/Reviews/Green-Plains-Reviews-E40862.htm
 181290,2012,DMRC,25381B101,DIGIMARC CORP,14,1438231.0,https://www.glassdoor.com/Reviews/Digimarc-Reviews-E9864.htm
-181515,2012,ANCB,32838104,ANCHOR BANCORP/WA,14,1448301.0,https://www.glassdoor.com/Reviews/Anchor-Bank-WA-Reviews-E923575.htm
 181617,2011,CRTX.1,21924P103,CORNERSTONE THERAPEUTICS INC,14,1145404.0,"https://www.glassdoor.com/Job/cornerstone-therapeutics-inc-jobs-SRCH_KO0,28.htm"
 181745,2012,CCLP,12637A103,CSI COMPRESSCO LP,14,1449488.0,https://www.glassdoor.com/Reviews/Compressco-Reviews-E21311.htm
 181820,2012,FSBW,30263Y104,FS BANCORP INC,14,1530249.0,https://www.glassdoor.com/Reviews/The-Bancorp-Reviews-E34951.htm
@@ -7832,7 +7733,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 184725,2014,NXPI,N6596X109,NXP SEMICONDUCTORS NV,14,1413447.0,https://www.glassdoor.com/Reviews/NXP-Semiconductors-Reviews-E13528.htm
 184727,2012,SBOT,85855A302,STELLAR BIOTECHNOLOGIES INC,14,,"https://www.glassdoor.com/Overview/Working-at-Stellar-Pharmaceuticals-EI_IE22740.11,34.htm"
 184735,2012,FCRD,26943B100,FIRST EAGLE ALTERNATIVE CAPI,14,1464963.0,"https://www.glassdoor.com/Overview/Working-at-First-Eagle-Investment-Management-EI_IE11597.11,44.htm"
-184748,2014,QUAD,747301109,QUAD/GRAPHICS INC,11,1481792.0,https://www.glassdoor.com/Reviews/Quad-Reviews-E3343.htm
 184768,2012,NBB,67074C103,NUVEEN TAXABLE MNCPL INC FD,11,1478888.0,"https://www.glassdoor.com/Overview/Working-at-Nuveen-EI_IE3563.11,17.htm"
 184785,2012,TOWR,891826109,TOWER INTERNATIONAL INC,11,1485469.0,https://www.glassdoor.com/Reviews/Tower-International-Reviews-E415851.htm
 184797,2013,RP,75606N109,REALPAGE INC,14,1286225.0,https://www.glassdoor.com/Reviews/RealPage-Reviews-E104221.htm
@@ -7842,7 +7742,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 184884,2011,PATH,67059M100,NUPATHE INC,14,1375200.0,"https://www.glassdoor.com/Overview/Working-at-NuPathe-EI_IE354582.11,18.htm"
 184885,2012,CCG,13466Y105,CAMPUS CREST COMMUNITIES INC,11,1490983.0,"https://www.glassdoor.com/Overview/Working-at-Campus-Crest-EI_IE354583.11,23.htm"
 184899,2012,FAF,31847R102,FIRST AMERICAN FINANCIAL CP,11,1472787.0,https://www.glassdoor.com/Reviews/First-American-Financial-Corporation-Reviews-E2526.htm
-184936,2012,BSL,09256U105,BLACKSTONE/GSO SR FLT RT FD,11,1486298.0,"https://www.glassdoor.com/Reviews/gso-analyst-the-blackstone-group-reviews-SRCH_KO0,11_KE12,32.htm"
 184957,2014,WKHS,98138J206,WORKHORSE GROUP INC,14,1425287.0,https://www.glassdoor.com/Reviews/Workhorse-Group-Reviews-E22507.htm
 184961,2012,FURX,36106P101,FURIEX PHARMACEUTICALS INC,14,1484478.0,"https://www.glassdoor.com/Overview/Working-at-Furiex-EI_IE354607.11,17.htm"
 184973,2010,SCLI,842551103,SOUTHERN CHINA LIVESTK -REDH,14,1415599.0,"https://www.glassdoor.ie/Overview/Working-at-Expedite-4-EI_IE354595.11,21.htm"
@@ -7914,7 +7813,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 185477,2010,ECMR,27899W932,ECM REALTY TRUST INC  -REDH,11,1499043.0,"https://www.glassdoor.com/Job/new-york-reit-accounting-jobs-SRCH_IL.0,8_IC1132348_KO9,24.htm"
 185482,2010,VCC,92299R933,VELOCITY COMML CAP INC -REDH,11,1471397.0,http://www.manchesterhistory.org/News/Manchester%20Evening%20Hearld_1954-06-14.pdf
 185483,2011,FULL,359671104,FULL CIRCLE CAPITAL CORP,14,1490013.0,https://www.glassdoor.com/Salary/Full-Circle-Salaries-E643186.htm
-185484,2013,FSD,3.37E+113,FIRST TRUST HIGH INCM LG/SHR,11,1494530.0,https://www.glassdoor.com/Reviews/First-Trust-Portfolios-L-P-Reviews-E232811.htm
 185495,2012,ALQA,19621309,ALLIQUA BIOMEDICAL INC,14,,"https://www.glassdoor.com/Overview/Working-at-Alliqua-BioMedical-EI_IE1552707.11,29.htm"
 185499,2013,ENZL,464289123,ISHARES MSCI NEW ZEALAND ETF,14,,"https://www.glassdoor.com/Jobs/BlackRock-etf-Jobs-EI_IE9331.0,9_KO10,13.htm"
 185513,2010,ESCT,11680F100,BRUKER ENERGY & SUPERCN-REDH,14,1500106.0,https://www.glassdoor.com/Reviews/Bruker-Reviews-E18125.htm
@@ -7988,7 +7886,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 185952,2017,REVG,749527107,REV GROUP INC,11,1687221.0,https://www.glassdoor.com/Reviews/REV-Group-Reviews-E1272198.htm
 185953,2011,ARCT.2,02917L101,AMERICAN REALTY CAPITAL TR,14,1410997.0,https://www.glassdoor.com/Reviews/American-Realty-Advisors-Reviews-E224918.htm
 185965,2012,NBD,67074Q102,NUVEEN BUILD AMERICA BD OPP,11,1493523.0,https://www.glassdoor.com/Reviews/Nuveen-Reviews-E3563.htm
-185966,2014,KMF,4.87E+112,KAYNE ANDERSON MDSTRM/ENG FD,11,1500096.0,https://www.glassdoor.com/Reviews/Kayne-Anderson-Capital-Advisors-Reviews-E340784.htm
 185968,2015,PSF,19248Y107,COHEN & STEERS SL PFD & INC,11,1498612.0,https://www.glassdoor.com/Reviews/Cohen-and-Steers-Reviews-E35098.htm
 185980,2011,HCOM,420031106,HAWAIIAN TELCOM HOLDCO INC,14,1487986.0,https://www.glassdoor.com/Reviews/Hawaiian-Telcom-Reviews-E19843.htm
 186006,2010,HKAC,429090103,HICKS ACQUISITION CO II INC,14,1416995.0,"https://www.glassdoor.com/Overview/Working-at-ConsumerAcquistion-EI_IE1193502.11,29.htm"
@@ -7999,7 +7896,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 186041,2011,ISS,46489B108,ISOFTSTONE HOLDINGS LTD -ADR,11,1500308.0,https://www.glassdoor.com/Jobs/iSoftStone-Jobs-E158251.htm
 186045,2011,SGNT,786692103,SAGENT PHARMACEUTICALS INC,14,1369786.0,"https://www.glassdoor.com/Overview/Working-at-Sagent-Pharmaceuticals-EI_IE277763.11,33.htm"
 186078,2014,RVEN,761378207,REVEN HOUSING REIT INC,14,1487782.0,"https://www.glassdoor.com/Overview/Working-at-Reven-Housing-REIT-EI_IE1643723.11,29.htm"
-186084,2012,FRNK,35353C102,FRANKLIN FINANCIAL CORP/VA,14,1505823.0,"https://www.glassdoor.com/Overview/Working-at-Franklin-Financial-Group-EI_IE29466.11,35.htm"
 186101,2010,FTS.1,35199V934,FRAC TECH SERVICES INC -REDH,11,1506510.0,"https://www.glassdoor.com/Salaries/frac-tech-services-salary-SRCH_KE0,18.htm"
 186106,2010,MMI.3,620097105,MOTOROLA MOBILITY HLDGS INC,11,1495569.0,https://www.glassdoor.com/Reviews/Motorola-Mobility-Reviews-E451.htm
 186112,2011,MSGY,57475Q108,MASERGY COMMUNCTNS INC -REDH,11,1127579.0,https://www.glassdoor.com/Reviews/Masergy-Reviews-E31601.htm
@@ -8027,7 +7923,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 186308,2012,RPXC,74972G103,RPX CORP,14,1509432.0,https://www.glassdoor.com/Reviews/RPX-Reviews-E562664.htm
 186310,2013,HII,446413106,HUNTINGTON INGALLS IND INC,11,1501585.0,https://www.glassdoor.com/Reviews/Huntington-Ingalls-Industries-Reviews-E398616.htm
 186329,2014,ACP,3057106,ABERDEEN INCM CRED STRA FUND,11,1503290.0,https://www.glassdoor.com/Reviews/Standard-Life-Aberdeen-Reviews-E10239.htm
-186331,2013,BGX,09257D102,BLACKSTONE/GSO LONG-SHORT FD,11,1504234.0,"https://www.glassdoor.com/Jobs/The-Blackstone-Group-gso-analyst-Jobs-EI_IE4022.0,20_KO21,32.htm"
 186332,2014,GNT,3.65E+105,GAMCO NAT RES GOLD & INCM TR,11,1438893.0,https://www.glassdoor.com/Reviews/GAMCO-Investors-Reviews-E8201.htm
 186336,2012,CJ,12674R100,C&J ENERGY SERVICES INC,11,1615817.0,"https://www.glassdoor.com/Reviews/coiled-tubing-equipment-operator-cj-energy-services-reviews-SRCH_KO0,32_KE33,51.htm"
 186340,2013,VXUS,921909768,VANGUARD TOTAL INTL STK ETF,14,,https://money.usnews.com/funds/etfs/foreign-large-blend/vanguard-total-international-stock-etf/vxus
@@ -8193,7 +8088,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 187724,2011,TMWE,X9096K105,TIM W.E. SGPS SA  -REDH,14,1518806.0,"https://www.glassdoor.com/Overview/Working-at-Novabase-EI_IE232360.11,19.htm"
 187736,2010,SVBT.1,84099P944,SOUTH VALLEY BANCORP  -REDH,14,1490321.0,"https://www.glassdoor.com/Overview/Working-at-South-Valley-Bank-and-Trust-EI_IE542850.11,38.htm"
 187739,2013,VCRA,92857F107,VOCERA COMMUNICATIONS INC,11,1129260.0,https://www.glassdoor.com/Reviews/Vocera-Reviews-E20233.htm
-187740,2014,MTSI,55405Y100,M/ACOM TECHNOLOGY SOLUTIONS,14,1493594.0,https://www.glassdoor.com/Reviews/MACOM-Reviews-E19802.htm
 187766,2012,ERA,26885G109,ERA GROUP INC,11,,https://www.glassdoor.com/Reviews/Era-Helicopters-Reviews-E220588.htm
 187773,2011,EXA,300614500,EXA CORP,14,890264.0,https://www.glassdoor.com/Reviews/Exa-Corporation-Reviews-E224377.htm
 187774,2011,RNF,760113100,RENTECH NITROGEN PARTNERS LP,11,1525998.0,https://www.glassdoor.com/Salary/Rentech-Nitrogen-Partners-Salaries-E796968.htm
@@ -8230,7 +8124,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 189559,2011,ERSI,28699V934,ELEVANCE RENEWABLE SCI-REDH,14,1510100.0,https://www.glassdoor.com/Reviews/Elevance-Renewable-Sciences-Reviews-E606128.htm
 189560,2010,FLCM,35999D936,FULCRUM BIOENERGY INC-REDH,14,1434441.0,"https://www.glassdoor.com/Overview/Working-at-Fulcrum-Advisory-Services-EI_IE377864.11,36.htm"
 189567,2012,MN,56382Q102,MANNING & NAPIER INC,11,1524223.0,https://www.glassdoor.com/Reviews/Manning-and-Napier-Advisors-Reviews-E147775.htm
-189568,2012,SCLP,782474472,RUSSELL SMALL CAP LW P/E ETF,14,,https://www.glassdoor.com/Reviews/Russell-Investments-Reviews-E11403.htm
 189579,2018,GO,39874R101,GROCERY OUTLET HLDNG CORP,14,1771515.0,https://www.glassdoor.com/Reviews/Grocery-Outlet-Reviews-E20141.htm
 189594,2020,VVNT,928542109,VIVINT SMART HOME INC,11,1713952.0,"https://www.glassdoor.com/Overview/Working-at-Vivint-Smart-Home-EI_IE403923.11,28.htm"
 189607,2010,TREL,89473A207,TRELLIS EARTH PRODS  -REDH,14,1417139.0,"https://www.glassdoor.com/Reviews/Waypoint-Resource-Group-Round-Rock-Reviews-EI_IE1348968.0,23_IL.24,34_IC1139794.htm"
@@ -8402,7 +8295,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 264506,2010,PFWD,71721R406,PHASE FORWARD INC,14,1050180.0,"https://www.glassdoor.com/Overview/Working-at-Forward-EI_IE1542703.11,18.htm"
 264509,2013,HEP,435763107,HOLLY ENERGY PARTNERS LP,11,1283140.0,https://www.glassdoor.com/Reviews/Holly-Energy-Partners-Reviews-E35070.htm
 264645,2012,CSQ,128125101,CALAMOS STRAT TOTAL RETRN FD,14,1275214.0,https://www.calamos.com/funds/closed-end/strategic-total-return-csq/
-264647,2014,MFD,55607W100,MACQUARIE/FIRST TRUST GLOBAL,11,1276469.0,https://www.glassdoor.com/Reviews/Macquarie-Group-Reviews-E12088.htm
 264684,2010,BDT,09249Y107,BLACKROCK STRATEGIC EQTY DIV,11,1277350.0,"https://www.glassdoor.com/Salary/BlackRock-Equity-Research-Analyst-Salaries-E9331_D_KO10,33.htm"
 264686,2012,UTF,19248A109,COHEN & STEERS INFRASTR FD,11,1275617.0,https://www.glassdoor.com/Reviews/Cohen-and-Steers-Reviews-E35098.htm
 264708,2013,CAB,126804301,CABELAS INC,11,1267130.0,https://www.glassdoor.com/Reviews/Cabela-s-Reviews-E9193.htm
@@ -8522,7 +8414,6 @@ gvkey,fyearq,tic,cusip,conm,exchg,cik,url
 324684,2018,ASLN,04522R101,ASLAN PHARMACEUTIC,14,1722926.0,https://www.glassdoor.com/Reviews/ASLAN-Pharmaceuticals-Reviews-E2133480.htm
 325211,2018,VIST,92837L109,VISTA OIL & GAS CO,11,1762506.0,"https://www.glassdoor.com/Overview/Working-at-Vista-Oil-and-Gas-EI_IE2834898.11,28.htm"
 325576,2020,APG,00187Y100,API GROUP CORP,11,1796209.0,https://www.glassdoor.com/Reviews/APi-Group-Reviews-E7515.htm
-325867,2019,ORPH,687305102,ORPHAZYME A/S,14,1764791.0,"https://www.glassdoor.com/Job/denmark-biotech-jobs-SRCH_IL.0,7_IN63_KO8,15.htm"
 326688,2017,NVT,G6700G107,NVENT ELECTRIC PLC,11,1720635.0,https://www.glassdoor.com/Reviews/Nvent-Reviews-E1166699.htm
 327451,2016,GRIN,Y28895103,GRINDROD SHIPPING,14,1725293.0,https://www.glassdoor.com/Reviews/Grindrod-Reviews-E782238.htm
 327564,2019,CALT,13124Q106,CALLIDITAS THERAPE,14,,https://www.investorsobserver.com/news/stock-update/should-you-buy-calliditas-therapeutics-adr-rep-2-ord-shs-calt-stock-after-it-has-gained-43-60-in-a-week
