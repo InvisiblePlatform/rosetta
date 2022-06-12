@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://static1.squarespace.com/static/5b1a6e5daa49a1ac7a0b7513/t/5d2c3d0c9d58c40001d3b404/1563180310751/Complete_Guide_to_B_Corp_Certification_for_SME.pdf
 count=200
 timestamps=(\
 "companies-production-en-us-latest-certification-asc"

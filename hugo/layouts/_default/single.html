@@ -1,19 +1,9 @@
-{{ $wctitlelinks := slice "wikicard_parent" "wikicard_products" "wikicard_founder" "wikicard_key_people" "wikicard_industry" "wikicard_owner" "wikicard_key_people" "wikicard_services" "wikicard_owners" "wikicard_publisher" "wikicard_chief" "wikicard_editor" "wikicard_political" "wikicard_affliations" "wikicard_operator" "wikicard_political_position" "wikicard_brands" "wikicard_founders" "wikicard_chiefeditor" "wikicard_director" "wikicard_content_director" "wikicard_staff"}}
 <link rel="stylesheet" href="/css/plugin-styles.css">
-<title>Invisible Voice</title>
+<title>Invisible Voice - {{ .Params.title }}</title>
 
 <div class="plugin-container">
   <div class="plugin-header">
-    <div>
-      <a href="https://www.invisible-voice.com" target="_blank">
-        <span class="bk-bg dot point grey">Invisible Voice</span>
-      </a>
-      <span class="bk-bg co-name">{{ .Params.name }}</span>
-      <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="Check out this page on {{ .Params.name }}" data-via="IVPlugin" data-hashtags="invisiblevoice" data-related="morkforid,_xs" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    </div>
-    <div>
-      <span class="bk-bg dot back-to point" id="scroll-to-top">Scroll to top</span>
-      <span class="bk-bg dot point" style="color: white; text-color: white; background-color: white !important;">Close</span>
+      <span class="bk-bg co-name">{{ .Params.title }}</span>
     </div>
   </div>
 
@@ -23,149 +13,7 @@
     </p>
   </div>
 
-	{{ if isset .Params "politicalalignment" }}
-		<p>
-			<span class="par-headings">Political Leaning:</span>
-			{{ if isset .Params "politicalalignment_url" }}
-			<span class="mobile-bold capitalize"><a href="{{ index .Params "politicalalignment_url" }}" target="_blank">{{ index .Params.politicalalignment 0 2 }}</a></span>
-			{{ else }}
-			{{ range $pa := .Params.politicalalignment }}
-			<span class="mobile-bold capitalize"><a href="{{ index $pa 1 }}" target="_blank">{{ index $pa 2 }}</a></span>
-			{{ end }}
-			{{ end }}
-		</p>
-	{{ end }}
-	{{ if isset .Params "goodonyouid" }}
-		<p>
-			<span class="par-headings">GoodOnYouRating:</span>
-			{{ if isset .Params "goodonyouid" }}
-            <span class="mobile-bold capitalize"><a href="https://directory.goodonyou.co/brand/{{ index .Params "goodonyouid" }}" target="_blank">{{ index .Params.goodonyou_ethicalLabel }} ({{ index .Params.goodonyou_ethicalRating }})</a></span>
-			{{ end }}
-		</p>
-	{{ end }}
-	{{ if isset .Params "bcorpscore" }}
-		<p>
-			<span class="par-headings">Bcorp:</span>
-			<span class="mobile-bold capitalize"><a href="{{ index .Params "bcorpid" }}" target="_blank">{{ index .Params.bcorpscore 0 }}</a></span>
-		</p>
-	{{ end }}
-	{{ if isset .Params "wb_just_transition_2022_score" }}
-		<p>
-			<span class="par-headings">wb_just_transition_2022_score:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.wb_just_transition_2022_score }}</a></span>
-		</p>
-	{{ end }}
-    {{ if isset .Params "wb_just_transition_2022_social" }}
-		<p>
-			<span class="par-headings">wb_just_transition_2022_social:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.wb_just_transition_2022_social }}</a></span>
-		</p>
-	{{ end }}
-    {{ if isset .Params "wb_foodag_2021_score" }}
-		<p>
-			<span class="par-headings">wb_foodag_2021_score:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.wb_foodag_2021_score }}</a></span>
-		</p>
-	{{ end }}
-    {{ if isset .Params "wb_foodag_2021_rank" }}
-		<p>
-			<span class="par-headings">wb_foodag_2021_rank:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.wb_foodag_2021_rank }}</a></span>
-		</p>
-	{{ end }}
-    {{ if isset .Params "wb_social_transformation_2022_score" }}
-		<p>
-			<span class="par-headings">wb_social_transformation_2022_score:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.wb_social_transformation_2022_score }}</a></span>
-		</p>
-	{{ end }}
-    {{ if isset .Params "trustpilot_score" }}
-		<p>
-			<span class="par-headings">trustpilot_score:</span>
-			<span class="mobile-bold capitalize">{{ index .Params.trustpilot_score 1 }}</a></span>
-		</p>
-	{{ end }}
-
-
-  <div class="company-info">
-{{ if isset .Params "wikicard" }}
-  {{ range $wci := .Params.wikicard }}
-   {{ range $wci_e, $wci_v := $wci}}
-    {{ if in $wci_e "wikicard_enwiki" }}
-    {{ else if in $wci_e "wikicard_wiki_id" }}
-    {{ else }}
-  <p>
-    <span class="par-headings">{{ title (replace (replace $wci_e "wikicard_" "" ) "_" " ") }}</span>
-      {{ range $wci_nv := $wci_v }}
-      {{ if in $wctitlelinks $wci_e }}
-      {{ if in $wci_e '(' }}
-      <span class="mobile-bold">{{ $wci_nv }}</span>
-      {{ else }}
-	  <span class="g-bg mb-5px hover-anchor" onmouseover="loadWikiInfo(this)">
-          <a href="https://en.wikipedia.org/wiki/{{ replace $wci_nv ' ' '_' }}" target="_blank">{{ $wci_nv }}</a>
-			<span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span>
-	  </span>
-      {{ end }}
-      {{ else }}
-      <span class="mobile-bold">{{ $wci_nv }}</span>
-      {{ end }}
-      {{ end }}
-  </p>
-    {{ end }}
-   {{ end }}
-  {{ end }}
-{{ end }}
-
-	{{ if isset .Params "politicalalignment" }}
-		<p>
-			<span class="par-headings">Political Leaning:</span>
-			{{ if isset .Params "politicalalignment_url" }}
-			<span class="mobile-bold capitalize"><a href="{{ index .Params "politicalalignment_url" }}" target="_blank">{{ index .Params.politicalalignment 0 2 }}</a></span>
-			{{ else }}
-			{{ range $pa := .Params.politicalalignment }}
-			<span class="mobile-bold capitalize"><a href="{{ index $pa 1 }}" target="_blank">{{ index $pa 2 }}</a></span>
-			{{ end }}
-			{{ end }}
-		</p>
-	{{ end }}
-
-    {{ if ne .Params.owner nil }}
-      <p>
-        <span class="par-headings">Stakeholder(s)</span>
-        {{ range $els := .Params.owner }}
-        {{ if ne $els nil }}
-        <span class="g-bg mb-5px hover-anchor" onmouseover="loadWikiInfo(this)"><a href="{{ index $els 1 }}" target="_blank">{{ index $els 2 }}</a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
-        {{ end }}
-        {{ end }}
-      </p>
-    {{ end }}
-    {{ if ne .Params.owner_of_owner nil }}
-    	<p>
-    		<span class="par-headings">Affiliated Companies to Stakeholder(s)</span>
-    		{{ range $ofo := .Params.owner_of_owner }}
-    		{{ with index $ofo 3 }}
-    			{{ delimit . ", " }}
-          <span class="g-bg mb-5px hover-anchor" onmouseover="loadWikiInfo(this)"><a href="{{ index $ofo 1 }}" target="_blank">{{ index $ofo 2 }}</a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
-          
-    		{{ end }}
-    		{{ end }}
-    	</p>
-    {{ end }}
-
-    {{ if isset .Params "importantpeople" }}
-        <p>
-            <span class="par-headings">Related People</span>
-            {{ range $imp := .Params.importantpeople }}
-                <span class="g-bg mb-5px hover-anchor" onmouseover="loadWikiInfo(this)"><a href="{{ index $imp 1 }}" target="_blank">{{ index $imp 2 }}</a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
-            {{ end }}
-        </p>
-    {{ end }}
-
-
-  </div>
-  
-  
-  <div class="in-the-news-wrapper">
+  <div class="content">
     {{ .Content }}
   </div>
   

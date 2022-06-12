@@ -1,0 +1,12 @@
+<!-- Wikidata -->
+
+<section id="wikidata">
+<h2>wikidata</h2>
+<p>
+{{ with .Get "code" }}
+{{ $data := getJSON "data/wikidata/wikidatacache/" . ".json" }}
+{{ range $data.entities }}{{ range .claims }}{{ range . }}
+<p><a href="https://wikidata.org/wiki/Property:{{ .mainsnak.property }}">{{ .mainsnak.property }}</a>: {{ .mainsnak.datavalue.value }} </p>
+{{ end }}{{ end }}{{ end }}{{ end }}
+</p>
+</section>
