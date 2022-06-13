@@ -1,12 +1,45 @@
 <!-- Wikidata -->
 
 <section id="wikidata">
-<h2>wikidata</h2>
-<p>
+{{ $lookup := getJSON "data/wikidata/lookup.json" }}
+{{ $l := $lookup.lookup }}
+{{ $ignore := (slice "P856" "P646" "P8687" "P9035" "P571" "P2671" )}}
 {{ with .Get "code" }}
+<h2>wikidata</h2><a href="https://wikidata.org/wiki/{{.}}" class="source">(source)</a>
+<p>
 {{ $data := getJSON "data/wikidata/wikidatacache/" . ".json" }}
-{{ range $data.entities }}{{ range .claims }}{{ range . }}
-<p><a href="https://wikidata.org/wiki/Property:{{ .mainsnak.property }}">{{ .mainsnak.property }}</a>: {{ .mainsnak.datavalue.value }} </p>
-{{ end }}{{ end }}{{ end }}{{ end }}
+{{ range $data.entities }}
+{{ .labels.en.value }}
+{{ range .claims }}{{ range . }}
+{{ with .mainsnak }}
+{{ if eq .property "P127" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Owned By</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P170" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Created By</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P1056" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Product</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ $id }}</a> </p>
+{{ else if eq .property "P17" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Country</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P31" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Instance Of</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ $id }}</a> </p>
+{{ else if eq .property "P921" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Main Subject</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P1661" }}
+<p><b>Alexa Rank</b>:{{ .datavalue.value.amount }}</p>
+{{ else if eq .property "P2002" }}
+<p><b>twitter</b>: <a href="https://twitter.com/{{ .datavalue.value }}">@{{ .datavalue.value }}</a> </p>
+{{ else if in $ignore .property }}
+{{ else }}
+<p><a href="https://wikidata.org/wiki/Property:{{ .property }}">{{ .property }}</a>: {{ .datavalue.value }} </p>
+{{ end }}
+{{ end }}
+{{ end }}{{ end }}{{ end }}
 </p>
+{{ end }}
 </section>

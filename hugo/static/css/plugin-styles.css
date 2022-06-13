@@ -303,27 +303,46 @@ pre code {
    height: auto;
 }
 
-#goodonyou {
-    width: 61.8%;
-}
-#goodonyou h2{
-    color: red;
-    font-size: 1.6em;
-}
-
-#bcorp {
-    width: 61.8%;
-}
-#bcorp h2{
-    color: green;
+h2 {
     font-size: 1.6em;
     display: inline;
-    margin-right: 5px;
+    margin-right: 5px; }
+#goodonyou    { width: 61.8%; }
+#goodonyou h2 { color: red; }
+#bcorp        { width: 61.8%; }
+#bcorp h2     { color: green; }
+#wikidata        { width: 61.8%; }
+#wikidata h2     { color: purple; }
+#mbfc        { width: 61.8%; }
+#mbfc h2     { color: orange; }
+
+.hovertext {
+  position: relative;
+  border-bottom: 1px dotted black;
 }
 
-.source {
-    display: inline;
+.hovertext:before {
+  content: attr(data-hover);
+  visibility: hidden;
+  opacity: 0;
+  width: 500px;
+  background-color: black;
+  color: #fff;
+  border-radius: 5px;
+  padding: 5px;
+  transition: opacity 1s ease-in-out;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 110%;
 }
+
+.hovertext:hover:before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.source { display: inline; }
 .content {
     margin-left: 10px;
 }
