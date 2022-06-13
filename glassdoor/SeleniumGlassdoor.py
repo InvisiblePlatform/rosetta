@@ -422,7 +422,7 @@ if __name__ == '__main__':
         if rows['cik'] not in cik:
             try:
                 url = rows['url']
-                name = rows['conm']
+                name = rows['conm'].replace(" ","_")
                 print(url)
                 browser.get(url)
                 time.sleep(random.uniform(1.5,2))

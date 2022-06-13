@@ -44,5 +44,5 @@ while read website; do
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
     check_data "$website" "glassdoor/website-hq-size-type-revenue.csv"
     check_wikidata "$website" "wikidata/website_id_list.csv"
-done < <(sed -e "/\//d;s/\"//g" websites.list | head -200)
+done < <(sed -e "/\//d;s/\"//g" websites.list)
 exit 0
