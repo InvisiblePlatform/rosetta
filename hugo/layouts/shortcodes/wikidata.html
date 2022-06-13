@@ -12,9 +12,10 @@
 {{ .labels.en.value }}
 {{ range .claims }}{{ range . }}
 {{ with .mainsnak }}
+{{ if isset . "datavalue" }}
 {{ if eq .property "P127" }}
 {{ $id := .datavalue.value.id }}
-<p><b>Owned By</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+<p><b>Owned By</b>: <a href="{{ if eq (index $l $id).wp "" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
 {{ else if eq .property "P170" }}
 {{ $id := .datavalue.value.id }}
 <p><b>Created By</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
@@ -37,6 +38,7 @@
 {{ else if in $ignore .property }}
 {{ else }}
 <p><a href="https://wikidata.org/wiki/Property:{{ .property }}">{{ .property }}</a>: {{ .datavalue.value }} </p>
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}{{ end }}{{ end }}

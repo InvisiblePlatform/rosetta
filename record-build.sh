@@ -19,14 +19,14 @@ check_wikidata(){
     if grep -q "\"$1\"" $2; then
         while read code; do
             printf "{{< ${2/\/*/} code=\"$code\" >}}\n" >> hugo/content/${website//./}.md
-        done< <(grep "$1" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
+        done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
     fi
 }
 check_stub(){
     if grep -q "\"$1\"" $2; then
         while read code; do
             printf "{{< ${2/\/*/} gid=\"$code\" >}}\n" >> hugo/content/${website//./}.md
-        done< <(grep "$1" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g")
+        done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g")
     fi
 }
 rm hugo/content/ -rf
