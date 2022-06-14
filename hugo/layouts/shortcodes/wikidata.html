@@ -3,7 +3,7 @@
 <section id="wikidata">
 {{ $lookup := getJSON "data/wikidata/lookup.json" }}
 {{ $l := $lookup.lookup }}
-{{ $ignore := (slice "P856" "P646" "P8687" "P9035" "P571" "P2671" )}}
+{{ $ignore := (slice "P856" "P646" "P8687" "P9035" "P571" "P2671" "P112" "P1128" "P169" "P2138" "P2139" "P2137" "P2295" "P227" "P2403" "P452" "P4776" "P4839" "P10027" "P1005" "P1015" "P10225" "P10311" "P10291" "P10301")}}
 {{ with .Get "code" }}
 <h2>wikidata</h2><a href="https://wikidata.org/wiki/{{.}}" class="source">(source)</a>
 <p>
@@ -16,9 +16,21 @@
 {{ if eq .property "P127" }}
 {{ $id := .datavalue.value.id }}
 <p><b>Owned By</b>: <a href="{{ if eq (index $l $id).wp "" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P6379" }}
+{{ $id := .datavalue.value.id }}
+<p><b>has work in collection</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
 {{ else if eq .property "P170" }}
 {{ $id := .datavalue.value.id }}
 <p><b>Created By</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P463" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Member of</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P355" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Subsidary</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
+{{ else if eq .property "P3320" }}
+{{ $id := .datavalue.value.id }}
+<p><b>Board member</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ (index $l $id).name }}</a> </p>
 {{ else if eq .property "P1056" }}
 {{ $id := .datavalue.value.id }}
 <p><b>Product</b>: <a href="{{ if eq (index $l $id).wp "null" }}https://wikidata.org/wiki/{{ .datavalue.value.id }}{{else}}{{ (index $l $id).wp }}{{end}}">{{ $id }}</a> </p>

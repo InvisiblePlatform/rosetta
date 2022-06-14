@@ -4,5 +4,6 @@ hugo/.*
 hugo/content/*
 glassdoor/data/*
 *Q*.json
+*P*.json
 *brand*.json
 *bcorp*.json

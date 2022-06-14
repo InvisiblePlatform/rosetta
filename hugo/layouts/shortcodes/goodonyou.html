@@ -1,8 +1,8 @@
 <section id="goodonyou">
-<h2>goodonyou</h2>
-<p>
 {{ with .Get "gid" }}
+<h2>goodonyou</h2> <a class="source" href="https://directory.goodonyou.eco/brand/{{.}}">(source)</a>
     {{ $data := getJSON "data/goodonyou/brand_" . ".json" }}
+<p>
     {{ $v := $data.pageProps.brand }}
     <b>Ethical Rating</b> {{ $v.ethicalRating }}/5 {{ $v.ethicalLabel }}</br>
     {{ print $v.ethicalInfo1 }}</br>
@@ -11,7 +11,6 @@
     <b>Animal Rating</b> {{ $v.animalRating }}/20 {{ $v.animalLabel }}</br>
     <b>Environment Rating</b> {{ $v.environmentRating }}/10 {{ $v.environmentLabel }}</p></br>
     <b>Email</b> <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }} </br>
-    <a href="https://directory.goodonyou.eco/brand/{{.}}">good on you page</a>
 {{ end }}
 </p>
 </section>
