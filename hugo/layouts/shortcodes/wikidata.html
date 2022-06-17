@@ -2,6 +2,7 @@
 
 <section id="wikidata">
 {{ $lookup := getJSON "data/wikidata/lookup.json" }}
+{{ $props := getJSON "data/wikidata/props.json" }}
 {{ $l := $lookup.lookup }}
 {{ $ignore := (slice "P856" "P646" "P8687" "P9035" "P571" "P2671" "P112" "P1128" "P169" "P2138" "P2139" "P2137" "P2295" "P227" "P2403" "P452" "P4776" "P4839" "P10027" "P1005" "P1015" "P10225" "P10311" "P10291" "P10301")}}
 {{ with .Get "code" }}
@@ -9,7 +10,7 @@
 <p>
 {{ $data := getJSON "data/wikidata/wikidatacache/" . ".json" }}
 {{ range $data.entities }}
-{{ .labels.en.value }}
+<h3>{{ .labels.en.value }}</h3>
 {{ range .claims }}{{ range . }}
 {{ with .mainsnak }}
 {{ if isset . "datavalue" }}
@@ -49,7 +50,7 @@
 <p><b>twitter</b>: <a href="https://twitter.com/{{ .datavalue.value }}">@{{ .datavalue.value }}</a> </p>
 {{ else if in $ignore .property }}
 {{ else }}
-<p><a href="https://wikidata.org/wiki/Property:{{ .property }}">{{ .property }}</a>: {{ .datavalue.value }} </p>
+<p><a href="https://wikidata.org/wiki/Property:{{ .property }}">{{ index $props .property }}</a>: {{ .datavalue.value }} </p>
 {{ end }}
 {{ end }}
 {{ end }}

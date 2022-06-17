@@ -3,6 +3,8 @@ hugo/sync.sh
 hugo/.*
 hugo/content/*
 glassdoor/data/*
+wikipedia/pages/*
+wikidata/longcache/*
 *Q*.json
 *P*.json
 *brand*.json

@@ -13,9 +13,9 @@ while read ID; do
       : $(( COUNT += 1 ))
       PERC=$(bc -l <<<"result = ($COUNT / $NoE) * 100; scale=3; result / 1")
       (( $COUNT % 100 == 0 )) && printf "$LOOKUP: $ID ($COUNT / $NoE) $PERC \n"
-      if ! [[ -s "$CACHEDIR$ID.json" ]]; then
+      #if ! [[ -s "$CACHEDIR$ID.json" ]]; then
         wget -qO $CACHEDIR$ID.json "$ENTITY/$ID" 
-      fi
+      #fi
 done < <( sed -e "/#/d" $LOOKUP)
 
 popd
