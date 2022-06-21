@@ -1,9 +1,8 @@
 {{- $.Scratch.Add "index" slice -}}
-{{- range where .Site.Pages "Type" "not in"  (slice "page" "json") -}}
-    {{- $tempslice := (slice ) -}}
-    {{-  range $web := .Params.website -}}{{- $value := . | replaceRE "^https?://(www.)?(.*)" "$2" -}}{{- $tempslice = $tempslice | append $value -}}{{- end -}}
+{{- range where .Site.Pages "Type" "not in"  (slice "json") -}}
+    {{- $tempslice := (slice .Params.title ) -}}
         {{- if ne (index $tempslice 0 ) "" -}}
-        {{- $.Scratch.Add "index" (dict "id" (lower .Params.wikidataid) "websites" $tempslice "lastupdated" .Params.updated ) -}}
+        {{- $.Scratch.Add "index" (dict "id" .RelPermalink "websites" $tempslice "lastupdated" .Params.date ) -}}
     {{- end -}}
 {{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}

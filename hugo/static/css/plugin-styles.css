@@ -57,6 +57,7 @@ body {
 
 html {
    scroll-behavior: smooth;
+   background-color: none;
 }
 
 a {
@@ -311,7 +312,7 @@ h2 {
 #goodonyou h2 { color: red; }
 #bcorp        { width: 61.8%; }
 #bcorp h2     { color: green; }
-#wikidata        { width: 61.8%; }
+#wikidata        { width: 61.8%; background-color: #eeeeee10; }
 #wikidata h2     { color: purple; }
 #mbfc        { width: 61.8%; }
 #mbfc h2     { color: orange; }

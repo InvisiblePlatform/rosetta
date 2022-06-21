@@ -1,10 +1,11 @@
 from sys import argv
 import wikipediaapi
+import urllib
 from simplejson.errors import JSONDecodeError
 
 wiki_wiki = wikipediaapi.Wikipedia('en')
 def main():
-    prepend = argv[2].replace('_', ' ')
+    prepend = argv[2].replace('_', ' ').replace('%26','&')
     if prepend == "0":
         prepend = ''
     quicklist = [
@@ -20,7 +21,7 @@ def main():
         'sexism',
         'sexist'
     ]
-    page = wiki_wiki.page(argv[2])
+    page = wiki_wiki.page(urllib.parse.unquote(argv[2]))
     wikistylingtitle = '{ class="wikititle" }'
     #wikistylingp = "{: class='wikiparagraph' }"
     try:

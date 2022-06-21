@@ -209,14 +209,14 @@
 	<div id="sb-wrapper-initial" class="sb-wrapper active">
 
 		{{ range .Site.Pages }}
-			{{ range (.Pages.ByParam "name") }}
+			{{ range (.Pages.ByParam "title") }}
 			<div class="{{ if eq .RelPermalink "/" }}d-none{{ end }}company-parent">
-			    <div class="company-click" data-button-name="{{ .Params.wikidataid }}" data-time="{{ .Params.updated }}">
+			    <div class="company-click" data-button-name="{{ .Params.title }}" data-time="{{ .Params.date }}">
 			    	<div class="names">
-			    		<span class="new d-none">NEW</span><span class="g-bg name-inner">{{- .Params.name -}}</span><span class="close-text bk-bg d-none">(Close)</span>
+                        <span class="new d-none">NEW</span><span class="g-bg name-inner"><a href="{{ .RelPermalink }}">{{- .Params.title -}}</a></span><span class="close-text bk-bg d-none">(Close)</span>
 			    	</div>  	
 			    </div>
-			    <div class="company-info-wrapper d-none" data-section-name="{{ .Params.wikidataid }}">Nothing yet</div>
+			    <div class="company-info-wrapper d-none" data-section-name="{{ .Params.title }}">Nothing yet</div>
 			</div>
 			{{ end }}
 		{{ end }}

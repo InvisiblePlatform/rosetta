@@ -30,6 +30,23 @@ check_stub(){
         done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g")
     fi
 }
+pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
+            "P112;Founder" "P488;Chairperson" "P1037;Director")
+associates_via_wikidata(){
+    local tempfile=$(mktemp)
+    if grep -q "\"$1\"" $2; then
+        while read code; do
+            for pairing in ${pairings[*]}; do
+                IFS=';' read -a var <<<"$pairing"
+                jq -r .entities[].claims.${var[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$code.json 2>/dev/null >> $tempfile
+            done
+        done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
+        while read id; do
+            look_for_wikipedia_page $id
+        done < <(sort -u $tempfile)
+    fi
+    rm $tempfile
+}
 ENTITY='https://www.wikidata.org/entity'
 look_for_wikipedia_page(){
    local code=$1 
@@ -40,16 +57,16 @@ look_for_wikipedia_page(){
    if [[ $wikipage != 'null' ]]; then
     if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
         python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
-        printf "%s" "{{< wikipedia page=\"$wikipage\" >}}\n" >> hugo/content/${website//./}.md
+        printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+    else
+        printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
     fi
    fi
 }
 rm hugo/content/ -rf
 mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
-APPEND=$(mktemp)
 while read website; do
-    touch $APPEND
     printf "$website\n"
     printf "%s\n" "---" > hugo/content/${website//./}.md
     printf "title: $website\n" >> hugo/content/${website//./}.md
@@ -61,6 +78,6 @@ while read website; do
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
     check_data "$website" "glassdoor/website-hq-size-type-revenue.csv"
     check_wikidata "$website" "wikidata/website_id_list.csv"
-    cat $APPEND >> hugo/content/${website//./}.md
+    associates_via_wikidata "$website" "wikidata/website_id_list.csv"
 done < <(sed -e "/\//d;s/\"//g" websites.list)
 exit 0

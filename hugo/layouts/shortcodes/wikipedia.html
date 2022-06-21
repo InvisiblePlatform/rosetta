@@ -1,0 +1,13 @@
+<!-- Wikipedia -->
+<section class="wikipedia">
+{{ with .Get "page" }}
+<h2>wikipedia</h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a>
+<p>
+{{ . }}
+{{ if fileExists (print "data/wikipedia/pages/" . ".md") }}
+{{ readFile (print "data/wikipedia/pages/" . ".md" ) | markdownify }}
+{{ end }}
+</p>
+{{end}}
+</section>
+
