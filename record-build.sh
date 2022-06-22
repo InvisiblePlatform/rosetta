@@ -53,7 +53,7 @@ look_for_wikipedia_page(){
    if ! [[ -s "wikidata/wikidatacache/$code.json" ]]; then
         wget -qO wikidata/wikidatacache/$code.json "$ENTITY/$code" 
    fi
-   local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g')
+   local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ $wikipage != 'null' ]]; then
     if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
         python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
@@ -66,11 +66,12 @@ look_for_wikipedia_page(){
 rm hugo/content/ -rf
 mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
+DATENOW=$(date +%s)
 while read website; do
     printf "$website\n"
     printf "%s\n" "---" > hugo/content/${website//./}.md
     printf "title: $website\n" >> hugo/content/${website//./}.md
-    printf "date: 2019-03-26T08:47:11+01:00\n" >> hugo/content/${website//./}.md
+    printf "date: $DATENOW\n" >> hugo/content/${website//./}.md
     printf "published: true\n" >> hugo/content/${website//./}.md
     printf "%s\n" "---" >> hugo/content/${website//./}.md
     check_data "$website" "mbfc/website_bias.csv"
