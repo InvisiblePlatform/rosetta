@@ -2,6 +2,8 @@ baseURL = "https://invisible-voice.com/"
 languageCode = "en-gb"
 title = "Invisible Vocals"
 plugins_css = ["custom"]
+timeout = "3m"
+ignoreErrors = ["error-remote-getjson"]
 [outputs]
   home = ["HTML", "json"]
   page = ["HTML", "json"]
