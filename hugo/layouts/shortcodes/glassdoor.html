@@ -1,1 +1,16 @@
-glassdoor
+<section id="glassdoor">
+{{ with .Get "gid" }}
+{{ $path := print "data/" . }}
+{{ if os.FileExists $path }}
+{{ $d := getJSON $path }}
+<h2>Glassdoor</h2><a class="source" href="#">(no source right now)</a></br>
+<p>
+Company Type: {{ $d.ctype }} </br>
+Funded: {{ $d.funded }} </br>
+Headquarters: {{ $d.headquarters }} </br>
+Revenue: {{ $d.revenue}} </br>
+Size: {{ $d.size }} </br>
+</p>
+{{ end }}
+{{ end }}
+</section>

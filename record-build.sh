@@ -67,18 +67,29 @@ rm hugo/content/ -rf
 mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
-while read website; do
-    printf "$website\n"
+count=0
+do_record(){
+    local website="$1"
     printf "%s\n" "---" > hugo/content/${website//./}.md
-    printf "title: $website\n" >> hugo/content/${website//./}.md
+    printf "title: \"$website\"\n" >> hugo/content/${website//./}.md
     printf "date: $DATENOW\n" >> hugo/content/${website//./}.md
     printf "published: true\n" >> hugo/content/${website//./}.md
     printf "%s\n" "---" >> hugo/content/${website//./}.md
     check_data "$website" "mbfc/website_bias.csv"
     check_stub "$website" "bcorp/website_stub_bcorp.csv"
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
-    check_data "$website" "glassdoor/website-hq-size-type-revenue.csv"
+    check_stub "$website" "glassdoor/glassdoor_index.csv"
     check_wikidata "$website" "wikidata/website_id_list.csv"
     associates_via_wikidata "$website" "wikidata/website_id_list.csv"
+    printf "$website\n"
+}
+while read website; do
+    do_record "$website" &
+    if [ $count -gt 50 ]; then
+        sleep 5s
+        count=0
+    fi
+    : $(( count += 1))
 done < <(sed -e "/\//d;s/\"//g" websites.list)
+wait
 exit 0

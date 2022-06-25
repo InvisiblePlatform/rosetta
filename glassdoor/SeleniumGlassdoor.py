@@ -91,8 +91,9 @@ def scrape_overview(browser, save_path, overviewUrl):
         overview['description'] = reviews.find_element_by_xpath(".//span[@data-test='employerDescription']").text
     except Exception:
         pass
+    overview['overviewUrl'] = overviewUrl
     # affiliated companies
-    # employerHierarchies = reviews.find_element_by_xpath("//div[@data-test='employerHierarchies']")
+    employerHierarchies = reviews.find_element_by_xpath("//div[@data-test='employerHierarchies']")
     try:
         employerHierarchiesUrl = reviews.find_element_by_xpath("//div[@data-test='employerHierarchies']/a").get_attribute('href')
         browser.get(employerHierarchiesUrl)
