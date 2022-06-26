@@ -69,16 +69,19 @@ look_for_wikipedia_page(){
    fi
    local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ $wikipage != 'null' ]]; then
-    if ! [[ -e "wikipedia/pages/$wikipage.md" ]]; then
-        python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
         if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
             printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
         fi
-    else
-        if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-            printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
-        fi
-    fi
+    # if ! [[ -e "wikipedia/pages/$wikipage.md" ]]; then
+    #     python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
+    #     if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+    #         printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+    #     fi
+    # else
+    #     if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+    #         printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+    #     fi
+    # fi
    fi
 }
 isin_via_wikidata(){

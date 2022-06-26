@@ -4,6 +4,9 @@
 <h2>wikipedia</h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a>
 <p>
 {{ . }}
+{{ if fileExists (print "data/wikipedia/wikicard/wc_" . ".html") }}
+{{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) }}
+{{ end }}
 {{ if fileExists (print "data/wikipedia/pages/" . ".md") }}
 {{ readFile (print "data/wikipedia/pages/" . ".md" ) | markdownify }}
 {{ end }}

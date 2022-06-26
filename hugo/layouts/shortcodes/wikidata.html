@@ -19,12 +19,12 @@
                         {{ if fileExists (print "data/wikipedia/longcache/" $d.id ".json") }}
                             {{ $q := getJSON "data/wikipedia/longcache/" $d.id ".json" }}
                             {{ range $q.entities}}
-                                <p>{{ index $props $p }}:<a href="{{ if eq .sitelinks.enwiki.value "null" }}https://wikidata.org/wiki/{{ $d.id }}{{else}}{{ .sitelinks.enwiki.value }}{{end}}">{{ .labels.en.value}}</a>
+                                <p>{{ index $props $p }}:<a href={{ if eq .sitelinks.enwiki.value "null" }}"https://wikidata.org/wiki/{{ $d.id }}"{{else}}"{{ .sitelinks.enwiki.url }}" onmouseover="loadWikiInfo(this)" {{end}}>{{ .labels.en.value}}</a>
                             {{ end }}
                         {{ else }}
                             {{ with $result := getJSON "https://www.wikidata.org/entity/" $d.id }}
                                 {{ range .entities}}
-                                    <p>{{ index $props $p }}:<a href="{{ if eq .sitelinks.enwiki.value "null" }}https://wikidata.org/wiki/{{ $d.id }}{{else}}{{ .sitelinks.enwiki.value }}{{end}}">{{ .labels.en.value}}</a>
+                                    <p>{{ index $props $p }}:<a href="{{ if eq .sitelinks.enwiki.value "null" }}https://wikidata.org/wiki/{{ $d.id }}{{else}}{{ .sitelinks.enwiki.url }}{{end}}">{{ .labels.en.value}}</a>
                                 {{ end }}
                             {{ else }}
                             {{ warnf (print "Failure on get: " $d.id )}}
