@@ -403,8 +403,7 @@ h3 {
 /* Style the collapsible content. Note: hidden by default */
 .section-content {
   padding: 0 18px;
-  display: none;
-  overflow: hidden;
+  display: block;
   background-color: #f1f1f1;
   transition: max-height 0.2s ease-out;
 }

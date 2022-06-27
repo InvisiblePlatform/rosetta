@@ -1,7 +1,7 @@
 <!-- Media Bias Fact Check -->
 
 <section id="mbfc">
-{{ with .Get "gid" }}
+{{ with .Get "site" }}
 {{ $data := getJSON "data/mbfc/combined.json" }}
 {{ $dataJ := index $data.sources . }}
 {{ $.Scratch.Set "bias" ""}}

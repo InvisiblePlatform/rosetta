@@ -7,8 +7,7 @@ ignoreErrors = ["error-remote-getjson"]
 cacheDir = "/home/orange/Projects/invisible-rosetta/hugo/cache"
 [outputs]
   home = ["HTML", "json"]
-  page = ["HTML", "json"]
-  section = ["JSON"]
+  page = ["HTML"]
 [caches]
   [caches.assets]
     dir = ':resourceDir/_gen'

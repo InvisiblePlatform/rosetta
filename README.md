@@ -39,5 +39,8 @@ data to use in the newest Invisible Voice iteration.
 - Allsides
     - https://www.allsides.com/media-bias/ratings
 
+## Magic bookmark
+- javascript:void(window.open('https://test.reveb.la/'+(location.href.split('/')[2]).replace(/\./g,'')));
+
 ---
 [1]: trustpilot is a unique case and will be done last, also they employ rate limiting so the crawling takes more time than previously assumed, napkin is around but can be made faster with smarter scripts after initial grab (frequent updating on known entries and less frequent updating on non-entries)

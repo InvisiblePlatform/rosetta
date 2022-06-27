@@ -4,10 +4,17 @@
 <div class="plugin-container">
   <div class="plugin-header">
       <span class="bk-bg co-name">{{ .Params.title }}</span>
-    </div>
     <p class="disclaimer-text">
       We are confident the information we are showing is accurate, however we strongly advise you do your own research into any companies.
     </p>
+    {{ with .Params.tosdr }}
+    <section id="tosdr-link" style="margin:1em;">
+<a href="https://tosdr.org/en/service/{{.}}">
+    <img src="https://shields.tosdr.org/en_{{.}}.svg"/></a>
+</section>
+</br>
+    {{ end }}
+    </div>
   </div>
 
   <div class="content">

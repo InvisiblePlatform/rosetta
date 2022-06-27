@@ -1,8 +1,8 @@
 <!-- Wikipedia -->
 <section id="wikipedia">
 {{ with .Get "page" }}
-<button type="button" class="collapsible"><h2>wikipedia</h2><h3>{{ . }}</h3><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a></button>
-<section class="section-content">
+<button type="button" class="collapsible active"><h2>wikipedia</h2><h3>{{ . }}</h3><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a></button>
+<section class="section-content" style="display:block;">
 <p>
 {{ if fileExists (print "data/wikipedia/wikicard/wc_" . ".html") }}
 {{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) | safeHTML }}
