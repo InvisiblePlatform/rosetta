@@ -1,16 +1,17 @@
 <!-- Wikipedia -->
-<section class="wikipedia">
+<section id="wikipedia">
 {{ with .Get "page" }}
-<h2>wikipedia</h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a>
+<button type="button" class="collapsible"><h2>wikipedia</h2><h3>{{ . }}</h3><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a></button>
+<section class="section-content">
 <p>
-{{ . }}
 {{ if fileExists (print "data/wikipedia/wikicard/wc_" . ".html") }}
-{{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) }}
+{{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) | safeHTML }}
 {{ end }}
 {{ if fileExists (print "data/wikipedia/pages/" . ".md") }}
 {{ readFile (print "data/wikipedia/pages/" . ".md" ) | markdownify }}
 {{ end }}
 </p>
+</section>
 {{end}}
 </section>
 

@@ -5,9 +5,6 @@
   <div class="plugin-header">
       <span class="bk-bg co-name">{{ .Params.title }}</span>
     </div>
-  </div>
-
-  <div>
     <p class="disclaimer-text">
       We are confident the information we are showing is accurate, however we strongly advise you do your own research into any companies.
     </p>
@@ -22,37 +19,6 @@
 
 
 <script>
-
-  let goToTop = function() {
-    window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      })
-  };
-
-  let scrollToTopButton = document.querySelector('#scroll-to-top');
-
-  scrollToTopButton.addEventListener('click', () => {
-    goToTop();
-  });
-
-  let newsHeadlines = document.querySelectorAll('.in-the-news-wrapper h1, .in-the-news-wrapper h2');
-
-  newsHeadlines.forEach(el => {
-    let newEl = el.cloneNode(true);
-    let newA = document.createElement('a');
-    let ids = el.getAttribute('id');
-    newEl.setAttribute("id", "");
-    newA.setAttribute("href", "#" + ids);
-    document.querySelector('.jump-to-section').appendChild(newA).appendChild(newEl);
-  });
-
-  let newsTitles = document.querySelectorAll('.in-the-news-wrapper a');
-
-  newsTitles.forEach(el => {
-    el.setAttribute("target", "_blank");
-  });
 
   let hoverAnchors = document.querySelectorAll('.hover-anchor');
   let wW = window.innerWidth;
@@ -88,7 +54,21 @@
   		x.lastElementChild.innerHTML = x.firstElementChild.innerHTML;
   	}
   	x.removeAttribute("onmouseover");
-  }
+    }
+  
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    }); 
+    } 
 
 </script>
 
@@ -96,13 +76,3 @@
   src="https://code.jquery.com/jquery-3.5.1.min.js"
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
       crossorigin="anonymous"></script>
-
-<!-- <div class="blog-post">
-  <h1>Hello ?</h1>
-  <div class="blog-post-subheader">
-    <time>{{ .Date.Format "02 Jan 2006" }}</time>
-  </div>
-  <div class="blog-post-content">
-    {{ .Content }}
-  </div>
-</div> -->

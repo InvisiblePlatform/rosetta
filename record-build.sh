@@ -15,6 +15,11 @@ cat $websites | tr '[[:upper:]]' '[[:lower:]]' \
 rm $websites
 check_data(){
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
+    if ! [[ $WIKIDATAID ]]; then
+        if grep -q "\"$1\"" $2; then
+            printf "%s\n" "{{< ${2/\/*/} site=\"$site\" >}}" >> hugo/content/${website//./}.md
+        fi
+    fi
     while read site; do
     if grep -q "\"$site\"" $2; then
         printf "%s\n" "{{< ${2/\/*/} site=\"$site\" >}}" >> hugo/content/${website//./}.md
@@ -33,6 +38,13 @@ check_stub(){
     # needs to look up against wikidata to resolve other domains before commiting to the 
     # page
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
+    if ! [[ $WIKIDATAID ]]; then 
+        if grep -q "\"$1\"" $2; then
+            while read code; do
+                printf "%s\n" "{{< ${2/\/*/} gid=\"$code\" >}}" >> hugo/content/${website//./}.md
+            done< <(grep "\"$site\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g")
+        fi
+    fi
     while read site; do
     if grep -q "\"$site\"" $2; then
         while read code; do
@@ -69,19 +81,16 @@ look_for_wikipedia_page(){
    fi
    local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ $wikipage != 'null' ]]; then
+    if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+        # python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
         if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
             printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
         fi
-    # if ! [[ -e "wikipedia/pages/$wikipage.md" ]]; then
-    #     python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
-    #     if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-    #         printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
-    #     fi
-    # else
-    #     if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-    #         printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
-    #     fi
-    # fi
+    else
+        if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+            printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+        fi
+    fi
    fi
 }
 isin_via_wikidata(){
@@ -121,6 +130,7 @@ do_record(){
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
     check_stub "$website" "glassdoor/glassdoor_index.csv"
     check_wikidata "$website" "wikidata/website_id_list.csv"
+    isin_via_wikidata "$website" "wikidata/website_id_list.csv"
     associates_via_wikidata "$website" "wikidata/website_id_list.csv"
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done

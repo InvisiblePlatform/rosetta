@@ -133,7 +133,7 @@ a.email-link {
    font-weight: 1000;
    margin-left: 5px;
    padding-left: 5px;
-   padding-top: 1.6em;
+   padding-top: .16em;
 }
 
 .point {
@@ -308,14 +308,26 @@ h2 {
     font-size: 1.6em;
     display: inline;
     margin-right: 5px; }
-#goodonyou    { width: 61.8%; }
+h3 {
+    font-size: 0.6em;
+    display: inline;
+    margin-right: 5px; }
+
+#wikidata, #bcorp, #mbfc, #wikipedia, #goodonyou, #glassdoor   { 
+    margin: .816em;
+    padding: .816em;
+    flex: 20% ;
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    filter: drop-shadow(.816em .816em 0px #98fb98); 
+    height: fit-content;
+}
 #goodonyou h2 { color: red; }
-#bcorp        { width: 61.8%; }
+#glassdoor h2 { color: hotpink; }
 #bcorp h2     { color: green; }
-#wikidata        { width: 61.8%; background-color: #eeeeee10; }
 #wikidata h2     { color: purple; }
-#mbfc        { width: 61.8%; }
 #mbfc h2     { color: orange; }
+#wikipedia h2     { color: orangered; }
 
 .hovertext {
   position: relative;
@@ -346,6 +358,8 @@ h2 {
 .source { display: inline; }
 .content {
     margin-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 /* width */
@@ -366,4 +380,43 @@ h2 {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.section-content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  transition: max-height 0.2s ease-out;
+}
+
+.collapsible:after {
+  content: '\02795'; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: white;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2796"; /* Unicode character for "minus" sign (-) */
 }

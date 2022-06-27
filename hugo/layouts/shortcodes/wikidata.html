@@ -4,7 +4,8 @@
 {{ $props := getJSON "data/wikidata/props.json" }}
 {{ $include := (slice "P10291" "P1037" "P1040" "P1092" "P1114" "P115" "P1174" "P118" "P123" "P126" "P127" "P131" "P1327" "P137" "P138" "P1387" "P1433" "P1449" "P1451" "P1454" "P1532" "P1546" "P155" "P159" "P17" "P1701" "P1830" "P189" "P199" "P1997" "P2002" "P2003" "P2013" "P210" "P2226" "P2652" "P2670" "P275" "P286" "P291" "P3174" "P3320" "P3362" "P344" "P355" "P361" "P4003" "P414" "P457" "P488" "P495" "P50" "P505" "P5052" "P5054" "P527" "P5769" "P7014" "P7071" "P7169" "P740" "P749" "P847" "P85" "P859" "P89" "P968" "P170" "P921" "P8525" "P3185" "P463" "P1056" "P17" "P31" )}}
 {{ with .Get "code" }}
-    <h2>wikidata</h2><a href="https://wikidata.org/wiki/{{.}}" class="source">(source)</a>
+<button type="button" class="collapsible"><h2>wikidata</h2><a href="https://wikidata.org/wiki/{{.}}" class="source">(source)</a></button>
+<section class="section-content">
     <p>
     {{ $data := getJSON "data/wikidata/wikidatacache/" . ".json" }}
     {{ range $data.entities }}
@@ -19,12 +20,20 @@
                         {{ if fileExists (print "data/wikipedia/longcache/" $d.id ".json") }}
                             {{ $q := getJSON "data/wikipedia/longcache/" $d.id ".json" }}
                             {{ range $q.entities}}
-                                <p>{{ index $props $p }}:<a href={{ if eq .sitelinks.enwiki.value "null" }}"https://wikidata.org/wiki/{{ $d.id }}"{{else}}"{{ .sitelinks.enwiki.url }}" onmouseover="loadWikiInfo(this)" {{end}}>{{ .labels.en.value}}</a>
+                            {{ if eq .sitelinks.enwiki.value "null" }}
+                            <p><b>{{ index $props $p }}:</b><a href="https://wikidata.org/wiki/{{ $d.id }}">{{ .labels.en.value }}</a>
+                            {{else}}
+                            <p><b>{{ index $props $p }}:</b><span class="hover-anchor" onmouseover="loadWikiInfo(this)"> <a target="_blank" href="{{ .sitelinks.enwiki.url }}" >{{ .labels.en.value }}</a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
+                            {{end}}
                             {{ end }}
                         {{ else }}
                             {{ with $result := getJSON "https://www.wikidata.org/entity/" $d.id }}
                                 {{ range .entities}}
-                                    <p>{{ index $props $p }}:<a href="{{ if eq .sitelinks.enwiki.value "null" }}https://wikidata.org/wiki/{{ $d.id }}{{else}}{{ .sitelinks.enwiki.url }}{{end}}">{{ .labels.en.value}}</a>
+                            {{ if eq .sitelinks.enwiki.value "null" }}
+                            <p><b>{{ index $props $p }}:</b><a href="https://wikidata.org/wiki/{{ $d.id }}">{{ .labels.en.value }}</a>
+                            {{else}}
+                            <p><b>{{ index $props $p }}:</b><span class="hover-anchor" onmouseover="loadWikiInfo(this)"> <a target="_blank" href="{{ .sitelinks.enwiki.url }}" >{{ .labels.en.value }}</a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
+                            {{end}}
                                 {{ end }}
                             {{ else }}
                             {{ warnf (print "Failure on get: " $d.id )}}
@@ -38,6 +47,7 @@
         {{ end }}
         {{ end }}{{ end }}
     {{ end }}
+    </section>
     </p>
 {{ end }}
 </section>
