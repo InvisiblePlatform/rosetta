@@ -1,10 +1,16 @@
 hugo/public
 hugo/sync.sh
 hugo/.*
+hugo/cache
 hugo/content/*
 glassdoor/data/*
 wikipedia/pages/*
+wikipedia/wikicard/*
 wikidata/longcache/*
+wikidata/wikidatacache/*
+similar-sites/sites/*.json
+tosdr/*.json
+tosdr/*.list
 *Q*.json
 *P*.json
 *brand*.json
