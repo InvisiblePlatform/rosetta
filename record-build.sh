@@ -3,9 +3,9 @@
 printf "Build list of websites\n"
 websites=$(mktemp)
 cut -d, -f1 mbfc/website_bias.csv > $websites
-# cut -d, -f1 bcorp/website_stub_bcorp.csv >> $websites
-# cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
-# cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
+cut -d, -f1 bcorp/website_stub_bcorp.csv >> $websites
+cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
+cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
 cut -d, -f1 wikidata/website_id_list.csv >> $websites
 
 cat $websites | tr '[[:upper:]]' '[[:lower:]]' \
@@ -24,6 +24,21 @@ check_data(){
         while read site; do
             if grep -q "\"$site\"" $2; then
                 printf "%s\n" "{{< ${2/\/*/} site=\"$site\" >}}" >> hugo/content/${website//./}.md
+            fi
+        done < <(grep "\"$WIKIDATAID\"" wikidata/website_id_list.csv | cut -d, -f1 | sed -e "s/ //g;s/\"//g"| sort -u)
+    done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
+}
+check_data_header(){
+    local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
+    if ! [[ $WIKIDATAID ]]; then
+        if grep -q "\"$1\"" $2; then
+            printf "%s\n" "${2/\/*/}: \"$1\"" >> hugo/content/${website//./}.md
+        fi
+    fi
+    while read WIKIDATAID; do
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                printf "%s\n" "${2/\/*/}: \"$site\"" >> hugo/content/${website//./}.md
             fi
         done < <(grep "\"$WIKIDATAID\"" wikidata/website_id_list.csv | cut -d, -f1 | sed -e "s/ //g;s/\"//g"| sort -u)
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
@@ -136,26 +151,45 @@ tosdr_via_wikidata(){
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     rm $tempfile
 }
-#rm hugo/content/ -rf
-#mkdir -p hugo/content
+
+check_tosdr(){
+    if grep -q "\"$1\"" $2; then
+        ID=$(grep -m1 "\"$1\"" $2 | cut -d, -f2)
+        printf "%s\n" "tosdr: \"$ID\" " >> hugo/content/${website//./}.md
+    fi
+}
+check_trustpilot(){
+    if [[ -s trust-pilot/sites/trust_site_${1}.json ]]; then
+        printf "%s\n" "{{< trust \"data/trust-pilot/sites/trust_site_${1}.json\" >}}" >> hugo/content/${website//./}.md
+    fi
+}
+# rm hugo/content/ -rf
+# mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
 do_record(){
+    local resort=$(mktemp)
     local website="$1"
     printf "%s\n" "---" > hugo/content/${website//./}.md
     printf "%s\n" "title: \"$website\"" >> hugo/content/${website//./}.md
     printf "%s\n" "date: $DATENOW" >> hugo/content/${website//./}.md
-    tosdr_via_wikidata "$website" "wikidata/website_id_list.csv"
+    # tosdr_via_wikidata "$website" "wikidata/website_id_list.csv"
+    check_tosdr "$website" "tosdr/site_id.list"
+    check_data_header "$website" "mbfc/website_bias.csv"
     printf "%s\n" "published: true" >> hugo/content/${website//./}.md
     printf "%s\n" "---" >> hugo/content/${website//./}.md
-    check_data "$website" "mbfc/website_bias.csv"
     check_stub "$website" "bcorp/website_stub_bcorp.csv"
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
     check_stub "$website" "glassdoor/glassdoor_index.csv"
+    check_trustpilot "$website"
     check_wikidata "$website" "wikidata/website_id_list.csv"
     isin_via_wikidata "$website" "wikidata/website_id_list.csv"
     associates_via_wikidata "$website" "wikidata/website_id_list.csv"
+    LC_COLLATE=C sort -u hugo/content/${website//./}.md \
+        | sed "0,/{/{s/^{/---\n{/}" > $resort
+    cp $resort hugo/content/${website//./}.md
+    printf "%s\n" "---" >> hugo/content/${website//./}.md
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done
 }
@@ -179,7 +213,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(sed -e "/\//d;s/\"//g" websites.list )
+done < <(sed -e "/\//d;s/\"//g" websites.list | grep ^v)
 rm $pids
 wait
 exit 0

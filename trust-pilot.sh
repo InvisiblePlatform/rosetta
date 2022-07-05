@@ -18,27 +18,26 @@ do_category(){
 }
 
 do_site(){
-    lynx -dump https://www.trustpilot.com/review/$1 | grep "•" -A 3 | sed -e "/TrustScore/d" -e "s/ //g" -e "s/•.*//g" -e "/^$/d" | paste - - -d';'
+    curl -s "https://api.trustpilot.com/v1/business-units/find?name=${1}" \
+  -H 'Accept: */*' \
+  -H 'Accept-Language: en-GB,en;q=0.9,en-US;q=0.8' \
+  -H 'Connection: keep-alive' \
+  -H 'Content-Type: application/json' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Site: cross-site' \
+  -H 'apikey: FuH31qwqA19HaAeAiGCD2iBC4HS9dKZQ' \
+  --compressed -o sites/trust_site_${1}.json
 }
 
 count=0
 pushd trust-pilot
+mkdir sites
 while read -a site; do
-    id=${site[1]//\"/}
-    domain=$(echo ${site[0]} | sed -e "s@/.*@@g" -e "s/\"//g" -e "s/,//g" )
-    
-    if ! $(grep -q "$id;" wikiid_domain_datetaken_reviewcount_score.csv); then
-        if [[ $count -gt 100 ]]; then
-            sleep 5m
-            count=0
-        else
-            count=$(( count += 1))
-            echo $count
-        fi
-        reviewsandscore=$(do_site $domain)
-        echo "$id;$domain;$EPOCHSECONDS;$reviewsandscore" | tee -a wikiid_domain_datetaken_reviewcount_score.csv
+    if ! [[ -s "sites/trust_site_${site}.json" ]]; then
+        do_site "$site"    
+        jq .name sites/trust_site_$site.json
         sleep 1s
     fi
-
-done < ../wikidata/website_id_list.csv
+done < <( cut -d, -f1 ../wikidata/website_id_list.csv | sort -u | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sort -u)
 popd

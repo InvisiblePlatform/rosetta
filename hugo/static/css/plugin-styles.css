@@ -85,7 +85,6 @@ a.email-link {
    font-size: 21px;
    display: flex;
    flex-direction: row;
-   justify-content: space-between;
    position: sticky;
    top: 0;
    z-index: 99;
@@ -313,21 +312,37 @@ h3 {
     display: inline;
     margin-right: 5px; }
 
-#wikidata, #bcorp, #mbfc, #wikipedia, #goodonyou, #glassdoor   { 
+#isin, #trust, #wikidata, #bcorp, #mbfc, #wikipedia, #goodonyou, #glassdoor   { 
     margin: .816em;
     padding: .816em;
-    flex: 20% ;
+    flex: 30% ;
     background-color:#fefefe; 
     border: solid 1px black; 
     filter: drop-shadow(.816em .816em 0px #98fb98); 
     height: fit-content;
 }
+#trust h2 { color: blue; }
+#isin h2 { color: brown; }
 #goodonyou h2 { color: red; }
 #glassdoor h2 { color: hotpink; }
 #bcorp h2     { color: green; }
 #wikidata h2     { color: purple; }
 #mbfc h2     { color: orange; }
 #wikipedia h2     { color: orangered; }
+.similar-site {
+    margin: .16em;
+    padding: .5em;
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    filter: drop-shadow(.16em .16em 0px #fb98fb); 
+    height: fit-content;
+}
+
+#similar-sites{
+    flex-flow: row;
+    flex-wrap: wrap;
+    display:flex;
+}
 
 .hovertext {
   position: relative;

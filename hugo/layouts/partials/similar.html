@@ -1,0 +1,17 @@
+<!-- Similar Sites -->
+{{ $path := print "data/similar/sites/similar_site_" . ".json" }}
+{{ if os.FileExists $path }}
+<h2>Similar Sites</h2><a class="source" href="https://similarsites.com/sites/{{ . }}" >(source)</a>
+<section id="similar-sites">
+{{ $data := (getJSON $path).SimilarSites }}
+<p>
+    {{ range $data }}
+    <section class="similar-site" style="order:{{ sub 100 (math.Floor (mul 100 (float (substr (index . "Grade") 0 4)))) }};">
+            <h3>{{ index . "Site" }}</h3></br>
+            <img width="100px" src="{{ index . "Thumbnail"}}"/></br>
+            <b>Grade</b>: {{ substr (index . "Grade") 0 4 }}</br>
+        </section>
+    {{ end }}
+</p>
+</section>
+{{ end }}

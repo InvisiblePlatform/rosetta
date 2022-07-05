@@ -9,7 +9,7 @@
     <b>Labour Rating</b> {{ math.Floor (div (float $v.labourRating) 4) }}/5 {{ $v.labourLabel }}</br>
     <b>Animal Rating</b> {{ math.Floor (div (float $v.animalRating) 4) }}/5 {{ $v.animalLabel }}</br>
     <b>Environment Rating</b> {{ math.Floor (div (float $v.environmentRating) 4) }}/5 {{ $v.environmentLabel }}</p></br>
-    <b>Email</b> <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }} </br>
+<b>Email</b> <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }}</a> </br>
 </p>
 </section>
 {{ end }}

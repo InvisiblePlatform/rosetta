@@ -1,0 +1,17 @@
+{{ with .Get 0 }}
+{{ if os.FileExists . }}
+{{ $data := getJSON . }}
+{{ if ne $data.name "ApplicationError" }}
+<section id="trust">
+    {{ with $data.name.identifying }}
+    <h2>Trust Pilot</h2><a class="source" href="https://trustpilot.com/review/{{.}}" >(source)</a>
+    {{ else }}
+    <h2>Trust Pilot</h2><a class="source" href="https://trustpilot.com/review/{{$data.name}}" >(source)</a>
+    {{ end }}
+    </br>
+    <b>Score</b>: {{ $data.score.trustScore }} </br>
+    <b>Stars</b>: {{ $data.score.stars }}
+</section>
+{{ end }}
+{{ end }}
+{{ end }}
