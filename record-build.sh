@@ -8,12 +8,16 @@ cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
 cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
 cut -d, -f1 wikidata/website_id_list.csv >> $websites
 
+pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
+            "P112;Founder" "P488;Chairperson" "P1037;Director")
+ENTITY='https://www.wikidata.org/entity'
+
 cat $websites | tr '[[:upper:]]' '[[:lower:]]' \
     | sed -e "s/www\.//g;s/#.*//g" \
     | sort -u > websites.list
-
 rm $websites
-check_data(){
+
+function check_data(){
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     if ! [[ $WIKIDATAID ]]; then
         if grep -q "\"$1\"" $2; then
@@ -28,7 +32,7 @@ check_data(){
         done < <(grep "\"$WIKIDATAID\"" wikidata/website_id_list.csv | cut -d, -f1 | sed -e "s/ //g;s/\"//g"| sort -u)
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
 }
-check_data_header(){
+function check_data_header(){
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     if ! [[ $WIKIDATAID ]]; then
         if grep -q "\"$1\"" $2; then
@@ -43,7 +47,7 @@ check_data_header(){
         done < <(grep "\"$WIKIDATAID\"" wikidata/website_id_list.csv | cut -d, -f1 | sed -e "s/ //g;s/\"//g"| sort -u)
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
 }
-check_wikidata(){
+function check_wikidata(){
     if grep -q "\"$1\"" $2; then
         while read code; do
             printf "%s\n" "{{< ${2/\/*/} code=\"$code\" >}}" >> hugo/content/${website//./}.md
@@ -51,7 +55,7 @@ check_wikidata(){
         done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
     fi
 }
-check_stub(){
+function check_stub(){
     # needs to look up against wikidata to resolve other domains before commiting to the 
     # page
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
@@ -73,9 +77,7 @@ check_stub(){
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
 
 }
-pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
-            "P112;Founder" "P488;Chairperson" "P1037;Director")
-associates_via_wikidata(){
+function associates_via_wikidata(){
     local tempfile=$(mktemp)
     if grep -q "\"$1\"" $2; then
         while read code; do
@@ -92,8 +94,7 @@ associates_via_wikidata(){
     fi
     rm $tempfile
 }
-ENTITY='https://www.wikidata.org/entity'
-look_for_wikipedia_page(){
+function look_for_wikipedia_page(){
    local code=$1 
    if ! [[ -s "wikidata/wikidatacache/$code.json" ]]; then
         wget -qO wikidata/wikidatacache/$code.json "$ENTITY/$code" 
@@ -112,7 +113,7 @@ look_for_wikipedia_page(){
     fi
    fi
 }
-isin_via_wikidata(){
+function isin_via_wikidata(){
     local tempfile=$(mktemp)
     # local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     while read WIKIDATAID; do
@@ -131,7 +132,7 @@ isin_via_wikidata(){
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     rm $tempfile
 }
-tosdr_via_wikidata(){
+function tosdr_via_wikidata(){
     local tempfile=$(mktemp)
     # local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     while read WIKIDATAID; do
@@ -151,24 +152,87 @@ tosdr_via_wikidata(){
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     rm $tempfile
 }
-
-check_tosdr(){
+function check_tosdr(){
     if grep -q "\"$1\"" $2; then
         ID=$(grep -m1 "\"$1\"" $2 | cut -d, -f2)
         printf "%s\n" "tosdr: \"$ID\" " >> hugo/content/${website//./}.md
     fi
 }
-check_trustpilot(){
+function check_trustpilot(){
     if [[ -s trust-pilot/sites/trust_site_${1}.json ]]; then
         printf "%s\n" "{{< trust \"data/trust-pilot/sites/trust_site_${1}.json\" >}}" >> hugo/content/${website//./}.md
     fi
+}
+function owned_from_owner(){
+        [[ "$DEBUG" ]] && printf "[CORE] Starting to resolve owners from owners $ID \n" >&2
+        owned_from_owner_file=$(mktemp)
+        if yq -r .owner[][0] $fileName 2>/dev/null >/dev/null; then
+            while read owner; do
+                if [[ 0 -lt $(wc -l < <(owner_of_owner ${owner})) ]]; then
+                    owned_from_owner ${owner} >> $owned_from_owner_file
+                fi
+            done < <(yq -r .owner[][0] $fileName 2>/dev/null)
+        fi
+
+        owned_from_owner_file_sorted=$(mktemp)
+        while read owned; do
+                owners=""
+                while read owner; do
+                        owners="$owners,$owner"
+                done < <(grep "$owned" $owned_from_owner_file | cut -d, -f2 | sort -u)
+                printf "$owned$owners\n" >> $owned_from_owner_file_sorted
+        done < <(sort -u $owned_from_owner_file | cut -d, -f1 | sort -u)
+
+    local owner=$1 
+    local tempResult="$CACHELINE/$owner.json"
+    if ! [[ -s $tempResult ]]; then 
+        wget -qO $tempResult "$ENTITY/$owner" 
+    fi
+    resolve $owner > /dev/null
+    ownedCount=$(wc -l < <(do_abstract_resolution "1830" $tempResult))
+    subsidaryCount=$(wc -l < <(do_abstract_resolution "355" $tempResult))
+    ownedCount=$(( $ownedCount + $subsidaryCount ))
+    while read owned; do
+        printf "$owned,$owner \n"
+    done < <(cat <(do_abstract_resolution "1830" $tempResult) <(do_abstract_resolution "355" $tempResult))
+}
+function owners_of_owners(){
+        [[ "$DEBUG" ]] && printf "[CORE] Starting to resolve owners of owners $ID \n" >&2
+        IFS=","
+        ownedCount=$(wc -l < $owned_from_owner_file_sorted)
+        printf "owner_of_owner:\n" >> $fileName
+        while read -a entry; do
+                owned="${entry[0]}"
+                resolve $owned | sed -e 's/\]/,[/g;s/^/  - /g' >> $fileName
+                ownerCount=$(wc -l < <(echo "${entry[@]:1}"))
+                for owner in "${entry[@]:1}"; do
+                    : $(( ownerCount -= 1 ))
+                    [[ $ownerCount -gt 0 ]] && printf "%s\n" "   `resolve $owner`," >> $fileName
+                    [[ $ownerCount -eq 0 ]] && printf "%s\n" "   `resolve $owner`]]" >> $fileName
+                done
+        done < $owned_from_owner_file_sorted
+
+    local owner=$1 
+    local tempResult="$CACHELINE/$owner.json"
+    if ! [[ -s $tempResult ]]; then 
+        wget -qO $tempResult "$ENTITY/$owner" 
+    fi
+    resolve $owner | sed -e 's/\]/,[/g;s/^/- /g'
+    ownedCount=$(wc -l < <(do_abstract_resolution "1830" $tempResult))
+    subsidaryCount=$(wc -l < <(do_abstract_resolution "355" $tempResult))
+    ownedCount=$(( $ownedCount + $subsidaryCount ))
+    while read owned; do
+        : $(( ownedCount -= 1 ))
+        [[ $ownedCount -gt 0 ]] && printf "%s\n" "   `resolve $owned`,"
+        [[ $ownedCount -eq 0 ]] && printf "%s\n" "   `resolve $owned`]]"
+    done < <(cat <(do_abstract_resolution "1830" $tempResult) <(do_abstract_resolution "355" $tempResult))
 }
 # rm hugo/content/ -rf
 # mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
-do_record(){
+function do_record(){
     local resort=$(mktemp)
     local website="$1"
     printf "%s\n" "---" > hugo/content/${website//./}.md
@@ -190,6 +254,7 @@ do_record(){
         | sed "0,/{/{s/^{/---\n{/}" > $resort
     cp $resort hugo/content/${website//./}.md
     printf "%s\n" "---" >> hugo/content/${website//./}.md
+    sed -i '/^---/{x;s/^/n/;/^n\{3\}$/{x;d};x}' hugo/content/${website//./}.md
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done
 }
@@ -213,7 +278,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(sed -e "/\//d;s/\"//g" websites.list | grep ^v)
+done < <(sed -e "/\//d;s/\"//g" websites.list )
 rm $pids
 wait
 exit 0
