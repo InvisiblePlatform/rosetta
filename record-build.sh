@@ -2,11 +2,11 @@
 
 printf "Build list of websites\n"
 websites=$(mktemp)
-cut -d, -f1 mbfc/website_bias.csv > $websites
-cut -d, -f1 bcorp/website_stub_bcorp.csv >> $websites
-cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
-cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
-cut -d, -f1 wikidata/website_id_list.csv >> $websites
+# cut -d, -f1 mbfc/website_bias.csv > $websites
+# cut -d, -f1 bcorp/website_stub_bcorp.csv >> $websites
+# cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
+# cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
+cut -d, -f1 wikidata/website_id_list.csv > $websites
 
 pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
             "P112;Founder" "P488;Chairperson" "P1037;Director")
@@ -101,17 +101,29 @@ function look_for_wikipedia_page(){
    fi
    local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-        printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+        printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
    else
     if [[ $wikipage != 'null' ]]; then
      if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
          python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
          if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-             printf "%s\n" "{{< wikipedia page=\"$wikipage\" >}}" >> hugo/content/${website//./}.md
+             printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
          fi
      fi
     fi
    fi
+   # if [[ -s "wikipedia/wikicard/$wikipage.html" ]]; then
+   #      printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
+   # else
+   #  if [[ $wikipage != 'null' ]]; then
+   #   if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+   #       python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
+   #       if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+   #           printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
+   #       fi
+   #   fi
+   #  fi
+   # fi
 }
 function isin_via_wikidata(){
     local tempfile=$(mktemp)
@@ -163,72 +175,52 @@ function check_trustpilot(){
         printf "%s\n" "{{< trust \"data/trust-pilot/sites/trust_site_${1}.json\" >}}" >> hugo/content/${website//./}.md
     fi
 }
-function owned_from_owner(){
-        [[ "$DEBUG" ]] && printf "[CORE] Starting to resolve owners from owners $ID \n" >&2
-        owned_from_owner_file=$(mktemp)
-        if yq -r .owner[][0] $fileName 2>/dev/null >/dev/null; then
-            while read owner; do
-                if [[ 0 -lt $(wc -l < <(owner_of_owner ${owner})) ]]; then
-                    owned_from_owner ${owner} >> $owned_from_owner_file
-                fi
-            done < <(yq -r .owner[][0] $fileName 2>/dev/null)
-        fi
+secondorder_pairings=("P127;Owner" "P123;Publisher" "P749;Parent" \
+            "P112;Founder" "P488;Chairperson" "P1037;Director")
+function owned_wikiassociates(){
+    local tempfile=$(mktemp)
+    local temptilesmall=$(mktemp)
+    if grep -q "\"$1\"" $2; then
+        while read code; do # Main Company
+            # echo "TOP: $code"
+            for pairing in ${pairings[*]}; do # Categories
+                IFS=';' read -a var <<<"$pairing"
+                while read line ; do # Important Companies to Main
+                    for _pairing in ${pairings[*]}; do # Categories
+                        IFS=';' read -a varx <<<"$_pairing"
+                        while read relation; do # Important Companies to Important Companies to Main
+                            echo "\"${varx[0]}:$line\"" >> ${temptilesmall}_$relation
+                            for pairingx in ${secondorder_pairings[*]}; do # Categories
+                                IFS=';' read -a vary <<<"$pairingx"
+                                while read deeper; do # Owning to the Important Companies to Important Companies to Main
+                                    echo "\"${vary[0]}:$relation\"" >> ${temptilesmall}_$deeper
+                                done < <(jq -r .entities[].claims.${vary[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$relation.json 2>/dev/null)
+                            done
+                        done < <(jq -r .entities[].claims.${varx[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$line.json 2>/dev/null)
+                    done
+                done < <(jq -r .entities[].claims.${var[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$code.json 2>/dev/null)
+            done
+        done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
 
-        owned_from_owner_file_sorted=$(mktemp)
-        while read owned; do
-                owners=""
-                while read owner; do
-                        owners="$owners,$owner"
-                done < <(grep "$owned" $owned_from_owner_file | cut -d, -f2 | sort -u)
-                printf "$owned$owners\n" >> $owned_from_owner_file_sorted
-        done < <(sort -u $owned_from_owner_file | cut -d, -f1 | sort -u)
+        while read relation; do 
+            : $(( relationco -= 1))
+            local RELATION_ID=$(sed -e 's/[^_]*_//g' <<< "$relation")
+            # local linco=$(sort -u $relation | wc -l | cut -d' ' -f1)
+            local oneline=$(sort -u $relation | tr '\n' '@')
+            look_for_wikipedia_page "${RELATION_ID}" $oneline
+        done < <(ls -1 ${temptilesmall}_* 2>/dev/null)
 
-    local owner=$1 
-    local tempResult="$CACHELINE/$owner.json"
-    if ! [[ -s $tempResult ]]; then 
-        wget -qO $tempResult "$ENTITY/$owner" 
+        # while read id; do
+        #     if ! grep -q "^$id$" <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q"); then
+        #         look_for_wikipedia_page $id
+        #     fi
+        # done < <(sort -u $tempfile)
     fi
-    resolve $owner > /dev/null
-    ownedCount=$(wc -l < <(do_abstract_resolution "1830" $tempResult))
-    subsidaryCount=$(wc -l < <(do_abstract_resolution "355" $tempResult))
-    ownedCount=$(( $ownedCount + $subsidaryCount ))
-    while read owned; do
-        printf "$owned,$owner \n"
-    done < <(cat <(do_abstract_resolution "1830" $tempResult) <(do_abstract_resolution "355" $tempResult))
+    
+    rm $tempfile ${temptilesmall}_* 2>/dev/null
 }
-function owners_of_owners(){
-        [[ "$DEBUG" ]] && printf "[CORE] Starting to resolve owners of owners $ID \n" >&2
-        IFS=","
-        ownedCount=$(wc -l < $owned_from_owner_file_sorted)
-        printf "owner_of_owner:\n" >> $fileName
-        while read -a entry; do
-                owned="${entry[0]}"
-                resolve $owned | sed -e 's/\]/,[/g;s/^/  - /g' >> $fileName
-                ownerCount=$(wc -l < <(echo "${entry[@]:1}"))
-                for owner in "${entry[@]:1}"; do
-                    : $(( ownerCount -= 1 ))
-                    [[ $ownerCount -gt 0 ]] && printf "%s\n" "   `resolve $owner`," >> $fileName
-                    [[ $ownerCount -eq 0 ]] && printf "%s\n" "   `resolve $owner`]]" >> $fileName
-                done
-        done < $owned_from_owner_file_sorted
-
-    local owner=$1 
-    local tempResult="$CACHELINE/$owner.json"
-    if ! [[ -s $tempResult ]]; then 
-        wget -qO $tempResult "$ENTITY/$owner" 
-    fi
-    resolve $owner | sed -e 's/\]/,[/g;s/^/- /g'
-    ownedCount=$(wc -l < <(do_abstract_resolution "1830" $tempResult))
-    subsidaryCount=$(wc -l < <(do_abstract_resolution "355" $tempResult))
-    ownedCount=$(( $ownedCount + $subsidaryCount ))
-    while read owned; do
-        : $(( ownedCount -= 1 ))
-        [[ $ownedCount -gt 0 ]] && printf "%s\n" "   `resolve $owned`,"
-        [[ $ownedCount -eq 0 ]] && printf "%s\n" "   `resolve $owned`]]"
-    done < <(cat <(do_abstract_resolution "1830" $tempResult) <(do_abstract_resolution "355" $tempResult))
-}
-# rm hugo/content/ -rf
-# mkdir -p hugo/content
+#rm hugo/content/ -rf
+#mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
@@ -249,7 +241,8 @@ function do_record(){
     check_trustpilot "$website"
     check_wikidata "$website" "wikidata/website_id_list.csv"
     isin_via_wikidata "$website" "wikidata/website_id_list.csv"
-    associates_via_wikidata "$website" "wikidata/website_id_list.csv"
+    # associates_via_wikidata "$website" "wikidata/website_id_list.csv"
+    owned_wikiassociates "$website" "wikidata/website_id_list.csv"
     LC_COLLATE=C sort -u hugo/content/${website//./}.md \
         | sed "0,/{/{s/^{/---\n{/}" > $resort
     cp $resort hugo/content/${website//./}.md
@@ -278,7 +271,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(sed -e "/\//d;s/\"//g" websites.list )
+done < <(sed -e "/\//d;s/\"//g" websites.list)
 rm $pids
 wait
 exit 0

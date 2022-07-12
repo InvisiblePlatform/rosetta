@@ -29,7 +29,7 @@ while read page; do
         sleep 1
     done
     count=0
-done < <(ls pages/*.md | sed -e 's/pages\///g;s/\.md//g')
+done < <(ls -1 pages/ | sed -e 's/pages\///g;s/\.md//g')
 
 wait
 rm $pids $pids_done

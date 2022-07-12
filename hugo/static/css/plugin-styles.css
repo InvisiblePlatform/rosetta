@@ -304,7 +304,7 @@ pre code {
 }
 
 h2 {
-    font-size: 1.6em;
+    font-size: 1.1em;
     display: inline;
     margin-right: 5px; }
 h3 {
@@ -313,14 +313,24 @@ h3 {
     margin-right: 5px; }
 
 #isin, #trust, #wikidata, #bcorp, #mbfc, #wikipedia, #goodonyou, #glassdoor   { 
-    margin: .816em;
-    padding: .816em;
-    flex: 30% ;
+    margin: .16em;
+    padding: .16em;
+    flex: 20% ;
     background-color:#fefefe; 
     border: solid 1px black; 
     filter: drop-shadow(.816em .816em 0px #98fb98); 
     height: fit-content;
 }
+
+#isin      {filter: drop-shadow(.816em .816em 0px brown); order:100;}
+#trust     {filter: drop-shadow(.816em .816em 0px blue);}
+#wikidata  {filter: drop-shadow(.816em .816em 0px purple);}
+#bcorp     {filter: drop-shadow(.816em .816em 0px green);}
+#mbfc      {filter: drop-shadow(.816em .816em 0px orange);}
+#wikipedia {filter: drop-shadow(.816em .816em 0px orangered);}
+#goodonyou {filter: drop-shadow(.816em .816em 0px red);}
+#glassdoor {filter: drop-shadow(.816em .816em 0px hotpink);}
+
 #trust h2 { color: blue; }
 #isin h2 { color: brown; }
 #goodonyou h2 { color: red; }
@@ -340,8 +350,8 @@ h3 {
 
 #similar-sites{
     flex-flow: row;
-    flex-wrap: wrap;
-    display:flex;
+    overflow: hidden;
+    display:inline-flex;
 }
 
 .hovertext {
@@ -364,13 +374,69 @@ h3 {
   left: 0;
   top: 110%;
 }
+.tags{
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+}
+.P127, .P355, .P123, .P749, .P112, .P488, .P1037 {
+  position:relative;
+  z-index:1;
+  font-size: x-small;
+  color: #eee;
+  margin:0 0.5em;
+  padding:0 0.2em;
+  display: inline-block;
+}
+.P127:before, .P355:before, .P123:before, .P749:before, .P112:before, .P488:before, .P1037:before {
+  content:"";
+  z-index:-2;
+  left:-0.7em;
+  top:0.2em;
+  border-width:0.6em;
+  border-style:solid;
+  border-color:inherit;
+  position:absolute;
+  width:calc(100% - 0.5em);
+  border-left-color:transparent;
+}
+.P127:after, .P355:after, .P123:after, .P749:after, .P112:after, .P488:after, .P1037:after {
+  content:"";
+  z-index:-2;
+  right:0;
+  top:0.2em;
+  border-width:0.6em;
+  border-style:solid;
+  border-color:inherit;
+  position:absolute;
+  border-top-color:transparent;
+  border-bottom-color:transparent;
+  border-left-color:transparent;
+  transform:rotate(180deg);
+  transform-origin:center right;
+}
+
+.P127{ border-color: blue;}
+.P355{ border-color: yellow; color: #111;}
+.P123{ border-color: red;}
+.P749{ border-color: green;}
+.P112{ border-color: purple;}
+.P488{ border-color: orange; color: #111;}
+.P1037{ border-color: magenta; color:#111;}
+
+#contrast{
+    color: white;
+    font-weight: bold;
+    filter: drop-shadow(.1em .1em 0px black); 
+    mix-blend-mode: overlay;
+}
 
 .hovertext:hover:before {
   opacity: 1;
   visibility: visible;
 }
 
-.source { display: inline; }
+.source { display: inline; font-size: 0.6em; }
 .content {
     margin-left: 10px;
     display: flex;
@@ -418,9 +484,8 @@ h3 {
 /* Style the collapsible content. Note: hidden by default */
 .section-content {
   padding: 0 18px;
-  display: block;
   background-color: #f1f1f1;
-  transition: max-height 0.2s ease-out;
+  transition: max-height 0.5s ease-out;
 }
 
 .collapsible:after {

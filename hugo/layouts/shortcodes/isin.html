@@ -8,18 +8,26 @@
     {{ $data := getJSON $path }}
     {{ with index $data (.Get "id") }}
         {{ range $key, $value := . }}
+        {{ if in $key "JT"}}
             <b>{{ $key }}</b>: {{.}}</br>
+            {{ else if in $key "max. 16"}}
+            <b>{{ $key }}</b>: {{.}}</br>
+        {{end}}
         {{ end }}
     {{ end }}
     </p>
 {{ else if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_SocialData.json" }}
     <h2> World Benchmark </h2></br>
-    <h3> 2021 Just Transition Assessment:</h3><a href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></br>
+    <h3> 2021 Just Transition Assessment (social):</h3><a href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></br>
     <p>
     {{ $data := getJSON $path }}
     {{ with index $data (.Get "id") }}
         {{ range $key, $value := . }}
+        {{ if not (findRE "[a-zA-Z]" $key)}}
             <b>{{ $key }}</b>: {{.}}</br>
+            {{ else if in $key "max"}}
+            <b>{{ $key }}</b>: {{.}}</br>
+        {{ end }}
         {{ end }}
     {{ end }}
     </p>
@@ -30,7 +38,11 @@
     {{ $data := getJSON $path }}
     {{ with index $data (.Get "id") }}
         {{ range $key, $value := . }}
+        {{ if in $key "out of"}}
             <b>{{ $key }}</b>: {{.}}</br>
+        {{ else if in $key "0-100" }}
+            <b>{{ $key }}</b>: {{.}}</br>
+        {{ end }}
         {{ end }}
     {{ end }}
     </p>
@@ -41,7 +53,9 @@
     {{ $data := getJSON $path }}
     {{ with index $data (.Get "id") }}
         {{ range $key, $value := . }}
+            {{ if in $key "max" }}
             <b>{{ $key }}</b>: {{.}}</br>
+            {{ end }}
         {{ end }}
     {{ end }}
     </p>

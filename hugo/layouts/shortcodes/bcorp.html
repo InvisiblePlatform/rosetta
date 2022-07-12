@@ -3,8 +3,8 @@
 {{ $path := print "data/bcorp/bcorp_" . ".json"}}
 {{ if os.FileExists $path }}
     {{ $d := getJSON $path }}
-    <button type="button" class="collapsible active"><h2>B Corp</h2><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">(source)</a></button>
-<section class="section-content" style="display: block;">
+    <button type="button" class="collapsible"><h2>B Corp</h2><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">(source)</a></button>
+<section class="section-content" style="display: none;">
     <p>
     {{ if isset $d "latestVerifiedScore" }}
     <b>Latest Verified Score:</b></br>

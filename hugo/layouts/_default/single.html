@@ -46,13 +46,37 @@
 </br>
     {{ end }}
     </section>
+    {{ with getJSON (print "data/trust-pilot/sites/trust_site_" .Params.title ".json") }}
+        {{ if ne .name "ApplicationError" }}
+        <section>
+            {{ $score := .score.trustScore}}
+            {{ if eq (int .numberOfReviews.total) 0 }}
+                {{ with .name.identifying }}
+                <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: unrated </br>
+                {{ else }}
+                <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: unrated </br>
+                {{ end }}
+            {{ else }}
+            {{ with .name.identifying }}
+            <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: {{ $score }} </br>
+            {{ else }}
+            <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: {{ $score }} </br>
+            {{ end }}
+            {{ end }}
+        </section>
+        {{ end }}
+    {{ end }}
     </div>
   </div>
-
-  <div class="content">
+  <div class="content"> 
     {{ partial "similar.html" .Params.title }}
+  </div>
+  <div class="content">
     {{ .Content }}
   </div>
+  {{ if eq .WordCount 0 }}
+    No content yet!
+  {{ end }}
   
 
 </div>

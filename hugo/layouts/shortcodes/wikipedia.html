@@ -1,8 +1,37 @@
 <!-- Wikipedia -->
 <section id="wikipedia">
-{{ with .Get "page" }}
-<button type="button" class="collapsible active"><h2>wikipedia</h2><h3>{{ . }}</h3><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(source)</a></button>
-<section class="section-content" style="display:block;">
+{{ with .Get 0 }}
+<button type="button" class="collapsible"><h2>{{ . | replaceRE "_" " " }}</h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(wikipedia)</a>
+<span class="tags">
+{{ range after 1 $.Params  }}
+{{ $list := split . ":" }}
+{{ with $q := getJSON "https://www.wikidata.org/entity/" (index $list 1) }}
+{{ range .entities }}
+<span class="{{index $list 0}}">
+{{ if eq (index $list 0) "P127" }}
+Owner of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P355" }}
+    Subsidary of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P123" }}
+    Publisher of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P749" }}
+    Parent of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P112" }}
+    Founder of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P488" }}
+    Chairperson of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ else if eq (index $list 0) "P1037" }}
+Director of <span style=" background-color:#{{ substr (sha1 (index $list 1) ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></span>
+{{ end }}
+</span>
+{{ end }}
+{{ else }}
+{{ warnf (print "Failure on get: " (index $list 1) )}}
+{{ end }}
+{{ end }}
+</span>
+</button>
+<section class="section-content" style="display:none;">
 <p>
 {{ if fileExists (print "data/wikipedia/wikicard/wc_" . ".html") }}
 {{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) | safeHTML }}

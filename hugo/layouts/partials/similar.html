@@ -9,7 +9,7 @@
     <section class="similar-site" style="order:{{ sub 100 (math.Floor (mul 100 (float (substr (index . "Grade") 0 4)))) }};">
         <a href="http://{{ index . "Site" }}">
             <h3>{{ index . "Site" }}</h3></br>
-            <img width="100px" src="{{ index . "Thumbnail"}}"/></br>
+            <!--<img width="100px" src="{{ index . "Thumbnail"}}"/></br>-->
             <h3><b>Similarity:</b> {{ substr (index . "Grade") 2 2 }}%</h3></a></br>
         </section>
     {{ end }}
