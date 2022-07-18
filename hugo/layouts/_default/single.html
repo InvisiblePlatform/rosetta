@@ -45,10 +45,9 @@
     </section>
 </br>
     {{ end }}
-    </section>
     {{ with getJSON (print "data/trust-pilot/sites/trust_site_" .Params.title ".json") }}
         {{ if ne .name "ApplicationError" }}
-        <section>
+        <section id="trust-pilot">
             {{ $score := .score.trustScore}}
             {{ if eq (int .numberOfReviews.total) 0 }}
                 {{ with .name.identifying }}
@@ -66,6 +65,7 @@
         </section>
         {{ end }}
     {{ end }}
+    </section>
     </div>
   </div>
   <div class="content"> 

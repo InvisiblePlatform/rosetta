@@ -1,7 +1,7 @@
 <!-- Wikipedia -->
-<section id="wikipedia">
 {{ with .Get 0 }}
-<button type="button" class="collapsible"><h2>{{ . | replaceRE "_" " " }}</h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(wikipedia)</a>
+<section id="wikipedia" class="{{.}}">
+    <button type="button" class="collapsible"><h2><span style=" background-color:#{{ substr (sha1 .) 1 6 }};" ><span id="contrast">{{ . | replaceRE "_" " " }}</span></span></h2><a href="https://en.wikipedia.org/wiki/{{.}}" class="source">(wikipedia)</a>
 <span class="tags">
 {{ range after 1 $.Params  }}
 {{ $list := split . ":" }}

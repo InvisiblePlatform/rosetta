@@ -6,7 +6,7 @@ site= argv[1]
 hdr = {'User-Agent': 'Mozilla/5.0'}
 page = urlopen(site)
 soup = BeautifulSoup(page.read(), features="html5lib")
-table = soup.find('table', class_='infobox vcard')
+table = soup.find('table', class_='infobox')
 print(table)
 # result = {}
 # exceptional_row_count = 0

@@ -2,18 +2,20 @@
 
 printf "Build list of websites\n"
 websites=$(mktemp)
-# cut -d, -f1 mbfc/website_bias.csv > $websites
-# cut -d, -f1 bcorp/website_stub_bcorp.csv >> $websites
-# cut -d, -f1 goodonyou/goodforyou_web_brandid.csv >> $websites
-# cut -d, -f1 glassdoor/website-hq-size-type-revenue.csv >> $websites
-cut -d, -f1 wikidata/website_id_list.csv > $websites
+cut -d, -f1 \
+    mbfc/website_bias.csv \
+    bcorp/website_stub_bcorp.csv \
+    goodonyou/goodforyou_web_brandid.csv \
+    glassdoor/website-hq-size-type-revenue.csv \
+    wikidata/website_id_list.csv \
+    > $websites
 
 pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
             "P112;Founder" "P488;Chairperson" "P1037;Director")
 ENTITY='https://www.wikidata.org/entity'
 
 cat $websites | tr '[[:upper:]]' '[[:lower:]]' \
-    | sed -e "s/www\.//g;s/#.*//g" \
+    | sed -e "s/www\.//g;s/?[^/]*$//g" \
     | sort -u > websites.list
 rm $websites
 
@@ -51,7 +53,7 @@ function check_wikidata(){
     if grep -q "\"$1\"" $2; then
         while read code; do
             printf "%s\n" "{{< ${2/\/*/} code=\"$code\" >}}" >> hugo/content/${website//./}.md
-            look_for_wikipedia_page $code
+            # look_for_wikipedia_page $code
         done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
     fi
 }
@@ -101,11 +103,13 @@ function look_for_wikipedia_page(){
    fi
    local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
+        printf "%s\n" "$wikipage" >> wikipage.list
         printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
    else
     if [[ $wikipage != 'null' ]]; then
      if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
          python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
+         printf "%s\n" "$wikipage" >> wikipage.list
          if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
              printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
          fi
@@ -186,6 +190,7 @@ function owned_wikiassociates(){
             for pairing in ${pairings[*]}; do # Categories
                 IFS=';' read -a var <<<"$pairing"
                 while read line ; do # Important Companies to Main
+                echo "\"${var[0]}:$line\"" >> ${temptilesmall}_$code
                     for _pairing in ${pairings[*]}; do # Categories
                         IFS=';' read -a varx <<<"$_pairing"
                         while read relation; do # Important Companies to Important Companies to Main
@@ -219,8 +224,8 @@ function owned_wikiassociates(){
     
     rm $tempfile ${temptilesmall}_* 2>/dev/null
 }
-#rm hugo/content/ -rf
-#mkdir -p hugo/content
+rm hugo/content/ -rf
+mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
@@ -271,7 +276,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(sed -e "/\//d;s/\"//g" websites.list)
+done < <(sed -e "/\//d;s/\"//g" websites.list )
 rm $pids
 wait
 exit 0

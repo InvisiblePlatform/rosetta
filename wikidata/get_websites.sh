@@ -1,21 +1,18 @@
 #!/bin/bash
-
-pids=$(mktemp)
-pids_done=$(mktemp)
-do_wikicard(){
-    local page="$1"
-    python3 ./wikipedia_infocard.py "https://en.wikipedia.org/wiki/$page" > wikicard/wc_$page.html
-    if [[ -s "wikicard/wc_$page.html" ]]; then
-        printf "%s\n" "$page"
-    else
-        printf "%s\n" "# $page"
+ourdir="longcache"
+do_line(){
+    local i=$1
+    if jq .entities[].claims.P856[].mainsnak.datavalue.value $ourdir/$i 2>/dev/null >/dev/null; then
+        for j in $(jq .entities[].claims.P856[].mainsnak.datavalue.value $ourdir/$i 2>/dev/null| sed -e "s@http[s]*://@@g;s@/\"@\"@g"); do
+            printf "%s\n" "$j,\"${i//.json/}\"" | tee -a website_id_list_new.csv
+        done
     fi
     printf "%s\n" "$BASHPID" >> $pids_done
 }
-
-while read page; do
-    if ! [[ -s "wikicard/wc_$page.html" ]]; then
-    do_wikicard "$page" &
+pids=$(mktemp)
+pids_done=$(mktemp)
+for i in $(ls -1 $ourdir/); do
+    do_line "$i" &
     lastpid=$!
     printf "%s\n" "$lastpid" >> $pids
     until [[ "$(sort $pids $pids_done | uniq -u | wc -l)" -lt "25" ]]; do
@@ -30,8 +27,7 @@ while read page; do
         sleep 1
     done
     count=0
-    fi
-done < <(ls -1 pages/ | sed -e 's/pages\///g;s/\.md//g')
-
+done
+rm $pids
 wait
-rm $pids $pids_done
+exit 0

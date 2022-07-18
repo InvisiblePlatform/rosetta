@@ -3,8 +3,8 @@
 {{ $path := print "data/" . }}
 {{ if os.FileExists $path }}
 {{ $d := getJSON $path }}
-<button type="button" class="collapsible"><h2>Glassdoor</h2><a class="source" href="#">(no source right now)</a></button>
-<section class="section-content" style="display: none;">
+<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="#">(no source right now)</a></button>
+<section class="section-content" style="display: block;">
 <p>
 Company Type: {{ $d.ctype }} </br>
 Funded: {{ $d.funded }} </br>

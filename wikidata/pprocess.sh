@@ -1,7 +1,7 @@
 #!/bin/bash
 pushd ./id_split
 splitnum=$(bc -l <<<"$(sed -e '/#/d' ../$1| wc -l)/5"|cut -d. -f1)
-split -l10000 <(sed -e '/#/d' ../$1 | shuf)
+split -l5000 <(sed -e '/#/d' ../$1 | shuf)
 NoE=$(sed -e '/#/d' ../$1 | wc -l)
 popd
 pids=()
