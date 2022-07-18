@@ -321,7 +321,7 @@ h3 {
     height: fit-content;
 }
 
-#isin      {filter: drop-shadow(.816em .816em 0px brown); order:100;}
+#isin      {filter: drop-shadow(.816em .816em 0px brown);}
 #wikidata  {filter: drop-shadow(.816em .816em 0px purple);}
 #bcorp     {filter: drop-shadow(.816em .816em 0px green);}
 #mbfc      {filter: drop-shadow(.816em .816em 0px orange);}

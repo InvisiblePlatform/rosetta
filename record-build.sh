@@ -10,12 +10,31 @@ cut -d, -f1 \
     wikidata/website_id_list.csv \
     > $websites
 
-pairings=("P127;Owner" "P355;Subsidary" "P123;Publisher" "P749;Parent" \
-            "P112;Founder" "P488;Chairperson" "P1037;Director")
 ENTITY='https://www.wikidata.org/entity'
+pairings=("P355;Subsidary;Subsidary_of" \
+          "P127;Owned_by;Owner_of" \
+          "P123;Published_by;Publisher_of" \
+          "P749;Parent_Company;Parent_Company_of" \
+          "P112;Founded_by;Founder_of" \
+          "P488;Chaired_by;Chairperson_of" \
+          "P1037;Directed_by;Director_of")
+secondorder_pairings=("P355;Subsidary;Subsidary_of" \
+                      "P127;Owned_by;Owner_of" \
+                      "P123;Published_by;Publisher_of" \
+                      "P749;Parent_Company;Parent_Company_of" \
+                      "P112;Founded_by;Founder_of" \
+                      "P488;Chaired_by;Chairperson_of" \
+                      "P1037;Directed_by;Director_of")
+third_order_pairings=("P127;Owned_by;Owner_of" \
+                      "P123;Published_by;Publisher_of" \
+                      "P749;Parent_Company;Parent_Company_of" \
+                      "P112;Founded_by;Founder_of" \
+                      "P488;Chaired_by;Chairperson_of" \
+                      "P1037;Directed_by;Director_of")
 
 cat $websites | tr '[[:upper:]]' '[[:lower:]]' \
-    | sed -e "s/www\.//g;s/?[^/]*$//g" \
+    | sed -e "s/www[0-9]*\.//g;s/?[^/]*$//g" \
+    | sed -e "/\//d;s/\"//g;/^$/d" \
     | sort -u > websites.list
 rm $websites
 
@@ -23,13 +42,13 @@ function check_data(){
     local WIKIDATAID=$(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
     if ! [[ $WIKIDATAID ]]; then
         if grep -q "\"$1\"" $2; then
-            printf "%s\n" "{{< ${2/\/*/} site=\"$1\" >}}" >> hugo/content/${website//./}.md
+            printf "%s\n" "{{< a${2/\/*/} site=\"$1\" >}}" >> hugo/content/${website//./}.md
         fi
     fi
     while read WIKIDATAID; do
         while read site; do
             if grep -q "\"$site\"" $2; then
-                printf "%s\n" "{{< ${2/\/*/} site=\"$site\" >}}" >> hugo/content/${website//./}.md
+                printf "%s\n" "{{< a${2/\/*/} site=\"$site\" >}}" >> hugo/content/${website//./}.md
             fi
         done < <(grep "\"$WIKIDATAID\"" wikidata/website_id_list.csv | cut -d, -f1 | sed -e "s/ //g;s/\"//g"| sort -u)
     done < <(grep "\"$1\"" wikidata/website_id_list.csv | cut -d, -f2 | sed -e "s/ //g;s/\"//g" | egrep "^Q")
@@ -52,7 +71,7 @@ function check_data_header(){
 function check_wikidata(){
     if grep -q "\"$1\"" $2; then
         while read code; do
-            printf "%s\n" "{{< ${2/\/*/} code=\"$code\" >}}" >> hugo/content/${website//./}.md
+            printf "%s\n" "{{< a${2/\/*/} code=\"$code\" >}}" >> hugo/content/${website//./}.md
             # look_for_wikipedia_page $code
         done< <(grep "\"$1\"" $2 | cut -d, -f2|sed -e "s/ //g;s/\"//g"|egrep "^Q")
     fi
@@ -104,14 +123,14 @@ function look_for_wikipedia_page(){
    local wikipage=$(jq .entities[].sitelinks.enwiki.url wikidata/wikidatacache/$code.json | cut -d/ -f5- | sed -e 's/"//g' | sed -e's@/@%2F@g')
    if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
         printf "%s\n" "$wikipage" >> wikipage.list
-        printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
+        printf "%s\n" "{{< wikipedia \"$wikipage\" "$1" "$2" ${3//@/ }>}}" >> hugo/content/${website//./}.md
    else
-    if [[ $wikipage != 'null' ]]; then
+    if [[ $wikipage && $wikipage != 'null' ]]; then
      if ! [[ -s "wikipedia/pages/$wikipage.md" ]]; then
          python3 wikipedia/wikipedia_criticism.py "wikipedia/sorted_counted_list_of_sections.csv" "${wikipage}" > wikipedia/pages/$wikipage.md
          printf "%s\n" "$wikipage" >> wikipage.list
          if [[ -s "wikipedia/pages/$wikipage.md" ]]; then
-             printf "%s\n" "{{< wikipedia \"$wikipage\" ${2//@/ }>}}" >> hugo/content/${website//./}.md
+             printf "%s\n" "{{< wikipedia \"$wikipage\" "$1" "$2" ${3//@/ }>}}" >> hugo/content/${website//./}.md
          fi
      fi
     fi
@@ -179,26 +198,24 @@ function check_trustpilot(){
         printf "%s\n" "{{< trust \"data/trust-pilot/sites/trust_site_${1}.json\" >}}" >> hugo/content/${website//./}.md
     fi
 }
-secondorder_pairings=("P127;Owner" "P123;Publisher" "P749;Parent" \
-            "P112;Founder" "P488;Chairperson" "P1037;Director")
 function owned_wikiassociates(){
     local tempfile=$(mktemp)
     local temptilesmall=$(mktemp)
     if grep -q "\"$1\"" $2; then
         while read code; do # Main Company
             # echo "TOP: $code"
-            for pairing in ${pairings[*]}; do # Categories
-                IFS=';' read -a var <<<"$pairing"
+            for pairing in ${pairings[@]}; do # Categories
+                IFS=';' read -a var <<<"${pairing}"
                 while read line ; do # Important Companies to Main
-                echo "\"${var[0]}:$line\"" >> ${temptilesmall}_$code
-                    for _pairing in ${pairings[*]}; do # Categories
-                        IFS=';' read -a varx <<<"$_pairing"
+                echo "\"${var[0]}:$line:${var[1]}:1\"" >> ${temptilesmall}_$code
+                    for pairinga in ${secondorder_pairings[@]}; do # Categories
+                        IFS=';' read -a varx <<<"${pairinga}"
                         while read relation; do # Important Companies to Important Companies to Main
-                            echo "\"${varx[0]}:$line\"" >> ${temptilesmall}_$relation
-                            for pairingx in ${secondorder_pairings[*]}; do # Categories
-                                IFS=';' read -a vary <<<"$pairingx"
+                            echo "\"${varx[0]}:$line:${varx[2]}:2\"" >> ${temptilesmall}_$relation
+                            for pairingx in ${third_order_pairings[@]}; do # Categories
+                                IFS=';' read -a vary <<<"${pairingx}"
                                 while read deeper; do # Owning to the Important Companies to Important Companies to Main
-                                    echo "\"${vary[0]}:$relation\"" >> ${temptilesmall}_$deeper
+                                    echo "\"${vary[0]}:$relation:${vary[2]}:3\"" >> ${temptilesmall}_$deeper
                                 done < <(jq -r .entities[].claims.${vary[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$relation.json 2>/dev/null)
                             done
                         done < <(jq -r .entities[].claims.${varx[0]}[].mainsnak.datavalue.value.id wikidata/wikidatacache/$line.json 2>/dev/null)
@@ -212,7 +229,11 @@ function owned_wikiassociates(){
             local RELATION_ID=$(sed -e 's/[^_]*_//g' <<< "$relation")
             # local linco=$(sort -u $relation | wc -l | cut -d' ' -f1)
             local oneline=$(sort -u $relation | tr '\n' '@')
-            look_for_wikipedia_page "${RELATION_ID}" $oneline
+            if grep -q ":1" "$relation"; then
+                look_for_wikipedia_page "${RELATION_ID}" "1" $oneline
+            else 
+                look_for_wikipedia_page "${RELATION_ID}" "2" $oneline
+            fi
         done < <(ls -1 ${temptilesmall}_* 2>/dev/null)
 
         # while read id; do
@@ -243,7 +264,6 @@ function do_record(){
     check_stub "$website" "bcorp/website_stub_bcorp.csv"
     check_stub "$website" "goodonyou/goodforyou_web_brandid.csv"
     check_stub "$website" "glassdoor/glassdoor_index.csv"
-    check_trustpilot "$website"
     check_wikidata "$website" "wikidata/website_id_list.csv"
     isin_via_wikidata "$website" "wikidata/website_id_list.csv"
     # associates_via_wikidata "$website" "wikidata/website_id_list.csv"
@@ -276,7 +296,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(sed -e "/\//d;s/\"//g" websites.list )
+done < <(grep "^" websites.list )
 rm $pids
 wait
 exit 0
