@@ -303,6 +303,25 @@ pre code {
    height: auto;
 }
 
+#wikipedia:hover .tags {
+    visibility: visible;
+}
+
+.tags {
+   visibility: hidden;
+   position: absolute;
+   top: 31px;
+   left: 0;
+   z-index: 99;
+   font-size: 14px;
+   min-width: 200px;
+   text-align: left;
+   padding: 10px;
+   color: #DDD;
+   background-color: #44444444;
+}
+
+
 h2 {
     font-size: 1.1em;
     display: inline;
@@ -326,7 +345,7 @@ h3 {
 #bcorp     {filter: drop-shadow(.816em .816em 0px green);}
 #mbfc      {filter: drop-shadow(.816em .816em 0px orange);}
 #wikipedia {filter: drop-shadow(.816em .816em 0px orangered);}
-#goodonyou {filter: drop-shadow(.816em .816em 0px red);}
+#goodonyou {filter: drop-shadow(.816em .816em 0px red);max-width:50%;}
 #glassdoor {filter: drop-shadow(.816em .816em 0px hotpink);}
 
 #isin h2 { color: brown; }
@@ -346,8 +365,31 @@ h3 {
     height: fit-content;
 }
 
+#tosdr-link {
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    display:block;
+    filter: drop-shadow(.16em .16em 0px darkgrey); 
+    height: 20px;
+    margin:.5em 0 0 .5em;
+    padding: .1em;
+    width: 196px;
+}
+#trust-pilot {
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    display:block;
+    filter: drop-shadow(.16em .16em 0px blue); 
+    font-size: 15px;
+    height: 20px;
+    margin:.5em 0 0 .5em;
+    padding: .1em;
+    width: 196px;
+}
+
 #button-list{
     margin: 0 1em;
+    width: 200px;
 }
 
 #similar-sites{
@@ -375,11 +417,6 @@ h3 {
   z-index: 1;
   left: 0;
   top: 110%;
-}
-.tags{
-    display: flex;
-    max-width: 20em;
-    flex-wrap: wrap;
 }
 .P127, .P355, .P123, .P749, .P112, .P488, .P1037 {
   position:relative;

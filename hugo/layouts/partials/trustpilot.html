@@ -1,0 +1,21 @@
+<!-- TrustPilot -->
+{{ with getJSON (print "data/trust-pilot/sites/trust_site_" . ".json") }}
+    {{ if ne .name "ApplicationError" }}
+    <section id="trust-pilot">
+        {{ $score := .score.trustScore}}
+        {{ if eq (int .numberOfReviews.total) 0 }}
+            {{ with .name.identifying }}
+            <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: unrated 
+            {{ else }}
+            <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: unrated 
+            {{ end }}
+        {{ else }}
+        {{ with .name.identifying }}
+        <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: {{ $score }} 
+        {{ else }}
+        <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: {{ $score }} 
+        {{ end }}
+        {{ end }}
+    </section>
+    {{ end }}
+{{ end }}

@@ -11,6 +11,9 @@ Funded: {{ $d.funded }} </br>
 Headquarters: {{ $d.headquarters }} </br>
 Revenue: {{ $d.revenue}} </br>
 Size: {{ $d.size }} </br>
+{{ with $d.score }}
+Score: {{ . }}
+{{ end }}
 </p>
 </section>
 {{ end }}

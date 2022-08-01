@@ -7,7 +7,7 @@
 {{ $code := . }}
     {{ $data := getJSON "data/wikidata/wikidatacache/" . ".json" }}
     {{ range $data.entities }}
-<button type="button" class="collapsible active" ><h2>{{ .labels.en.value }}</h2><a href="https://wikidata.org/wiki/{{$code}}" class="source">(wikidata)</a></button>
+    <button type="button" class="collapsible active" ><h2 style="background-color:#{{ substr (sha1 $code ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></h2><a href="https://wikidata.org/wiki/{{$code}}" class="source">(wikidata)</a></button>
 <section class="section-content" style="display:block;">
     <p>
         {{ range .claims }}{{ range . }}
@@ -20,10 +20,10 @@
                         {{ if fileExists (print "data/wikidata/longcache/" $d.id ".json") }}
                             {{ $q := getJSON "data/wikidata/longcache/" $d.id ".json" }}
                             {{ range $q.entities}}
-                            {{ if eq .sitelinks.enwiki.value "null" }}
-                            <p><b>{{ index $props $p }}:</b><a href="https://wikidata.org/wiki/{{ $d.id }}" style="background-color:#{{ substr (sha1 $d.id ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></a>
-                            {{else}}
+                            {{ if isset .sitelinks "enwiki" }}
                             <p><b>{{ index $props $p }}:</b><span class="hover-anchor" onmouseover="loadWikiInfo(this)"> <a target="_blank" href="{{ .sitelinks.enwiki.url }}"  style="background-color:#{{ substr (sha1 $d.id ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></a><span class="hover-pop dot">This will be a little pop-out wikipedia explanation that appears on hover</span></span>
+                            {{else}}
+                            <p><b>{{ index $props $p }}:</b><a href="https://wikidata.org/wiki/{{ $d.id }}" style="background-color:#{{ substr (sha1 $d.id ) 1 6 }};" ><span id="contrast">{{ .labels.en.value }}</span></a>
                             {{end}}
                             {{ end }}
                         {{ else }}

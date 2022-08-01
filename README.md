@@ -42,5 +42,20 @@ data to use in the newest Invisible Voice iteration.
 ## Magic bookmark
 - javascript:void(window.open('https://test.reveb.la/'+(location.href.split('/')[2]).replace(/\./g,'')));
 
+
+## Ordering 
+
+1st: All information that isn’t wikipedia or Wikidata first
+
+Separate wikipedia card info and wikipedia body text information for company
+
+2nd: Then have wikipedia card
+
+3rd: Have wikipedia information from that company
+
+4th: Then have wiki data information
+
+5th: Then have Wikidata companies and people / - and their wikipedia
+
 ---
 [1]: trustpilot is a unique case and will be done last, also they employ rate limiting so the crawling takes more time than previously assumed, napkin is around but can be made faster with smarter scripts after initial grab (frequent updating on known entries and less frequent updating on non-entries)

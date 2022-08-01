@@ -8,63 +8,9 @@
       We are confident the information we are showing is accurate, however we strongly advise you do your own research into any companies.
     </p>
     <section id="button-list">
-    {{ with .Params.tosdr }}
-    <section id="tosdr-link" style="margin:.5em 0 0 .5em;display:block;">
-<a href="https://tosdr.org/en/service/{{.}}">
-    <img src="https://shields.tosdr.org/en_{{.}}.svg"/></a>
-</section>
-    {{ end }}
-    {{ with .Params.mbfc }}
-    <section id="mbfc-header" style="margin: .5em 0 0 .5em;font-size:.7em;display:block;">
-    {{ $data := getJSON "data/mbfc/combined.json" }}
-    {{ $dataJ := index $data.sources . }}
-    {{ $.Scratch.Set "bias" ""}}
-    Media Bias Fact Check <a class="source" href="{{ $dataJ.u }}" >(source)</a>
-    {{ if eq $dataJ.b "C" }}
-        {{ $.Scratch.Set "bias" (index $data.biases "center")}}
-    {{ else if (eq $dataJ.b "L") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "left")}}
-    {{ else if (eq $dataJ.b "LC") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "left-center")}}
-    {{ else if (eq $dataJ.b "R") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "right")}}
-    {{ else if (eq $dataJ.b "RC") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "right-center")}}
-    {{ else if (eq $dataJ.b "PS") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "pro-science")}}
-    {{ else if (eq $dataJ.b "FN") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "fake-news")}}
-    {{ else if (eq $dataJ.b "CP") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "conspiricy")}}
-    {{ else if (eq $dataJ.b "S") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "satire")}}
-    {{ end }}
-    {{ $bias := $.Scratch.Get "bias"}}
-    </br>
-    Bias: <a href="{{ $bias.url }}">{{ $bias.name }}</a></br>
-    </section>
-</br>
-    {{ end }}
-    {{ with getJSON (print "data/trust-pilot/sites/trust_site_" .Params.title ".json") }}
-        {{ if ne .name "ApplicationError" }}
-        <section id="trust-pilot">
-            {{ $score := .score.trustScore}}
-            {{ if eq (int .numberOfReviews.total) 0 }}
-                {{ with .name.identifying }}
-                <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: unrated </br>
-                {{ else }}
-                <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: unrated </br>
-                {{ end }}
-            {{ else }}
-            {{ with .name.identifying }}
-            <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: {{ $score }} </br>
-            {{ else }}
-            <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: {{ $score }} </br>
-            {{ end }}
-            {{ end }}
-        </section>
-        {{ end }}
-    {{ end }}
+    {{ with .Params.tosdr }}{{ partial "tosdr.html" . }}{{ end }}
+    {{ with .Params.mbfc }}{{ partial "mbfc.html" . }}{{ end }}
+    {{ partial "trustpilot.html" .Params.title  }}
     </section>
     </div>
   </div>
@@ -72,6 +18,8 @@
     {{ partial "similar.html" .Params.title }}
   </div>
   <div class="content">
+    {{ with .Params.goodonyou }}{{ partial "goodonyou.html" . }}{{ end }}
+    {{ with .Params.bcorp }}{{ partial "bcorp.html" . }}{{ end }}
     {{ .Content }}
   </div>
   {{ if eq .WordCount 0 }}
@@ -83,6 +31,20 @@
 
 
 <script>
+
+  let allLinks = document.querySelectorAll('a');
+
+  allLinks.forEach(el => {
+    if (el.href.includes("wikipedia.org") && el.target != "_blank"){
+        href = el.href;
+        org_html = el.innerHTML;
+        parent = el.parentElement;
+        var new_el = document.createElement("span");
+        new_el.innerHTML = "<span class='hover-anchor' onmouseover='loadWikiInfo(this)'><a target='_blank' href=\"" + el.href + "\" >" + org_html + "</a><span class='hover-pop dot'>This will be a little pop-out wikipedia explanation that appears on hover</span></span>"
+        parent.replaceChild(new_el,el);
+
+
+    }});
 
   let hoverAnchors = document.querySelectorAll('.hover-anchor');
   let wW = window.innerWidth;
@@ -97,7 +59,7 @@
       hoverPop.classList.add('dot-right');
     }
   })
-
+  
   let loadWikiInfo = function(x) {
   	let url = x.firstElementChild.getAttribute("href");	
   	if (url != "null"){
