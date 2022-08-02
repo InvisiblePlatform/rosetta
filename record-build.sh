@@ -9,15 +9,15 @@ WDLOOKUP="wikidata/website_id_list.csv"
 MBLOOKUP="mbfc/website_bias.csv"
 BCLOOKUP="bcorp/website_stub_bcorp.csv"
 GYLOOKUP="goodonyou/goodforyou_web_brandid.csv"
-GDLOOKUP="glassdoor/website-hq-size-type-revenue.csv"
+GDLOOKUP="glassdoor/old/website_glassdoorneo.list"
 TSLOOKUP="tosdr/site_id.list"
-wikidatacachedir="./wikidata/longcache/"
+wikidatacachedir="./wikidata/longcache"
 
 cut -d, -f1 \
     $MBLOOKUP \
     $BCLOOKUP \
+    $GDLOOKUP \
     $GYLOOKUP \
-    $GDLOOKIP \
     $WDLOOKUP \
     > $websites
 
@@ -166,9 +166,53 @@ function check_data_header(){
 function check_wikidata(){
     if ! grep -q "\"$1\"" $2; then return; fi
     while read code; do
-        printf "%s\n" "{{< $(cut -d/ -f4 <<< "$2") code=\"$code\" >}}" >> hugo/content/${website//./}.md
+        printf "%s\n" "{{< wikidata $(cut -d/ -f4 <<< "$2") code=\"$code\" >}}" >> hugo/content/${website//./}.md
         # look_for_wikipedia_page $code
     done< <(grep "\"$1\"" $2 | grep -o "Q[0-9]*")
+}
+function check_data_bcorp(){
+    if ! grep -q "\"$1\"" $2; then return; fi
+    # needs to look up against wikidata to resolve other domains before commiting to the 
+    # page
+    local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    if ! [[ $WIKIDATAID ]]; then 
+        while read code; do
+             RATING=$(yq -r .latestVerifiedScore bcorp/split_files/bcorp_${code}.json)
+             printf "%s\n" "bcorp_rating: $RATING" >> hugo/content/${website//./}.md
+        done < <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    fi
+    for ID in ${WIKIDATAID}; do
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                while read code; do
+                    RATING=$(yq -r .latestVerifiedScore bcorp/split_files/bcorp_${code}.json)
+                    printf "%s\n" "bcorp_rating: $RATING" >> hugo/content/${website//./}.md
+                done< <(grep "\"$site\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+            fi
+        done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
+    done
+}
+function check_data_glassdoor(){
+    if ! grep -q "\"$1\"" $2; then return; fi
+    # needs to look up against wikidata to resolve other domains before commiting to the 
+    # page
+    local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    if ! [[ $WIKIDATAID ]]; then 
+        while read code; do
+            RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/old/data/${code}.yaml)
+            printf "%s\n" "glassdoor_rating: $RATING" >> hugo/content/${website//./}.md
+        done < <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    fi
+    for ID in ${WIKIDATAID}; do
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                while read code; do
+                    RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/old/data/${code}.yaml)
+                    printf "%s\n" "glassdoor_rating: $RATING" >> hugo/content/${website//./}.md
+                done< <(grep "\"$site\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+            fi
+        done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
+    done
 }
 function check_stub(){
     if ! grep -q "\"$1\"" $2; then return; fi
@@ -222,6 +266,9 @@ function look_for_wikipedia_page(){
 function isin_via_wikidata(){
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
         while read site; do
             if grep -q "\"$site\"" $2; then
                 jq -r .entities[].claims.P946[].mainsnak.datavalue.value \
@@ -248,6 +295,9 @@ function owned_wikiassociates(){
 
     local continue_going=0
     while read code; do # Main Company
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
         while read command; do 
             printf "%s\n" ${command/;*/} >> ${command/*;/}
             [[ $continue_going == 0 ]] && continue_going=1
@@ -257,12 +307,18 @@ function owned_wikiassociates(){
     [[ $continue_going == 0 ]] && rm $temptilesmall && return 
 
     while read line; do # important companies to main
+        if ! [[ -s "$wikidatacachedir/$line.json" ]]; then
+             wget -qO $wikidatacachedir/$line.json "$ENTITY/$line" 
+        fi
         while read command; do 
             printf "%s\n" ${command/;*/} >> ${command/*;/}
         done < <(jq -r ".entities[].claims | $(sed -e "s/ /, /g;s/P/.P/g" <<<"${secondorder_pairings[@]/;*/}") | select( . != null) | .[] | [.mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$line.json | sort -u  | sed -e "s/\",\"/:$line:@:2\";${temptilesmall//\//?}_/g;s/\"$//g" | sed -e "s/?/\//g" | sed -f $secondorderpatterns | grep ":"| sed -e "s/\"//g")
     done < <(egrep ":1" ${temptilesmall}_* | sed -e "s/^.*:\(Q[0-9]*\):.*/\1/g")
 
     while read relation; do # important companies to main
+        if ! [[ -s "$wikidatacachedir/$relation.json" ]]; then
+             wget -qO $wikidatacachedir/$relation.json "$ENTITY/$relation" 
+        fi
         while read command; do 
             printf "%s\n" ${command/;*/} >> ${command/*;/}
         done < <(jq -r ".entities[].claims | $(sed -e "s/ /, /g;s/P/.P/g" <<<"${third_order_pairings[@]/;*/}") | select( . != null) | .[] | [.mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$relation.json | sort -u  | sed -e "s/\",\"/:$relation:@:2\";${temptilesmall//\//?}_/g;s/\"$//g" | sed -e "s/?/\//g" | sed -f $thirdorderpatterns | grep ":"| sed -e "s/\"//g")
@@ -298,13 +354,16 @@ function do_record(){
     printf "%s\n" "---" >> hugo/content/${website//./}.md
 
     check_tosdr "$website" "$TSLOOKUP" "tosdr"
-    check_data_header "$website" "$MBLOOKUP" 
+    check_data_header "$website" "$MBLOOKUP" "mbfc"
     check_data_header "$website" "$BCLOOKUP" "bcorp"
     check_data_header "$website" "$GYLOOKUP" "goodonyou"
     check_stub "$website" "$GDLOOKUP" "glassdoor"
     check_wikidata "$website" "$WDLOOKUP" "wikidata"
     isin_via_wikidata "$website" "$WDLOOKUP" "isin"
     owned_wikiassociates "$website" "$WDLOOKUP"
+
+    check_data_glassdoor "$website" "$GDLOOKUP"
+    check_data_bcorp "$website" "$BCLOOKUP"
 
     LC_COLLATE=C sort -u hugo/content/${website//./}.md \
         | sed "0,/{/{s/^{/---\n{/}" > $resort
@@ -323,7 +382,7 @@ mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
-ramcache
+#ramcache
 prepare_pairings
 
 # Make a stack of 8 procs that we count and add too if lower than that amount
@@ -346,7 +405,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(grep "amazon\.com" websites.list )
+done < <(grep "^" websites.list )
 rm $pids
 wait
 exit 0

@@ -1,5 +1,7 @@
 {{ $path := print "data/" (.Get "file")}}
 {{ if os.FileExists $path }}
+</section>
+<section class="content">
 <section id="isin">
     {{ if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_JustTransitionData.json" }} 
     <h2> World Benchmark </h2></br>

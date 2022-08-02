@@ -1,8 +1,8 @@
-{{- $.Scratch.Add "index" slice -}}
+{{- $.Scratch.SetInMap "index" "" (dict "" "" ) -}}
 {{- range where .Site.Pages "Type" "not in"  (slice "json") -}}
     {{- $tempslice := (slice .Params.title ) -}}
     {{- if ne (index $tempslice 0 ) "" -}}
-        {{- $.Scratch.Add "index" (dict "id" .RelPermalink "websites" $tempslice "lastupdated" .Params.date ) -}}
+        {{- $.Scratch.SetInMap "index" (replace .RelPermalink "/" "") (dict "d" .Params.date.Unix  "bc" .Params.bcorp_rating "dr" .Params.glassdoor_rating "gr" .Params.goodonyou_rating "mr" .Params.mbfc ) -}}
     {{- end -}}
 {{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}

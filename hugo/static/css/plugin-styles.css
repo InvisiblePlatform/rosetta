@@ -375,6 +375,17 @@ h3 {
     padding: .1em;
     width: 196px;
 }
+#mbfc-header {
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    display:block;
+    filter: drop-shadow(.16em .16em 0px orange); 
+    font-size: 15px;
+    height: 40px;
+    margin:.5em 0 0 .5em;
+    padding: .1em;
+    width: 196px;
+}
 #trust-pilot {
     background-color:#fefefe; 
     border: solid 1px black; 

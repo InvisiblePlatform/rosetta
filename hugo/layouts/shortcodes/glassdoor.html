@@ -1,18 +1,21 @@
+</section>
+<section class="content">
 <section id="glassdoor">
 {{ with .Get "gid" }}
-{{ $path := print "data/" . }}
+{{ $path := print "data/glassdoor/data_json/" . ".json"}}
 {{ if os.FileExists $path }}
 {{ $d := getJSON $path }}
-<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="#">(no source right now)</a></button>
+<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="{{ $d.url }}">(source)</a></button>
 <section class="section-content" style="display: block;">
 <p>
-Company Type: {{ $d.ctype }} </br>
-Funded: {{ $d.funded }} </br>
-Headquarters: {{ $d.headquarters }} </br>
-Revenue: {{ $d.revenue}} </br>
-Size: {{ $d.size }} </br>
-{{ with $d.score }}
-Score: {{ . }}
+{{ with $d.type }} Company Type: {{ . }} </br> {{ end }}
+{{ with $d.headquarters }} Headquarters: {{ . }} </br> {{ end }}
+{{ with $d.founded }} Founded: {{ . }} </br> {{ end }}
+{{ with $d.industry }} Industry: {{ . }} </br> {{ end }}
+{{ with $d.revenue }} Revenue: {{ . }} </br> {{ end }}
+{{ with $d.size }} Size: {{ . }} </br>{{ end }}
+{{ with $d.glasroom_rating }}
+Score: {{ .ratingValue }} ( {{.ratingCount }} reviews)
 {{ end }}
 </p>
 </section>

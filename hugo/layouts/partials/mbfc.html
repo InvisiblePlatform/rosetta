@@ -1,28 +1,28 @@
 <!-- MediaBiasFactCheck -->
+{{ $data := getJSON "data/mbfc/combined.json" }}
+{{ $dataJ := index $data.sources . }}
+{{ $dataB := $data.biases }}
+{{ if isset $data.sources . }}
 <section id="mbfc-header" >
-    {{ $data := getJSON "data/mbfc/combined.json" }}
-    {{ $dataJ := index $data.sources . }}
-    {{ $.Scratch.Set "bias" ""}}
     Media Bias Fact Check <a class="source" href="{{ $dataJ.u }}" >(source)</a>
     {{ if eq $dataJ.b "C" }}
-        {{ $.Scratch.Set "bias" (index $data.biases "center")}}
+        Bias: <a href="{{ (index $dataB "center").url }}">{{ (index $dataB "center").name }}</a>
     {{ else if (eq $dataJ.b "L") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "left")}}
+        Bias: <a href="{{ (index $dataB "left").url }}">{{ (index $dataB "left").name }}</a>
     {{ else if (eq $dataJ.b "LC") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "left-center")}}
+        Bias: <a href="{{ (index $dataB "left-center").url }}">{{ (index $dataB "left-center").name }}</a>
     {{ else if (eq $dataJ.b "R") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "right")}}
+        Bias: <a href="{{ (index $dataB "right").url }}">{{ (index $dataB "right").name }}</a>
     {{ else if (eq $dataJ.b "RC") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "right-center")}}
+        Bias: <a href="{{ (index $dataB "right-center").url }}">{{ (index $dataB "right-center").name }}</a>
     {{ else if (eq $dataJ.b "PS") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "pro-science")}}
+        Bias: <a href="{{ (index $dataB "pro-science").url }}">{{ (index $dataB "pro-science").name }}</a>
     {{ else if (eq $dataJ.b "FN") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "fake-news")}}
+        Bias: <a href="{{ (index $dataB "fake-news").url }}">{{ (index $dataB "fake-news").name }}</a>
     {{ else if (eq $dataJ.b "CP") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "conspiricy")}}
+        Bias: <a href="{{ (index $dataB "conspiracy").url }}">{{ (index $dataB "conspiracy").name }}</a>
     {{ else if (eq $dataJ.b "S") }}
-        {{ $.Scratch.Set "bias" (index $data.biases "satire")}}
+        Bias: <a href="{{ (index $dataB "satire").url }}">{{ (index $dataB "satire").name }}</a>
     {{ end }}
-    {{ $bias := $.Scratch.Get "bias"}}
-    Bias: <a href="{{ $bias.url }}">{{ $bias.name }}</a>
 </section>
+{{ end }}

@@ -8,5 +8,6 @@ for i in $(ls data/ -1); do
     
     if [[ $SITE != "None" && $SITE != "null" && $SITE ]]; then
         printf '%s\n' "\"$SITE\",\"${i/.yaml/}\"" | tee -a website_glassdoorneo.list
+        yq . ./data/$i > data_json/${i/.yaml/}.json
     fi
 done

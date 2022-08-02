@@ -9,7 +9,7 @@
     </p>
     <section id="button-list">
     {{ with .Params.tosdr }}{{ partial "tosdr.html" . }}{{ end }}
-    {{ with .Params.mbfc }}{{ partial "mbfc.html" . }}{{ end }}
+    {{ if isset .Params "mbfc" }}{{ partial "mbfc.html" .Params.title }}{{ end }}
     {{ partial "trustpilot.html" .Params.title  }}
     </section>
     </div>
@@ -17,9 +17,9 @@
   <div class="content"> 
     {{ partial "similar.html" .Params.title }}
   </div>
+  {{ with .Params.goodonyou }}<section class="content">{{ partial "goodonyou.html" . }}</section><hr/>{{ end }}
+  {{ with .Params.bcorp }}<section class="content">{{ partial "bcorp.html" . }}</section><hr/>{{ end }}
   <div class="content">
-    {{ with .Params.goodonyou }}{{ partial "goodonyou.html" . }}{{ end }}
-    {{ with .Params.bcorp }}{{ partial "bcorp.html" . }}{{ end }}
     {{ .Content }}
   </div>
   {{ if eq .WordCount 0 }}
