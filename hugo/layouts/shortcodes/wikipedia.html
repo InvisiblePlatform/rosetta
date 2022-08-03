@@ -1,6 +1,7 @@
 <!-- Wikipedia -->
 {{ if eq (.Get 0) "null" }}
 {{ else }}
+{{ if isset $.Params 2 }}
 {{ $url := cond (fileExists (print "data/wikidata/longcache/" (.Get 1) ".json") ) (print "data/wikidata/longcache/" (.Get 1) ".json") (print "https://www.wikidata.org/entity/" (.Get 1))}}
 {{ $top := ((index (getJSON $url ).entities (.Get 1)).labels.en.value)  }}
 <section id="wikipedia" class="{{ .Get 0 }}">
@@ -18,6 +19,24 @@
 {{ end }}
 </p>
 </section>
+{{ else }}
+<section id="wikipedia" class="{{ .Get 0 }}">
+    <button type="button"  class="collapsible active"><h2><span style=" background-color:#{{ substr (sha1 (.Get 0)) 1 6 }};" ><span id="contrast">{{ .Get 0 }}</span></span></h2><a href="https://en.wikipedia.org/wiki/{{ .Get 0 }}" class="source">(wikipedia)</a>
+</button>
+<section class="section-content" style="display:block;"/>
+<p>
+{{ with .Get 0}}
+{{ if fileExists (print "data/wikipedia/wikicard/wc_" . ".html") }}
+{{ readFile (print "data/wikipedia/wikicard/wc_" . ".html" ) | safeHTML }}
+{{ end }}
+{{ if fileExists (print "data/wikipedia/pages/" . ".md") }}
+{{ readFile (print "data/wikipedia/pages/" . ".md" ) | markdownify }}
+{{ end }}
+{{ end }}
+</p>
+</section>
+{{ end }}
+{{ if isset $.Params 2  }}
 <span class="tags">
 {{ range after 3 $.Params  }}
     {{ $list := split . ":" }}
@@ -43,4 +62,6 @@
 {{ end }}
 </span>
 </section>
+{{ else }}
+{{ end }}
 {{ end }}

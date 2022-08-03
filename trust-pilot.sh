@@ -37,7 +37,7 @@ while read -a site; do
     if ! [[ -s "sites/trust_site_${site}.json" ]]; then
         do_site "$site"    
         jq .name sites/trust_site_$site.json
-        sleep 1s
+        sleep 0.5s
     fi
-done < <( cut -d, -f1 ../wikidata/website_id_list.csv | sort -u | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sort -u)
+done < <( sort -u ../websites.list | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sort -u)
 popd
