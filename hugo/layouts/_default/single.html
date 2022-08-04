@@ -11,6 +11,7 @@
     {{ with .Params.tosdr }}{{ partial "tosdr.html" . }}{{ end }}
     {{ if isset .Params "mbfc" }}{{ partial "mbfc.html" .Params.title }}{{ end }}
     {{ partial "trustpilot.html" .Params.title  }}
+    {{ if isset .Params "polideology" }}{{ partial "wikidata.html" .Params.polideology }}{{ end }}
     </section>
     </div>
   </div>

@@ -144,7 +144,6 @@ function ramcache(){
     wikidatacachedir="/mnt/tmpcache/longcache"
 }
 function check_data_header(){
-    if ! grep -q "\"$1\"" $2; then return; fi
     # needs to look up against wikidata to resolve other domains before commiting to the 
     # page
     local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
@@ -189,6 +188,40 @@ function check_wikidata(){
         printf "%s\n" "{{< wikidata $(cut -d/ -f4 <<< "$2") code=\"$code\" >}}" >> hugo/content/${website//./}.md
         # look_for_wikipedia_page $code
     done< <(grep "\"$1\"" $2 | grep -o "Q[0-9]*")
+}
+function add_values_from_wikidata(){
+    while read WIKIDATAID; do
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+               VALUE=$(jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$site.json 2>/dev/null)
+               [[ $VALUE ]] && printf "%s\n" "$3: \"$VALUE;$4;$site\"" >> hugo/content/${website//./}.md
+            fi
+        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+}
+function isin_via_wikidata(){
+    local tempfile=$(mktemp)
+    while read WIKIDATAID; do
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                jq -r .entities[].claims.P946[].mainsnak.datavalue.value \
+                $(grep "\"$site\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
+                    2>/dev/null >> $tempfile
+                while read isin; do
+                    while read file; do
+                        printf "%s\n" "{{< isin file=\"$file\" id=\"$isin\" >}}" >> hugo/content/${website//./}.md
+                    done < <(rg $isin static/*.json | cut -d: -f1)
+                done < <(sort -u $tempfile | sed -e "s/null//g")
+            fi
+        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    rm $tempfile
 }
 function check_data_bcorp(){
     if ! grep -q "\"$1\"" $2; then return; fi
@@ -262,27 +295,6 @@ function look_for_wikipedia_page(){
      fi
     fi
    fi
-}
-function isin_via_wikidata(){
-    local tempfile=$(mktemp)
-    while read WIKIDATAID; do
-        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
-             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
-        fi
-        while read site; do
-            if grep -q "\"$site\"" $2; then
-                jq -r .entities[].claims.P946[].mainsnak.datavalue.value \
-                $(grep "\"$site\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
-                    2>/dev/null >> $tempfile
-                while read isin; do
-                    while read file; do
-                        printf "%s\n" "{{< isin file=\"$file\" id=\"$isin\" >}}" >> hugo/content/${website//./}.md
-                    done < <(rg $isin static/*.json | cut -d: -f1)
-                done < <(sort -u $tempfile | sed -e "s/null//g")
-            fi
-        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
-    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
-    rm $tempfile
 }
 function check_tosdr(){
     if ! grep -q "\"$1\"" $2; then return; fi
@@ -362,6 +374,8 @@ function do_record(){
     # check_wikidata "$website" "$WDLOOKUP" "wikidata"
     owned_wikiassociates "$website" "$WDLOOKUP"
 
+    add_values_from_wikidata "$website" "$WDLOOKUP" "polalignment" "P1387"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "polideology" "P1142"
     check_data_glassdoor "$website" "$GDLOOKUP"
     check_data_bcorp "$website" "$BCLOOKUP"
 
@@ -373,6 +387,8 @@ function do_record(){
     sed -i '/^---/{x;s/^/n/;/^n\{3\}$/{x;d};x}' hugo/content/${website//./}.md
 
     reorder_wikipedia "hugo/content/${website//./}.md"
+
+    #cat hugo/content/${website//./}.md
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done
 }
@@ -405,7 +421,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(grep "^" websites.list )
+done < <(grep "^dailymail" websites.list )
 rm $pids
 wait
 exit 0

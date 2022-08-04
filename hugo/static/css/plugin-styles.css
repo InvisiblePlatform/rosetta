@@ -398,6 +398,18 @@ h3 {
     width: 196px;
 }
 
+#small-wikidata {
+    background-color:#fefefe; 
+    border: solid 1px black; 
+    display:block;
+    filter: drop-shadow(.16em .16em 0px blue); 
+    font-size: 15px;
+    height: fit-content;
+    margin:.5em 0 0 .5em;
+    padding: .1em;
+    width: 196px;
+}
+
 #button-list{
     margin: 0 1em;
     width: 200px;
@@ -491,6 +503,10 @@ h3 {
     margin-left: 10px;
     display: flex;
     flex-wrap: wrap;
+}
+
+#wikipedia > button > span > span > a{
+ display:inline; font-size: 0.6em;
 }
 
 /* width */
