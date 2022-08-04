@@ -9,7 +9,7 @@ WDLOOKUP="wikidata/website_id_list.csv"
 MBLOOKUP="mbfc/website_bias.csv"
 BCLOOKUP="bcorp/website_stub_bcorp.csv"
 GYLOOKUP="goodonyou/goodforyou_web_brandid.csv"
-GDLOOKUP="glassdoor/old/website_glassdoorneo.list"
+GDLOOKUP="glassdoor/website_glassdoorneo.list"
 TSLOOKUP="tosdr/site_id.list"
 wikidatacachedir="./wikidata/longcache"
 
@@ -163,6 +163,26 @@ function check_data_header(){
         done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
     done
 }
+function check_stub(){
+    if ! grep -q "\"$1\"" $2; then return; fi
+    # needs to look up against wikidata to resolve other domains before commiting to the 
+    # page
+    local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    if ! [[ $WIKIDATAID ]]; then 
+        while read code; do
+            printf "%s\n" "{{< $3 gid=\"$code\" >}}" >> hugo/content/${website//./}.md
+        done< <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    fi
+    for ID in ${WIKIDATAID}; do
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                while read code; do
+                    printf "%s\n" "{{< $3 gid=\"${code}\" >}}" >> hugo/content/${website//./}.md
+                done< <(grep "\"$site\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+            fi
+        done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
+    done
+}
 function check_wikidata(){
     if ! grep -q "\"$1\"" $2; then return; fi
     while read code; do
@@ -199,7 +219,7 @@ function check_data_glassdoor(){
     local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
     if ! [[ $WIKIDATAID ]]; then 
         while read code; do
-            RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/old/data/${code}.yaml)
+            RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/data_json/${code}.json)
             printf "%s\n" "glassdoor_rating: $RATING" >> hugo/content/${website//./}.md
         done < <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
     fi
@@ -207,28 +227,8 @@ function check_data_glassdoor(){
         while read site; do
             if grep -q "\"$site\"" $2; then
                 while read code; do
-                    RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/old/data/${code}.yaml)
+                    RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/data_json/${code}.json)
                     printf "%s\n" "glassdoor_rating: $RATING" >> hugo/content/${website//./}.md
-                done< <(grep "\"$site\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
-            fi
-        done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
-    done
-}
-function check_stub(){
-    if ! grep -q "\"$1\"" $2; then return; fi
-    # needs to look up against wikidata to resolve other domains before commiting to the 
-    # page
-    local WIKIDATAID=$(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
-    if ! [[ $WIKIDATAID ]]; then 
-        while read code; do
-            printf "%s\n" "{{< $3 gid=\"$code\" >}}" >> hugo/content/${website//./}.md
-        done< <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
-    fi
-    for ID in ${WIKIDATAID}; do
-        while read site; do
-            if grep -q "\"$site\"" $2; then
-                while read code; do
-                    printf "%s\n" "{{< $3 gid=\"${code}\" >}}" >> hugo/content/${website//./}.md
                 done< <(grep "\"$site\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
             fi
         done < <(grep "\"$ID\"" $WDLOOKUP | cut -d, -f1 | sed -e "s/ //g;s/\"//g" | sort -u)
@@ -357,9 +357,9 @@ function do_record(){
     check_data_header "$website" "$MBLOOKUP" "mbfc"
     check_data_header "$website" "$BCLOOKUP" "bcorp"
     check_data_header "$website" "$GYLOOKUP" "goodonyou"
-    check_stub "$website" "$GDLOOKUP" "glassdoor"
-    check_wikidata "$website" "$WDLOOKUP" "wikidata"
+    check_data_header "$website" "$GDLOOKUP" "glassdoor"
     isin_via_wikidata "$website" "$WDLOOKUP" "isin"
+    # check_wikidata "$website" "$WDLOOKUP" "wikidata"
     owned_wikiassociates "$website" "$WDLOOKUP"
 
     check_data_glassdoor "$website" "$GDLOOKUP"
@@ -382,7 +382,7 @@ mkdir -p hugo/content
 LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
-#ramcache
+ramcache
 prepare_pairings
 
 # Make a stack of 8 procs that we count and add too if lower than that amount
