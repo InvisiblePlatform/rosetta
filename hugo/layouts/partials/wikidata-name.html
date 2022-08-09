@@ -1,0 +1,7 @@
+{{ $newId := . }}
+{{ $theFile := (print "data/wikidata/longcache/" $newId ".json") }}
+{{ with $data := getJSON (cond (fileExists $theFile) $theFile (print "https://www.wikidata.org/entity/" $newId)) }}
+{{ $label := default "" (index $data.entities $newId).labels.en.value}}
+{{ $label }}
+{{ else }}
+{{ end }}

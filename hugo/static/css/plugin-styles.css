@@ -303,7 +303,7 @@ pre code {
    height: auto;
 }
 
-#wikipedia:hover .tags {
+.wikipedia:hover .tags {
     visibility: visible;
 }
 
@@ -332,7 +332,7 @@ h3 {
     white-space: nowrap;
     margin-right: 5px; }
 
-#isin, #wikidata, #bcorp, #mbfc, #wikipedia, #goodonyou, #glassdoor   { 
+#isin, #yahoo, #wikidata, #bcorp, #mbfc, .wikipedia, #goodonyou, #glassdoor   { 
     margin: .16em;
     padding: .16em;
     background-color:#fefefe; 
@@ -343,8 +343,9 @@ h3 {
 #isin      {filter: drop-shadow(.816em .816em 0px brown);}
 #wikidata  {filter: drop-shadow(.816em .816em 0px purple);}
 #bcorp     {filter: drop-shadow(.816em .816em 0px green);}
+#yahoo     {filter: drop-shadow(.816em .816em 0px blueviolet);}
 #mbfc      {filter: drop-shadow(.816em .816em 0px orange);}
-#wikipedia {filter: drop-shadow(.816em .816em 0px orangered);}
+.wikipedia {filter: drop-shadow(.816em .816em 0px orangered);}
 #goodonyou {filter: drop-shadow(.816em .816em 0px red);max-width:50%;}
 #glassdoor {filter: drop-shadow(.816em .816em 0px hotpink);}
 
@@ -352,9 +353,10 @@ h3 {
 #goodonyou h2 { color: red; }
 #glassdoor h2 { color: hotpink; }
 #bcorp h2     { color: green; }
+#yahoo h2     { color: blueviolet; }
 #wikidata h2     { color: purple; }
 #mbfc h2     { color: orange; }
-#wikipedia h2     { color: orangered; }
+.wikipedia h2     { color: orangered; }
 
 .similar-site {
     margin: .16em;
@@ -505,7 +507,7 @@ h3 {
     flex-wrap: wrap;
 }
 
-#wikipedia > button > span > span > a{
+.wikipedia > button > span > span > a{
  display:inline; font-size: 0.6em;
 }
 

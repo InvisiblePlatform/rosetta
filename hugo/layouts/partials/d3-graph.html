@@ -1,0 +1,185 @@
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+  fill: #98FB98;
+  filter: drop-shadow(0 0 5px black);
+}
+
+text {
+  font-family: sans-serif;
+  font-size: 10px;
+  filter: drop-shadow(0 0 5px #98FB98);
+}
+         
+.Q5 {
+  fill: orangered!important;
+}
+
+.Q658255 {
+  fill: orange!important;
+}
+.Q35127{
+  fill: blueviolet!important;
+}
+
+</style>
+<!-- 
+"Q105538253","online shop"
+"Q1057026","cargo airline"
+"Q1137109","video game publisher"
+"Q1153767","platform as a service"
+"Q1194970","dot-com company"
+"Q1210425","internet hosting service"
+"Q1320047","book publisher"
+"Q1414426","film database"
+"Q1762059","film production company"
+"Q1880737","branch office"
+"Q19967801","online service"
+"Q210167","video game developer"
+"Q21980538","commercial organization"
+"Q241317","computing platform"
+"Q261232","business unit"
+"Q3220391","social networking service"
+"Q3390477","online marketplace"
+"Q3487908","venture capital firm"
+"Q35127","website"
+"Q368290","film distributor"
+"Q4086495","startup accelerator"
+"Q42414514","bookstore chain"
+"Q431289","brand"
+"Q43229","organization"
+"Q4357531","virtual airline"
+"Q4830453","business"
+"Q50870824","gourmet supermarket chain"
+"Q50969307","health food chain"
+"Q59152282","video streaming service"
+"Q658255","subsidiary"
+"Q6881511","enterprise"
+"Q726870","brick and mortar"
+"Q728646","partnership"
+"Q783794","company"
+"Q847959","social cataloging application"
+"Q891723","public company"
+"Q5","human"
+-->
+<svg width="1280" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+   <script>
+
+       var svg = d3.select("svg"),
+               width = +svg.attr("width"),
+               height = +svg.attr("height");
+
+       var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+       var simulation = d3.forceSimulation()
+           .force("link", d3.forceLink().id(function(d) { return d.id; }))
+           .force("charge", d3.forceManyBody().strength(-300))
+           .force("center", d3.forceCenter(width / 2, height / 2));
+
+       d3.json("{{ . }}", function(error, graph) {
+         if (error) throw error;
+
+         var link = svg.append("g")
+             .attr("class", "links")
+           .selectAll("line")
+           .data(graph.links)
+           .enter().append("line")
+           .attr("class", function(d){ return d.type; });
+
+         var node = svg.append("g")
+             .attr("class", "nodes")
+           .selectAll("g")
+           .data(graph.nodes)
+           .enter().append("g")
+
+           var circles = node.append("a").attr("href", function(d){
+               if (d.enwiki != "null"){
+                    return "#" + d.enwiki;
+               } else {
+                    return "https://wikidata.org/wiki/" + d.id;
+               }
+           }).append("circle")
+               .attr("r", function(d){ 
+                   if (d.groups.includes("Q5")){
+                        return 6;
+                   } else {
+                        return 10;
+                   }
+               })
+           .attr("class", function(d){ return d.groups.toString().replace(/,/g,' '); });
+
+         // Create a drag handler and append it to the node object instead
+         var drag_handler = d3.drag()
+             .on("start", dragstarted)
+             .on("drag", dragged)
+             .on("end", dragended);
+
+         drag_handler(node);
+         
+         var lables = node.append("text")
+             .text(function(d) {
+                     return d.label;
+                   })
+             .attr('x', 6)
+             .attr('y', 3);
+
+         node.append("title")
+             .text(function(d) { return d.label; });
+
+         var labless = link.append("text")
+             .text(function(d) {
+                     return d.type;
+                   })
+             .attr('x', 6)
+             .attr('y', 3);
+
+         link.append("title")
+             .text(function(d) { return d.type; });
+
+         simulation
+             .nodes(graph.nodes)
+             .on("tick", ticked);
+
+         simulation.force("link")
+             .links(graph.links);
+
+         function ticked() {
+             link
+                 .attr("x1", function(d) { return d.source.x; })
+                 .attr("y1", function(d) { return d.source.y; })
+                 .attr("x2", function(d) { return d.target.x; })
+                 .attr("y2", function(d) { return d.target.y; });
+
+             node
+                 .attr("transform", function(d) {
+                           return "translate(" + d.x + "," + d.y + ")";
+                         })
+           }
+       });
+
+       function dragstarted(d) {
+         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+         d.fx = d.x;
+         d.fy = d.y;
+       }
+
+       function dragged(d) {
+         d.fx = d3.event.x;
+         d.fy = d3.event.y;
+       }
+
+       function dragended(d) {
+         if (!d3.event.active) simulation.alphaTarget(0);
+         d.fx = null;
+         d.fy = null;
+       }
+
+   </script>

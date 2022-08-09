@@ -12,6 +12,7 @@ cat <<EOF > ./wikipedia_templates/$(cut -d, -f1 <<<"$line" | sed -e "s/\"//g;s/\
 ---
 title: $(cut -d, -f1 <<<"$line")
 date: 1659323074
+published: false
 ---
 {{< wikipedia $(cut -d, -f2 <<<"$line") >}}
 EOF

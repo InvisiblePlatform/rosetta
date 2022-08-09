@@ -21,11 +21,6 @@ data to use in the newest Invisible Voice iteration.
 - Key for datasources
 - Tying together in Hugo
 
-## TODO:
-- Wikipedia scrape with new data
-- Glassdoor scraper improvements
-- Trustpilot scraper improvements
-
 ## Potential:
 - Crunchbase
 - OpenSecret
@@ -38,6 +33,8 @@ data to use in the newest Invisible Voice iteration.
     - https://www.csrhub.com/
 - Allsides
     - https://www.allsides.com/media-bias/ratings
+- Ethical Consumer:
+    - https://www.ethicalconsumer.org/
 
 ## Magic bookmark
 - javascript:void(window.open('https://test.reveb.la/'+(location.href.split('/')[2]).replace(/\./g,'')));

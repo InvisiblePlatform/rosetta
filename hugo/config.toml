@@ -5,6 +5,7 @@ plugins_css = ["custom"]
 timeout = "3m"
 ignoreErrors = ["error-remote-getjson"]
 cacheDir = "/home/orange/Projects/invisible-rosetta/hugo/cache"
+paginate = 5000
 [outputs]
   home = ["HTML", "json"]
   page = ["HTML"]

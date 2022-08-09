@@ -1,10 +1,9 @@
+{{ with $path := print "data/glassdoor/data_json/" (.Get "gid") ".json"}}
+{{ if os.FileExists . }}
 </section>
 <section class="content">
 <section id="glassdoor">
-{{ with .Get "gid" }}
-{{ $path := print "data/glassdoor/data_json/" . ".json"}}
-{{ if os.FileExists $path }}
-{{ $d := getJSON $path }}
+{{ $d := getJSON . }}
 <button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="{{ $d.url }}">(source)</a></button>
 <section class="section-content" style="display: block;">
 <p>
@@ -20,5 +19,5 @@ Score: {{ .ratingValue }} ( {{.ratingCount }} reviews)
 </p>
 </section>
 {{ end }}
-{{ end }}
 </section>
+{{ end }}

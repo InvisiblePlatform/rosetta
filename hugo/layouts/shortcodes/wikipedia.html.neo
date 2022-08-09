@@ -1,0 +1,64 @@
+<!-- Wikipedia -->
+{{ if eq (.Get 0) "null" }}
+{{ else }}
+{{ $page := .Get 0 }}
+{{ $wikicard := (print "data/wikipedia/wikicard/wc_" $page ".html" ) }}
+{{ $wikipage := (print "data/wikipedia/pages/" $page ".md" ) }}
+{{ $wikipagelink := (print "https://en.wikipedia.org/wiki/" $page ) }}
+{{ $id := cond (isset $.Params 2) (.Get 1) "null" }}
+{{ $externalcache := (print "https://www.wikidata.org/entity/" $id ) }}
+{{ $maincache := (print "data/wikidata/longcache/" $id ".json" )}}
+{{ $mode := cond (isset $.Params 2 ) (int (.Get 2)) "1" }}
+{{ $active := cond (eq $mode (int 1)) " active" " " }}
+{{ $block := cond (eq $mode (int 1)) "block" "none"}}
+{{ $hex := cond (isset $.Params 2) (substr (sha1 $id) 1 6) (substr (sha1 $page) 1 6) }}
+{{ $url := cond (fileExists $maincache ) $maincache $externalcache }}
+{{ $top := cond (isset $.Params 2 ) ((index ( getJSON $maincache ).entities $id).labels.en.value) $page }}
+<section id="wikipedia" class="{{ $page }}">
+    <button type="button" class="collapsible{{ $active }}">
+        <h2>
+            <span style="background-color:#{{ $hex }};" >
+                <span id="contrast">{{ $top }}</span>
+            </span>
+        </h2>
+        <a href="{{ $wikipagelink }}" class="source">(wikipedia)</a>
+    </button>
+<section class="section-content" style="display:{{ $block }};"/>
+    {{ with readFile $wikicard }}{{ safeHTML . }}
+    {{ if eq $mode (int 1) }}
+</section>
+</section>
+<section id="wikipedia" class="{{ $page }}">
+    <button type="button" class="collapsible{{ $active }}">
+        <h2>
+            <span style="background-color:#{{ $hex }};" >
+                <span id="contrast">{{ $top }}</span>
+            </span>
+        </h2>
+        <a href="{{ $wikipagelink }}" class="source">(wikipedia)</a>
+    </button>
+<section class="section-content" style="display:{{ $block }};"/>
+    {{ end }}
+{{ end }}
+{{ with readFile $wikipage }}{{ markdownify . }}{{ end }}
+</section>
+{{ if isset $.Params 2  }}
+<span class="tags">
+{{ range after 3 $.Params  }} {{ $list := split . ":" }}
+    {{ $newId := (index $list 1)}}
+    <span class="{{index $list 0}}">
+    {{ $theFile := (print "data/wikidata/longcache/" $newId ".json") }}
+    {{ $loc := cond (fileExists $theFile) $theFile (print "https://www.wikidata.org/entity/" $newId)}}
+    {{ with getJSON $loc }}
+        {{ range .entities }}
+                {{ index $list 2 | replaceRE "_" " "}} <span style="background-color:#{{ substr (sha1 $newId ) 1 6 }};" >
+                    <span id="contrast">{{ .labels.en.value }}</span>
+        {{ end }}
+    </span>
+    {{ else }}{{ warnf (print "Failure on get: " (index $list 1) )}}{{ end }}
+    </span>
+{{ end }}
+</span>
+</section>
+{{ end }}
+{{ end }}

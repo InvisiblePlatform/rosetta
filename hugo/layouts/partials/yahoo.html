@@ -1,0 +1,20 @@
+
+<!-- yahoo -->
+{{ $path := print "data/yahoo/" . ".json"}}
+{{ if os.FileExists $path }}
+<section id="yahoo">
+    {{ $d := (getJSON $path).quoteSummary.result }}
+    <button type="button" class="collapsible active"><h2>ESG</h2><a class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">(Sustainalytics, inc via yahoo! finance)</a></button>
+<section class="section-content" style="display: block;">
+    <p>
+        {{ with (index $d 0).esgScores }}
+        <b>Total ESG:</b> {{ default "Not Found" .totalEsg.fmt }}</br>
+        <b>Environmental Risk Score:</b> {{ default "Not Found" .environmentScore.fmt }}</br>
+        <b>Social Risk Score:</b> {{ default "Not Found" .socialScore.fmt }}</br>
+        <b>Governance Risk Score:</b> {{ default "Not Found" .governanceScore.fmt }}</br>
+    {{ end }}
+    </p>
+</section>
+</section>
+<hr/>
+{{ end }}

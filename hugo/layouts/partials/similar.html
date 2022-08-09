@@ -1,6 +1,7 @@
 <!-- Similar Sites -->
 {{ $path := print "data/similar/sites/similar_site_" . ".json" }}
 {{ if os.FileExists $path }}
+<div class="content">
 <h2>Similar Sites</h2><a class="source" href="https://similarsites.com/sites/{{ . }}" >(source)</a>
 <section id="similar-sites">
 {{ $data := (getJSON $path).SimilarSites }}
@@ -15,4 +16,6 @@
     {{ end }}
 </p>
 </section>
+</div>
+<hr/>
 {{ end }}

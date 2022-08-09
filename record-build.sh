@@ -190,17 +190,45 @@ function check_wikidata(){
     done< <(grep "\"$1\"" $2 | grep -o "Q[0-9]*")
 }
 function add_values_from_wikidata(){
+    local tempfile=$(mktemp)
     while read WIKIDATAID; do
         if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
              wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
         fi
         while read site; do
             if grep -q "\"$site\"" $2; then
-               VALUE=$(jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$site.json 2>/dev/null)
-               [[ $VALUE ]] && printf "%s\n" "$3: \"$VALUE;$4;$site\"" >> hugo/content/${website//./}.md
+               jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$site.json 2>/dev/null | sort -u \
+                   | sed -e "s/^\(.*\)$/\"\1\;$4\;$site\"/g" >> $tempfile
             fi
         done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
     done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    if [[ -s $tempfile ]]; then 
+        local value=$(sort -u $tempfile | tr '\n' ',' | sed -e "s/,$/]/g;s/^/[/g")
+        printf "%s\n" "$3: $value" >> hugo/content/${website//./}.md
+    fi
+    rm $tempfile
+}
+function esg_via_yahoo_via_wikidata(){
+    local tempfile=$(mktemp)
+    # https://query2.finance.yahoo.com/v10/finance/quoteSummary/NFLX?modules=esgScores
+    #     jq -r .entities[].claims.P414[].qualifiers.P249[].datavalue.value ../../wikidata/longcache/$file 2>/dev/null| head -1 >> ../tickerlist
+    while read WIKIDATAID; do
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
+        while read site; do
+            if grep -q "\"$site\"" $2; then
+                jq -r .entities[].claims.P414[].qualifiers.P249[].datavalue.value \
+                $(grep "\"$site\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
+                    2>/dev/null | sed -e "s/^/\"/g;s/$/\"/g">> $tempfile
+            fi
+        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    if [[ -s $tempfile ]]; then 
+        local value=$(sort -u $tempfile | tr '\n' ',' | sed -e "s/,$/]/g;s/^/[/g")
+        printf "%s\n" "ticker: $value" >> hugo/content/${website//./}.md
+    fi
+    rm $tempfile
 }
 function isin_via_wikidata(){
     local tempfile=$(mktemp)
@@ -304,6 +332,7 @@ function check_tosdr(){
 function owned_wikiassociates(){
     if ! grep -q "\"$1\"" $2; then return; fi
     local temptilesmall=$(mktemp)
+    local templist=$(mktemp)
 
     local continue_going=0
     while read code; do # Main Company
@@ -333,21 +362,52 @@ function owned_wikiassociates(){
         fi
         while read command; do 
             printf "%s\n" ${command/;*/} >> ${command/*;/}
-        done < <(jq -r ".entities[].claims | $(sed -e "s/ /, /g;s/P/.P/g" <<<"${third_order_pairings[@]/;*/}") | select( . != null) | .[] | [.mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$relation.json | sort -u  | sed -e "s/\",\"/:$relation:@:2\";${temptilesmall//\//?}_/g;s/\"$//g" | sed -e "s/?/\//g" | sed -f $thirdorderpatterns | grep ":"| sed -e "s/\"//g")
+    done < <(jq -r ".entities[].claims | $(sed -e "s/ /, /g;s/P/.P/g" <<<"${third_order_pairings[@]/;*/}") | select( . != null) | .[] | [.mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$relation.json | sort -u  | sed -e "s/\",\"/:$relation:@:2\";${temptilesmall//\//?}_/g;s/\"$//g" | sed -e "s/?/\//g" | sed -f $thirdorderpatterns | grep ":"| sed -e "s/\"//g")
     done < <(egrep ":2" ${temptilesmall}_* | sed -e "s/^.*\(Q[0-9]*\):.*/\1/g")
 
+    printf '%s\n' "{\"links\":[" > $templist
     while read relation; do 
         : $(( relationco -= 1))
         local RELATION_ID=$(sed -e 's/[^_]*_//g' <<< "$relation")
-        local oneline=$(sort -u $relation | sed -e "s/$/\"/g;s/^/\"/g" | tr '\n' '@')
+        local oneline=$(sort -u $relation | sed -e "s/$/\"/g;s/^/\"/g" -e "s/P[0-9]*://g" -e "s/:[12]//g" | sed -e "s/:/,type:/g")
         if grep -q ":1" "$relation"; then
-            look_for_wikipedia_page "${RELATION_ID}" "1" $oneline
+            look_for_wikipedia_page "${RELATION_ID}" "1" 
         else 
-            look_for_wikipedia_page "${RELATION_ID}" "2" $oneline
+            look_for_wikipedia_page "${RELATION_ID}" "2" 
         fi
+        for i in $oneline; do echo $i | xargs -I@ printf '%s\n' "{ \"source\":\"$RELATION_ID\", \"target\":\"@\" }," | sed -e "s/,type:/\", \"type\":\"/g" >> $templist; done
     done < <(ls -1 ${temptilesmall}_* 2>/dev/null| sed -e "/_null/d")
+    sed -i '$s/,$//' $templist
+    printf '%s\n' "],\"nodes\":[" >> $templist
 
-    rm ${temptilesmall}_* ${temptilesmall} 2>/dev/null
+    grep -o "Q[0-9]*" $templist > $temptilesmall
+    while read code; do 
+        if ! [[ -s "$wikidatacachedir/$code.json" ]]; then
+             wget -qO $wikidatacachedir/$code.json "$ENTITY/$code" 
+        fi
+        local STRING=""
+        local COUNT=0
+        local GROUP=()
+        while read value; do
+            [[ $COUNT == 0 ]] && STRING+="{ \"label\": \"$value\"" 
+            [[ $COUNT == 1 ]] && STRING+=",\"id\": \"$value\"" 
+            [[ $COUNT == 2 ]] && STRING+=",\"enwiki\": \"$value\"" 
+            [[ $COUNT > 2 ]] && GROUP+=("$value")
+            : $(( COUNT += 1 ))
+        done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json)
+        if [[ $GROUP != "null" ]]; then
+            STRING+=",\"groups\": [$(echo ${GROUP[@]} | sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g")]},"
+        else
+            STRING+=",\"groups\": [\"node\"]},"
+        fi
+        printf '%s\n' "$STRING" >> $templist
+    done < <(sort -u $temptilesmall)
+    sed -i '$s/,$//' $templist
+    sed -i 's/http[s]*:\/\/en\.wikipedia\.org\/wiki\///g' $templist
+    printf '%s\n' "]}" >> $templist
+
+    cp $templist hugo/static/connections/${website//\./}.json
+    rm ${temptilesmall}_* ${temptilesmall} ${templist} 2>/dev/null
 }
 function reorder_wikipedia(){
     local page="$1"
@@ -371,13 +431,17 @@ function do_record(){
     check_data_header "$website" "$GYLOOKUP" "goodonyou"
     check_data_header "$website" "$GDLOOKUP" "glassdoor"
     isin_via_wikidata "$website" "$WDLOOKUP" "isin"
-    # check_wikidata "$website" "$WDLOOKUP" "wikidata"
+    esg_via_yahoo_via_wikidata "$website" "$WDLOOKUP" "yesg"
+    # check_wikidata "$website" "$WDLOOKUP" "w"
     owned_wikiassociates "$website" "$WDLOOKUP"
 
     add_values_from_wikidata "$website" "$WDLOOKUP" "polalignment" "P1387"
     add_values_from_wikidata "$website" "$WDLOOKUP" "polideology" "P1142"
     check_data_glassdoor "$website" "$GDLOOKUP"
     check_data_bcorp "$website" "$BCLOOKUP"
+    if [[ -s "hugo/static/connections/${website//./}.json" ]]; then
+        printf "%s\n" "connections: \"/connections/${website//./}.json\"" >> hugo/content/${website//./}.md
+    fi
 
     LC_COLLATE=C sort -u hugo/content/${website//./}.md \
         | sed "0,/{/{s/^{/---\n{/}" > $resort
@@ -388,23 +452,23 @@ function do_record(){
 
     reorder_wikipedia "hugo/content/${website//./}.md"
 
-    #cat hugo/content/${website//./}.md
+    jq . hugo/static/connections/${website//./}.json
+    # cat hugo/content/${website//./}.md
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done
 }
 
 rm hugo/content/ -rf
 mkdir -p hugo/content
-LISTOFIMPORTANT=$(mktemp)
 DATENOW=$(date +%s)
 count=0
-ramcache
+# ramcache
 prepare_pairings
 
 # Make a stack of 8 procs that we count and add too if lower than that amount
 # each coproc removes inself from the stack when it finishes
-pids=$(mktemp)
-pids_done=$(mktemp)
+pids=$(mktemp -t pidslistrecord.XXXXXXX)
+pids_done=$(mktemp -t pids_donelistrecord.XXXXXXX)
 while read website; do
     do_record "${website}" &
     lastpid=$!
@@ -421,7 +485,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(grep "^dailymail" websites.list )
+done < <(grep "^amazon\.com$" websites.list )
 rm $pids
 wait
 exit 0

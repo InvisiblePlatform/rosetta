@@ -6,8 +6,6 @@
 <section class="section-content" style="display: block;">
 <p>
     <b>Ethical Rating</b> {{ $v.ethicalRating }}/5 {{ $v.ethicalLabel }}</br>
-    {{ print $v.ethicalInfo1 }}</br>
-    {{ print $v.ethicalInfo2 | safeHTML }}</br>
     <b>Labour Rating</b> {{ math.Floor (div (float $v.labourRating) 4) }}/5 {{ $v.labourLabel }}</br>
     <b>Animal Rating</b> {{ math.Floor (div (float $v.animalRating) 4) }}/5 {{ $v.animalLabel }}</br>
     <b>Environment Rating</b> {{ math.Floor (div (float $v.environmentRating) 4) }}/5 {{ $v.environmentLabel }}</p></br>

@@ -8,18 +8,31 @@
       We are confident the information we are showing is accurate, however we strongly advise you do your own research into any companies.
     </p>
     <section id="button-list">
-    {{ with .Params.tosdr }}{{ partial "tosdr.html" . }}{{ end }}
-    {{ if isset .Params "mbfc" }}{{ partial "mbfc.html" .Params.title }}{{ end }}
-    {{ partial "trustpilot.html" .Params.title  }}
-    {{ if isset .Params "polideology" }}{{ partial "wikidata.html" .Params.polideology }}{{ end }}
+    {{ if isset .Params "tosdr" }}{{ partialCached "tosdr.html" .Params.tosdr .Params.tosdr  }}{{ end }}
+    {{ if isset .Params "mbfc" }}{{ partialCached "mbfc.html" .Params.title .Params.title }}{{ end }}
+    {{ partialCached "trustpilot.html" .Params.title .Params.title }}
+    {{ if isset .Params "polideology" }}
+    {{ range .Params.polideology }}
+    {{ partial "wikidata.html" . . }}
+    {{ end }}
+    {{ end }}
+    {{ if isset .Params "polalignment" }}
+    {{ range .Params.polalignment }}
+    {{ partial "wikidata.html" . . }}
+    {{ end }}
+    {{ end }}
     </section>
     </div>
   </div>
-  <div class="content"> 
-    {{ partial "similar.html" .Params.title }}
-  </div>
-  {{ with .Params.goodonyou }}<section class="content">{{ partial "goodonyou.html" . }}</section><hr/>{{ end }}
-  {{ with .Params.bcorp }}<section class="content">{{ partial "bcorp.html" . }}</section><hr/>{{ end }}
+  {{ if isset .Params "connections" }}<section class="content">{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}</section><hr/>{{ end }}
+  {{ partialCached "similar.html" .Params.title .Params.title }}
+  {{ if isset .Params "goodonyou" }}<section class="content">{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}</section><hr/>{{ end }}
+  {{ if isset .Params "bcorp" }}<section class="content">{{ partialCached "bcorp.html" .Params.bcorp .Params.bcorp }}</section><hr/>{{ end }}
+    {{ if isset .Params "ticker" }}
+    {{ range .Params.ticker }}
+    {{ partialCached "yahoo.html" . . }}
+    {{ end }}
+    {{ end }}
   <div class="content">
     {{ .Content }}
   </div>
@@ -36,7 +49,7 @@
   let allLinks = document.querySelectorAll('a');
 
   allLinks.forEach(el => {
-    if (el.href.includes("wikipedia.org") && el.target != "_blank"){
+    if (el.href.toString().includes("wikipedia.org") && el.target != "_blank"){
         href = el.href;
         org_html = el.innerHTML;
         parent = el.parentElement;

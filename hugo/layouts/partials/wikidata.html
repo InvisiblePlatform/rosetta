@@ -1,0 +1,7 @@
+{{ $props := getJSON "data/wikidata/props.json" }}
+<section id="small-wikidata">
+{{ $key := split . ";" }}
+<h2>{{ index $props (index $key 1) | title }}:</h2> 
+<a href="https://wikidata.org/wiki/{{ index $key 0 }}">{{ partialCached "wikidata-name.html" (index $key 0) (index $key 0) }}</a>
+<a class="source" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">(wikidata)</a>
+</section>
