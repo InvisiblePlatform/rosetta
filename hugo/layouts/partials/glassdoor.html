@@ -1,0 +1,23 @@
+{{ with $path := print "data/glassdoor/data_json/" . ".json"}}
+{{ if os.FileExists . }}
+</section>
+<section class="content">
+<section id="glassdoor">
+{{ $d := getJSON . }}
+<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="{{ $d.url }}">(source)</a></button>
+<section class="section-content" style="display: block;">
+<p>
+{{ with $d.type }} Company Type: {{ . }} </br> {{ end }}
+{{ with $d.headquarters }} Headquarters: {{ . }} </br> {{ end }}
+{{ with $d.founded }} Founded: {{ . }} </br> {{ end }}
+{{ with $d.industry }} Industry: {{ . }} </br> {{ end }}
+{{ with $d.revenue }} Revenue: {{ . }} </br> {{ end }}
+{{ with $d.size }} Size: {{ . }} </br>{{ end }}
+{{ with $d.glasroom_rating }}
+Score: {{ .ratingValue }} ( {{.ratingCount }} reviews)
+{{ end }}
+</p>
+</section>
+{{ end }}
+</section>
+{{ end }}

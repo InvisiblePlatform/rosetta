@@ -47,17 +47,17 @@ function missing_pages(){
         fi
     done < $tempfile 
 
-    echo "{ \"data\":[" > $tempfile
+    echo "{" > $tempfile
     while read line; do
         hashval=$(cut -d, -f2 <<<"$line")
         urlval=$(cut -d, -f1 <<<"$line"| sed -e "s/\.//g")
         if grep -q "$hashval" $translationlayer; then
-            target=$(grep "$hashval" $translationlayer | head -1)
+            target=$(grep "$hashval" $translationlayer | head -1| cut -d, -f2 )
             printf '%s\n' "\"/${urlval}/\":{\"t\":\"${target}\"}," | tee -a $tempfile
         fi
     done < $tempfilehashes
     sed -i '$s/,$//g' $tempfile
-    echo "]}" >> $tempfile
+    echo "}" >> $tempfile
     cp $tempfile replacements.json
     rm $tempfile $tempfilehashes $translationlayer
 }

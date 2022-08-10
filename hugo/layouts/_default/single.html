@@ -23,6 +23,7 @@
   {{ partialCached "similar.html" .Params.title .Params.title }}
   <section class="content" style="justify-content:flex-start;">
   {{ if isset .Params "goodonyou" }}{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}{{ end }}
+  {{ if isset .Params "glassdoor" }}{{ partialCached "glassdoor.html" .Params.glassdoor .Params.glassdoor }}{{ end }}
   {{ if isset .Params "bcorp" }}{{ partialCached "bcorp.html" .Params.bcorp .Params.bcorp }}{{ end }}
   {{ if isset .Params "ticker" }}{{ range .Params.ticker }}{{ partialCached "yahoo.html" . . }}{{ end }}{{ end }}
   </section>

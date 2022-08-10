@@ -135,11 +135,11 @@ function ramcache(){
     cp $TSLOOKUP /mnt/tmpcache/$TSLOOKUP
 
     WDLOOKUP="/mnt/tmpcache/wikidata/website_id_list.csv"
-    #MBLOOKUP="/mnt/tmpcache/mbfc/website_bias.csv"
-    #BCLOOKUP="/mnt/tmpcache/bcorp/website_stub_bcorp.csv"
-    #GYLOOKUP="/mnt/tmpcache/goodonyou/goodforyou_web_brandid.csv"
-    #GDLOOKUP="/mnt/tmpcache/glassdoor/website-hq-size-type-revenue.csv"
-    #TSLOOKUP="/mnt/tmpcache/tosdr/site_id.list"
+    MBLOOKUP="/mnt/tmpcache/mbfc/website_bias.csv"
+    BCLOOKUP="/mnt/tmpcache/bcorp/website_stub_bcorp.csv"
+    GYLOOKUP="/mnt/tmpcache/goodonyou/goodforyou_web_brandid.csv"
+    GDLOOKUP="/mnt/tmpcache/glassdoor/website-hq-size-type-revenue.csv"
+    TSLOOKUP="/mnt/tmpcache/tosdr/site_id.list"
     printf "%s\n" "Ramcache loaded"
     wikidatacachedir="/mnt/tmpcache/longcache"
 }

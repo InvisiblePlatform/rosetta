@@ -8,13 +8,12 @@
 <section class="section-content" style="display: block;">
     <p>
         {{ with (index $d 0).esgScores }}
-        <b>Total ESG:</b> {{ default "Not Found" .totalEsg.fmt }}</br>
-        <b>Environmental Risk Score:</b> {{ default "Not Found" .environmentScore.fmt }}</br>
-        <b>Social Risk Score:</b> {{ default "Not Found" .socialScore.fmt }}</br>
-        <b>Governance Risk Score:</b> {{ default "Not Found" .governanceScore.fmt }}</br>
+        {{ if isset .totalEsg "fmt" }}<b>Total ESG:</b> {{ default "Not Found" .totalEsg.fmt }}</br>{{ end }}
+        {{ if isset .environmentScore "fmt" }}<b>Environmental Risk Score:</b> {{ default "Not Found" .environmentScore.fmt }}</br>{{ end }}
+        {{ if isset .socialScore "fmt" }}<b>Social Risk Score:</b> {{ default "Not Found" .socialScore.fmt }}</br>{{ end }}
+        {{ if isset .governanceScore "fmt" }}<b>Governance Risk Score:</b> {{ default "Not Found" .governanceScore.fmt }}</br>{{ end }}
     {{ end }}
     </p>
 </section>
 </section>
-<hr/>
 {{ end }}
