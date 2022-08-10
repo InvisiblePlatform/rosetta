@@ -2,14 +2,15 @@
 <section id="goodonyou">
 {{ $data := getJSON "data/goodonyou/brand_" . ".json" }}
 {{ $v := $data.pageProps.brand }}
-<button type="button" class="collapsible active"><h2>goodonyou</h2><h3>Ethical Rating {{$v.ethicalRating}}/5 ({{$v.ethicalLabel}})</h3><a class="source" href="https://directory.goodonyou.eco/brand/{{.}}">(source)</a></button>
+<button type="button" class="collapsible active"><h2>goodonyou</h2><a class="source" href="https://directory.goodonyou.eco/brand/{{.}}">(source)</a></button>
 <section class="section-content" style="display: block;">
 <p>
-    <b>Ethical Rating</b> {{ $v.ethicalRating }}/5 {{ $v.ethicalLabel }}</br>
-    <b>Labour Rating</b> {{ math.Floor (div (float $v.labourRating) 4) }}/5 {{ $v.labourLabel }}</br>
-    <b>Animal Rating</b> {{ math.Floor (div (float $v.animalRating) 4) }}/5 {{ $v.animalLabel }}</br>
-    <b>Environment Rating</b> {{ math.Floor (div (float $v.environmentRating) 4) }}/5 {{ $v.environmentLabel }}</p></br>
-    <b>Email</b> <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }}</a> </br>
+    <b>Ethical Rating</b>: {{ $v.ethicalRating }}/5 {{ $v.ethicalLabel }}</br>
+    <b>Labour Rating</b>: {{ math.Floor (div (float $v.labourRating) 4) }}/5 {{ $v.labourLabel }}</br>
+    <b>Animal Rating</b>: {{ math.Floor (div (float $v.animalRating) 4) }}/5 {{ $v.animalLabel }}</br>
+    <b>Environment Rating</b>: {{ math.Floor (div (float $v.environmentRating) 4) }}/5 {{ $v.environmentLabel }}</br>
+    <b>Price</b>: {{ default "unrated" ($v.price) }}/4</br>
+    <b>Email</b>: <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }}</a> </br>
 </p>
 </section>
 </section>

@@ -11,15 +11,17 @@
 {{ $mode := default (int 1) (index $.Params 2) }}
 {{ $active := cond (eq $mode (int 1)) " active" " " }}
 {{ $block := cond (eq $mode (int 1)) "block" "none"}}
+{{ $flexa := cond (eq $mode (int 1)) "style=\"flex:30%;\"" " "}}
+{{ $flexb := cond (eq $mode (int 1)) "style=\"flex:60%;\"" " "}}
 
 {{ $hex := cond (eq $id "null") (substr (sha1 $page) 1 6) (substr (sha1 $id) 1 6) }}
 {{ $top := cond (eq $id "null") $page (partialCached "wikidata-name.html" $id $id) }}
 
-<section class="wikipedia" id="{{ $page }}">
+<section class="wikipedia" {{ $flexa }} id="{{ $page }}">
     <button type="button" class="collapsible{{ $active }}">
         <h2>
             <span style="background-color:#{{ $hex }};" >
-                <span id="contrast">{{ $top }}</span>
+                <span class="contrast">{{ $top }}</span>
             </span>
         </h2>
         <a href="{{ $wikipagelink }}" class="source">(wikipedia)</a>
@@ -29,11 +31,11 @@
     {{ if eq $mode (int 1) }}
 </section>
 </section>
-<section class="wikipedia" id="main_{{ $page }}">
+<section class="wikipedia" {{ $flexb }} id="main_{{ $page }}">
     <button type="button" class="collapsible{{ $active }}">
         <h2>
             <span style="background-color:#{{ $hex }};" >
-                <span id="contrast">{{ $top }}</span>
+                <span class="contrast">{{ $top }}</span>
             </span>
         </h2>
         <a href="{{ $wikipagelink }}" class="source">(wikipedia)</a>

@@ -1,18 +1,19 @@
 {{ $path := print "data/" (.Get "file")}}
 {{ if os.FileExists $path }}
 <section id="isin">
+<section class="section-content" style="display: block;">
     {{ if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_JustTransitionData.json" }} 
-    <h2> World Benchmark </h2></br>
-    <h3> 2021 Just Transition Assessment:</h3><a href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></br>
+    <button type="button" class="collapsible active"><h2>World Benchmark</h2><a class="source" href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></button>
+    <h3> 2021 Just Transition Assessment:</h3></br>
     {{ else if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_SocialData.json" }}
-    <h2> World Benchmark </h2></br>
-    <h3> 2021 Just Transition Assessment (social):</h3><a href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></br>
+    <button type="button" class="collapsible active"><h2>World Benchmark</h2><a class="source" href="https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/">(source)</a></button>
+    <h3> 2021 Just Transition Assessment (social):</h3></br>
     {{ else if eq $path "data/static/Food-and-Agriculture-Benchmark-detailed-scoring-sheet-2021-2.json"}}
-    <h2> World Benchmark </h2></br>
-    <h3> 2021 Food And Agriculture Benchmark:</h3><a href="https://www.worldbenchmarkingalliance.org/food-and-agriculture-benchmark/">(source)</a></br>
+    <button type="button" class="collapsible active"><h2>World Benchmark</h2><a class="source" href="https://www.worldbenchmarkingalliance.org/food-and-agriculture-benchmark/">(source)</a></button>
+    <h3> 2021 Food And Agriculture Benchmark:</h3></br>
     {{ else if eq $path "data/static/WBA_Social_Transformation_Baseline_Data_JAN_2022_overall_scores.json"}}
-    <h2> World Benchmark </h2></br>
-    <h3> 2022 Social Transformation Assessment:</h3><a href="https://www.worldbenchmarkingalliance.org/research/2022-social-transformation-baseline-assessment/">(source)</a></br>
+    <button type="button" class="collapsible active"><h2>World Benchmark</h2><a class="source" href="https://www.worldbenchmarkingalliance.org/research/2022-social-transformation-baseline-assessment/">(source)</a></button>
+    <h3> 2022 Social Transformation Assessment:</h3></br>
     {{ end }}
     <p>
     {{ $data := getJSON $path }}

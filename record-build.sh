@@ -394,7 +394,7 @@ function owned_wikiassociates(){
             [[ $COUNT == 2 ]] && STRING+=",\"enwiki\": \"$value\"" 
             [[ $COUNT > 2 ]] && GROUP+=("$value")
             : $(( COUNT += 1 ))
-        done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json)
+        done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
         if [[ $GROUP != "null" ]]; then
             STRING+=",\"groups\": [$(echo ${GROUP[@]} | sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g")]},"
         else
@@ -452,7 +452,7 @@ function do_record(){
 
     reorder_wikipedia "hugo/content/${website//./}.md"
 
-    jq . hugo/static/connections/${website//./}.json
+    # jq . hugo/static/connections/${website//./}.json
     # cat hugo/content/${website//./}.md
     printf "%s\n" "$website"
     printf "%s\n" "$BASHPID" >> $pids_done
@@ -485,7 +485,7 @@ while read website; do
         sleep 1
     done
     count=0
-done < <(grep "^amazon\.com$" websites.list )
+done < <(grep "^" websites.list )
 rm $pids
 wait
 exit 0
