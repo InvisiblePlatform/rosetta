@@ -4,7 +4,7 @@ categories=('activewear'  'tops'  'bottoms' 'denim' 'dresses' 'knitwear'
     'outerwear' 'suits' 'basics' 'sleepwear' 'swimwear' 'maternity' 
     'plus-size' 'shoes' 'bags' 'accessories')
 
-ID="9VqYtZr1dexu3v_ffjZSA"
+ID=$(python3 ./goodonyou/SeleniumGetKey.py)
 do_category(){
   wget -nv https://directory.goodonyou.eco/_next/data/$ID/categories/$1.json -O cat_$1.json
 }

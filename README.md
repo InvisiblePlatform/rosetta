@@ -49,6 +49,7 @@ data to use in the newest Invisible Voice iteration.
 - Cleanup the Wikidata dir 
 - Reorganise sources into a folder seperate from root
 - Decouple record-build.sh from the websites.list generation
+- Updating wikidatacache with latest-all.bz2.json
 
 
 ## Ordering 
