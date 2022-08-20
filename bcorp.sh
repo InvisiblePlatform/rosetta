@@ -10,9 +10,10 @@ timestamps=(\
 )
 
 countries=( "United%20States" "Australia" "Brazil" "Canada" "France" "Germany" "Italy" "Netherlands%20The" "United%20Kingdom" "Spain" ) 
+apikey="89136e22c1533bc1eec65267bcdfba5e"
 
 do_category(){
-  curl 'https://bx1p6tr71m-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key=51a96f5c236cb12087a548630ebecc79&x-algolia-application-id=BX1P6TR71M'   \
+  curl "https://bx1p6tr71m-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key=${apikey}&x-algolia-application-id=BX1P6TR71M"   \
     -H 'Accept: */*'  \
     -H 'Accept-Language: en-GB,en;q=0.9,en-US;q=0.8'   \
     -H 'Connection: keep-alive'   \

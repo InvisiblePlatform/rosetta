@@ -10,99 +10,149 @@
   stroke-width: 1.5px;
   fill: #98FB98;
   filter: drop-shadow(0 0 5px black);
+  mix-blend-mode: color-burn;
 }
 
-text {
-  font-family: sans-serif;
-  font-size: 10px;
-  filter: drop-shadow(0 0 5px #98FB98);
-}
-         
 .Q5 {
   fill: orangered!important;
 }
 
-.Q658255 {
-  fill: orange!important;
-}
-.Q35127{
-  fill: blueviolet!important;
-}
-
 </style>
-<!-- 
-"Q105538253","online shop"
-"Q1057026","cargo airline"
-"Q1137109","video game publisher"
-"Q1153767","platform as a service"
-"Q1194970","dot-com company"
-"Q1210425","internet hosting service"
-"Q1320047","book publisher"
-"Q1414426","film database"
-"Q1762059","film production company"
-"Q1880737","branch office"
-"Q19967801","online service"
-"Q210167","video game developer"
-"Q21980538","commercial organization"
-"Q241317","computing platform"
-"Q261232","business unit"
-"Q3220391","social networking service"
-"Q3390477","online marketplace"
-"Q3487908","venture capital firm"
-"Q35127","website"
-"Q368290","film distributor"
-"Q4086495","startup accelerator"
-"Q42414514","bookstore chain"
-"Q431289","brand"
-"Q43229","organization"
-"Q4357531","virtual airline"
-"Q4830453","business"
-"Q50870824","gourmet supermarket chain"
-"Q50969307","health food chain"
-"Q59152282","video streaming service"
-"Q658255","subsidiary"
-"Q6881511","enterprise"
-"Q726870","brick and mortar"
-"Q728646","partnership"
-"Q783794","company"
-"Q847959","social cataloging application"
-"Q891723","public company"
-"Q5","human"
--->
-<svg width="1280" height="600"></svg>
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<svg id="key" style="overflow:visible;position:absolute;"></svg>
+<svg id="graph" width="1280" height="600" viewBox="0 0 1280 600" style="overflow:visible;transition:0.1s"></svg>
+<script type="module">
+    import {zoom} from "https://cdn.skypack.dev/d3-zoom@3";
+    const handler = zoom();
+</script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
    <script>
+       const zoom = d3.zoom()
+            .scaleExtent([1, 40])
+            .on("zoom", zoomed);
 
-       var svg = d3.select("svg"),
-               width = +svg.attr("width"),
-               height = +svg.attr("height");
+       var svg2 = d3.select("#key");
 
-       var color = d3.scaleOrdinal(d3.schemeCategory20);
+       var svg = d3.select("#graph").on("click",reset)
+       var width = +svg.attr("width");
+       var height = +svg.attr("height");
 
        var simulation = d3.forceSimulation()
-           .force("link", d3.forceLink().id(function(d) { return d.id; }))
-           .force("charge", d3.forceManyBody().strength(-300))
+           .force("link", d3.forceLink().id(function(d) { return d.id; }).distance(100))
+           .force("charge", d3.forceManyBody().strength(-200))
            .force("center", d3.forceCenter(width / 2, height / 2));
 
-       d3.json("{{ . }}", function(error, graph) {
-         if (error) throw error;
+       svg.call(zoom);
+
+       function reset() {
+          svg.transition().duration(750).call(
+            zoom.transform,
+            d3.zoomIdentity,
+            d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
+          );
+        }
+
+        function clicked(event, [x, y]) {
+          svg.transition().duration(750).call(
+            zoom.transform,
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(40).translate(-x, -y),
+            d3.pointer(event)
+          );
+        }
+
+        function zoomed({transform}) {
+          svg.attr("transform", transform);
+        }
+
+
+       d3.json("{{ . }}").then(function(graph) {
+         const types = Array.from(new Set(graph.links.map(d => d.type)));
+         var color = d3.scaleOrdinal(types, d3.schemeYlOrRd[types.length]);
+
+         svg.call(d3.zoom()
+              .extent([[0, 0], [width, height]])
+              .scaleExtent([1, 8])
+              .on("zoom", zoomed));
+
+         svg.append("defs").selectAll("marker")
+          .data(types).enter()
+          .append("marker")
+            .attr("id", d => `arrow-${d}`)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15)
+            .attr("refY", -0.5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+          .append("path")
+               .attr("fill", d => color(d))
+            .attr("d", "M0,-5L10,0L0,5");
+
+         var key_y = d3.scaleOrdinal(types,d3.range(0, 15*types.length, 15));
+
+         var key = svg2.append("g")
+                .attr("x", 10)
+                .attr("y", 50)
+               .selectAll("g")
+               .data(types).enter()
+               .append("g")
+               .attr("transform", function(d){ return "translate(0," + key_y(d) + ")"});
+         var key_rects = key.append("rect")
+           .attr("width", 15)
+           .attr("height", 15)
+           .attr("fill", color);
+
+        var key_labels = key.append("text")
+           .attr("class", "key-text")
+               .text(function(d){return d.replace("_"," ");})
+            .attr("font-size", "10px")
+            .attr("x", 20)
+            .attr("y", 15)
+            .attr("fill", "black");
 
          var link = svg.append("g")
-             .attr("class", "links")
-           .selectAll("line")
+           .attr("stroke-width", 1.5)
+		   .attr("fill", "none")
+           .selectAll("path")
            .data(graph.links)
-           .enter().append("line")
-           .attr("class", function(d){ return d.type; });
+           .enter().append("path")
+		   .attr("stroke", d => color(d.type))
+           .attr("marker-end", d => `url(#arrow-${d.type})`);
 
          var node = svg.append("g")
              .attr("class", "nodes")
+             .attr("fill", "currentColor")
+             .attr("stroke-linecap", "round")
+             .attr("stroke-linejoin", "round")
            .selectAll("g")
            .data(graph.nodes)
-           .enter().append("g")
+           .enter().append("g");
+
+         var lables = node.append("text")
+             .attr("class", "label-text")
+             .attr("text-anchor", "middle")
+               .attr("z-index", function(d){
+                   if (d.groups.includes("Q5")){
+                        return "100";
+                   } else {
+                        return "101";
+                   }})
+               .attr("font-size", function(d){
+                   if (d.groups.includes("Q5")){
+                        return "6px";
+                   } else {
+                        return "10px";
+                   }})
+             .text(function(d) {
+                     return d.label;
+                   })
+             .clone(true).lower()
+               .attr("fill", "none")
+               .attr("stroke", "white")
+               .attr("stroke-width", 3);
 
            var circles = node.append("a").attr("href", function(d){
                if (d.enwiki != "null"){
-                    return "#" + d.enwiki;
+                    return "https://en.wikipedia.org/wiki/" + d.enwiki;
                } else {
                     return "https://wikidata.org/wiki/" + d.id;
                }
@@ -116,6 +166,7 @@ text {
                })
            .attr("class", function(d){ return d.groups.toString().replace(/,/g,' '); });
 
+
          // Create a drag handler and append it to the node object instead
          var drag_handler = d3.drag()
              .on("start", dragstarted)
@@ -124,25 +175,7 @@ text {
 
          drag_handler(node);
          
-         var lables = node.append("text")
-             .text(function(d) {
-                     return d.label;
-                   })
-             .attr('x', 6)
-             .attr('y', 3);
 
-         node.append("title")
-             .text(function(d) { return d.label; });
-
-         var labless = link.append("text")
-             .text(function(d) {
-                     return d.type;
-                   })
-             .attr('x', 6)
-             .attr('y', 3);
-
-         link.append("title")
-             .text(function(d) { return d.type; });
 
          simulation
              .nodes(graph.nodes)
@@ -153,33 +186,37 @@ text {
 
          function ticked() {
              link
-                 .attr("x1", function(d) { return d.source.x; })
-                 .attr("y1", function(d) { return d.source.y; })
-                 .attr("x2", function(d) { return d.target.x; })
-                 .attr("y2", function(d) { return d.target.y; });
+				.attr("d", linkArc)
 
              node
                  .attr("transform", function(d) {
                            return "translate(" + d.x + "," + d.y + ")";
-                         })
-           }
+                 })
+         }
        });
 
-       function dragstarted(d) {
-         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+       function dragstarted(event,d) {
+         if (!event.active) simulation.alphaTarget(0.3).restart();
          d.fx = d.x;
          d.fy = d.y;
        }
 
-       function dragged(d) {
-         d.fx = d3.event.x;
-         d.fy = d3.event.y;
+       function dragged(event,d) {
+         d.fx = event.x;
+         d.fy = event.y;
        }
 
-       function dragended(d) {
-         if (!d3.event.active) simulation.alphaTarget(0);
+       function dragended(event,d) {
+         if (!event.active) simulation.alphaTarget(0);
          d.fx = null;
          d.fy = null;
        }
+	   function linkArc(d) {
+	     const r = Math.hypot(d.target.x - d.source.x, d.target.y - d.source.y);
+	     return `
+		       M${d.source.x},${d.source.y}
+		       A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
+		     `;
+	   }
 
    </script>

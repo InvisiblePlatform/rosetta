@@ -8,11 +8,11 @@
   <div class="plugin-header">
       <span class="bk-bg co-name">{{ .Params.title }}</span>
     <p class="disclaimer-text" style="width:50%;">
-      We are confident the information we are showing is accurate, however we strongly advise you do your own research into any companies.
+        We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin.
     </p>
     <section id="button-list">
     {{ if isset .Params "tosdr" }}{{ partialCached "tosdr.html" .Params.tosdr .Params.tosdr  }}{{ end }}
-    {{ if isset .Params "mbfc" }}{{ partialCached "mbfc.html" .Params.title .Params.title }}{{ end }}
+    {{ if isset .Params "mbfc" }}{{ partialCached "mbfc.html" .Params.mbfc_source .Params.title }}{{ end }}
     {{ partialCached "trustpilot.html" .Params.title .Params.title }}
     {{ if isset .Params "polideology" }}{{ range .Params.polideology }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
     {{ if isset .Params "polalignment" }}{{ range .Params.polalignment }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
