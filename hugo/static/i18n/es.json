@@ -1,0 +1,29 @@
+{
+    "header":{
+        "disclaimer": "Hemos hecho todo lo posible para brindarle información precisa sobre empresas, servicios e ideas, generalmente basándonos en las fuentes que se muestran. Sin embargo, no podemos garantizar la exactitud de las fuentes utilizadas y usted acepta realizar sus propias consultas y utilizar su propio juicio sobre si una empresa, servicio, marca o idea satisface sus necesidades. Al usar Invisible Voice, acepta que no somos responsables de ninguna pérdida o daño que surja del uso de este complemento."
+    },
+    "goy":{
+        "p": "Precio"
+    },
+    "bcorp":{
+        "brackets": "(80+ está certificada)",
+        "community": "Comunidad:",
+        "customers": "Clientes:",
+        "environment": "Ambiental:",
+        "governance": "Gobernancia:",
+        "lvs": "Última puntuación verificable:",
+        "workers": "Personal:"
+    },
+    "glassdoor":{
+        "companyt": "Tipo de compañía:",
+        "headquarters": "Sede:",
+        "founded": "Fundado:",
+        "industry": "Industria:",
+        "revenue": "Ingresos:",
+        "size": "Tamaño:",
+        "score": "Puntaje:",
+        "reviews": "reseñas"
+    },
+    "similarity": "Semejanza:",
+    "source": "(origen)"
+}

@@ -42,6 +42,7 @@ def get_info(url):
                 pass
         out[key] = str(value)
 
+    # sys.stderr.write("itemReviewed {}, ({})\n".format(thing.string, url))
     for thing in soup.findAll(name='script', attrs={'type': 'application/ld+json'}):
         obj = json.loads(thing.string)
         try:
@@ -63,9 +64,9 @@ def get_info(url):
                         continue
                     ratingDict[item] = obj[item]
                 out["glasroom_rating"] = ratingDict
+                break;
             else:
                 overview = obj['mainEntity'][0]['acceptedAnswer']['text'].split('"')[1]
-            break;
         except Exception as e:
             sys.stderr.write("Exception in thingLoop {}, ({})\n".format(e, url))
             continue

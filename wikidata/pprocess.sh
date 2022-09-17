@@ -18,16 +18,16 @@ watching(){
 
 pids=()
 for i in $(ls -1 id_split); do
-    #ls ./id_split/$i -l
+    ls ./id_split/$i -l
     ./update_wikidatacache_long.sh "./id_split/$i" &
-    #pids+=($!)
+    pids+=($!)
 done
 
-#watching &
-#watchingpid=$!
+watching &
+watchingpid=$!
 
 wait ${pids[@]}
-#kill $watchingpid
+kill $watchingpid
 
 rm id_split/*
 rm process_status/*

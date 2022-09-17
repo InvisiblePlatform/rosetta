@@ -10,6 +10,7 @@ BCLOOKUP="bcorp/website_stub_bcorp.csv"
 GYLOOKUP="goodonyou/goodforyou_web_brandid.csv"
 GDLOOKUP="glassdoor/website_glassdoorneo.list"
 TSLOOKUP="tosdr/site_id.list"
+WPLOOKUP="wikipedia/wikititle_webpage_id_filtered.csv"
 wikidatacachedir="./wikidata/longcache"
 GPD="wikidata/graph-parts"
 STATUSF="/mnt/tmpcache"
@@ -20,6 +21,7 @@ cut -d, -f1 \
     $GDLOOKUP \
     $GYLOOKUP \
     $WDLOOKUP \
+    $WPLOOKUP \
     | tr '[[:upper:]]' '[[:lower:]]' \
     | sed -e "s/www[0-9]*\.//g;s/?[^/]*$//g" \
     | sed -e "/\//d;s/\"//g;/^$/d" \
@@ -59,9 +61,9 @@ function prepare_pairings(){
 function ramcache(){
     if ! [[ -d "/mnt/tmpcache" ]]; then 
         sudo mkdir /mnt/tmpcache
-        sudo mount -t tmpfs -o size=8g tmpfs /mnt/tmpcache
-
+        sudo mount -t ramfs -o size=16g ramfs /mnt/tmpcache
     fi
+    sudo chown orange:orange /mnt/tmpcache
     printf "%s\n" "Ramcache on"
 
     printf "%s\n" "Copy wikidatacache"
@@ -69,7 +71,7 @@ function ramcache(){
     rsync -ah --info=progress2 $GPD /mnt/tmpcache
     mkdir -p /mnt/tmpcache/wikidata /mnt/tmpcache/bcorp \
         /mnt/tmpcache/goodonyou /mnt/tmpcache/glassdoor /mnt/tmpcache/mbfc \
-        /mnt/tmpcache/tosdr /mnt/tmpcache/graph-parts
+        /mnt/tmpcache/tosdr /mnt/tmpcache/graph-parts /mnt/tmpcache/wikipedia
     printf "%s\n" "Copy lookups"
     cp $WDLOOKUP /mnt/tmpcache/$WDLOOKUP
     cp $MBLOOKUP /mnt/tmpcache/$MBLOOKUP
@@ -77,7 +79,9 @@ function ramcache(){
     cp $GYLOOKUP /mnt/tmpcache/$GYLOOKUP
     cp $GDLOOKUP /mnt/tmpcache/$GDLOOKUP
     cp $TSLOOKUP /mnt/tmpcache/$TSLOOKUP
+    cat $WPLOOKUP >> /mnt/tmpcache/$WDLOOKUP
 
+    WPLOOKUP="/mnt/tmpcache/wikipedia/wikititle_webpage_id_filtered.csv"
     WDLOOKUP="/mnt/tmpcache/wikidata/website_id_list.csv"
     MBLOOKUP="/mnt/tmpcache/mbfc/website_bias.csv"
     BCLOOKUP="/mnt/tmpcache/bcorp/website_stub_bcorp.csv"
@@ -113,19 +117,26 @@ function check_data_header(){
     while read code; do
         printf "%s\n" "$3: \"$code\"" >> hugo/content/${website//./}.md
         printf "%s\n" "$3_source: \"$1\"" >> hugo/content/${website//./}.md
-    done< <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    done< <(grep -i "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
 }
 function add_values_from_wikidata(){
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
         wikidatagetck $WIKIDATAID
-        while read site; do
-            if grep -q "\"$site\"" $2; then
-               jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$site.json 2>/dev/null | sort -u \
-                   | sed -e "s/^\(.*\)$/\"\1\;$4\;$site\"/g" >> $tempfile
-            fi
-        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
-    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+        jq -r .entities[].claims.$4[].mainsnak.datavalue.value $wikidatacachedir/$WIKIDATAID.json 2>/dev/null | sort -u \
+            | sed -e "s/^\(.*\)$/\"\1\;$4\;$WIKIDATAID\"/g" >> $tempfile
+    done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+
+    file_to_array "$tempfile" "$3" "hugo/content/${website//./}.md"
+    rm $tempfile
+}
+function add_values_from_wikidata_id(){
+    local tempfile=$(mktemp)
+    while read WIKIDATAID; do
+        wikidatagetck $WIKIDATAID
+        jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$WIKIDATAID.json 2>/dev/null | sort -u \
+            | sed -e "s/^\(.*\)$/\"\1\;$4\;$WIKIDATAID\"/g" >> $tempfile
+    done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
 
     file_to_array "$tempfile" "$3" "hugo/content/${website//./}.md"
     rm $tempfile
@@ -137,46 +148,48 @@ function esg_via_yahoo_via_wikidata(){
 
     while read WIKIDATAID; do
         wikidatagetck $WIKIDATAID
-        while read site; do
-            if grep -q "\"$site\"" $2; then
-                jq -r .entities[].claims.P414[].qualifiers.P249[].datavalue.value \
-                $(grep "\"$site\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
-                    2>/dev/null | sed -e "s/^/\"/g;s/$/\"/g">> $tempfile
-            fi
-        done < <(grep "\"$WIKIDATAID\"" $WDLOOKUP | grep -o "Q[0-9]*")
-    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+        jq -r .entities[].claims.P414[].qualifiers.P249[].datavalue.value \
+        $(grep "\"$WIKIDATAID\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
+            2>/dev/null | sed -e "s/^/\"/g;s/$/\"/g">> $tempfile
+    done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
 
     file_to_array "$tempfile" "ticker" "hugo/content/${website//./}.md"
     rm $tempfile
 }
-function isin_via_wikidata(){
-    if ! grep -q "\"$1\"" $2; then return; fi
+function wikidata_id(){
+    if ! grep -i -q "\"$1\"" $2; then return; fi
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
         wikidatagetck $WIKIDATAID
-        while read isin; do
-                rg $isin static/*.json | cut -d: -f1 | sed -e "s/$/:$isin\"/g;s/^/\"/g" >> $tempfile
-        done < <(jq -r .entities[].claims.P946[].mainsnak.datavalue.value \
-                    $(grep "\"$WIKIDATAID\"" $2 | grep -o "Q[0-9]*" \
-                    | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
-                        2>/dev/null | sort -u | sed -e "/null/d")
-    done < <(grep "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+        printf '%s\n' "\"$WIKIDATAID\"" >> $tempfile
+    done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
+    file_to_array "$tempfile" "wikidata_id" "hugo/content/${website//./}.md"
+    rm $tempfile
+}
+function isin_via_wikidata(){
+    if ! grep -i -q "\"$1\"" $2; then return; fi
+    local tempfile=$(mktemp)
+    while read WIKIDATAID; do
+        wikidatagetck $WIKIDATAID
+        rg $isin static/*.json | cut -d: -f1 | sed -e "s/$/:$isin\"/g;s/^/\"/g" >> $tempfile
+    done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
     file_to_array "$tempfile" "isin" "hugo/content/${website//./}.md"
     rm $tempfile
 }
+
 function check_data_bcorp(){
-    if ! grep -q "\"$1\"" $2; then return; fi
+    if ! grep -i -q "\"$1\"" $2; then return; fi
     while read code; do
          RATING=$(yq -r .latestVerifiedScore bcorp/split_files/bcorp_${code}.json)
          printf "%s\n" "bcorp_rating: $RATING" >> hugo/content/${website//./}.md
-    done < <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    done < <(grep -i "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
 }
 function check_data_glassdoor(){
-    if ! grep -q "\"$1\"" $2; then return; fi
+    if ! grep -i -q "\"$1\"" $2; then return; fi
     while read code; do
         RATING=$(yq -r .glasroom_rating.ratingValue glassdoor/data_json/${code}.json)
         printf "%s\n" "glassdoor_rating: $RATING" >> hugo/content/${website//./}.md
-    done < <(grep "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    done < <(grep -i "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
 }
 function look_for_wikipedia_page(){
    local code=$1 
@@ -207,7 +220,7 @@ function look_for_wikipedia_page(){
    fi
 }
 function check_tosdr(){
-    if ! grep -q "\"$1\"" $2; then return; fi
+    if ! grep -i -q "\"$1\"" $2; then return; fi
     ID=$(grep -m1 "\"$1\"" $2 | cut -d, -f2)
     printf "%s\n" "tosdr: \"$ID\" " >> hugo/content/${website//./}.md
 }
@@ -226,10 +239,15 @@ function wikiassociates(){
     while read value; do
         [[ $COUNT == 0 ]] && STRING+="{ \"label\": \"${value//\"/\\\"}\"" 
         [[ $COUNT == 1 ]] && STRING+=",\"id\": \"$value\"" 
-	    [[ $COUNT == 2 ]] && STRING+=",\"enwiki\": \"$value\"" && GROUP=()
-        [[ $COUNT > 2 ]] && GROUP+=("$value")
+	    [[ $COUNT == 2 ]] && STRING+=",\"enwiki\": \"$value\"" 
+	    [[ $COUNT == 3 ]] && STRING+=",\"eswiki\": \"$value\""
+	    [[ $COUNT == 4 ]] && STRING+=",\"zhwiki\": \"$value\""
+	    [[ $COUNT == 5 ]] && STRING+=",\"hiwiki\": \"$value\""
+	    [[ $COUNT == 6 ]] && STRING+=",\"eowiki\": \"$value\""
+	    [[ $COUNT == 7 ]] && STRING+=",\"dewiki\": \"$value\"" && GROUP=()
+        [[ $COUNT > 7 ]] && GROUP+=("$value")
         : $(( COUNT += 1 ))
-    done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
+    done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .sitelinks.eswiki.url, .sitelinks.zhwiki.url, .sitelinks.hiwiki.url, .sitelinks.eowiki.url, .sitelinks.dewiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
 
     STRING+=",\"groups\": [$(sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g" <<<"${GROUP[@]}" )]}],"
 
@@ -244,15 +262,15 @@ function wikiassociates(){
         | sed -f $secondorderpatterns \
 	    | grep :)
 
-    sed -i 's/http[s]*:\/\/en\.wikipedia\.org\/wiki\///g' $templist
+    sed -i 's/http[s]*:\/\/en\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/de\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/eo\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/es\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/hi\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/zh\.wikipedia\.org\/wiki\///g' $templist
     sed -i '$s/[,]*$/]}/' $templist
     cp $templist "$GPD/graph-${code}.json"
     printf '%s\n' '1' > $STATUSF/.status.$2.$3
     rm $temptilesmall $templist >/dev/null
 }
 function check_associated_for_graph(){
-    if ! grep -q "\"$1\"" $2; then return; fi
-    local code=$(grep "\"$1\"" $2 | grep -o "Q[0-9]*"|head -1)
+    if ! grep -i -q "\"$1\"" $2; then return; fi
+    local code=$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*"|head -1)
     local templister=$(mktemp)
     local templisterr
     printf '%s\n' "$code" > $templister
@@ -267,7 +285,8 @@ function check_associated_for_graph(){
         done
         while read id; do 
 	        [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	        [[ $id == 'null' || $id == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	        [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	        [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
             wikiassociates "$id" "$3" "$place" "append" & 
             : $(( place += 1))
         done < <(sort -u $templister)
@@ -286,7 +305,8 @@ function check_associated_for_graph(){
     done
     while read id; do 
 	    [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	    [[ $id == 'null' || $id == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	    [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	    [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
         wikiassociates "$id" "$3" "$place" &
         : $(( place += 1))
     done < <(sort -u $templister)
@@ -297,9 +317,27 @@ function check_associated_for_graph(){
 	sort -u -o $templister{,}
     local tempjson=$(mktemp)
     local tempjson_nodes=$(mktemp)
-    jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"links":.links}' $(tr "\n" "@" < $templister | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g" ) > $tempjson
+    jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"links":.links}' ${templisterr[@]} > $tempjson
     jq -r ".links[].target" $templisterr >> $templister
+
 	sort -u -o $templister{,}
+    numberOfIDs=$(lines_loop $templister)
+    place="1"
+    templisterr=$(sort -u $templister | tr "\n" "@" | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g")
+    for ((j=1;j<=$numberOfIDs;j++)); do
+        printf '%s\n' '0' > $STATUSF/.status.$3.$j
+    done
+    while read id; do 
+	    [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	    [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+	    [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+        wikiassociates "$id" "$3" "$place" &
+        : $(( place += 1))
+    done < <(sort -u $templister)
+
+    if [[ -s "$STATUSF/.status.$3.1" ]]; then
+		while grep -q "0" <(cat $STATUSF/.status.$3.* | tr '\n' ' ' ) ; do sleep 0.1s; done
+	fi
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}'  $(tr "\n" "@" < $templister | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g" ) > $tempjson_nodes
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add' $tempjson $tempjson_nodes > hugo/static/connections/${website//./}.json
 
@@ -318,6 +356,7 @@ function reorder_wikipedia(){
 function do_record(){
     local resort=$(mktemp)
     local website="$1"
+    # [[ -s "hugo/content/${website//./}.md" ]] && return
     printf "%s\n" "---" > hugo/content/${website//./}.md
     printf "%s\n" "title: \"$website\"" >> hugo/content/${website//./}.md
     printf "%s\n" "date: $EPOCHSECONDS" >> hugo/content/${website//./}.md
@@ -329,10 +368,32 @@ function do_record(){
     check_data_header "$website" "$GYLOOKUP" "goodonyou"
     check_data_header "$website" "$GDLOOKUP" "glassdoor"
     isin_via_wikidata "$website" "$WDLOOKUP" "isin"
+    wikidata_id "$website" "$WDLOOKUP" "wikidata_id"
     esg_via_yahoo_via_wikidata "$website" "$WDLOOKUP" "yesg"
 
-    add_values_from_wikidata "$website" "$WDLOOKUP" "polalignment" "P1387"
-    add_values_from_wikidata "$website" "$WDLOOKUP" "polideology" "P1142"
+    add_values_from_wikidata_id "$website" "$WDLOOKUP" "polalignment" "P1387"
+    add_values_from_wikidata_id "$website" "$WDLOOKUP" "polideology" "P1142"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "twittername" "P2002"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "officialblog" "P1581"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "subreddit" "P3984"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "facebookid" "P2013"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "facebookpage" "P4003"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "instagramid" "P2003"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "youtubechannelid" "P2397"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "emailaddress" "P968"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "truthsocial" "P10858"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "parleruser" "P8904"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "gabuser" "P8919"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "soundcloud" "P3040"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "tumblr" "P3943"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "medium" "P3899"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "telegram" "P3789"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "mastodon" "P4033"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "patreon" "P4175"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "reddituser" "P4265"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "twitch" "P5797"
+    add_values_from_wikidata "$website" "$WDLOOKUP" "tiktok" "P7085"
+
     check_data_glassdoor "$website" "$GDLOOKUP"
     check_data_bcorp "$website" "$BCLOOKUP"
     check_associated_for_graph "$website" "$WDLOOKUP" "$BASHPID"
@@ -358,7 +419,7 @@ function do_record(){
 function do_list(){
 while read website; do 
     local IDLIST_LENGTH=$(wc -l $1 | cut -d' ' -f1 )
-    local lineno=$(grep -n "^${website}$" $1)
+    local lineno=$(grep -i -n "^${website}$" $1)
     do_record "${website}" "$1" 
 done < $1
 }
@@ -369,8 +430,8 @@ prepare_pairings
 rm $STATUSF/.status.* &>/dev/null
 rm $STATUSF/.list.* &>/dev/null
 
-#rm hugo/content/ -rf
-#mkdir -p hugo/content
+rm hugo/content/ -rf
+mkdir -p hugo/content
 splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l websites.list | cut -d' ' -f1)/8"))
 split -l$splitnum <(grep "^" websites.list) $STATUSF/.list.
 

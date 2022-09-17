@@ -1,0 +1,11 @@
+{{ $props := getJSON "data/wikidata/props.json" }}
+{{ $propsf := getJSON "data/wikidata/propsformatter.json" }}
+<section class="social-wikidata">
+{{ $firstkey := split (index . 0 ) ";" }}
+<h2>{{ index $props (index $firstkey 1) | title }}:</h2> 
+{{ range . }}
+{{ $key := split . ";" }}
+<a href="{{ index $propsf (index $firstkey 1) | replaceRE "\\$1" (index $key 0) }}">{{ index $key 0 }}</a>
+{{ end }}
+<a class="source" target="_blank" href="https://wikidata.org/wiki/{{ index $firstkey 2 }}#{{ index $firstkey 1 }}">(wikidata)</a>
+</section>

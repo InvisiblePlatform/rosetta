@@ -618,6 +618,28 @@ li {
 
 }
 
+.name-inner { 
+    margin: 3px; 
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+	background-color: #98FB98;
+	border-color: #98FB98;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+	color: #98FB98;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
 /*
 ********************************
 ********************************
@@ -785,10 +807,6 @@ li {
 		cursor: pointer;
 	}
 
-	li:first-of-type {
-		margin-top: -20px;
-	}
-
 	.footer-project-description,
 	.footer-team,
 	.footer-social,
@@ -844,3 +862,4 @@ li {
     }
 
 }
+

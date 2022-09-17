@@ -4,12 +4,19 @@
 <link rel="stylesheet" href="/css/plugin-styles.css">
 <title>Invisible Voice - {{ .Params.title }}</title>
 </head>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@andreasremdt/simple-translator@latest/dist/umd/translator.min.js" defer></script>
+<script src="/js/translations.js" defer></script>
+
+{{ if isset .Params "wikidataid" }}
+<div id="wikidataid" style="display:none;">{{ .Params.wikidataid }}</div>
+{{ end }}
 <div class="plugin-container">
   <div class="plugin-header">
-      <span class="bk-bg co-name">{{ .Params.title }}</span>
-    <p class="disclaimer-text" style="width:50%;">
-        We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin.
-    </p>
+    <span class="bk-bg co-name">{{ .Params.title }}</span>
+    <p class="disclaimer-text" data-i18n="header.disclaimer" style="width:50%;"></p>
+    {{ partialCached "translation_picker.html" . }}
     <section id="button-list">
     {{ if isset .Params "tosdr" }}{{ partialCached "tosdr.html" .Params.tosdr .Params.tosdr  }}{{ end }}
     {{ if isset .Params "mbfc" }}{{ partialCached "mbfc.html" .Params.mbfc_source .Params.title }}{{ end }}
@@ -20,6 +27,28 @@
     </div>
   </div>
   {{ if isset .Params "connections" }}<section class="content">{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}</section><hr/>{{ end }}
+  <section class="content" style="justify-content:flex-start;">
+  {{ if isset .Params "twittername" }}{{ partialCached "wikidata-social.html" .Params.twittername .Params.twittername }}{{ end }}
+  {{ if isset .Params "subreddit" }}{{ partialCached "wikidata-social.html" .Params.subreddit .Params.subreddit }}{{ end }}
+  {{ if isset .Params "facebookid" }}{{ partialCached "wikidata-social.html" .Params.facebookid .Params.facebookid }}{{ end }}
+  {{ if isset .Params "facebookpage" }}{{ partialCached "wikidata-social.html" .Params.facebookpage .Params.facebookpage }}{{ end }}
+  {{ if isset .Params "instagramid" }}{{ partialCached "wikidata-social.html" .Params.instagramid .Params.instagramid }}{{ end }}
+  {{ if isset .Params "youtubechannelid" }}{{ partialCached "wikidata-social.html" .Params.youtubechannelid .Params.youtubechannelid }}{{ end }}
+  {{ if isset .Params "truthsocial" }}{{ partialCached "wikidata-social.html" .Params.truthsocial .Params.truthsocial }}{{ end }}
+  {{ if isset .Params "parleruser" }}{{ partialCached "wikidata-social.html" .Params.parleruser .Params.parleruser }}{{ end }}
+  {{ if isset .Params "gabuser" }}{{ partialCached "wikidata-social.html" .Params.gabuser .Params.gabuser }}{{ end }}
+  {{ if isset .Params "soundcloud" }}{{ partialCached "wikidata-social.html" .Params.soundcloud .Params.soundcloud }}{{ end }}
+  {{ if isset .Params "tumblr" }}{{ partialCached "wikidata-social.html" .Params.tumblr .Params.tumblr }}{{ end }}
+  {{ if isset .Params "medium" }}{{ partialCached "wikidata-social.html" .Params.medium .Params.medium }}{{ end }}
+  {{ if isset .Params "telegram" }}{{ partialCached "wikidata-social.html" .Params.telegram .Params.telegram }}{{ end }}
+  {{ if isset .Params "mastodon" }}{{ partialCached "wikidata-social.html" .Params.mastodon .Params.mastodon }}{{ end }}
+  {{ if isset .Params "patreon" }}{{ partialCached "wikidata-social.html" .Params.patreon .Params.patreon }}{{ end }}
+  {{ if isset .Params "reddituser" }}{{ partialCached "wikidata-social.html" .Params.reddituser .Params.reddituser }}{{ end }}
+  {{ if isset .Params "twitch" }}{{ partialCached "wikidata-social.html" .Params.twitch .Params.twitch }}{{ end }}
+  {{ if isset .Params "tiktok" }}{{ partialCached "wikidata-social.html" .Params.tiktok .Params.tiktok }}{{ end }}
+  {{ if isset .Params "officialblog" }}{{ partialCached "wikidata-link.html" .Params.officialblog .Params.officialblog }}{{ end }}
+  {{ if isset .Params "emailaddress" }}{{ partialCached "wikidata-link.html" .Params.emailaddress .Params.emailaddress }}{{ end }}
+  </section>
   {{ partialCached "similar.html" .Params.title .Params.title }}
   <section class="content" style="justify-content:flex-start;">
   {{ if isset .Params "goodonyou" }}{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}{{ end }}
@@ -30,78 +59,7 @@
   <hr/>
   <div class="content">
     {{ .Content }}
-    {{ if eq .WordCount 0 }}
-      No content yet!
-    {{ end }}
   </div>
 </div>
-
-
-<script>
-  let allLinks = document.querySelectorAll('a');
-
-  allLinks.forEach(el => {
-    if (el.href.toString().includes("wikipedia.org") && el.target != "_blank"){
-        href = el.href;
-        org_html = el.innerHTML;
-        parent = el.parentElement;
-        var new_el = document.createElement("span");
-        new_el.innerHTML = "<span class='hover-anchor' onmouseover='loadWikiInfo(this)'><a target='_blank' href=\"" + el.href + "\" >" + org_html + "</a><span class='hover-pop dot'>This will be a little pop-out wikipedia explanation that appears on hover</span></span>"
-        parent.replaceChild(new_el,el);
-
-
-    }});
-
-  let hoverAnchors = document.querySelectorAll('.hover-anchor');
-  let wW = window.innerWidth;
-
-  hoverAnchors.forEach(el => {
-    let elPos = el.getBoundingClientRect();
-    let sixty = wW * 60 / 100;
-    let hoverPop = el.querySelector('.hover-pop');
-
-    if (elPos.left > sixty) {
-      hoverPop.classList.remove('dot');
-      hoverPop.classList.add('dot-right');
-    }
-  })
-  
-  let loadWikiInfo = function(x) {
-  	let url = x.firstElementChild.getAttribute("href");	
-  	if (url != "null"){
-  		let term = url.replace("https://en.wikipedia.org/wiki/", ""); 
-  		let requestURL = "https://en.wikipedia.org/api/rest_v1/page/summary/" + term + "?redirect=true"
-  		$.ajax({
-  		    url: requestURL
-  		  }).done(function(data) {
-  			if (data.thumbnail){
-  				x.lastElementChild.innerHTML = "<img class='thumbnail' width='100%' src='" + data.thumbnail.source + "'> " + data.extract_html;	
-  			} else {
-  				x.lastElementChild.innerHTML = data.extract_html;	
-  			}
-  		  }).fail(function() {
-  			  console.log("oh no")
-  		});
-  	} else {
-  		x.lastElementChild.innerHTML = x.firstElementChild.innerHTML;
-  	}
-  	x.removeAttribute("onmouseover");
-    }
-  
-  var coll = document.getElementsByClassName("collapsible");
-  var i;
-  for (i = 0; i < coll.length; i++) {
-    coll[i].addEventListener("click", function() {
-      this.classList.toggle("active");
-      var content = this.nextElementSibling;
-      if (content.style.display === "block") {
-        content.style.display = "none";
-      } else {
-        content.style.display = "block";
-      }
-    }); 
-    } 
-
-</script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="/js/single.js" defer></script>
 </html>

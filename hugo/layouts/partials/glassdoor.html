@@ -4,17 +4,17 @@
 <section class="content">
 <section id="glassdoor">
 {{ $d := getJSON . }}
-<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" href="{{ $d.url }}">(source)</a></button>
+<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" data-i18n="source" href="{{ $d.url }}"></a></button>
 <section class="section-content" style="display: block;">
 <p>
-{{ with $d.type }} Company Type: {{ . }} </br> {{ end }}
-{{ with $d.headquarters }} Headquarters: {{ . }} </br> {{ end }}
-{{ with $d.founded }} Founded: {{ . }} </br> {{ end }}
-{{ with $d.industry }} Industry: {{ . }} </br> {{ end }}
-{{ with $d.revenue }} Revenue: {{ . }} </br> {{ end }}
-{{ with $d.size }} Size: {{ . }} </br>{{ end }}
+{{ with $d.type }} <b data-i18n="glassdoor.companyt"></b> {{ . }} </br> {{ end }}
+{{ with $d.headquarters }} <b data-i18n="glassdoor.headquarters"></b> {{ . }} </br> {{ end }}
+{{ with $d.founded }} <b data-i18n="glassdoor.founded"></b> {{ . }} </br> {{ end }}
+{{ with $d.industry }} <b data-i18n="glassdoor.industry"></b> {{ . }} </br> {{ end }}
+{{ with $d.revenue }} <b data-i18n="glassdoor.revenue"></b> {{ . }} </br> {{ end }}
+{{ with $d.size }} <b data-i18n="glassdoor.size"></b> {{ . }} </br>{{ end }}
 {{ with $d.glasroom_rating }}
-Score: {{ .ratingValue }} ( {{.ratingCount }} reviews)
+<b data-i18n="glassdoor.score"></b> {{ .ratingValue }} ({{.ratingCount }} <emphasis data-i18n="glassdoor.reviews"></emphasis>)
 {{ end }}
 </p>
 </section>

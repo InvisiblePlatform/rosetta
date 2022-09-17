@@ -11,7 +11,8 @@ do_line(){
 }
 pids=$(mktemp)
 pids_done=$(mktemp)
-for i in $(ls -1 $ourdir/); do
+#for i in $(ls -1 $ourdir/); do
+for i in $(cat wikidataidsfromtitles.list); do
     do_line "$i" &
     lastpid=$!
     printf "%s\n" "$lastpid" >> $pids

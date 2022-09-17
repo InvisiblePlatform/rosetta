@@ -62,8 +62,31 @@ function missing_pages(){
     rm $tempfile $tempfilehashes $translationlayer
 }
 
+# hashes to sites
+function hash_to_site(){
+    tempfile=$(mktemp)
+    tempfilehashes=$(mktemp)
+    translationlayer=$(mktemp)
+    cp site_to_hash.csv $tempfilehashes
+
+    while read hashval; do
+        grep -q "$hashval" $translationlayer && continue
+        sites=$(grep "$hashval" $tempfilehashes | cut -d, -f1 | sed -e"s/^/\"/g;s/$/\"/g"| tr '\n' ',' )
+        printf '%s\n' "\"$hashval\":[$sites]" | tee -a $translationlayer
+        continue
+    done < <( cut -d, -f2 $tempfilehashes | sort -u ) 
+
+    echo "{" > $tempfile
+    cat $translationlayer >> $tempfile
+    sed -i '$s/,$//g' $tempfile
+    echo "}" >> $tempfile
+    cp $tempfile hashtosite.json
+    rm $tempfile $tempfilehashes $translationlayer
+}
+
 # universal_hash_list
-missing_pages
+# missing_pages
+hash_to_site
 
 exit 0
 # BCorp

@@ -1,0 +1,29 @@
+{
+    "header":{
+        "disclaimer": "We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin."
+    },
+    "goy":{
+        "p": "Price"
+    },
+    "bcorp":{
+        "brackets": "(80+ is certified)",
+        "community": "Community:",
+        "customers": "Customers:",
+        "environment": "Environment:",
+        "governance": "Governance:",
+        "lvs": "Latest Verified Score:",
+        "workers": "Workers:"
+    },
+    "glassdoor":{
+        "companyt": "Company Type:",
+        "headquarters": "Headquarters:",
+        "founded": "Founded:",
+        "industry": "Industry:",
+        "revenue": "Revenue:",
+        "size": "Size:",
+        "score": "Score:",
+        "reviews": "reviews"
+    },
+    "similarity": "Similarity:",
+    "source": "(source)"
+}

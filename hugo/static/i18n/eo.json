@@ -1,0 +1,29 @@
+{
+    "header":{
+        "disclaimer": "Ni uzis niajn plej bonajn klopodojn por alporti al vi precizajn informojn pri kompanioj, servoj kaj ideoj ĝenerale dependantaj de la montritaj fontoj. Ni ne povas tamen garantii pri la ĝusteco de la uzataj fontoj kaj vi konsentas fari viajn proprajn demandojn kaj uzi vian propran juĝon pri ĉu kompanio, servo, marko aŭ ideo kontentigas viajn bezonojn. Uzante Nevideblan Voĉon, vi konsentas, ke ni ne respondecas pri ajna perdo aŭ damaĝo, kiu estiĝas pro via uzo de ĉi tiu kromaĵo."
+    },
+    "goy":{
+        "p": "Prezo:"
+    },
+    "bcorp":{
+        "brackets": "(80+ estas atestita)",
+        "community": "Komunumo:",
+        "customers": "Klientoj:",
+        "environment": "Keologiaj:",
+        "governance": "Regado:",
+        "lvs": "Lasta Kontrolita Poentaro:",
+        "workers": "Laboristoj:"
+    },
+    "glassdoor":{
+        "companyt": "Tipo de Kompanio:",
+        "headquarters": "Sidejo:",
+        "founded": "Fondita en",
+        "industry": "Industrio:",
+        "revenue": "Espenzo:",
+        "size": "Grandeco:",
+        "score": "Poentaro:",
+        "reviews": "recenzoj"
+    },
+    "similarity": "Simileco:",
+    "source": "(fonto)"
+}

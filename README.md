@@ -50,6 +50,8 @@ data to use in the newest Invisible Voice iteration.
 - Reorganise sources into a folder seperate from root
 - Decouple record-build.sh from the websites.list generation
 - Updating wikidatacache with latest-all.bz2.json
+- https://en.wikipedia.org/api/rest_v1/page/mobile-sections/
+- https://en.wikipedia.org/w/api.php?action=query&prop=pageprops&titles=Kofoworola_Abeni_Pratt&format=json
 
 
 ## Ordering 

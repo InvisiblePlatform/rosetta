@@ -7,13 +7,13 @@
 <section class="section-content" style="display: block;">
     <p>
     {{ if isset $d "latestVerifiedScore" }}
-    <b>Latest Verified Score:</b></br>
-    {{ $d.latestVerifiedScore }}<b>/140</b>+ (80+ is certified)</br>
+    <b data-i18n="bcorp.lvs"></b></br>
+    {{ $d.latestVerifiedScore }}<b>/140</b>+ <emphasis data-i18n="bcorp.brackets"></emphasis></br>
     {{ end }}
     {{ if isset $d "assessments" }}
     {{ $a := index $d.assessments 0 }}
     {{ range $a.impactAreas }}
-    <b>{{ .name }}:</b> {{ .score }}</br>
+    <b data-i18n="bcorp.{{ .name | urlize }}"></b> {{ .score }}</br>
     {{ end }}
     {{ end }}
     {{ end }}

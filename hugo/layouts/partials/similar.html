@@ -11,7 +11,7 @@
         <a href="http://{{ index . "Site" }}">
             <h3>{{ index . "Site" }}</h3></br>
             <!--<img width="100px" src="{{ index . "Thumbnail"}}"/></br>-->
-            <h3><b>Similarity:</b> {{ substr (index . "Grade") 2 2 }}%</h3></a></br>
+            <h3><b data-i18n="similarity"></b> {{ substr (index . "Grade") 2 2 }}%</h3></a></br>
         </section>
     {{ end }}
 </p>

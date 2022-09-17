@@ -21,6 +21,14 @@ time, mark, audio, video {
   vertical-align: baseline;
 }
 
+* {
+  overflow-x:visible;
+}
+
+hr {
+    width: 90vw;
+}
+
 /* Colours */
 
 :root {
@@ -36,6 +44,47 @@ time, mark, audio, video {
     --c-similar: hotpink;
     --c-isin: black;
     --c-main: #98FB98;
+    --c-background: #eee;
+    --c-background-units: #fefefe;
+    --c-light-text: #444;
+    --c-heavy-text: #111;
+    --c-linky-text: orangered;
+    --c-email-text: blue;
+    --c-trans-bg: rgba(255,255,255,0.8);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --c-wikidata: orangered;
+        --c-wikipedia: red;
+        --c-goodonyou: violet;
+        --c-yahoo: blueviolet;
+        --c-glassdoor: blue;
+        --c-bcorp: azure;
+        --c-mbfc: teal;
+        --c-tosdr: grey;
+        --c-trust: green;
+        --c-similar: darkgrey;
+        --c-isin: black;
+        --c-main: #98FB98;
+        --c-background: #111;
+        --c-background-units: #010101;
+        --c-light-text: #777;
+        --c-heavy-text: #999;
+        --c-linky-text: orangered;
+        --c-email-text: blue;
+        --c-trans-bg: rgba(5,5,5,0.8);
+    }
+  img {
+    opacity: .75;
+    transition: opacity .5s ease-in-out;
+  }
+  img:hover {
+    opacity: 1;
+  }
+  html{
+    background: #111;
+  }
 }
 
 /* fonts */
@@ -64,12 +113,12 @@ time, mark, audio, video {
 /* standard stuff */
 
 b {
-    color: black;
+    color: var(--c-heavy-text);
     font-weight: 1000;
 }
 
 body {
-   color: #444;
+   color: var(--c-light-text);
    font-family: 'Peace Reg', sans-serif;
 }
 
@@ -79,16 +128,14 @@ body {
     }
 }
 
-html { background-color: none; }
-
 a {
    text-decoration: none;
-   color: orangered;
+   color: var(--c-linky-text);
 }
 
 a.email-link {
    text-decoration: none;
-   color: blue;
+   color: var(--c-email-text);
 }
 
 pre {
@@ -125,7 +172,7 @@ h3 { font-size: 0.6em;
 
 
 .bk-bg {
-	background-color: #444;
+	background-color: var(--c-light-text);
 	color: #DDD;
 	width: -moz-fit-content;
 	width: fit-content;
@@ -134,7 +181,7 @@ h3 { font-size: 0.6em;
 
 .co-name {
    background-color: var(--c-main);
-   color: #444;
+   color: var(--c-light-text);
    font-size: 3em;
    font-weight: 1000;
    margin-left: 5px;
@@ -152,7 +199,7 @@ h3 { font-size: 0.6em;
 	height: 10px;
 	border-radius: 100%;
 	position: absolute;
-	background-color: #444;
+	background-color: var(--c-light-text);
 	top: -10px;
 	left: -10px;
 	content: ' ';
@@ -168,14 +215,14 @@ h3 { font-size: 0.6em;
 	height: 10px;
 	border-radius: 100%;
 	position: absolute;
-	background-color: #444;
+	background-color: var(--c-light-text);
 	top: -10px;
 	right: -10px;
 	content: ' ';
 }
 
 .hover-anchor       { position: relative; }
-.hover-anchor:hover { background-color: #98FB98; }
+.hover-anchor:hover { background-color: var(--c-main); }
 .hover-anchor:hover .hover-pop { visibility: visible; }
 .hover-pop {
    visibility: hidden;
@@ -189,7 +236,7 @@ h3 { font-size: 0.6em;
    text-align: left;
    padding: 10px;
    color: #DDD;
-   background-color: #444;
+   background-color: var(--c-light-text);
 }
 
 .dot-right.hover-pop {
@@ -206,7 +253,7 @@ h3 { font-size: 0.6em;
 #isin, #yahoo, #wikidata, #bcorp, #mbfc, #goodonyou, #glassdoor   { 
     margin: .16em;
     padding: .16em;
-    background-color:#fefefe; 
+    background-color: var(--c-background-units); 
     border: solid 1px black; 
     height: auto;
 }
@@ -241,9 +288,9 @@ h3 { font-size: 0.6em;
 .similar-site {
     margin: .16em;
     padding: .5em;
-    background-color:#fefefe; 
-    border: solid 1px black; 
-    filter: drop-shadow(.16em .16em 0px #fb98fb); 
+    background-color: var(--c-background-units); 
+    border: solid 1px var(--c-light-text); 
+    filter: drop-shadow(.16em .16em 0px var(--c-similar)); 
 	height: -moz-fit-content;
     height: fit-content;
     flex: 10%;
@@ -283,9 +330,20 @@ h3 { font-size: 0.6em;
     padding: .2em;
     width: auto;
     font-size: 15px;
-    background-color:#fefefe; 
+    background-color:var(--c-background-units); 
     border: solid 1px black; 
     display:block;
+}
+
+.social-wikidata { 
+    margin-bottom: 0.3em; 
+    padding: .2em;
+    width: auto;
+    max-width: 90vw;
+    font-size: 15px;
+    background-color:var(--c-background-units); 
+    border: solid 1px black; 
+    display:inline-block;
 }
 
 
@@ -336,18 +394,18 @@ h3 { font-size: 0.6em;
 /* width */
 ::-webkit-scrollbar { width: 10px; }
 /* Track */
-::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-track { background: var(--c-background); }
 
 /* Handle */
-::-webkit-scrollbar-thumb { background: #888; }
+::-webkit-scrollbar-thumb { background: var(--c-main); }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover { background: #555; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-linky-text); }
 
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
-  background-color: #eee;
-  color: #444;
+  background-color: var(--c-background-units);
+  color: var(--c-light-text);
   cursor: pointer;
   padding: 18px;
   width: 100%;
@@ -365,14 +423,14 @@ h3 { font-size: 0.6em;
 /* Style the collapsible content. Note: hidden by default */
 .section-content {
   padding: 0 18px;
-  background-color: #f1f1f1;
+  background-color: var(--c-background-units);
   transition: max-height 0.5s ease-out;
 }
 
 .collapsible:after {
   content: '\02795'; /* Unicode character for "plus" sign (+) */
   font-size: 13px;
-  color: white;
+  color: var(--c-background);
   float: right;
   margin-left: 5px;
 }
@@ -380,3 +438,57 @@ h3 { font-size: 0.6em;
 .active:after {
   content: "\2796"; /* Unicode character for "minus" sign (-) */
 }
+
+g>path {
+  z-index:104;
+}
+
+.nodes circle {
+  stroke-width: 1.5px;
+  filter: drop-shadow(0 0 5px var(--c-light-text));
+  stroke: var(--c-background-units);
+  paint-order: stroke fill;
+  z-index:103;
+}
+#key text {
+  stroke-width: 4px;
+  stroke: var(--c-background-units);
+  fill: var(--c-light-text);
+  paint-order: stroke fill;
+  z-index:102;
+}
+.nodes text {
+  stroke-width: 4px;
+  stroke: var(--c-background-units);
+  fill: var(--c-light-text);
+  paint-order: stroke fill;
+  z-index:102;
+}
+
+.Q5 {
+  fill: var(--c-linky-text)!important;
+}
+
+#wikipedia-frame, #wikipedia-infocard-frame, #wikipedia-first-frame {
+        position: absolute;
+        width: 33vw;
+        background: var(--c-trans-bg);
+        z-index: 1;
+        height: 80vh;
+        border-color: var(--c-light-text);
+        border-width: 2px;
+        border-style: solid;
+        overflow-y: scroll;
+        padding: 1em;
+}
+
+#wikipedia-frame-close, #wikipedia-infocard-frame-close {
+        position: absolute;
+        background: var(--c-linky-text);
+        z-index: 2;
+}
+
+#wikipedia-first-frame, #wikipedia-frame { right: 10px; }
+#wikipedia-first-frame { width: 58vw; }
+#wikipedia-infocard-frame { left: 10px; }
+#wikipedia-frame-close { right: 10px; }
