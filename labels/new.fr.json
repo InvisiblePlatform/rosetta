@@ -1,29 +1,29 @@
 {
     "header":{
-        "disclaimer": "We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin."
+        "disclaimer": "Nous avons fait de notre mieux pour vous apporter des informations précises sur les entreprises, les services et les idées en s'appuyant généralement sur les sources indiquées. Nous ne pouvons cependant pas garantir l'exactitude des sources utilisées et vous acceptez de faire vos propres recherches et d'utiliser votre propre jugement pour savoir si une entreprise, un service, une marque ou une idée répond à vos besoins. En utilisant Invisible Voice, vous acceptez que nous ne soyons pas responsables de toute perte ou dommage résultant de votre utilisation de ce plugin."
     },
     "goy":{
-        "p": "Price"
+        "p": "Prix"
     },
     "bcorp":{
-        "brackets": "(80+ is certified)",
-        "community": "Community:",
-        "customers": "Customers:",
-        "environment": "Environment:",
-        "governance": "Governance:",
-        "lvs": "Latest Verified Score:",
-        "workers": "Workers:"
+        "brackets": "(80+ est certifié)",
+        "community": "Communauté:",
+        "customers": "Clients:",
+        "environment": "Environnement:",
+        "governance": "Gouvernance:",
+        "lvs": "Dernier score vérifié:",
+        "workers": "Ouvriers:"
     },
     "glassdoor":{
-        "companyt": "Company Type:",
-        "headquarters": "Headquarters:",
-        "founded": "Founded:",
-        "industry": "Industry:",
-        "revenue": "Revenue:",
-        "size": "Size:",
-        "score": "Score:",
-        "reviews": "reviews"
+        "companyt": "Type d'entreprise:",
+        "headquarters": "Quartier général:",
+        "founded": "Fondé:",
+        "industry": "Industrie:",
+        "revenue": "Revenu:",
+        "size": "La taille:",
+        "score": "Marquer:",
+        "reviews": "Commentaires"
     },
-    "similarity": "Similarity:",
-    "source": "(source)"
+    "similarity": "Similarité:",
+    "source": "(La source)"
 }
