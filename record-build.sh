@@ -170,6 +170,7 @@ function isin_via_wikidata(){
     if ! grep -i -q "\"$1\"" $2; then return; fi
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
+        isin=$(jq -r .entities[].claims.P946[].mainsnak.datavalue.value $wikidatacachedir/$WIKIDATAID.json 2>/dev/null)
         wikidatagetck $WIKIDATAID
         rg $isin static/*.json | cut -d: -f1 | sed -e "s/$/:$isin\"/g;s/^/\"/g" >> $tempfile
     done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")

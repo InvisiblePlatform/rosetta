@@ -15,7 +15,7 @@
             .on("zoom", zoomed);
 
        var svg2 = d3.select("#key");
-       var docwidth = window.innerWidth - 20;
+       var docwidth = 800;
        var svg = d3.select("#graph").on("click",reset).attr("height", 600).attr("width", docwidth);
        var width = +svg.attr("width");
        var height = +svg.attr("height");

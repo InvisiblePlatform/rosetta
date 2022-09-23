@@ -1,0 +1,30 @@
+
+{
+    "header":{
+        "disclaimer": "Wir haben uns nach besten Kräften bemüht, Ihnen genaue Informationen über Unternehmen, Dienstleistungen und Ideen bereitzustellen, die sich im Allgemeinen auf die angezeigten Quellen stützen. Wir können jedoch nicht für die Genauigkeit der verwendeten Quellen bürgen und Sie stimmen zu, Ihre eigenen Nachforschungen anzustellen und Ihr eigenes Urteil darüber zu fällen, ob ein Unternehmen, eine Dienstleistung, eine Marke oder eine Idee Ihren Bedürfnissen entspricht. Durch die Verwendung von Invisible Voice stimmen Sie zu, dass wir nicht für Verluste oder Schäden haften, die durch Ihre Verwendung dieses Plugins entstehen."
+    },
+    "goy":{
+        "p": "Preis"
+    },
+    "bcorp":{
+        "brackets": "(80+ ist zertifiziert)",
+        "community": "Gemeinschaft:",
+        "customers": "Kunden:",
+        "environment": "Umwelt:",
+        "governance": "Regierungsführung:",
+        "lvs": "Neueste überprüfbare Punktzahl:",
+        "workers": "Arbeitskräfte:"
+    },
+    "glassdoor":{
+        "companyt": "Unternehmenstyp:",
+        "headquarters": "Hauptquartier:",
+        "founded": "Gegründet:",
+        "industry": "Industrie:",
+        "revenue": "Einnahmen:",
+        "size": "Größe:",
+        "score": "Punktzahl:",
+        "reviews": "Bewertungen"
+    },
+    "similarity": "Ähnlichkeit:",
+    "source": "(ursache)"
+}

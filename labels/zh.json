@@ -1,0 +1,30 @@
+
+{
+    "header":{
+        "disclaimer": "我们已尽最大努力为您提供有关公司、服务和想法的准确信息，这些信息通常依赖于所示来源。 但是，我们不能保证所使用来源的准确性，您同意自行查询并自行判断公司、服务、品牌或想法是否满足您的需求。 使用 Invisible Voice，即表示您同意我们对因您使用此插件而造成的任何损失或损害不承担任何责任。"
+    },
+    "goy":{
+        "p": "价格"
+    },
+    "bcorp":{
+        "brackets": "(80+ 已通过认证)",
+        "community": "社区:",
+        "customers": "顾客:",
+        "environment": "环保:",
+        "governance": "治理:",
+        "lvs": "最新验证分数:",
+        "workers": "工作人员:"
+    },
+    "glassdoor":{
+        "companyt": "公司类型:",
+        "headquarters": "总部:",
+        "founded": "成立:",
+        "industry": "行业:",
+        "revenue": "收入:",
+        "size": "尺寸:",
+        "score": "分数:",
+        "reviews": "条评论"
+    },
+    "similarity": "相似:",
+    "source": "(资源)"
+}
