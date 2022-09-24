@@ -1,29 +1,29 @@
 {
     "header":{
-        "disclaimer": "We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin."
+        "disclaimer": "لقد بذلنا قصارى جهدنا لتزويدك بمعلومات دقيقة حول الشركات والخدمات والأفكار التي تعتمد بشكل عام على المصادر الموضحة. ومع ذلك ، لا يمكننا أن نضمن دقة المصادر المستخدمة وأنت توافق على إجراء استفساراتك الخاصة واستخدام حكمك الخاص حول ما إذا كانت الشركة أو الخدمة أو العلامة التجارية أو الفكرة تلبي احتياجاتك. باستخدام Invisible Voice ، فإنك توافق على أننا لسنا مسؤولين عن أي خسارة أو ضرر ينشأ عن استخدامك لهذا المكون الإضافي."
     },
     "goy":{
-        "p": "Price"
+        "p": "سعر"
     },
     "bcorp":{
-        "brackets": "(80+ is certified)",
-        "community": "Community:",
-        "customers": "Customers:",
-        "environment": "Environment:",
-        "governance": "Governance:",
-        "lvs": "Latest Verified Score:",
-        "workers": "Workers:"
+        "brackets": "(80+ معتمد)",
+        "community": "مجتمع:",
+        "customers": "العملاء:",
+        "environment": "بيئة:",
+        "governance": "الحاكمية:",
+        "lvs": "أحدث نتيجة تم التحقق منها:",
+        "workers": "عمال:"
     },
     "glassdoor":{
-        "companyt": "Company Type:",
-        "headquarters": "Headquarters:",
-        "founded": "Founded:",
-        "industry": "Industry:",
-        "revenue": "Revenue:",
-        "size": "Size:",
-        "score": "Score:",
-        "reviews": "reviews"
+        "companyt": "نوع الشركة:",
+        "headquarters": "مقر:",
+        "founded": "تأسست:",
+        "industry": "الصناعة:",
+        "revenue": "مصدر دخل:",
+        "size": "بحجم:",
+        "score": "أحرز هدفاً:",
+        "reviews": "المراجعات"
     },
-    "similarity": "Similarity:",
-    "source": "(source)"
+    "similarity": "مضارعة:",
+    "source": "(مصدر)"
 }
