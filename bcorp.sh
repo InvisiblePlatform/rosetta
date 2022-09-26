@@ -33,6 +33,7 @@ do_brand(){
     wget -nv "www.bcorperation.net/page-data/en-us/find-a-b-corp/company/$1/page-data.json" -O bcorp_$1.json
 }
 
+cd bcorp
 #do_category $1
 
 for i in ${countries[@]}; do
@@ -46,6 +47,8 @@ done
 
 jq .results[].hits[].slug bcorp_page_* | sort -u | wc -l
 jq .results[].hits[].slug bcorp_page_* | wc -l
+
+cd ..
 
 DATETODAY=$(date +%Y-%m-%d)
 

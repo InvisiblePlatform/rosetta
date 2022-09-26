@@ -238,17 +238,43 @@ function wikiassociates(){
     local COUNT=0
     local GROUP=("node")
     while read value; do
-        [[ $COUNT == 0 ]] && STRING+="{ \"label\": \"${value//\"/\\\"}\"" 
-        [[ $COUNT == 1 ]] && STRING+=",\"id\": \"$value\"" 
-	    [[ $COUNT == 2 ]] && STRING+=",\"enwiki\": \"$value\"" 
-	    [[ $COUNT == 3 ]] && STRING+=",\"eswiki\": \"$value\""
-	    [[ $COUNT == 4 ]] && STRING+=",\"zhwiki\": \"$value\""
-	    [[ $COUNT == 5 ]] && STRING+=",\"hiwiki\": \"$value\""
-	    [[ $COUNT == 6 ]] && STRING+=",\"eowiki\": \"$value\""
-	    [[ $COUNT == 7 ]] && STRING+=",\"dewiki\": \"$value\"" && GROUP=()
-        [[ $COUNT > 7 ]] && GROUP+=("$value")
+        [[ $COUNT == 0 ]] && STRING+="{ \"id\": \"${value//\"/\\\"}\"" 
+        [[ $COUNT == 1 ]] && STRING+=",\"label\": \"$value\"" 
+        [[ $COUNT == 2 ]] && STRING+=",\"eslabel\": \"$value\"" 
+        [[ $COUNT == 3 ]] && STRING+=",\"zhlabel\": \"$value\"" 
+        [[ $COUNT == 4 ]] && STRING+=",\"hilabel\": \"$value\"" 
+        [[ $COUNT == 5 ]] && STRING+=",\"eolabel\": \"$value\"" 
+        [[ $COUNT == 6 ]] && STRING+=",\"arlabel\": \"$value\"" 
+        [[ $COUNT == 7 ]] && STRING+=",\"frlabel\": \"$value\"" 
+        [[ $COUNT == 8 ]] && STRING+=",\"delabel\": \"$value\"" 
+	    [[ $COUNT == 9 ]] && STRING+=",\"enwiki\": \"$value\"" 
+	    [[ $COUNT == 10 ]] && STRING+=",\"eswiki\": \"$value\""
+	    [[ $COUNT == 11 ]] && STRING+=",\"zhwiki\": \"$value\""
+	    [[ $COUNT == 12 ]] && STRING+=",\"hiwiki\": \"$value\""
+	    [[ $COUNT == 13 ]] && STRING+=",\"eowiki\": \"$value\""
+	    [[ $COUNT == 14 ]] && STRING+=",\"arwiki\": \"$value\""
+	    [[ $COUNT == 15 ]] && STRING+=",\"frwiki\": \"$value\""
+	    [[ $COUNT == 16 ]] && STRING+=",\"dewiki\": \"$value\"" && GROUP=()
+        [[ $COUNT > 16 ]] && GROUP+=("$value")
         : $(( COUNT += 1 ))
-    done < <(jq -r ".entities[] | .labels.en.value, .id, .sitelinks.enwiki.url, .sitelinks.eswiki.url, .sitelinks.zhwiki.url, .sitelinks.hiwiki.url, .sitelinks.eowiki.url, .sitelinks.dewiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
+    done < <(jq -r ".entities[] | .id \
+        .labels.en.value, \
+        .labels.es.value, \
+        .labels.zh.value, \
+        .labels.hi.value, \
+        .labels.eo.value, \
+        .labels.ar.value, \
+        .labels.fr.value, \
+        .labels.de.value, \
+        .sitelinks.enwiki.url, \
+        .sitelinks.eswiki.url, \
+        .sitelinks.zhwiki.url, \
+        .sitelinks.hiwiki.url, \
+        .sitelinks.eowiki.url, \
+        .sitelinks.arwiki.url, \
+        .sitelinks.frwiki.url, \
+        .sitelinks.dewiki.url, \
+        .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
 
     STRING+=",\"groups\": [$(sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g" <<<"${GROUP[@]}" )]}],"
 
@@ -263,7 +289,7 @@ function wikiassociates(){
         | sed -f $secondorderpatterns \
 	    | grep :)
 
-    sed -i 's/http[s]*:\/\/en\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/de\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/eo\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/es\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/hi\.wikipedia\.org\/wiki\///g;s/http[s]*:\/\/zh\.wikipedia\.org\/wiki\///g' $templist
+    sed -i 's/http[s]*:\/\/[a-z][a-z]\.wikipedia\.org\/wiki\///g' $templist
     sed -i '$s/[,]*$/]}/' $templist
     cp $templist "$GPD/graph-${code}.json"
     printf '%s\n' '1' > $STATUSF/.status.$2.$3
@@ -433,7 +459,7 @@ rm $STATUSF/.list.* &>/dev/null
 
 rm hugo/content/ -rf
 mkdir -p hugo/content
-splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l websites.list | cut -d' ' -f1)/8"))
+splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l websites.list | cut -d' ' -f1)/16"))
 split -l$splitnum <(grep "^" websites.list) $STATUSF/.list.
 
 for list in $STATUSF/.list.*; do
