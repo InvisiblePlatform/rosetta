@@ -61,7 +61,7 @@ function prepare_pairings(){
 function ramcache(){
     if ! [[ -d "/mnt/tmpcache" ]]; then 
         sudo mkdir /mnt/tmpcache
-        sudo mount -t ramfs -o size=16g ramfs /mnt/tmpcache
+        sudo mount -t tmpfs -o size=20g tmpfs /mnt/tmpcache
     fi
     sudo chown orange:orange /mnt/tmpcache
     printf "%s\n" "Ramcache on"
@@ -257,24 +257,7 @@ function wikiassociates(){
 	    [[ $COUNT == 16 ]] && STRING+=",\"dewiki\": \"$value\"" && GROUP=()
         [[ $COUNT > 16 ]] && GROUP+=("$value")
         : $(( COUNT += 1 ))
-    done < <(jq -r ".entities[] | .id \
-        .labels.en.value, \
-        .labels.es.value, \
-        .labels.zh.value, \
-        .labels.hi.value, \
-        .labels.eo.value, \
-        .labels.ar.value, \
-        .labels.fr.value, \
-        .labels.de.value, \
-        .sitelinks.enwiki.url, \
-        .sitelinks.eswiki.url, \
-        .sitelinks.zhwiki.url, \
-        .sitelinks.hiwiki.url, \
-        .sitelinks.eowiki.url, \
-        .sitelinks.arwiki.url, \
-        .sitelinks.frwiki.url, \
-        .sitelinks.dewiki.url, \
-        .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
+    done < <(jq -r ".entities[] | .id, .labels.en.value, .labels.es.value, .labels.zh.value, .labels.hi.value, .labels.eo.value, .labels.ar.value, .labels.fr.value, .labels.de.value, .sitelinks.enwiki.url, .sitelinks.eswiki.url, .sitelinks.zhwiki.url, .sitelinks.hiwiki.url, .sitelinks.eowiki.url, .sitelinks.arwiki.url, .sitelinks.frwiki.url, .sitelinks.dewiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
 
     STRING+=",\"groups\": [$(sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g" <<<"${GROUP[@]}" )]}],"
 
@@ -297,7 +280,8 @@ function wikiassociates(){
 }
 function check_associated_for_graph(){
     if ! grep -i -q "\"$1\"" $2; then return; fi
-    local code=$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*"|head -1)
+    # local code=$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*"|head -1)
+    local code="Q$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*" | sed -e "s/Q//g" | sort -n | head -1)"
     local templister=$(mktemp)
     local templisterr
     printf '%s\n' "$code" > $templister
@@ -355,6 +339,8 @@ function check_associated_for_graph(){
         printf '%s\n' '0' > $STATUSF/.status.$3.$j
     done
     while read id; do 
+        [[ "$(cat $GPD/graph-${id}.json | md5sum | cut -d' ' -f1 )" == "225bbe98cd7a533ad66bbbdce305c368" ]] && rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json
+        touch $GPD/graph-${id}.json
 	    [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
 	    [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
 	    [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
@@ -365,6 +351,10 @@ function check_associated_for_graph(){
     if [[ -s "$STATUSF/.status.$3.1" ]]; then
 		while grep -q "0" <(cat $STATUSF/.status.$3.* | tr '\n' ' ' ) ; do sleep 0.1s; done
 	fi
+    while read id; do 
+        [[ "$(cat $GPD/graph-${id}.json | md5sum | cut -d' ' -f1 )" == "225bbe98cd7a533ad66bbbdce305c368" ]] && rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json
+        touch $GPD/graph-${id}.json
+    done < <(sort -u $templister)
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}'  $(tr "\n" "@" < $templister | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g" ) > $tempjson_nodes
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add' $tempjson $tempjson_nodes > hugo/static/connections/${website//./}.json
 
@@ -457,10 +447,10 @@ prepare_pairings
 rm $STATUSF/.status.* &>/dev/null
 rm $STATUSF/.list.* &>/dev/null
 
-rm hugo/content/ -rf
-mkdir -p hugo/content
+# rm hugo/content/ -rf
+# mkdir -p hugo/content
 splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l websites.list | cut -d' ' -f1)/16"))
-split -l$splitnum <(grep "^" websites.list) $STATUSF/.list.
+split -l$splitnum <(grep "^patagonia" websites.list) $STATUSF/.list.
 
 for list in $STATUSF/.list.*; do
     do_list $list &

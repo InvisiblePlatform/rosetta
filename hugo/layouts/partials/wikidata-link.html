@@ -1,11 +1,12 @@
-
 {{ $props := getJSON "data/wikidata/props.json" }}
 <section class="social-wikidata">
 {{ $firstkey := split (index . 0 ) ";" }}
-<h2>{{ index $props (index $firstkey 1) | title }}:</h2> 
+<button class="collapsible active" type="button"><h2 class='sectionTitle'>{{ index $props (index $firstkey 1) | title }}:</h2></button>
+<table>
 {{ range . }}
 {{ $key := split . ";" }}
-<a href="{{ index $key 0 }}">{{ index $key 0 }}</a>
+<tr><td><a class="spacelinks" href="{{ index $key 0 }}">{{ index $key 0 }}</a></td></tr>
 {{ end }}
-<a class="source" target="_blank" href="https://wikidata.org/wiki/{{ index $firstkey 2 }}#{{ index $firstkey 1 }}">(wikidata)</a>
+<tr><td><a class="source" target="_blank" href="https://wikidata.org/wiki/{{ index $firstkey 2 }}#{{ index $firstkey 1 }}">WIKIDATA</a></tr>
+</table>
 </section>

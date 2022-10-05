@@ -1,21 +1,33 @@
 <!-- Similar Sites -->
 {{ $path := print "data/similar/sites/similar_site_" . ".json" }}
 {{ if os.FileExists $path }}
-<div class="content">
-<h2>Similar Sites</h2><a class="source" href="https://similarsites.com/sites/{{ . }}" >(source)</a>
-<section id="similar-sites">
+<section id="similar-site-wrapper">
+<button class="collapsible active" type="button"><h2 class="sectionTitle" >Similar Websites</h2></button>
+<div id="similar-sites">
+{{ $sorted := slice }}
 {{ $data := (getJSON $path).SimilarSites }}
-<p>
-    {{ range $data }}
-    <section class="similar-site" style="order:{{ sub 100 (math.Floor (mul 100 (float (substr (index . "Grade") 0 4)))) }};">
-        <a href="http://{{ index . "Site" }}">
-            <h3>{{ index . "Site" }}</h3></br>
-            <!--<img width="100px" src="{{ index . "Thumbnail"}}"/></br>-->
-            <h3><b data-i18n="similarity"></b> {{ substr (index . "Grade") 2 2 }}%</h3></a></br>
-        </section>
-    {{ end }}
-</p>
+{{ range $data }}
+{{ $site := . }}
+{{ $parsedSite := dict }}
+{{ range $k, $v := $site }}
+{{ if eq $k "Grade" }}
+{{ $parsedSite = merge $parsedSite (dict $k (float $v)) }}
+{{ else }}
+{{ $parsedSite = merge $parsedSite (dict $k $v) }}
+{{ end }}
+{{ end }}
+{{ $sorted = $sorted | append $parsedSite }}
+{{ end }}
+
+{{ range sort $sorted "Grade" "desc" | first 10 }}
+<section class="similar-site">
+    <a alt="{{ index . "Site" }}" href="http://{{ index . "Site" }}">
+        {{ index . "Site" }} ({{ index . "Grade" | mul 100 | math.Floor  }}%)</a> 
 </section>
+{{ end }}
+<table>
+    <tr><td><a class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a></td></tr>
+</table>
 </div>
-<hr/>
+</section>
 {{ end }}

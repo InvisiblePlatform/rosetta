@@ -2,21 +2,19 @@
 <section id="bcorp">
 {{ $path := print "data/bcorp/bcorp_" . ".json"}}
 {{ if os.FileExists $path }}
-    {{ $d := getJSON $path }}
-    <button type="button" class="collapsible active"><h2>B Corp</h2><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">(source)</a></button>
-<section class="section-content" style="display: block;">
-    <p>
-    {{ if isset $d "latestVerifiedScore" }}
-    <b data-i18n="bcorp.lvs"></b></br>
-    {{ $d.latestVerifiedScore }}<b>/140</b>+ <emphasis data-i18n="bcorp.brackets"></emphasis></br>
-    {{ end }}
-    {{ if isset $d "assessments" }}
-    {{ $a := index $d.assessments 0 }}
-    {{ range $a.impactAreas }}
-    <b data-i18n="bcorp.{{ .name | urlize }}"></b> {{ .score }}</br>
-    {{ end }}
-    {{ end }}
-    {{ end }}
-    </p>
-</section>
+{{ $d := getJSON $path }}
+<button type='button' class='collapsible active'><h2 class="sectionTitle">B Corp</h2></button>
+<table>
+{{ if isset $d "latestVerifiedScore" }}
+<tr><th data-i18n="bcorp.lvs"></th><td class="ratingOutOfBcorp">{{ $d.latestVerifiedScore }}</td></tr>
+{{ end }}
+{{ if isset $d "assessments" }}
+{{ $a := index $d.assessments 0 }}
+{{ range $a.impactAreas }}
+<tr><th class="hideInSmall" data-i18n="bcorp.{{ .name | urlize }}"></th><td class="hideInSmall">{{ .score }}</td></tr>
+{{ end }}
+{{ end }}
+<tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a></td></tr>
+</table>
+{{ end }}
 </section>

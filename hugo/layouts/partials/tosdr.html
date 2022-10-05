@@ -1,5 +1,13 @@
-<!-- Tosdr -->
+<!-- Tosdr <tr><td><a href="https://tosdr.org/en/service/{{.}}"> <img src="https://shields.tosdr.org/en_{{.}}.svg"/></a></td></tr> -->
+{{ $id := . }}
+{{ with $data := getJSON "data/rated.json" }}
+{{ if isSet $data $id }}
 <section id="tosdr-link">
-<a href="https://tosdr.org/en/service/{{.}}">
-    <img src="https://shields.tosdr.org/en_{{.}}.svg"/></a>
+<h2 class='sectionTitle'>TOSDR</h2>
+<table>
+<tr><td><score>{{ (index $data $id ).rated }}</score></td></tr>
+<tr><td><a class="source" href="https://tosdr.org/en/service/{{ $id }}">TOSDR</a></td></tr>
+</table>
 </section>
+{{ end }}
+{{ end }}

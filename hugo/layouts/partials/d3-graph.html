@@ -1,9 +1,13 @@
 <div id="wikipedia-frame" style="display:none;"> No content yet </div>
 <div id="wikipedia-frame-close" style="display:none;"> Close </div>
-<svg id="key" style="overflow:visible;position:absolute;"></svg>
-<svg id="graph" style="overflow:visible!important;transition:0.1s"></svg>
 <div id="wikipedia-infocard-frame" style="display:none;"> No content yet </div>
 <div id="wikipedia-first-frame" style="display:none;"> No content yet </div>
+<div id="graph-box" style="display:none;"> No content yet </div>
+<div id="graph-container">
+    <h2 class="sectionTitle">Network Graph</h2>
+    <svg id="graph"></svg>
+    <div id="key"></div>
+</div>
 <script type="module">
     import {zoom} from "https://cdn.skypack.dev/d3-zoom@3";
     const handler = zoom();
@@ -15,14 +19,17 @@
             .on("zoom", zoomed);
 
        var svg2 = d3.select("#key");
-       var docwidth = 800;
-       var svg = d3.select("#graph").on("click",reset).attr("height", 600).attr("width", docwidth);
+       var docwidth = 860;
+       var svg = d3.select("#graph").on("click",reset).attr("height", 620).attr("width", docwidth);
        var width = +svg.attr("width");
        var height = +svg.attr("height");
        var wikiframe = document.getElementById("wikipedia-frame");
        var wikiframeclose = document.getElementById("wikipedia-frame-close");
        var wikicardframe = document.getElementById("wikipedia-infocard-frame");
        var wikifirstframe = document.getElementById("wikipedia-first-frame");
+       var graphBox = document.getElementById("graph-box");
+       var graphContainer = document.getElementById("graph-container");
+
        wikiframeclose.onclick = function(){
            wikiframe.style.display = "none";
            wikiframeclose.style.display = "none";
@@ -101,25 +108,20 @@
 
          var key_y = d3.scaleOrdinal(types,d3.range(0, 15*types.length, 15));
 
-         var key = svg2.append("g")
-                .attr("x", 10)
-                .attr("y", 50)
+         var key = svg2.append("div")
                .selectAll("g")
                .data(types).enter()
-               .append("g")
-               .attr("transform", function(d){ return "translate(0," + key_y(d) + ")"});
-         var key_rects = key.append("rect")
-           .attr("width", 15)
-           .attr("height", 15)
-           .attr("fill", color);
+               .append("table");
 
-        var key_labels = key.append("text")
+         var key_rects = key.append("th")
+               .attr("style", function(d){
+                    return "background-color:" + color(d) + ";";
+               });
+
+        var key_labels = key.append("td")
            .attr("class", "key-text")
                .text(function(d){return d.replace("_"," ");})
-            .attr("font-size", "10px")
-            .attr("x", 20)
-            .attr("y", 15)
-            .attr("fill", "black");
+            .attr("data-i18n", function(d){return "graph." + d.toLowerCase();});
 
 
          var urls=[];
@@ -157,32 +159,31 @@
               var wikichoice;
               switch (localStorage.preferred_language) {
                   case "en":
-                    wikichoice = "https://en.wikipedia.org/"
-                    console.log("en");
+                    wikichoice = "https://en.wikipedia.org"
+                  break;
+                  case "fr":
+                    wikichoice = "https://fr.wikipedia.org";
+                  break;
+                  case "ar":
+                    wikichoice = "https://ar.wikipedia.org";
                   break;
                   case "es":
-                    wikichoice = "https://es.wikipedia.org/";
-                    console.log("es");
+                    wikichoice = "https://es.wikipedia.org";
                   break;
                   case "eo":
-                    wikichoice = "https://eo.wikipedia.org/";
-                    console.log("eo");
+                    wikichoice = "https://eo.wikipedia.org";
                   break;
                   case "zh":
-                    wikichoice = "https://zh.wikipedia.org/";
-                    console.log("zh");
+                    wikichoice = "https://zh.wikipedia.org";
                   break;
                   case "de":
-                    wikichoice = "https://de.wikipedia.org/";
-                    console.log("de");
+                    wikichoice = "https://de.wikipedia.org";
                   break;
                   case "hi":
-                    wikichoice = "https://hi.wikipedia.org/";
-                    console.log("hi");
+                    wikichoice = "https://hi.wikipedia.org";
                   break;
                   default:
-                    wikichoice = "https://en.wikipedia.org/";
-                    console.log("default");
+                    wikichoice = "https://en.wikipedia.org";
               }
 
          if (wikidataid){
@@ -191,61 +192,88 @@
               switch (localStorage.preferred_language) {
                   case "hi":
                     wikidataMainWiki = main._groups[0][0].__data__.hiwiki;
-                    console.log("hi");
+                  break;
+                  case "fr":
+                    wikidataMainWiki = main._groups[0][0].__data__.frwiki;
+                  break;
+                  case "ar":
+                    wikidataMainWiki = main._groups[0][0].__data__.arwiki;
                   break;
                   case "zh":
                     wikidataMainWiki = main._groups[0][0].__data__.zhwiki;
-                    console.log("zh");
                   break;
                   case "en":
                     wikidataMainWiki = main._groups[0][0].__data__.enwiki;
-                    console.log("en");
                   break;
                   case "es":
                     wikidataMainWiki = main._groups[0][0].__data__.eswiki;
-                    console.log("es");
                   break;
                   case "eo":
                     wikidataMainWiki = main._groups[0][0].__data__.eowiki;
-                    console.log("eo");
                   break;
                   default:
                     wikidataMainWiki = main._groups[0][0].__data__.enwiki;
-                    console.log("default");
               }
              if (wikidataMainWiki.includes("wikipedia.org")){
                     wikidataMainWiki = wikidataMainWiki.split('/').slice(4).join("/");
              };
              if (wikidataMainWiki != "null"){
-              let requestURL = wikichoice + "api/rest_v1/page/mobile-sections/" + wikidataMainWiki + "?redirect=true"
+              let requestURL = wikichoice + "/api/rest_v1/page/mobile-sections/" + wikidataMainWiki + "?redirect=true"
+              let skipsections = ["See_also", "References", "Further_reading", "External_links", "Sources", "undefined"];
               $.ajax({
                   url: requestURL
                 }).done(function(data) {
-                  var text = data.lead.sections[0].text.replace(/href=\"/g,'href=\"' + wikichoice);
+                  var text = "";
+                  text += data.lead.sections[0].text.replace(/href=\"/g,'href=\"' + wikichoice);
                   for (let x in data.remaining.sections) {
                       let section = data.remaining.sections[x];
-                      let item = '<p id="'+ section.anchor + '"><h2>'+section.line+'</h2><div>'+section.text.replace(/href=\"/g,'href=\"' + wikichoice)+'</div></p>';
+                      if (!section.anchor) continue;
+                      if (skipsections.includes(section.anchor)) {
+                          continue;
+                      }
+                      let item = '<p class="hideInSmall" id="' + 
+                                section.anchor + 
+                                '"><h2 class="hideInSmall">' +
+                                section.line + 
+                                '</h2>'
+                      if (section.text != '\n'){
+                        item += '<div class="hideInSmall">' +
+                                section.text.replace(/href=\"/g,'href=\"'+ wikichoice) +
+                                '</div></p>';
+                      };
                       text+=item;
                   }
                   wikifirstframe.innerHTML = text;
                   for (var i = wikifirstframe.children.length; i --> 0;)
                     if (wikifirstframe.children[i].classList.contains("infobox")){
-                        console.log(wikifirstframe.children[i])
+                        // console.log(wikifirstframe.children[i])
                         wikicardframe.innerHTML = "";
                         wikicardframe.appendChild(wikifirstframe.children[i]);
                     }
+                  var profiletext = "<h2 class='sectionTitle' id='profile-card'>Profile Card</h2><div class='hideInSmall'>";
+                    profiletext += wikicardframe.innerHTML + "</div><img src='/icons/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView'>FULL-VIEW</button>";
+                  wikicardframe.innerHTML = profiletext;
+                  var companyinfotext = "<h2 class='sectionTitle' id='company-info'>Company Info</h2><div class='hideInSmall'>";
+                  companyinfotext += wikifirstframe.innerHTML + "</div><img src='/icons/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadInfoCard()' class='fullView'>FULL-VIEW</button>";
+                  wikifirstframe.innerHTML = companyinfotext;
                 }).fail(function() {
                     console.log("oh no")
               });
               contentsLength = document.getElementsByClassName("content").length;
               lastContent = document.getElementsByClassName("content")[contentsLength - 1];
+              
               lastContent.appendChild(wikifirstframe);
               lastContent.appendChild(wikicardframe);
+                 graphBox.innerHTML = "<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2><img src='/icons/network.svg' class='iconclass'/><table><td><a href='https://wikidata.org/wiki/" + wikidataid + "' class='source blanksource'>WIKIDATA</a></td></table><button type='button' onclick='loadNetworkGraph()' class='fullView'>FULL-VIEW</button>";
+              lastContent.appendChild(graphBox);
               if (wikifirstframe.style.display == "none"){
                    wikifirstframe.style.display = "block";
               }
               if (wikicardframe.style.display == "none"){
                    wikicardframe.style.display = "block";
+              }
+              if (graphBox.style.display == "none"){
+                   graphBox.style.display = "block";
               }
              };
 
@@ -269,6 +297,12 @@
                   break;
                   case "es": 
                       wikidataWiki = d.eswiki;
+                  break;
+                  case "ar": 
+                      wikidataWiki = d.arwiki;
+                  break;
+                  case "fr": 
+                      wikidataWiki = d.frwiki;
                   break;
                   case "eo": 
                       wikidataWiki = d.eowiki;
@@ -303,6 +337,12 @@
                       case "es": 
                           wikidataWiki = i.eswiki;
                       break;
+                      case "fr": 
+                          wikidataWiki = i.frwiki;
+                      break;
+                      case "ar": 
+                          wikidataWiki = i.arwiki;
+                      break;
                       case "eo": 
                           wikidataWiki = i.eowiki;
                       break;
@@ -316,8 +356,8 @@
                         return
                    }
                    d.preventDefault();
-                   console.log("clicking on", this, wikidataWiki);
-                   let requestURL = wikichoice + "api/rest_v1/page/mobile-sections/" + wikidataWiki + "?redirect=true"
+                   // console.log("clicking on", this, wikidataWiki);
+                   let requestURL = wikichoice + "/api/rest_v1/page/mobile-sections/" + wikidataWiki + "?redirect=true"
                    if (wikiframe.style.display == "none"){
                         wikiframe.style.display = "block";
                         wikiframeclose.style.display = "block";
@@ -328,7 +368,13 @@
                        var text = data.lead.sections[0].text.replace(/href=\"/g,'href=\"' + wikichoice);
                        for (let x in data.remaining.sections) {
                            let section = data.remaining.sections[x];
-                           let item = '<p id="'+ section.anchor + '"><h2>'+section.line+'</h2><div>'+section.text.replace(/href=\"/g,'href=\"' + wikichoice)+'</div></p>';
+                           let item = '<p class="hideInSmall" id="' + 
+                                     section.anchor + 
+                                     '"><h2 class="hideInSmall">' +
+                                     section.line + 
+                                     '</h2><div class="hideInSmall">' +
+                                     section.text.replace(/href=\"/g,'href=\"'+ wikichoice) +
+                                     '</div></p>';
                            text+=item;
 
                        }
@@ -345,6 +391,8 @@
                     }
                    if (d.groups.includes("Q5")){
                         return 6;
+                   } else if (d.groups.includes("Q219577")){
+                        return 15;
                    } else {
                         return 10;
                    }

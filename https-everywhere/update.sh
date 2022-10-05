@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# wget -O master.zip https://github.com/EFForg/https-everywhere/archive/refs/heads/master.zip
-# 
-# unzip master.zip 
-# mv https-everywhere-master/src/chrome/content/rules/ .
-# rm https-everywhere-master/ -rf 
-# rm rules/00README
+wget -O master.zip https://github.com/EFForg/https-everywhere/archive/refs/heads/master.zip
+
+unzip master.zip 
+mv https-everywhere-master/src/chrome/content/rules/ .
+rm https-everywhere-master/ -rf 
+rm rules/00README
 
 mkdir lists
 rm masterlist.csv 2>/dev/null

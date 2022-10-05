@@ -1,21 +1,15 @@
 <!-- TrustPilot -->
 {{ with getJSON (print "data/trust-pilot/sites/trust_site_" . ".json") }}
-    {{ if ne .name "ApplicationError" }}
-    <section id="trust-pilot">
-        {{ $score := .score.trustScore}}
-        {{ if eq (int .numberOfReviews.total) 0 }}
-            {{ with .name.identifying }}
-            <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: unrated 
-            {{ else }}
-            <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: unrated 
-            {{ end }}
-        {{ else }}
-        {{ with .name.identifying }}
-        <a href="https://trustpilot.com/review/{{.}}" >Trust Pilot</a>: {{ $score }} 
-        {{ else }}
-        <a href="https://trustpilot.com/review/{{.name}}" >Trust Pilot</a>: {{ $score }} 
-        {{ end }}
-        {{ end }}
-    </section>
-    {{ end }}
+{{ if ne .name "ApplicationError" }}
+<section id="trust-pilot">
+<h2 class='sectionTitle'>Trust Pilot</h2>
+<table>
+{{ $score := .score.trustScore}}
+{{ if eq (int .numberOfReviews.total) 0 }}<tr><td><score>unrated</score></td></tr>
+{{ else }}<tr><td><score class="Stars" style="--rating: {{ $score }};" aria-label="Rating of this product is{{ $score }} out of 5.">{{ $score }}</score><span class="numberOfReviews"> {{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></td></tr>{{ end }}
+    {{ with .name.identifying }}<tr><td><a class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
+{{ else }}<tr><td><a class="source" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a>{{ end }}
+</table>
+</section>
+{{ end }}
 {{ end }}

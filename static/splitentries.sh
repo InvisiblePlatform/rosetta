@@ -1,2 +1,5 @@
 #!/bin/bash
-cat $1 | python -c 'import csv, json, sys; print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)]))' > ${1//.*/}
+
+while read slug; do
+jq ".[] | select(.domain==\"$slug\") " $1 > ./split_files/${slug//\./}.json
+done < <(jq -r .[].domain $1)

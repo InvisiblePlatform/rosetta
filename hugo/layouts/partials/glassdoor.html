@@ -1,23 +1,18 @@
 {{ with $path := print "data/glassdoor/data_json/" . ".json"}}
 {{ if os.FileExists . }}
-</section>
-<section class="content">
 <section id="glassdoor">
 {{ $d := getJSON . }}
-<button type="button" class="collapsible active"><h2>Glassdoor</h2><a class="source" data-i18n="source" href="{{ $d.url }}"></a></button>
-<section class="section-content" style="display: block;">
-<p>
-{{ with $d.type }} <b data-i18n="glassdoor.companyt"></b> {{ . }} </br> {{ end }}
-{{ with $d.headquarters }} <b data-i18n="glassdoor.headquarters"></b> {{ . }} </br> {{ end }}
-{{ with $d.founded }} <b data-i18n="glassdoor.founded"></b> {{ . }} </br> {{ end }}
-{{ with $d.industry }} <b data-i18n="glassdoor.industry"></b> {{ . }} </br> {{ end }}
-{{ with $d.revenue }} <b data-i18n="glassdoor.revenue"></b> {{ . }} </br> {{ end }}
-{{ with $d.size }} <b data-i18n="glassdoor.size"></b> {{ . }} </br>{{ end }}
-{{ with $d.glasroom_rating }}
-<b data-i18n="glassdoor.score"></b> {{ .ratingValue }} ({{.ratingCount }} <emphasis data-i18n="glassdoor.reviews"></emphasis>)
-{{ end }}
-</p>
-</section>
+<button class="collapsible active" type="button"><h2 class='sectionTitle'>Glassdoor</h2></button>
+<table>
+<tr><th class="hideInSmall" data-i18n="glassdoor.companyt"></th><td class="hideInSmall" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
+<tr><th class="hideInSmall" data-i18n="glassdoor.headquarters"></th><td class="hideInSmall">{{ $d.headquarters }}</td></tr>
+<tr><th class="hideInSmall" data-i18n="glassdoor.founded"></th><td class="hideInSmall">{{ $d.founded }}</td></tr> 
+<tr><th class="hideInSmall" data-i18n="glassdoor.industry"></th><td class="hideInSmall">{{ $d.industry }}</td></tr> 
+<tr><th class="hideInSmall" data-i18n="glassdoor.revenue"></th><td class="hideInSmall">{{ $d.revenue }}</td></tr>
+<tr><th class="hideInSmall" data-i18n="glassdoor.size"></th><td class="hideInSmall">{{ $d.size }}</td></tr>
+<tr><th class="hideInSmall" data-i18n="glassdoor.score"></th><td><score>{{ $d.glasroom_rating.ratingValue }}</score></br><div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></td></tr>
+<tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="{{ $d.url }}">GLASSDOOR</a></td></tr>
+</table>
 {{ end }}
 </section>
 {{ end }}

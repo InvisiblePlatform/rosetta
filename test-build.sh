@@ -8,9 +8,9 @@
 
 
 #sitehash="fd33606649281874a091e4c1d0243953"
-FIELDS=( "bcorp" "emailaddress" "facebookid" "facebookpage" "gabuser" "glassdoor" "goodonyou" "instagramid" "isin" "mastodon" "mbfc" "medium" "officialblog" "parleruser" "patreon" "polalignment" "polideology" "reddituser" "soundcloud" "subreddit" "telegram" "tiktok" "tosdr" "truthsocial" "tumblr" "twitch" "twittername" "yesg" "youtubechannelid" "glassdoor_source" "glassdoor_rating" "glassdoor" "wikidata_id" "mbfc_source" )
+FIELDS=( "bcorp" "emailaddress" "facebookid" "facebookpage" "gabuser" "glassdoor" "goodonyou" "instagramid" "isin" "mastodon" "mbfc" "medium" "officialblog" "parleruser" "patreon" "polalignment" "polideology" "reddituser" "soundcloud" "subreddit" "telegram" "tiktok" "tosdr" "truthsocial" "tumblr" "twitch" "twittername" "yesg" "youtubechannelid" "glassdoor_source" "glassdoor_rating" "glassdoor" "wikidata_id" "mbfc_source" "ticker")
 
-sitehash=$(grep "^bbc.co.uk," rosetta/site_to_hash.csv | cut -d"," -f2 )
+#sitehash=$(grep "^bbc.co.uk," rosetta/site_to_hash.csv | cut -d"," -f2 )
 update_with_hash(){
     local sitehash=$1
     local shouldwego=

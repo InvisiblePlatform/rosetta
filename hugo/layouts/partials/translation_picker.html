@@ -1,6 +1,7 @@
-<label>
-    Language:
-    <select id="langselect">
+<!-- Language Picker -->
+<label class="languageSelect">
+    <h2>Language</h2>
+    <select id="langselect" title="Language Picker">
       <option value="-">-</option>
       <option value="en">EN</option>
       <option value="es">ES</option>
@@ -8,5 +9,48 @@
       <option value="de">DE</option>
       <option value="zh">ZH</option>
       <option value="hi">HI</option>
+      <option value="fr">FR</option>
+      <option value="ar">AR</option>
     </select>
 </label>
+<!-- Keep dashboard on screen -->
+<div id="onScreen" class="switchItem">
+<h2>Keep dashboard on screen</h2>
+<label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+</label>
+</div>
+<!-- Dark Mode -->
+<div id="permaDark" class="switchItem">
+<h2>Dark Mode</h2>
+<label class="switch">
+  <input type="checkbox">
+  <span class="slider round"></span>
+</label>
+</div>
+<!-- Priority List -->
+<div id="priority-list">
+  <h2>Prioritise Modules</h2>
+  <div>Drag to re-order modules</div>
+    <ul id="sortlist" class="slist">
+	    <li style="list-style: none;" draggable="true" value="@">Company Information</li>
+	    <li style="list-style: none;" draggable="true" value="@">Wikipedia</li>
+	    <li style="list-style: none;" draggable="true" value="@">Annual Sales</li>
+	    <li style="list-style: none;" draggable="true" value="@">Political Alignment</li>
+	    <li style="list-style: none;" draggable="true" value="@">Media Bias</li>
+	    <li style="list-style: none;" draggable="true" value="@">Trust Pilot</li>
+	    <li style="list-style: none;" draggable="true" value="@">ESG Risk</li>
+	    <li style="list-style: none;" draggable="true" value="@">Low Carbon Transition</li>
+	    <li style="list-style: none;" draggable="true" value="@">Food & Agriculture Sustainability</li>
+	    <li style="list-style: none;" draggable="true" value="@">Social & Sustainable Development</li>
+	    <li style="list-style: none;" draggable="true" value="@">Ethical Sourcing</li>
+	    <li style="list-style: none;" draggable="true" value="@">B corp</li>
+	    <li style="list-style: none;" draggable="true" value="@">Employee Rating</li>
+	    <li style="list-style: none;" draggable="true" value="@">Privacy</li>
+	    <li style="list-style: none;" draggable="true" value="@">Similar Websites</li>
+	    <li style="list-style: none;" draggable="true" value="@">Network Graph</li>
+	    <li style="list-style: none;" draggable="true" value="@">Social Media + Email</li>
+    </ul>
+</div>
+

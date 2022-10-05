@@ -84,8 +84,8 @@ function hash_to_site(){
     rm $tempfile $tempfilehashes $translationlayer
 }
 
-# universal_hash_list
-# missing_pages
+universal_hash_list
+missing_pages
 hash_to_site
 
 exit 0

@@ -1,0 +1,34 @@
+{{ $dataX := split . ":"}}
+{{ $path := (print "data/" (index $dataX 0)) }}
+{{ $source := newScratch }}
+{{ if os.FileExists $path }}
+<section id="isin">
+    {{ if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_JustTransitionData.json" }} 
+    {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/" }}
+    {{ $source.Set "title" "2021 Just Transistion Assessment" }}
+    {{ else if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_SocialData.json" }}
+    {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/" }}
+    {{ $source.Set "title" "2021 Just Transistion Assessment (social)" }}
+    {{ else if eq $path "data/static/Food-and-Agriculture-Benchmark-detailed-scoring-sheet-2021-2.json"}}
+    {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/food-and-agriculture-benchmark/" }}
+    {{ $source.Set "title" "2021 Food And Agriculture Benchmark" }}
+    {{ else if eq $path "data/static/WBA_Social_Transformation_Baseline_Data_JAN_2022_overall_scores.json"}}
+    {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/research/2022-social-transformation-baseline-assessment/" }}
+    {{ $source.Set "title" "2022 Social Transformation Assessment" }}
+    {{ end }}
+    <button type="button" class="collapsible active"><h2 class="sectionTitle">World Benchmark</h2></button>
+    <table>
+    <tr><td><h3>{{ $source.Get "title" }}</h3></td></tr>
+    {{ $data := getJSON $path }}
+    {{ with index $data (index $dataX 1) }}
+        {{ range $keylist, $value := . }}
+        {{ if in $keylist "(" }}
+        {{ $key := split $keylist "(" }}
+        <tr><td><b>{{ index $key 0 }}</b><score>{{.}}/{{index $key 1}}</score></td></tr>
+        {{ end }}
+        {{ end }}
+    {{ end }}
+    <tr><td><a class="source" href='{{ $source.Get "source" }}'>WORLDBENCHMARK</a></td></tr>
+    </table>
+</section>
+{{ end }}

@@ -2,15 +2,13 @@
 <section id="goodonyou">
 {{ $data := getJSON "data/goodonyou/brand_" . ".json" }}
 {{ $v := $data.pageProps.brand }}
-<button type="button" class="collapsible active"><h2>goodonyou</h2><a class="source" data-i18n="source" href="https://directory.goodonyou.eco/brand/{{.}}">(source)</a></button>
-<section class="section-content" style="display: block;">
-<p>
-    <b data-i18n="goy.er">Ethical Rating</b>: {{ $v.ethicalRating }}/5 {{ $v.ethicalLabel }}</br>
-    <b data-i18n="goy.lr">Labour Rating</b>: {{ math.Floor (div (float $v.labourRating) 4) }}/5 {{ $v.labourLabel }}</br>
-    <b data-i18n="goy.ar">Animal Rating</b>: {{ math.Floor (div (float $v.animalRating) 4) }}/5 {{ $v.animalLabel }}</br>
-    <b data-i18n="goy.evr">Environment Rating</b>: {{ math.Floor (div (float $v.environmentRating) 4) }}/5 {{ $v.environmentLabel }}</br>
-    <b data-i18n="goy.p">Price</b>: {{ default "unrated" ($v.price) }}/4</br>
-    <b data-i18n="goy.e">Email</b>: <a href="mailto:{{ $v.hasEmail }}" class="email-link">{{ $v.hasEmail }}</a> </br>
-</p>
-</section>
+<button type="button" class="collapsible active"><h2 class='sectionTitle'>goodonyou</h2></button>
+<table>
+    <tr><th class="hideInSmall" data-i18n="goy.er">Ethical Rating</th><td class="ratingOutOfFive">{{ $v.ethicalRating }}</td></tr>
+    <tr><th class="hideInSmall" data-i18n="goy.lr">Labour Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.labourRating) 4) }}</td></tr>
+    <tr><th class="hideInSmall" data-i18n="goy.ar">Animal Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.animalRating) 4) }}</td></tr>
+    <tr><th class="hideInSmall" data-i18n="goy.evr">Environment Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.environmentRating) 4) }}</td></tr>
+    <tr><th class="hideInSmall" data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOfFour">{{ default "unrated" ($v.price) }}</td></tr>
+    <tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://directory.goodonyou.eco/brand/{{.}}">GOODONYOU.ECO</a></td></tr>
+</table>
 </section>
