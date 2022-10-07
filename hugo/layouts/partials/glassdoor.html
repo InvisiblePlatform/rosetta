@@ -2,16 +2,24 @@
 {{ if os.FileExists . }}
 <section id="glassdoor">
 {{ $d := getJSON . }}
-<button class="collapsible active" type="button"><h2 class='sectionTitle'>Glassdoor</h2></button>
+<h2 class='sectionTitle'>Employee Rating</h2>
+<div class="twoCharts">
 <table>
-<tr><th class="hideInSmall" data-i18n="glassdoor.companyt"></th><td class="hideInSmall" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
-<tr><th class="hideInSmall" data-i18n="glassdoor.headquarters"></th><td class="hideInSmall">{{ $d.headquarters }}</td></tr>
-<tr><th class="hideInSmall" data-i18n="glassdoor.founded"></th><td class="hideInSmall">{{ $d.founded }}</td></tr> 
-<tr><th class="hideInSmall" data-i18n="glassdoor.industry"></th><td class="hideInSmall">{{ $d.industry }}</td></tr> 
-<tr><th class="hideInSmall" data-i18n="glassdoor.revenue"></th><td class="hideInSmall">{{ $d.revenue }}</td></tr>
-<tr><th class="hideInSmall" data-i18n="glassdoor.size"></th><td class="hideInSmall">{{ $d.size }}</td></tr>
-<tr><th class="hideInSmall" data-i18n="glassdoor.score"></th><td><score>{{ $d.glasroom_rating.ratingValue }}</score></br><div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></td></tr>
-<tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="{{ $d.url }}">GLASSDOOR</a></td></tr>
+    <tr><td class="hideInSmall" data-i18n="glassdoor.score"></td></tr>
+    <tr><td><score class="ratingOutOfFive">{{ $d.glasroom_rating.ratingValue }}</score></td></tr>
+    <tr><td><div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></td></tr>
+</table>
+<table>
+<tr class="hideInSmall"><th data-i18n="glassdoor.companyt"></th><td class="hideInSmall" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
+<tr class="hideInSmall"><th data-i18n="glassdoor.headquarters"></th><td class="hideInSmall">{{ $d.headquarters }}</td></tr>
+<tr class="hideInSmall"><th data-i18n="glassdoor.founded"></th><td class="hideInSmall">{{ $d.founded }}</td></tr> 
+<tr class="hideInSmall"><th data-i18n="glassdoor.industry"></th><td class="hideInSmall">{{ $d.industry }}</td></tr> 
+<tr class="hideInSmall"><th data-i18n="glassdoor.revenue"></th><td class="hideInSmall">{{ $d.revenue }}</td></tr>
+<tr class="hideInSmall"><th data-i18n="glassdoor.size"></th><td class="hideInSmall">{{ $d.size }}</td></tr>
+</table>
+</div>
+<table>
+<tr><td><a class="source" href="{{ $d.url }}">GLASSDOOR</a></td></tr>
 </table>
 {{ end }}
 </section>

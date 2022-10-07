@@ -1,9 +1,9 @@
 {{ $props := getJSON "data/wikidata/props.json" }}
 <section id="small-wikidata">
 {{ $key := split . ";" }}
-<h2 class='sectionTitle'>{{ index $props (index $key 1) | title }}:</h2> 
+<h2 class='sectionTitle'>{{ index $props (index $key 1) | title }}</h2> 
 <table>
-<tr><td><a class="biaslink" href="https://wikidata.org/wiki/{{ index $key 0 }}">{{ partialCached "wikidata-name.html" (index $key 0) (index $key 0) }}</a></td></tr>
+<tr><td class="biaslink" ><a href="https://wikidata.org/wiki/{{ index $key 0 }}">{{ partialCached "wikidata-name.html" (index $key 0) (index $key 0) }}</a></td></tr>
 <tr><td><a class="source blanksource" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a></td></tr>
 </table>
 </section>

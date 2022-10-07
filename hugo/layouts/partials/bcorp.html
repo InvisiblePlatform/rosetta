@@ -3,18 +3,26 @@
 {{ $path := print "data/bcorp/bcorp_" . ".json"}}
 {{ if os.FileExists $path }}
 {{ $d := getJSON $path }}
-<button type='button' class='collapsible active'><h2 class="sectionTitle">B Corp</h2></button>
-<table>
+<h2 class="sectionTitle">B Corp</h2>
+<div class="twoCharts">
+<table class="hideInSmall">
 {{ if isset $d "latestVerifiedScore" }}
-<tr><th data-i18n="bcorp.lvs"></th><td class="ratingOutOfBcorp">{{ $d.latestVerifiedScore }}</td></tr>
+<tr><td class="ratingOutOfBcorp">{{ $d.latestVerifiedScore }}</td></tr>
 {{ end }}
+<tr><td><img src="/icon/Bcorp.svg"/></td></tr>
+</table>
+<table class="hideInSmall">
 {{ if isset $d "assessments" }}
 {{ $a := index $d.assessments 0 }}
 {{ range $a.impactAreas }}
-<tr><th class="hideInSmall" data-i18n="bcorp.{{ .name | urlize }}"></th><td class="hideInSmall">{{ .score }}</td></tr>
+<tr><th data-i18n="bcorp.{{ .name | urlize }}"></th><td>{{ .score }}</td></tr>
 {{ end }}
 {{ end }}
+</table>
+</div>
+<table>
 <tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a></td></tr>
 </table>
+
 {{ end }}
 </section>

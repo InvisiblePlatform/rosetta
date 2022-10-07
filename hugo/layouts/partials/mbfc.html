@@ -6,15 +6,15 @@
 <section id="mbfc-header" >
 <h2 class='sectionTitle'>Media Bias</h2>
 <table>
-{{ if eq $dataJ.b "C"         }}<tr><td><a class="biaslink" href="{{ (index $dataB "center").url       }}">{{ (index $dataB "center").name       | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "L")  }}<tr><td><a class="biaslink" href="{{ (index $dataB "left").url         }}">{{ (index $dataB "left").name         | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "LC") }}<tr><td><a class="biaslink" href="{{ (index $dataB "left-center").url  }}">{{ (index $dataB "left-center").name  | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "R")  }}<tr><td><a class="biaslink" href="{{ (index $dataB "right").url        }}">{{ (index $dataB "right").name        | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "RC") }}<tr><td><a class="biaslink" href="{{ (index $dataB "right-center").url }}">{{ (index $dataB "right-center").name | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "PS") }}<tr><td><a class="biaslink" href="{{ (index $dataB "pro-science").url  }}">{{ (index $dataB "pro-science").name  | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "FN") }}<tr><td><a class="biaslink" href="{{ (index $dataB "fake-news").url    }}">{{ (index $dataB "fake-news").name    | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "CP") }}<tr><td><a class="biaslink" href="{{ (index $dataB "conspiracy").url   }}">{{ (index $dataB "conspiracy").name   | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "S")  }}<tr><td><a class="biaslink" href="{{ (index $dataB "satire").url       }}">{{ (index $dataB "satire").name       | upper }}</a></td></tr>{{ end }}
+{{ if eq $dataJ.b "C"         }}<tr><td class="biaslink"><a href="{{ (index $dataB "center").url       }}">{{ (index $dataB "center").name       | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "L")  }}<tr><td class="biaslink"><a href="{{ (index $dataB "left").url         }}">{{ (index $dataB "left").name         | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "LC") }}<tr><td class="biaslink"><a href="{{ (index $dataB "left-center").url  }}">{{ (index $dataB "left-center").name  | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "R")  }}<tr><td class="biaslink"><a href="{{ (index $dataB "right").url        }}">{{ (index $dataB "right").name        | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "RC") }}<tr><td class="biaslink"><a href="{{ (index $dataB "right-center").url }}">{{ (index $dataB "right-center").name | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "PS") }}<tr><td class="biaslink"><a href="{{ (index $dataB "pro-science").url  }}">{{ (index $dataB "pro-science").name  | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "FN") }}<tr><td class="biaslink"><a href="{{ (index $dataB "fake-news").url    }}">{{ (index $dataB "fake-news").name    | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "CP") }}<tr><td class="biaslink"><a href="{{ (index $dataB "conspiracy").url   }}">{{ (index $dataB "conspiracy").name   | upper }}</a></td></tr>
+{{ else if (eq $dataJ.b "S")  }}<tr><td class="biaslink"><a href="{{ (index $dataB "satire").url       }}">{{ (index $dataB "satire").name       | upper }}</a></td></tr>{{ end }}
 <tr><td><a class="source blanksource" href="{{ $dataJ.u }}" >MEDIA BIAS FACT CHECKER</a></td></tr>
 </table>
 </section>

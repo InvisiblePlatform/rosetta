@@ -2,12 +2,36 @@
 {{ $id := . }}
 {{ with $data := getJSON "data/rated.json" }}
 {{ if isSet $data $id }}
+{{ if not (eq (index $data $id).rated false) }}
+{{ $grade := (index $data $id ).rated }}
 <section id="tosdr-link">
 <h2 class='sectionTitle'>TOSDR</h2>
+<div class="twoCharts">
 <table>
 <tr><td><score>{{ (index $data $id ).rated }}</score></td></tr>
-<tr><td><a class="source" href="https://tosdr.org/en/service/{{ $id }}">TOSDR</a></td></tr>
+</table>
+<table>
+<tr><td>
+<h3>Grade {{ $grade }}</h3>
+{{ if eq $grade "E" }}
+<p>The terms of service raise very serious concerns.</p>
+{{ else if eq $grade "D"}}
+<p>The terms of service are very uneven or there are are some important issues that need your attention.</p>
+{{ else if eq $grade "C"}}
+<p>The terms of service are okay but some issues need your consideration.</p>
+{{ else if eq $grade "B"}}
+<p>The terms of service are fair towards the user but they could be improved.</p>
+{{ else if eq $grade "A"}}
+<p>The best terms of services: they treat you fairly, respect your rights and will not abuse your data.</p>
+{{ end }}
+</td></tr>
+</table>
+</div>
+<table>
+<tr><td><a class="source" href="https://tosdr.org/en/service/{{ $id }}">TOS;DR</a></td></tr>
 </table>
 </section>
 {{ end }}
 {{ end }}
+{{ end }}
+

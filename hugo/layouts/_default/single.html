@@ -18,9 +18,10 @@
 </div>
 <div class="content">
 <button id="backButton" type="button">BACK</button>
-<span class="bk-bg co-name hideInSmall">{{ .Params.title }}</span>
-<button id="settingsButton" type="button" onclick="loadSettings()"></button>
-<button id="closeButton" type="button"></button>
+<span class="bk-bg co-name">{{ .Params.title }}</span>
+<span class="blankForSmall"> </span>
+<button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
+<button id="closeButton" type="button"><div></div></button>
 {{ if isset .Params "connections" }}{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}{{ end }}
 {{ if isset .Params "goodonyou" }}{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}{{ end }}
 {{ if isset .Params "glassdoor" }}{{ partialCached "glassdoor.html" .Params.glassdoor .Params.glassdoor }}{{ end }}
@@ -60,7 +61,7 @@
 {{ partialCached "similar.html" .Params.title .Params.title }}
   {{ .Content }}
 </div>
-<p class="disclaimer-text hideInSmall" data-i18n="header.disclaimer"></p>
+<section id="disclaimer"><h2 class="hideInSmall">Invisible Voice Disclaimer</h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information <a href="#">here</a>.</p></section>
 </div>
 <script src="/js/single.js" defer></script>
 </html>

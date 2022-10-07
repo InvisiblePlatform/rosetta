@@ -2,13 +2,19 @@
 <section id="goodonyou">
 {{ $data := getJSON "data/goodonyou/brand_" . ".json" }}
 {{ $v := $data.pageProps.brand }}
-<button type="button" class="collapsible active"><h2 class='sectionTitle'>goodonyou</h2></button>
+<h2 data-i18n="goy.section-title" class='sectionTitle'>Ethical Sourcing</h2>
+<div class="twoCharts">
 <table>
-    <tr><th class="hideInSmall" data-i18n="goy.er">Ethical Rating</th><td class="ratingOutOfFive">{{ $v.ethicalRating }}</td></tr>
+    <tr><td><score class="ratingOutOfFive">{{ $v.ethicalRating }}</score></td></tr>
+    <tr><td><img class="dialBacking"><img class="dial" style="--value-dial:{{ $v.ethicalRating }};"/></td></tr>
+</table>
+<table>
+    <tr><th class="hideInSmall" data-i18n="goy.er">Ethical Rating</th><td><score class="ratingOutOfFive">{{ $v.ethicalRating }}</score></td></tr>
     <tr><th class="hideInSmall" data-i18n="goy.lr">Labour Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.labourRating) 4) }}</td></tr>
     <tr><th class="hideInSmall" data-i18n="goy.ar">Animal Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.animalRating) 4) }}</td></tr>
     <tr><th class="hideInSmall" data-i18n="goy.evr">Environment Rating</th><td class="hideInSmall ratingOutOfFive">{{ math.Floor (div (float $v.environmentRating) 4) }}</td></tr>
     <tr><th class="hideInSmall" data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOfFour">{{ default "unrated" ($v.price) }}</td></tr>
     <tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://directory.goodonyou.eco/brand/{{.}}">GOODONYOU.ECO</a></td></tr>
 </table>
+</div>
 </section>

@@ -1,16 +1,72 @@
 {{ $path := print "data/yahoo/" . ".json"}}
 {{ if os.FileExists $path }}
+{{ $grade := newScratch }}
 <section id="yahoo">
 {{ $d := (getJSON $path).quoteSummary.result }}
-<button type="button" class="collapsible active"><h2 class='sectionTitle'>ESG</h2></button>
-<table>
+<h2 data-i18n='esgtitle' class='sectionTitle'>ESG</h2>
 {{ with (index $d 0).esgScores }}
-{{ if isset .totalEsg "fmt" }}<tr><th>Total ESG</th> <td><score>{{ default "Not Found" .totalEsg.fmt }}</score></td></tr>{{ end }}
-{{ if isset .environmentScore "fmt" }}<tr><th class="hideInSmall">Environmental Risk Score</th> <td class="hideInSmall">{{ default "Not Found" .environmentScore.fmt }}</td></tr>{{ end }}
-{{ if isset .socialScore "fmt" }}<tr><th class="hideInSmall">Social Risk Score</th> <td class="hideInSmall">{{ default "Not Found" .socialScore.fmt }}</td></tr>{{ end }}
-{{ if isset .governanceScore "fmt" }}<tr><th class="hideInSmall">Governance Risk Score</th> <td class="hideInSmall">{{ default "Not Found" .governanceScore.fmt }}</td></tr>{{ end }}
+{{ if isset .totalEsg "fmt" }}
+{{ if lt .totalEsg.fmt "9" }}
+{{ $grade.Set "score" "NEGLIGIBLE" }}
+{{ else if lt .totalEsg.fmt "19" }}
+{{ $grade.Set "score" "LOW" }}
+{{ else if lt .totalEsg.fmt "29" }}
+{{ $grade.Set "score" "MEDIUM" }}
+{{ else if lt .totalEsg.fmt "39" }}
+{{ $grade.Set "score" "HIGH" }}
+{{ else if gt .totalEsg.fmt "40" }}
+{{ $grade.Set "score" "SEVERE" }}
+{{ else }}
+{{ $grade.Set "score" "NOT FOUND" }}
 {{ end }}
-<tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
+{{ end }}
+<div class="twoCharts">
+<table>
+    <tr class="hideInSmall"><td><score class="ratingOutOf" style="--outOf:'/40+';" >{{ default "N/A" .totalEsg.fmt }}</score></td></tr>
+    <tr><td class="biaslink" data-i18n='esg.{{ $grade.Get "score" }}'>{{ $grade.Get "score" }}</td></tr>
+</table>
+<table class="leftBorder">
+{{ if isset .environmentScore "fmt" }}
+<tr class="hideInSmall">
+    <th data-i18n='esg.environmental' class="hideInSmall">Environmental Risk Score</th> 
+    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .environmentScore.fmt }}</td>
+</tr>{{ end }}
+{{ if isset .socialScore "fmt" }}
+<tr class="hideInSmall">
+    <th data-i18n='esg.social' class="hideInSmall">Social Risk Score</th>
+    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .socialScore.fmt }}</td>
+</tr>{{ end }}
+{{ if isset .governanceScore "fmt" }}
+<tr class="hideInSmall">
+    <th data-i18n='esg.governance' class="hideInSmall">Governance Risk Score</th>
+    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .governanceScore.fmt }}</td>
+</tr>{{ end }}
+{{ if isset .totalEsg "fmt" }}
+<tr class="hideInSmall">
+    <th data-i18n='esg.total' class="hideInSmall">Total ESG</th>
+    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .totalEsg.fmt }}</td>
+</tr>{{ end }}
+{{ end }}
+</table>
+</div>
+<table class="esgKey hideInSmall">
+    <tr>
+        <td>0 - 9  </td>
+        <td>10 - 19</td>
+        <td>20 - 29</td>
+        <td>30 - 39</td>
+        <td>40+    </td>
+    </tr>
+    <tr>
+        <td ><div class="biaslink" data-i18n="esg.NEGLIGIBLE">NEGLIGIBLE</div></td>
+        <td ><div class="biaslink" data-i18n="esg.LOW">LOW</div></td>
+        <td ><div class="biaslink" data-i18n="esg.MEDIUM">MEDIUM</div></td>
+        <td ><div class="biaslink" data-i18n="esg.HIGH">HIGH</div></td>
+        <td ><div class="biaslink" data-i18n="esg.SEVERE">SEVERE</div></td>
+    </tr>
+</table>
+<table class="hideInSmall">
+<tr><td><a class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
 </table>
 </section>
 {{ end }}

@@ -3,12 +3,39 @@
 {{ if ne .name "ApplicationError" }}
 <section id="trust-pilot">
 <h2 class='sectionTitle'>Trust Pilot</h2>
-<table>
 {{ $score := .score.trustScore}}
-{{ if eq (int .numberOfReviews.total) 0 }}<tr><td><score>unrated</score></td></tr>
-{{ else }}<tr><td><score class="Stars" style="--rating: {{ $score }};" aria-label="Rating of this product is{{ $score }} out of 5.">{{ $score }}</score><span class="numberOfReviews"> {{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></td></tr>{{ end }}
-    {{ with .name.identifying }}<tr><td><a class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
-{{ else }}<tr><td><a class="source" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a>{{ end }}
+{{ if eq (int .numberOfReviews.total) 0 }}
+<table>
+<tr><td><score>unrated</score></td></tr>
+{{ else }}
+<div class="twoCharts">
+<table>
+<tr><td><score class="ratingOutOf" style="--outOf:'/5';">{{ $score }}</score></td></tr>
+<tr><td><div class="ratingCount">{{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></div></td></tr>{{ end }}
+{{ $numberOfStars := math.Floor $score }}
+{{ $remainingStar := sub $score $numberOfStars }}
+{{ $starValues := slice "0" "0" "0" "0" "0" }}
+</table>
+<table>
+<tr class="hideInSmall"><td>
+{{ range (seq 5) }}
+{{ if ge $numberOfStars . }}
+<span class="coolStar" style="--division:1;"></span>
+{{ else if eq (string (sub . $numberOfStars)) "1" }}
+<span class="coolStar" style="--division:{{ $remainingStar }};"></span>
+{{ else }}
+<span class="coolStar" style="--division:0;"></span>
+{{ end }}
+{{ end }}
+</td></tr>
+</table>
+</div>
+<table>
+{{ with .name.identifying }}
+<tr><td><a class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
+{{ else }}
+<tr><td><a class="source" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a>
+{{ end }}
 </table>
 </section>
 {{ end }}

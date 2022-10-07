@@ -2,7 +2,7 @@
 {{ $path := print "data/similar/sites/similar_site_" . ".json" }}
 {{ if os.FileExists $path }}
 <section id="similar-site-wrapper">
-<button class="collapsible active" type="button"><h2 class="sectionTitle" >Similar Websites</h2></button>
+<h2 class="sectionTitle" >Similar Websites</h2>
 <div id="similar-sites">
 {{ $sorted := slice }}
 {{ $data := (getJSON $path).SimilarSites }}
