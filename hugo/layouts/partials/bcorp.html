@@ -7,21 +7,21 @@
 <div class="twoCharts">
 <table class="hideInSmall">
 {{ if isset $d "latestVerifiedScore" }}
-<tr><td class="ratingOutOfBcorp">{{ $d.latestVerifiedScore }}</td></tr>
+<tr><td><score class="ratingOutOf" style='--outOf:"/140+";'>{{ $d.latestVerifiedScore }}</score></td></tr>
 {{ end }}
-<tr><td><img src="/icon/Bcorp.svg"/></td></tr>
+<tr><td><img class="iconclass" src="/icon/Bcorp.svg"/></td></tr>
 </table>
-<table class="hideInSmall">
+<table class="hideInSmall leftBorder">
 {{ if isset $d "assessments" }}
 {{ $a := index $d.assessments 0 }}
 {{ range $a.impactAreas }}
-<tr><th data-i18n="bcorp.{{ .name | urlize }}"></th><td>{{ .score }}</td></tr>
+<tr><th data-i18n="bcorp.{{ .name | urlize }}"></th><td class="ratingOutOf">{{ .score }}</td></tr>
 {{ end }}
 {{ end }}
 </table>
 </div>
 <table>
-<tr><th><a class="source" style="display:none;"></a></th><td><a class="source" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a></td></tr>
+<tr><th><a target="_blank" class="source" style="display:none;"></a></th><td><a class="source" target="_blank" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a></td></tr>
 </table>
 
 {{ end }}

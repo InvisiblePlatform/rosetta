@@ -1,42 +1,34 @@
-<!-- TrustPilot -->
 {{ with getJSON (print "data/trust-pilot/sites/trust_site_" . ".json") }}
-{{ if ne .name "ApplicationError" }}
-<section id="trust-pilot">
-<h2 class='sectionTitle'>Trust Pilot</h2>
-{{ $score := .score.trustScore}}
-{{ if eq (int .numberOfReviews.total) 0 }}
-<table>
-<tr><td><score>unrated</score></td></tr>
-{{ else }}
-<div class="twoCharts">
-<table>
-<tr><td><score class="ratingOutOf" style="--outOf:'/5';">{{ $score }}</score></td></tr>
-<tr><td><div class="ratingCount">{{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></div></td></tr>{{ end }}
-{{ $numberOfStars := math.Floor $score }}
-{{ $remainingStar := sub $score $numberOfStars }}
-{{ $starValues := slice "0" "0" "0" "0" "0" }}
-</table>
-<table>
-<tr class="hideInSmall"><td>
-{{ range (seq 5) }}
-{{ if ge $numberOfStars . }}
-<span class="coolStar" style="--division:1;"></span>
-{{ else if eq (string (sub . $numberOfStars)) "1" }}
-<span class="coolStar" style="--division:{{ $remainingStar }};"></span>
-{{ else }}
-<span class="coolStar" style="--division:0;"></span>
-{{ end }}
-{{ end }}
-</td></tr>
-</table>
-</div>
-<table>
-{{ with .name.identifying }}
-<tr><td><a class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
-{{ else }}
-<tr><td><a class="source" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a>
-{{ end }}
-</table>
-</section>
-{{ end }}
+    {{ if eq (int .numberOfReviews.total) 0 }}
+    {{ else }}
+        <section id="trust-pilot">
+        <h2 class='sectionTitle' data-i18n='tp.title'>Trust Pilot</h2>
+        <div class="twoCharts">
+        <table>
+        <tr><td><score class="ratingOutOf" style="--outOf:'/5';">{{ .score.trustScore }}</score></td></tr>
+        <tr><td><div class="ratingCount">{{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></div></td></tr>
+        {{ $numberOfStars := math.Floor .score.trustScore }}
+        {{ $remainingStar := sub .score.trustScore $numberOfStars }}
+        {{ $starValues := slice "0" "0" "0" "0" "0" }}
+        </table>
+        <table><tr class="hideInSmall"><td>
+        {{ range (seq 5) }}
+            {{ if ge $numberOfStars . }}
+            <span class="coolStar" style="--division:1;"></span>
+            {{ else if eq (string (sub . $numberOfStars)) "1" }}
+            <span class="coolStar" style="--division:{{ $remainingStar }};"></span>
+            {{ else }}
+            <span class="coolStar" style="--division:0;"></span>
+            {{ end }}
+        {{ end }}</td></tr></table>
+        </div>
+        <table>
+        {{ with .name.identifying }}
+        <tr><td><a target="_blank" class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
+        {{ else }}
+        <tr><td><a class="source" target="_blank" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a></td></tr>
+        {{ end }}
+        </table>
+        </section>
+    {{ end }}
 {{ end }}

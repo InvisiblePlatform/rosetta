@@ -3,7 +3,7 @@
 {{ $grade := newScratch }}
 <section id="yahoo">
 {{ $d := (getJSON $path).quoteSummary.result }}
-<h2 data-i18n='esgtitle' class='sectionTitle'>ESG</h2>
+<h2 data-i18n='esg.title' class='sectionTitle'>ESG Risk</h2>
 {{ with (index $d 0).esgScores }}
 {{ if isset .totalEsg "fmt" }}
 {{ if lt .totalEsg.fmt "9" }}
@@ -51,10 +51,10 @@
 </div>
 <table class="esgKey hideInSmall">
     <tr>
-        <td>0 - 9  </td>
-        <td>10 - 19</td>
-        <td>20 - 29</td>
-        <td>30 - 39</td>
+        <td>0 - 9.9  </td>
+        <td>10 - 19.9</td>
+        <td>20 - 29.9</td>
+        <td>30 - 39.9</td>
         <td>40+    </td>
     </tr>
     <tr>
@@ -66,7 +66,7 @@
     </tr>
 </table>
 <table class="hideInSmall">
-<tr><td><a class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
+<tr><td><a target="_blank" class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
 </table>
 </section>
 {{ end }}

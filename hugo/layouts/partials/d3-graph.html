@@ -1,21 +1,33 @@
-<section id="wikipedia-infocard-frame" style="display:none;"> No content yet </section>
-<section id="wikipedia-first-frame" style="display:none;"> No content yet </section>
-<section id="graph-box" style="display:none;"> No content yet </section>
-<section id="graphLoc" style="display:none;">{{ . }}</section>
+<section id="wikipedia-infocard-frame" style="display: none">
+    No content yet
+</section>
+<section id="wikipedia-first-frame" style="display: none">
+    No content yet
+</section>
+<section id="graph-box" style="display: none">No content yet</section>
+<section id="graphLoc" style="display: none">{{ . }}</section>
 <div id="graph-container">
-    <h2 class="sectionTitle">Network Graph</h2>
+    <h2 class="sectionTitle" data-i18n="graph.title" >Network Graph</h2>
     <svg id="graph"></svg>
     <div id="key"></div>
-    <div id="wikipedia-frame" style="display:none;"> No content yet </div>
-    <div id="wikipedia-frame-close" style="display:none;"> Close </div>
+    <div id="wikipedia-frame" style="display: none" >
+        No content yet
+    </div>
+    <div id="wikipedia-frame-close" style="display: none"></div>
     <div id="graphButtons">
-    <button type="button" id="graphZoomIn"> zoom in</button>
-    <button type="button" id="graphZoomReset"> reset</button>
-    <button type="button" id="graphZoomOut"> zoom out</button>
+        <button type="button" data-i18n="graph.zoomin" id="graphZoomIn">
+            zoom in
+        </button>
+        <button type="button" data-i18n="graph.reset" id="graphZoomReset">
+            reset
+        </button>
+        <button type="button" data-i18n="graph.zoomout" id="graphZoomOut">
+            zoom out
+        </button>
     </div>
 </div>
 <script type="module">
-    import {zoom} from "https://cdn.skypack.dev/d3-zoom@3";
+    import { zoom } from "https://cdn.skypack.dev/d3-zoom@3";
     const handler = zoom();
 </script>
 <script src="https://d3js.org/d3.v6.min.js"></script>

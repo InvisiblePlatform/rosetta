@@ -11,15 +11,14 @@
 {{ if isset .Params "wikidataid" }}
 <div id="wikidataid" style="display:none;">{{ .Params.wikidataid }}</div>
 {{ end }}
-<div>
 <div id="settings">
-<h2 class="sectionTitle">Settings</h2>
+<h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
 {{ partialCached "translation_picker.html" . }}
 </div>
 <div class="content">
-<button id="backButton" type="button">BACK</button>
+<button id="backButton" type="button" onclick="justSendBack()"></button>
 <span class="bk-bg co-name">{{ .Params.title }}</span>
-<span class="blankForSmall"> </span>
+<span class="blankForSmall" style="order:0;"> </span>
 <button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
 <button id="closeButton" type="button"><div></div></button>
 {{ if isset .Params "connections" }}{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}{{ end }}
@@ -59,9 +58,16 @@
 </section>
 </section>
 {{ partialCached "similar.html" .Params.title .Params.title }}
+<span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
+<span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
+<section id="Invisible-vote" class="hideInSmall">
+<section id="Invisible-like" style="--likes:'0';" data-i18n="vote.like">Like</section>
+<section id="Invisible-dislike" style="--dislikes:'0';" data-i18n="vote.dislike">Dislike</section>
+</section>
+<section id="Invisible-boycott" data-i18n="vote.boycott" class="hideInSmall">Boycott</section>
+<section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title">Disclaimer</div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information</p> <a class="hideInSmall" data-i18n="header.here" href="#">here.</a></section>
   {{ .Content }}
 </div>
-<section id="disclaimer"><h2 class="hideInSmall">Invisible Voice Disclaimer</h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information <a href="#">here</a>.</p></section>
 </div>
 <script src="/js/single.js" defer></script>
 </html>

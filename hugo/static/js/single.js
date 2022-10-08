@@ -14,17 +14,11 @@ function send_message(type, data){
     }
 }
 
-// let allLinks = document.querySelectorAll('a');
-// 
-// allLinks.forEach(el => {
-//   if (el.href.toString().includes("wikipedia.org") && el.target != "_blank" && !el.classList.contains("source")){
-//       href = el.href;
-//       org_html = el.innerHTML;
-//       parentW = el.parentElement;
-//       var new_el = document.createElement("span");
-//       new_el.innerHTML = "<span class='hover-anchor' onmouseover='loadWikiInfo(this)'><a target='_blank' href=\"" + el.href + "\" >" + org_html + "</a><span class='hover-pop dot'>This will be a little pop-out wikipedia explanation that appears on hover</span></span>"
-//       parentW.replaceChild(new_el,el);
-// }});
+let allLinks = document.querySelectorAll('a');
+
+allLinks.forEach(el => {
+    el.setAttribute("target", "_blank");
+});
 // 
 // let hoverAnchors = document.querySelectorAll('.hover-anchor');
 let wW = window.innerWidth;
@@ -50,10 +44,12 @@ let closeIV = function(){
 
 
 let resetBack = function(){
-    settings.style.visibility = 'hidden';
+    settings.style.bottom = "100vh";
+    settings.style.top = "";
+    settings.firstElementChild.style.top = "-40px";
+    backButton.style.transform = "rotate(180deg)";
     networkGraph.style.visibility = 'hidden';
     backButton.setAttribute("onclick", 'justSendBack()');
-    coName.style.visibility = 'visible';
 }
 let setBack = function(x){
     backButton.setAttribute("onclick", x);
@@ -65,26 +61,39 @@ let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 let coName = document.getElementsByClassName('co-name')[0];
 
+document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
+    backButton.style.transform = "rotate(0deg)";
     send_message("IVClicked", "wikipedia-first-frame");
     setBack('closeWikipediaPage()');
 }
 
 let loadProfileCard = function(x) {
     infoCard.classList.add('expanded');
+    backButton.style.transform = "rotate(0deg)";
     send_message("IVClicked", "wikipedia-infocard-frame");
     setBack('closeInfoCard()');
 }
 let loadSettings = function(x) {
-    settings.style.visibility = 'visible';
-    coName.style.visibility = 'hidden';
+    if (settings.style.bottom == "0px"){
+        closeSettings();
+        send_message("IVClicked", "unsettings");
+        resetBack();
+    } else {
+    settings.style.bottom = "0";
+    settings.style.top = "40px";
+    backButton.style.transform = "rotate(0deg)";
+    settings.firstElementChild.style.top = "0";
     send_message("IVClicked", "settings");
     setBack('closeSettings()');
+    }
 }
 
 let loadNetworkGraph = function(x) {
     networkGraph.style.visibility = 'visible';
+    backButton.style.transform = "rotate(0deg)";
     window.scrollTo(0,0);
     document.getElementsByTagName('content');
     send_message("IVClicked", "network");
@@ -110,7 +119,15 @@ let justSendBack = function(x) {
 }
 
 let closeSettings = function(x) {
-    resetBack();
+    if (infoCard.classList.contains("expanded")) {
+        settings.style.visibility = 'hidden';
+        setBack('closeInfoCard()');
+    } else if (wikipediaPage.classList.contains("expanded")) {
+        settings.style.visibility = 'hidden';
+        setBack('closeWikipediaPage()');
+    } else {
+       resetBack();
+    }
 }
 
 let loadWikiInfo = function(x) {
@@ -136,11 +153,53 @@ let loadWikiInfo = function(x) {
 	x.removeAttribute("onmouseover");
   }
 
+var IVKeepOnScreen = localStorage.IVKeepOnScreen;
+var IVDarkModeOverride = localStorage.IVDarkModeOverride;
+if (IVKeepOnScreen == "true")
+	document.getElementById('onScreen').getElementsByTagName('label')[0].firstElementChild.checked = true;
+if (IVDarkModeOverride == "true"){
+	document.getElementById('permaDark').getElementsByTagName('label')[0].firstElementChild.checked = true;
+    document.lastChild.classList.toggle('dark-theme');
+}
 document.addEventListener("DOMContentLoaded", function(){
 document.addEventListener('mouseup', function(event){
-    console.log("IVCLICKED", event.target.parentElement.id);
-    if (event.target.classList.contains('sectionTitle')){
+if (event.target.classList.contains('invisible-disclaimer-title')){
+    send_message("IVClicked", "disclaimer");
+}
+    if (event.target.classList.contains('sectionTitle')|| event.target.classList.contains('iconclass')){
         send_message("IVClicked", event.target.parentElement.id);
+        if (event.target.parentElement.id == "wikipedia-first-frame"){
+            loadWikipediaPage();
+        }
+        if (event.target.parentElement.id == "wikipedia-infocard-frame"){
+            loadProfileCard();
+        }
+        event.target.scrollIntoView();
+    }
+    if (event.target.parentElement.parentElement.matches('#permaDark')){
+        console.log("IVDarkModeOverride");
+		if (IVDarkModeOverride == "true") {
+			IVDarkModeOverride = false;
+			localStorage.IVDarkModeOverride = false;
+            document.lastChild.classList.toggle('dark-theme');
+		} else {
+			IVDarkModeOverride = true;
+			localStorage.IVDarkModeOverride = true;
+            document.lastChild.classList.toggle('dark-theme');
+		}
+        send_message("IVDarkModeOverride", IVDarkModeOverride);
+    }
+    if (event.target.parentElement.parentElement.matches('#onScreen')){
+        console.log("IVKeepOnScreen");
+		if (IVKeepOnScreen) {
+			IVKeepOnScreen = false;
+			localStorage.IVKeepOnScreen = false;
+            send_message("IVKeepOnScreen", "no");
+		} else {
+			IVKeepOnScreen = true;
+			localStorage.IVKeepOnScreen = true;
+            send_message("IVKeepOnScreen", "yes");
+		}
     }
     if (event.target.matches('#backButton')){
         send_message("IVClicked", event.target.parentElement.id);
@@ -158,9 +217,9 @@ var defaultOrder = [
     { value:"mbfc-header", label: "Media Bias"},
     { value:"trust-pilot", label: "Trust Pilot"},
     { value:"yahoo", label: "ESG Risk"},
-    { value:"isin", label: "Low Carbon Transition"},
-    { value:"isin", label: "Food & Agriculture Sustainability"},
-    { value:"isin", label: "Social & Sustainable Development"},
+    { value:"isin lct", label: "Low Carbon Transition"},
+    { value:"isin fas", label: "Food & Agriculture Sustainability"},
+    { value:"isin ssd", label: "Social & Sustainable Development"},
     { value:"goodonyou", label: "Ethical Sourcing"},
     { value:"bcorp", label: "B corp"},
     { value:"tosdr-link", label: "Privacy"},

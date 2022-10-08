@@ -324,7 +324,7 @@
                return "#"
            }).attr("target", "_blank")
                .on('click', function(d,i){
-                   document.getElementById("graphButtons").setAttribute("style", "width: 404px;")
+                   document.getElementById("graphButtons").setAttribute("style", "width: 408px;")
                    var wikidataWiki;
                   switch (localStorage.preferred_language) {
                       case "hi": 
@@ -363,6 +363,7 @@
                    d.preventDefault();
                    // console.log("clicking on", this, wikidataWiki);
                    let requestURL = wikichoice + "/api/rest_v1/page/mobile-sections/" + wikidataWiki + "?redirect=true"
+                   let skipsections = ["See_also", "References", "Further_reading", "External_links", "Sources", "undefined"];
                    if (wikiframe.style.display == "none"){
                         wikiframe.style.display = "block";
                         wikiframeclose.style.display = "block";
@@ -373,6 +374,10 @@
                        var text = data.lead.sections[0].text.replace(/href=\"/g,'href=\"' + wikichoice);
                        for (let x in data.remaining.sections) {
                            let section = data.remaining.sections[x];
+                           if (!section.anchor) continue;
+                           if (skipsections.includes(section.anchor)) {
+                               continue;
+                           }
                            let item = '<p id="' + 
                                      section.anchor + 
                                      '"><h2>' +

@@ -2,8 +2,8 @@
 {{ $path := print "data/similar/sites/similar_site_" . ".json" }}
 {{ if os.FileExists $path }}
 <section id="similar-site-wrapper">
-<h2 class="sectionTitle" >Similar Websites</h2>
-<div id="similar-sites">
+<h2 data-i18n="similar.title" class="sectionTitle" >Similar Websites</h2>
+<div id="similar-sites" class="hideInSmall">
 {{ $sorted := slice }}
 {{ $data := (getJSON $path).SimilarSites }}
 {{ range $data }}
@@ -21,12 +21,12 @@
 
 {{ range sort $sorted "Grade" "desc" | first 10 }}
 <section class="similar-site">
-    <a alt="{{ index . "Site" }}" href="http://{{ index . "Site" }}">
+    <a target="_blank" alt="{{ index . "Site" }}" href="http://{{ index . "Site" }}">
         {{ index . "Site" }} ({{ index . "Grade" | mul 100 | math.Floor  }}%)</a> 
 </section>
 {{ end }}
 <table>
-    <tr><td><a class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a></td></tr>
+    <tr><td><a target="_blank" class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a></td></tr>
 </table>
 </div>
 </section>
