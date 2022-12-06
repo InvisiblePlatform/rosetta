@@ -41,7 +41,7 @@ time, mark, audio, video {
              bottom 0.2s,
          background 0.2s, 
           transform 1s, 
-   background-color 0.2s;
+   background-color 0.1s;
 }
 
 .dialBacking{
@@ -90,6 +90,10 @@ time, mark, audio, video {
   }
 }
 
+:root{
+    --chev: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iIzM0MzQzNCIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K';
+    --chev-darkm: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K';
+}
 
 /* Colours */
 html {
@@ -100,10 +104,11 @@ html {
     --c-heavy-text: #1A1A1A;
     --c-interior-border: #DDDDDD;
     --c-secondary-background: #DDDDDD;
+    --c-hover: #f5f5f5;
     --c-linky-text: #00F;
     --s-small: 160px;
     --s-medium: 640px;
-    --s-large: 860px;
+    --s-large: 840px;
 	--brightness: 0;
     --first-frame-from: rgba(255,255,255, 1);
     --first-frame-to: rgba(255,255,255, 0);
@@ -117,7 +122,8 @@ html.dark-theme {
 	--c-heavy-text: #1A1A1A;
     --c-interior-border: #FFF;
     --c-linky-text: #7373FF;
-    --c-secondary-background: #1A1A1A;
+    --c-secondary-background: #1E1E1E;
+    --c-hover: #5f5f5f;
 	--brightness: 10;
     --first-frame-from: rgba(26,26,26, 1);
     --first-frame-to: rgba(26,26,26, 0);
@@ -130,6 +136,10 @@ html.dark-theme {
     );
 }
 
+#backButton{
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iIzM0MzQzNCIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K');
+}
+
 @media (prefers-color-scheme: dark) {
     html {
         --c-main: #08D735;
@@ -139,7 +149,8 @@ html.dark-theme {
     	--c-heavy-text: #1A1A1A;
         --c-interior-border: #FFF;
         --c-linky-text: #7373FF;
-        --c-secondary-background: #1A1A1A;
+        --c-secondary-background: #2A2A2A;
+        --c-hover: #5f5f5f;
     	--brightness: 10;
         --first-frame-from: rgba(26,26,26, 1);
         --first-frame-to: rgba(26,26,26, 0);
@@ -153,16 +164,69 @@ html.dark-theme {
         --c-heavy-text: #1A1A1A;
         --c-interior-border: #DDDDDD;
         --c-secondary-background: #DDDDDD;
+        --c-hover: #f5f5f5;
         --c-linky-text: #00F;
         --s-small: 160px;
         --s-medium: 640px;
-        --s-large: 860px;
+        --s-large: 840px;
     	--brightness: 0;
         --first-frame-from: rgba(255,255,255, 1);
         --first-frame-to: rgba(255,255,255, 0);
     }
+    #backButton{
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K');
+
+    }
 }
 
+
+#Invisible-boycott,
+#Invisible-vote > * {
+    font-size: 16px;
+    font-family: 'Roboto Flex', sans-serif;
+    font-variation-settings: 'wdth' 151;
+    width: 100%;
+    height: 40px;
+    padding-top: 10px;
+    border-right: var(--c-light-text) solid 1px;
+    color: var(--c-light-text);
+    background-color: var(--c-background);
+}
+
+#Invisible-dislike{
+    filter: hue-rotate(222deg);
+}
+#Invisible-dislike:after{
+    content: ' ('var(--dislikes)')';
+}
+#Invisible-like:after{
+    content: ' ('var(--likes)')';
+}
+
+#Invisible-dislike:after,
+#Invisible-like:after{
+    display: inline-table;
+    padding-left: 4px;
+}
+
+#Invisible-vote {
+    width: 640px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    position: fixed;
+    bottom: 40px;
+    z-index: 6;
+}
+
+#Invisible-boycott{
+    position: fixed;
+    bottom: 0;
+    margin: auto;
+    text-align: center;
+    z-index: 5;
+    border-right: none;
+}
 
 html { overflow-x: hidden; 
         background: var(--c-background);}
@@ -395,7 +459,6 @@ td:has(.coolStar){
     font-family: 'Roboto Mono', monospace;
     font-size: 12px;
     font-weight: 500;
-    background-image: url("/icon/chev-left.svg");
     background-size: 24px 24px;
     background-repeat: no-repeat;
     background-position: center;
@@ -407,6 +470,10 @@ td:has(.coolStar){
     z-index: 5;
 }
 
+#backButton.dark-theme{
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iIzM0MzQzNCIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K');
+}
+
 
 .co-name {
    background-color: var(--c-heavy-text);
@@ -414,6 +481,7 @@ td:has(.coolStar){
    font-family: "Roboto Flex", sans-serif;
    font-weight: 600;
    font-size: 16px;
+   border-bottom: var(--c-light-text) solid 1px;
    line-height: 240%;
    align-self: stretch;
    width: 100%;
@@ -538,9 +606,6 @@ th {
 }
 
 #similar-site-wrapper h2{ padding: 16px; }
-#similar-site-wrapper{
-    background-color: var(--c-background); 
-}
 
 .hovertext {
   position: relative;
@@ -579,6 +644,7 @@ th {
     bottom: 8px;
     position: absolute;
 	white-space: nowrap;
+    padding-right: 16px;
     right: 20px;
 }
 
@@ -595,6 +661,8 @@ th {
     content: ' ';
     background-image: url("/icon/source_link.svg");
     background-size: 16px 16px;
+    background-repeat: no-repeat;
+    padding-right: 16px;
     width: 16px;
     height: 16px;
     right: -16px;
@@ -694,7 +762,7 @@ g>path { z-index:5; }
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: 840px;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -735,7 +803,7 @@ ul {
 }
 
 .iconclass{
-	  filter: brightness(var(--brightness));
+    filter: brightness(var(--brightness));
     width: 60px;
     height: 60px;
     position: relative;
@@ -758,7 +826,7 @@ section.expanded #wikipedia-first-frame {
   height: calc(100vh - 40px);
   overflow-y: scroll;
   overflow-x: hidden;
-  position: absolute;
+  position: fixed;
   z-index: 7;
   padding: 8px;
 }
@@ -773,7 +841,6 @@ section.expanded #wikipedia-first-frame {
 }
 #graph-box, #wikipedia-infocard-frame{
   justify-content: center;
-  background-color: var(--c-background); 
   width: 320px;
 }
 
@@ -1167,7 +1234,7 @@ div#onScreen {
 #priority-list ul > li:before {
     display:inline-table;
     content: ' ';
-    background-image: url("/icon/network.svg");
+    background-image: url("/icon/reorder.svg");
 	filter: brightness(var(--brightness));
     background-size: 16px 16px;
     width: 16px;
@@ -1255,13 +1322,13 @@ div#onScreen {
   #wikipedia-first-frame img.iconclass{
     display: block;
   }
+  #backButton{
+    border-left: none;
+  }
   #backButton,
   #closeButton,
   #settingsButton{
       border-top: none;
-  }
-  #backButton{
-      border-left: none;
   }
   .sectionTitle {
     width: 160px;
@@ -1359,9 +1426,14 @@ div#onScreen {
   #social-wikidata > h2:after { 
     background-image: url("/icon/social.svg"); 
   }
+
+  section:has(:hover),
+  section:hover{
+    background-color: var(--c-hover);
+  }
 }
 
-@media screen and (min-width: 200px) and (max-width: 860px){
+@media screen and (min-width: 200px) and (max-width: 861px){
   .content > * { order: 4; 
     width: 640px;
   }
@@ -1375,6 +1447,7 @@ div#onScreen {
   }
   #backButton{
     transform: rotate(180deg);
+    left: -1px;
   }
   table:has(tbody tr td.biaslink){ 
     margin: auto;
@@ -1438,7 +1511,7 @@ div#onScreen {
   }
   .ratingOutOf, .ratingOutOf16, .ratingOutOfFour, .ratingOutOfFive, .ratingOutOfBcorp, .ratingOutOf100, .ratingOutOf20, .ratingOutOfESG{
     font-family: 'Roboto Flex';
-    font-variation-settings: 'wdth' 2000;
+    font-variation-settings: 'wght' 200;
     font-size: 60px;
   }
 
@@ -1455,7 +1528,7 @@ div#onScreen {
   }
   .ratingCount {
     text-align: center;
-    font-size: 12px;
+    font-size: 14px;
     float:none!important;
     padding-bottom: 8px;
   }
@@ -1513,10 +1586,21 @@ div#onScreen {
       order:3;
   }
 }
-@media screen and (min-width: 642px) and (max-width: 860px){
+@media screen and (min-width: 820px) and (max-width: 860px){
+    #graph-container h2.sectionTitle {
+        position: absolute;
+       width: 840px;
+    }
   .sectionTitle {
+      width: 840px!important;
     font-size: 18px;
   }
+    #Invisible-boycott,
+    #Invisible-like,
+    #Invisible-dislike,
+    #Invisible-vote {
+        display: none;
+    }
 }
 
 section.expanded h2.sectionTitle {
@@ -1570,62 +1654,15 @@ section.expanded img.iconclass{
     display: none;
 }
 
-#Invisible-boycott,
-#Invisible-vote > * {
-    font-size: 16px;
-    font-family: 'Roboto Flex', sans-serif;
-    font-variation-settings: 'wdth' 151;
-    width: 100%;
-    height: 40px;
-    padding-top: 10px;
-    border-right: var(--c-light-text) solid 1px;
-    color: var(--c-light-text);
-    background-color: var(--c-background);
-}
-
-
-#Invisible-dislike:after{
-    content: ' ('var(--dislikes)')';
-    filter: hue-rotate(222deg);
-}
-#Invisible-like:after{
-    content: ' ('var(--likes)')';
-}
-
-#Invisible-dislike:after,
-#Invisible-like:after{
-    display: inline-table;
-    padding-left: 4px;
-}
-
-#Invisible-vote {
-    width: 640px;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    position: fixed;
-    bottom: 40px;
-    z-index: 6;
-}
-
-#Invisible-boycott{
-    position: fixed;
-    bottom: 0;
-    margin: auto;
-    text-align: center;
-    z-index: 5;
-    border-right: none;
-}
-
 #Invisible-boycott:hover,
-.sectionTitle:hover,
-#Invisible-like:hover,
 #Invisible-dislike:hover,
+#Invisible-like:hover,
 #backButton:hover,
-#settingsButton:hover,
 #closeButton:hover,
+#settingsButton:hover,
 .fullView:hover,
+.sectionTitle:hover,
 .similar-site > a:hover{
-    background-color: var(--c-secondary-background);
+    background-color: var(--c-hover);
 }
 

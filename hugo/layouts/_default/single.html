@@ -33,7 +33,7 @@
 {{ if isset .Params "polideology" }}{{ range .Params.polideology }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
 {{ if isset .Params "polalignment" }}{{ range .Params.polalignment }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
 <section id="social-wikidata">
-<h2 class='sectionTitle'>Social Media and Email</h2>
+<h2 class='sectionTitle' data-i18n="w.socialmedia">Social Media and Email</h2>
 <section id="social-links">
 {{ if isset .Params "twittername" }}{{ partialCached "wikidata-social.html" .Params.twittername .Params.twittername }}{{ end }}
 {{ if isset .Params "subreddit" }}{{ partialCached "wikidata-social.html" .Params.subreddit .Params.subreddit }}{{ end }}

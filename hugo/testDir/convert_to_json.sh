@@ -26,7 +26,7 @@ EOF
 
 done < $lang.csv
 
-jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add ' $temp3 ../static/i18n/$lang.json > $lang.json
+jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add ' ../static/i18n/$lang.json $temp3 > $lang.json
 
 jq . $lang.json
 

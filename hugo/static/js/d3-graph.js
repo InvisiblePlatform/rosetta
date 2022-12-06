@@ -3,8 +3,9 @@
             .on("zoom", zoomed);
 
        var svg2 = d3.select("#key");
-       var docwidth = 860;
-       var svg = d3.select("#graph").attr("height", 620).attr("width", docwidth);
+       var docwidth = 840;
+       var docHeight = window.innerHeight;
+       var svg = d3.select("#graph").attr("height", docHeight).attr("width", docwidth);
        var resetButton = document.getElementById('graphZoomReset').setAttribute("onclick","reset()");
        var zoomInButton = document.getElementById('graphZoomIn').setAttribute("onclick","zoomIn()");
        var zoomOutButton = document.getElementById('graphZoomOut').setAttribute("onclick","zoomOut()");
@@ -77,7 +78,7 @@
 
         function zoomed({transform}) {
           d3.select('svg g').attr("transform", transform);
-          d3.selectAll('svg g').attr("transform", transform);
+          d3.select('svg g.nodes').attr("transform", transform);
         }
 
        graphLoc = document.getElementById('graphLoc').innerHTML;
@@ -254,11 +255,11 @@
                         wikicardframe.innerHTML = "";
                         wikicardframe.appendChild(wikifirstframe.children[i]);
                     }
-                  var profiletext = "<h2 class='sectionTitle' id='profile-card'>Company Info</h2><div class='hideInSmall'>";
-                    profiletext += wikicardframe.innerHTML + "</div><img src='/icon/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView'>FULL-VIEW</button>";
+                  var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2><div class='hideInSmall'>";
+                    profiletext += wikicardframe.innerHTML + "</div><img src='/icon/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                   wikicardframe.innerHTML = profiletext;
-                  var companyinfotext = "<h2 class='sectionTitle' id='company-info'>Wikipedia</h2><div class='hideInSmall'>";
-                  companyinfotext += wikifirstframe.innerHTML + "</div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView'>FULL-VIEW</button>";
+                  var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div class='hideInSmall'>";
+                  companyinfotext += wikifirstframe.innerHTML + "</div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                   wikifirstframe.innerHTML = companyinfotext;
                 }).fail(function() {
                     console.log("oh no")
@@ -268,7 +269,7 @@
               
               lastContent.appendChild(wikifirstframe);
               lastContent.appendChild(wikicardframe);
-              graphBox.innerHTML = "<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2><img src='/icon/network.svg' class='iconclass'/><table><td><a href='https://wikidata.org/wiki/" + wikidataid + "' class='source blanksource'>WIKIDATA</a></td></table><button type='button' onclick='loadNetworkGraph()' class='fullView'>FULL-VIEW</button>";
+              graphBox.innerHTML = "<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2><img src='/icon/network.svg' class='iconclass'/><table><td><a href='https://wikidata.org/wiki/" + wikidataid + "' class='source blanksource'>WIKIDATA</a></td></table><button type='button' onclick='loadNetworkGraph()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
               lastContent.appendChild(graphBox);
               if (wikifirstframe.style.display == "none"){
                    wikifirstframe.style.display = "";

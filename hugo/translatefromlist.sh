@@ -1,8 +1,9 @@
 #!/bin/bash
 
-rg -o 'data-i18n="[^"]*"' public/ | cut -d: -f2 | sort -u | cut -d'=' -f2 > translatables
-
-exit 
+# rg -o 'data-i18n="[^"]*"' public/ | cut -d: -f2 | sort -u | cut -d'=' -f2 > translatables
+# 
+# exit 
+rm testDir/*.csv
 languages=('eo' 'es' 'de' 'ar' 'zh' 'fr' 'hi')
 while read line; do
     string=$(echo $line | cut -d, -f2-)
@@ -13,5 +14,6 @@ while read line; do
         echo "$id,$translated_string" | tee -a testDir/$language.csv
     done
 done < ./translatables
+cp ./translatables testDir/en.csv
 
 

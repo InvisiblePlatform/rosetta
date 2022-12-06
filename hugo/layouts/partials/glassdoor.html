@@ -8,6 +8,7 @@
     <tr><td class="hideInSmall" data-i18n="glassdoor.score"></td></tr>
     <tr><td><score class="ratingOutOfFive">{{ $d.glasroom_rating.ratingValue }}</score></td></tr>
     <tr><td><div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></td></tr>
+    <tr><td><img class="dialBacking"><img class="dial" style="--score:{{ $d.glasroom_rating.ratingValue }};--outOf:5;"/></td></tr>
 </table>
 <table class="leftBorder">
 <tr class="hideInSmall"><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>

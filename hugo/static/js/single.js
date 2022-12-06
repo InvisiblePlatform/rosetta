@@ -96,7 +96,7 @@ let loadNetworkGraph = function(x) {
     backButton.style.transform = "rotate(0deg)";
     window.scrollTo(0,0);
     document.getElementsByTagName('content');
-    send_message("IVClicked", "network");
+    send_message("IVClicked", "antwork");
     setBack('closeNetworkGraph()');
 }
 
@@ -155,17 +155,33 @@ let loadWikiInfo = function(x) {
 
 var IVKeepOnScreen = localStorage.IVKeepOnScreen;
 var IVDarkModeOverride = localStorage.IVDarkModeOverride;
-if (IVKeepOnScreen == "true")
+var IVLike = document.getElementById('Invisible-like')
+var IVDislike = document.getElementById('Invisible-dislike')
+
+if (IVKeepOnScreen == "true"){
 	document.getElementById('onScreen').getElementsByTagName('label')[0].firstElementChild.checked = true;
+    send_message("IVKeepOnScreen", "true");
+}
+    
 if (IVDarkModeOverride == "true"){
 	document.getElementById('permaDark').getElementsByTagName('label')[0].firstElementChild.checked = true;
     document.lastChild.classList.toggle('dark-theme');
+    document.getElementById('backButton').style.backgroundImage = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K')";
 }
 document.addEventListener("DOMContentLoaded", function(){
 document.addEventListener('mouseup', function(event){
-if (event.target.classList.contains('invisible-disclaimer-title')){
-    send_message("IVClicked", "disclaimer");
-}
+    if (event.target.matches('#Invisible-boycott')){
+        send_message("IVBoycott", "please");
+    };
+    if (event.target.matches('#Invisible-like')){
+        send_message("IVLike", "please");
+    };
+    if (event.target.matches('#Invisible-dislike')){
+        send_message("IVDislike", "please");
+    };
+    if (event.target.classList.contains('invisible-disclaimer-title')){
+        send_message("IVClicked", "disclaimer");
+    };
     if (event.target.classList.contains('sectionTitle')|| event.target.classList.contains('iconclass')){
         send_message("IVClicked", event.target.parentElement.id);
         if (event.target.parentElement.id == "wikipedia-first-frame"){
@@ -175,7 +191,7 @@ if (event.target.classList.contains('invisible-disclaimer-title')){
             loadProfileCard();
         }
         event.target.scrollIntoView();
-    }
+    };
     if (event.target.parentElement.parentElement.matches('#permaDark')){
         console.log("IVDarkModeOverride");
 		if (IVDarkModeOverride == "true") {
@@ -185,20 +201,20 @@ if (event.target.classList.contains('invisible-disclaimer-title')){
 		} else {
 			IVDarkModeOverride = true;
 			localStorage.IVDarkModeOverride = true;
+            
             document.lastChild.classList.toggle('dark-theme');
 		}
         send_message("IVDarkModeOverride", IVDarkModeOverride);
     }
     if (event.target.parentElement.parentElement.matches('#onScreen')){
         console.log("IVKeepOnScreen");
-		if (IVKeepOnScreen) {
-			IVKeepOnScreen = false;
+        IVKeepOnScreen = localStorage.IVKeepOnScreen;
+		if (IVKeepOnScreen == "true") {
 			localStorage.IVKeepOnScreen = false;
-            send_message("IVKeepOnScreen", "no");
+            console.log("keep off")
 		} else {
-			IVKeepOnScreen = true;
 			localStorage.IVKeepOnScreen = true;
-            send_message("IVKeepOnScreen", "yes");
+            console.log("keep on")
 		}
     }
     if (event.target.matches('#backButton')){
@@ -316,7 +332,29 @@ function slist (target) {
             }
       }
       localStorage.IVPropertyOrder = JSON.stringify(outItems);
-      console.log(outItems);
     };
   }
 }
+
+window.addEventListener('message', function(e){
+    const decoded = e.data
+    var dlikeC = '';
+    var likeC = '';
+
+    if (decoded.message == "VoteUpdate"){
+        if ( decoded.vstatus == "up"){
+            likeC = "var(--c-main)";
+            dlikeC = "var(--c-light-text)";
+        } else if (decoded.vstatus == "down") {
+            likeC = "var(--c-light-text)";
+            dlikeC = "var(--c-main)";
+        } else if (decoded.vstatus == "none") {
+            likeC = "var(--c-light-text)";
+            dlikeC = "var(--c-light-text)";
+        }
+        IVDislike.setAttribute("style", "--dislikes:'" + decoded.dtotal + "';color:" + dlikeC + ";");
+        IVLike.setAttribute("style", "--likes:'" + decoded.utotal + "';color:"+ likeC + ";");
+    }
+    if (decoded.message == "IVAutoOpen"){
+    }
+});
