@@ -1,6 +1,7 @@
 #!/bin/bash
 #set -o xtrace
 ENTITY='https://www.wikidata.org/entity'
+export LC_ALL=C
 
 function build_list(){
 printf "Build list of websites\n"
@@ -27,6 +28,15 @@ cut -d, -f1 \
     | sed -e "/\//d;s/\"//g;/^$/d" \
     | sort -u > websites.list
 }
+
+ISINFILES=( 
+"static/2022-January_Just-Transition-Assessment_Datasheet_JustTransitionData.json"
+"static/2022-January_Just-Transition-Assessment_Datasheet_SocialData.json"
+"static/Food-and-Agriculture-Benchmark-detailed-scoring-sheet-2021-2.json"
+"static/imbc_chartdata.json"
+"static/WBA_Social_Transformation_Baseline_Data_JAN_2022_overall_scores.json"
+)
+
 build_list
 function prepare_pairings(){
     secondorder_pairings=("P127;Owned_by;Owner_of" \
@@ -53,10 +63,13 @@ function prepare_pairings(){
                           "P123;Published_by;Publisher_of" \
                           "P749;Parent_Company;Parent_Company_of" \
                           "P1037;Directed_by;Director_of")
-    secondorderpatterns=$(mktemp)
+
+    secondorderpatterns=""
     for pairingx in ${secondorder_pairings[@]}; do
-        printf '%s\n' "s/^\"${pairingx/;*/}:\\([^@:]*:\\)@/\"${pairingx/;*/}:\\1${pairingx/*;/}/g" >> $secondorderpatterns
+        secondorderpatterns+="s/^\"${pairingx/;*/}:\\([^@:]*:\\)@/\"${pairingx/;*/}:\\1${pairingx/*;/}/g;"
     done
+    secondorderpatterns+="s/?/\//g"
+    precomp2ndorder=$(sed -e "s/ /, /g;s/P/.P/g" <<<"${secondorder_pairings[@]/;*/}") 
 }
 function ramcache(){
     if ! [[ -d "/mnt/tmpcache" ]]; then 
@@ -101,8 +114,8 @@ function file_to_array(){
     # $2 - key
     # $3 - outputfile
     [[ -s $1 ]] || return
-    local value=$(sort -u $tempfile | tr '\n' ',' | sed -e "s/,$/]/g;s/^/[/g")
-    printf "%s\n" "$2: $value" >> $3
+    local value=$(sort -u $tempfile | tr '\n' ',')
+    printf "%s\n" "$2: [${value%,*}]" >> $3
     
 }
 function lines_loop() {
@@ -113,18 +126,31 @@ function lines_loop() {
     done < "$1"
     printf '%s\n' "$count"
 }
+function remove_array_dups() {
+    # Usage: remove_array_dups "array"
+    declare -A tmp_array
+
+    for i in "$@"; do
+        [[ $i ]] && IFS=" " tmp_array["${i:- }"]=1
+    done
+
+    printf '%s ' "${!tmp_array[@]}"
+}
 function check_data_header(){
+    local OUT=""
     while read code; do
-        printf "%s\n" "$3: \"$code\"" >> hugo/content/${website//./}.md
+        unset OUT; OUT=${code//\"/}; OUT=${OUT//*,/}
+        printf "%s\n" "$3: \"$OUT\"" >> hugo/content/${website//./}.md
         printf "%s\n" "$3_source: \"$1\"" >> hugo/content/${website//./}.md
-    done< <(grep -i "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
+    done< <(grep -i "\"$1\"" $2)
+    # done< <(grep -i "\"$1\"" $2 | sed -e "s/\"//g;s/^[^,]*,//g")
 }
 function add_values_from_wikidata(){
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
         wikidatagetck $WIKIDATAID
-        jq -r .entities[].claims.$4[].mainsnak.datavalue.value $wikidatacachedir/$WIKIDATAID.json 2>/dev/null | sort -u \
-            | sed -e "s/^\(.*\)$/\"\1\;$4\;$WIKIDATAID\"/g" >> $tempfile
+        jq ".entities[].claims.$4[].mainsnak.datavalue.value | \"\(.);$4;$WIKIDATAID\"" \
+            $wikidatacachedir/$WIKIDATAID.json 2>/dev/null >> $tempfile
     done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
 
     file_to_array "$tempfile" "$3" "hugo/content/${website//./}.md"
@@ -134,8 +160,8 @@ function add_values_from_wikidata_id(){
     local tempfile=$(mktemp)
     while read WIKIDATAID; do
         wikidatagetck $WIKIDATAID
-        jq -r .entities[].claims.$4[].mainsnak.datavalue.value.id $wikidatacachedir/$WIKIDATAID.json 2>/dev/null | sort -u \
-            | sed -e "s/^\(.*\)$/\"\1\;$4\;$WIKIDATAID\"/g" >> $tempfile
+        jq ".entities[].claims.$4[].mainsnak.datavalue.value.id | \"\(.);$4;$WIKIDATAID\"" \
+            $wikidatacachedir/$WIKIDATAID.json 2>/dev/null >> $tempfile
     done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
 
     file_to_array "$tempfile" "$3" "hugo/content/${website//./}.md"
@@ -150,7 +176,7 @@ function esg_via_yahoo_via_wikidata(){
         wikidatagetck $WIKIDATAID
         jq -r .entities[].claims.P414[].qualifiers.P249[].datavalue.value \
         $(grep "\"$WIKIDATAID\"" $2 | grep -o "Q[0-9]*" | sort -u | sed -e "s@\(Q[0-9]*\)@$wikidatacachedir/\1.json @g") \
-            2>/dev/null | sed -e "s/^/\"/g;s/$/\"/g">> $tempfile
+            2>/dev/null >> $tempfile
     done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
 
     file_to_array "$tempfile" "ticker" "hugo/content/${website//./}.md"
@@ -172,7 +198,7 @@ function isin_via_wikidata(){
     while read WIKIDATAID; do
         isin=$(jq -r .entities[].claims.P946[].mainsnak.datavalue.value $wikidatacachedir/$WIKIDATAID.json 2>/dev/null)
         wikidatagetck $WIKIDATAID
-        rg $isin static/*.json | cut -d: -f1 | sed -e "s/$/:$isin\"/g;s/^/\"/g" >> $tempfile
+        grep -o $isin ${ISINFILES[@]} | sed -e "s/$/\"/g;s/^/\"/g" >> $tempfile
     done < <(grep -i "\"$1\"" $WDLOOKUP | grep -o "Q[0-9]*")
     file_to_array "$tempfile" "isin" "hugo/content/${website//./}.md"
     rm $tempfile
@@ -238,128 +264,131 @@ function wikiassociates(){
     local COUNT=0
     local GROUP=("node")
     while read value; do
-        [[ $COUNT == 0 ]] && STRING+="{ \"id\": \"${value//\"/\\\"}\"" 
-        [[ $COUNT == 1 ]] && STRING+=",\"label\": \"$value\"" 
-        [[ $COUNT == 2 ]] && STRING+=",\"eslabel\": \"$value\"" 
-        [[ $COUNT == 3 ]] && STRING+=",\"zhlabel\": \"$value\"" 
-        [[ $COUNT == 4 ]] && STRING+=",\"hilabel\": \"$value\"" 
-        [[ $COUNT == 5 ]] && STRING+=",\"eolabel\": \"$value\"" 
-        [[ $COUNT == 6 ]] && STRING+=",\"arlabel\": \"$value\"" 
-        [[ $COUNT == 7 ]] && STRING+=",\"frlabel\": \"$value\"" 
-        [[ $COUNT == 8 ]] && STRING+=",\"delabel\": \"$value\"" 
-	    [[ $COUNT == 9 ]] && STRING+=",\"enwiki\": \"$value\"" 
-	    [[ $COUNT == 10 ]] && STRING+=",\"eswiki\": \"$value\""
-	    [[ $COUNT == 11 ]] && STRING+=",\"zhwiki\": \"$value\""
-	    [[ $COUNT == 12 ]] && STRING+=",\"hiwiki\": \"$value\""
-	    [[ $COUNT == 13 ]] && STRING+=",\"eowiki\": \"$value\""
-	    [[ $COUNT == 14 ]] && STRING+=",\"arwiki\": \"$value\""
-	    [[ $COUNT == 15 ]] && STRING+=",\"frwiki\": \"$value\""
-	    [[ $COUNT == 16 ]] && STRING+=",\"dewiki\": \"$value\"" && GROUP=()
-        [[ $COUNT > 16 ]] && GROUP+=("$value")
+        case $COUNT in
+                0 ) STRING+="{ \"id\": \"${value//\"/\\\"}\"" ;;
+                1 ) STRING+=",\"label\": \"$value\"" ;;
+                2 ) STRING+=",\"eslabel\": \"$value\"" ;;
+                3 ) STRING+=",\"zhlabel\": \"$value\"" ;;
+                4 ) STRING+=",\"hilabel\": \"$value\"" ;;
+                5 ) STRING+=",\"eolabel\": \"$value\"" ;;
+                6 ) STRING+=",\"arlabel\": \"$value\"" ;;
+                7 ) STRING+=",\"frlabel\": \"$value\"" ;;
+                8 ) STRING+=",\"delabel\": \"$value\"" ;;
+                9 ) STRING+=",\"enwiki\": \"$value\"" ;;
+                10) STRING+=",\"eswiki\": \"$value\"" ;;
+                11) STRING+=",\"zhwiki\": \"$value\"" ;;
+                12) STRING+=",\"hiwiki\": \"$value\"" ;;
+                13) STRING+=",\"eowiki\": \"$value\"" ;;
+                14) STRING+=",\"arwiki\": \"$value\"" ;;
+                15) STRING+=",\"frwiki\": \"$value\"" ;;
+                16) STRING+=",\"dewiki\": \"$value\"" && GROUP=() ;;
+                *) GROUP+=("$value") ;;
+        esac
         : $(( COUNT += 1 ))
     done < <(jq -r ".entities[] | .id, .labels.en.value, .labels.es.value, .labels.zh.value, .labels.hi.value, .labels.eo.value, .labels.ar.value, .labels.fr.value, .labels.de.value, .sitelinks.enwiki.url, .sitelinks.eswiki.url, .sitelinks.zhwiki.url, .sitelinks.hiwiki.url, .sitelinks.eowiki.url, .sitelinks.arwiki.url, .sitelinks.frwiki.url, .sitelinks.dewiki.url, .claims.P31[].mainsnak.datavalue.value.id" $wikidatacachedir/$code.json 2>/dev/null)
-
-    STRING+=",\"groups\": [$(sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g" <<<"${GROUP[@]}" )]}],"
+    #STRING+=",\"groups\": [$(sed -e "s/ /\",\"/g" -e "s/^/\"/g" -e "s/$/\"/g" <<<"${GROUP[@]}" )]}],"
+    local GROUPL2=${GROUP[@]}
+    STRING+=",\"groups\": [\"${GROUPL2// /\",\"}\"]}],"
 
     printf '%s\n' "$STRING\"links\":[ " >> $templist
 
+    jq -r ".entities[].claims | $precomp2ndorder | select( . != null) | .[] | [ .mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$code.json > $temptilesmall
+	sort -u -o $temptilesmall{,}
+    sed -i "s/\"\(P[0-9]*\)\",\"\(Q[0-9]*\)\"/\"\1:\2:@\";${code}/g;s/\"$//g" $temptilesmall
+    sed -i "$secondorderpatterns" $temptilesmall
+    sed -i '/,$/d' $temptilesmall
+
     while read command; do 
         printf "%s\n" ${command/;*/} | sed -e "s/\"\([^:]*\):\([^:]*\):\([^:]*\)\"/{ \"source\": \"$code\", \"target\": \"\2\", \"type\": \"\3\" },/g" >> $templist
-    done < <(jq -r ".entities[].claims | $(sed -e "s/ /, /g;s/P/.P/g" <<<"${secondorder_pairings[@]/;*/}") | select( . != null) | .[] | [ .mainsnak.property, .mainsnak.datavalue.value.id ]| @csv" $wikidatacachedir/$code.json \
-        | sort -u  \
-        | sed -e "s/\"\(P[0-9]*\)\",\"\(Q[0-9]*\)\"/\"\1:\2:@\";${code}/g;s/\"$//g" \
-	    | sed -e "s/?/\//g" \
-        | sed -f $secondorderpatterns \
-	    | grep :)
+    done < $temptilesmall
 
-    sed -i 's/http[s]*:\/\/[a-z][a-z]\.wikipedia\.org\/wiki\///g' $templist
-    sed -i '$s/[,]*$/]}/' $templist
+    sed -i 's/http[s]*:\/\/[a-z][a-z]\.wikipedia\.org\/wiki\///g;$s/[,]*$/]}/' $templist
     cp $templist "$GPD/graph-${code}.json"
-    printf '%s\n' '1' > $STATUSF/.status.$2.$3
-    rm $temptilesmall $templist >/dev/null
+    rm $STATUSF/.status.$2.$3 $temptilesmall $templist >/dev/null
 }
 function check_associated_for_graph(){
-    if ! grep -i -q "\"$1\"" $2; then return; fi
-    # local code=$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*"|head -1)
-    local code="Q$(grep -i "\"$1\"" $2 | grep -o "Q[0-9]*" | sed -e "s/Q//g" | sort -n | head -1)"
-    local templister=$(mktemp)
+    local code=($(grep -i "\"$1\"" $2))
+    [[ ! $code ]] && return
     local templisterr
-    printf '%s\n' "$code" > $templister
-    rm $STATUSF/.status.$3.* -rf
+    local templister=($(printf '%s\n' "${code[@]//*\"Q/\"Q}" | sort -n -k1.3 ))
     for i in {1..3}; do 
-        [[ $DEBUG ]] && printf '%s\n' "$i loop"
-	    templisterr=$(sort -u $templister | tr "\n" "@" | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g")
-	    local numberOfIDs=$(lines_loop $templister)
+        templister=$(remove_array_dups ${templister//\"/}); temparr=($templister)
+        unset templisterr
         local place="1"
-	    for ((j=1;j<=$numberOfIDs;j++)); do
-            printf '%s\n' '0' > $STATUSF/.status.$3.$j
-        done
-        while read id; do 
-	        [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	        [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	        [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+        for id in ${temparr[@]}; do 
+            templisterr+="${GPD}/graph-$id.json "
+            :> $STATUSF/.status.$3.$place
+	        [[ -s "$GPD/graph-${id}.json"  || "$id" == '' || "$id" == 'null' ]] \
+                && rm $STATUSF/.status.$3.$place \
+                && : $(( place += 1 )) \
+                && continue
             wikiassociates "$id" "$3" "$place" "append" & 
             : $(( place += 1))
-        done < <(sort -u $templister)
-
-    	if [[ -s "$STATUSF/.status.$3.1" ]]; then
-		    while grep -q "0" <(cat $STATUSF/.status.$3.* | tr '\n' ' ' ) ; do sleep 0.1s; done
-	    fi
-    	jq -r ".links[].target" $templisterr >> $templister
-	    sort -u -o $templister{,}
+        done 
+		while compgen -G "$STATUSF/.status.$3.*"; do sleep 0.1s; done
+        templister+=$(jq -jr '.links[].target | " ", .' $templisterr )
     done
-    numberOfIDs=$(lines_loop $templister)
     place="1"
-    templisterr=$(sort -u $templister | tr "\n" "@" | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g")
-    for ((j=1;j<=$numberOfIDs;j++)); do
-        printf '%s\n' '0' > $STATUSF/.status.$3.$j
-    done
-    while read id; do 
-	    [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	    [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	    [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+    templister=$(remove_array_dups $templister); temparr=($templister)
+    unset templisterr
+    for id in ${temparr[@]}; do 
+        templisterr+="${GPD}/graph-$id.json "
+        :> $STATUSF/.status.$3.$place
+	    [[ -s "$GPD/graph-${id}.json"  || "$id" == '' || "$id" == 'null' ]] \
+            && rm $STATUSF/.status.$3.$place \
+            && : $(( place += 1 )) \
+            && continue
         wikiassociates "$id" "$3" "$place" &
         : $(( place += 1))
-    done < <(sort -u $templister)
+    done 
 
-    if [[ -s "$STATUSF/.status.$3.1" ]]; then
-		while grep -q "0" <(cat $STATUSF/.status.$3.* | tr '\n' ' ' ) ; do sleep 0.1s; done
-	fi
-	sort -u -o $templister{,}
+	while compgen -G "$STATUSF/.status.$3.*"; do sleep 0.1s; done
     local tempjson=$(mktemp)
     local tempjson_nodes=$(mktemp)
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"links":.links}' ${templisterr[@]} > $tempjson
-    jq -r ".links[].target" $templisterr >> $templister
+    templister+=$(jq -jr '.links[].target | " ", .' $templisterr )
 
-	sort -u -o $templister{,}
-    numberOfIDs=$(lines_loop $templister)
     place="1"
-    templisterr=$(sort -u $templister | tr "\n" "@" | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g")
-    for ((j=1;j<=$numberOfIDs;j++)); do
-        printf '%s\n' '0' > $STATUSF/.status.$3.$j
-    done
-    while read id; do 
-        [[ "$(cat $GPD/graph-${id}.json | md5sum | cut -d' ' -f1 )" == "225bbe98cd7a533ad66bbbdce305c368" ]] && rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json
-        touch $GPD/graph-${id}.json
-	    [[ -s "$GPD/graph-${id}.json" ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	    [[ "$id" == '' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
-	    [[ "$id" == 'null' ]] && printf '%s\n' '1' > $STATUSF/.status.$3.$place && : $(( place += 1 )) && continue
+    templister=$(remove_array_dups $templister); temparr=($templister)
+    unset templisterr
+    for id in ${temparr[@]}; do 
+        templisterr+="${GPD}/graph-$id.json "
+        unset M5S; M5S=$(md5sum $GPD/graph-${id}.json); M5S=${M5S// */}
+        if [[ "$M5S" == 225bbe98cd7a533ad66bbbdce305c368 ]]; then 
+            rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json 
+            :> $GPD/graph-${id}.json
+        else 
+            templisterr+="${GPD}/graph-$id.json "
+        fi
+
+        :> $STATUSF/.status.$3.$place
+
+	    [[ -s "$GPD/graph-${id}.json"  || "$id" == '' || "$id" == 'null' ]] \
+            && rm $STATUSF/.status.$3.$place \
+            && : $(( place += 1 )) \
+            && continue
+
         wikiassociates "$id" "$3" "$place" &
         : $(( place += 1))
-    done < <(sort -u $templister)
+    done 
 
-    if [[ -s "$STATUSF/.status.$3.1" ]]; then
-		while grep -q "0" <(cat $STATUSF/.status.$3.* | tr '\n' ' ' ) ; do sleep 0.1s; done
-	fi
-    while read id; do 
-        [[ "$(cat $GPD/graph-${id}.json | md5sum | cut -d' ' -f1 )" == "225bbe98cd7a533ad66bbbdce305c368" ]] && rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json
-        touch $GPD/graph-${id}.json
-    done < <(sort -u $templister)
-    jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}'  $(tr "\n" "@" < $templister | sed -e "s/\(Q[0-9]*\)@/${GPD//\//\\\/}\/graph-\1.json /g" ) > $tempjson_nodes
+	while compgen -G "$STATUSF/.status.$3.*"; do sleep 0.1s; done
+
+    unset templisterr
+    for id in ${temparr[@]}; do 
+        unset M5S; M5S=$(md5sum $GPD/graph-${id}.json); M5S=${M5S// */}
+        if [[ "$M5S" == 225bbe98cd7a533ad66bbbdce305c368 ]]; then 
+            rm $GPD/graph-${id}.json $wikidatacachedir/${id}.json 
+            touch $GPD/graph-${id}.json
+        else 
+            templisterr+="${GPD}/graph-$id.json "
+        fi
+    done 
+
+    jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}' $templisterr > $tempjson_nodes
     jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add' $tempjson $tempjson_nodes > hugo/static/connections/${website//./}.json
 
-    printf '%s\n' "0" > $STATUSF/.status.$3
-    rm $templister $STATUSF/.status.$3.* $STATUSF/.status.$3 $tempjson $tempjson_nodes >/dev/null
+    rm $tempjson $tempjson_nodes >/dev/null
     # printf '%s\n' "$3 ${lineno//:*/} of $IDLIST_LENGTH ($entry)"
 }
 function reorder_wikipedia(){
@@ -374,10 +403,7 @@ function do_record(){
     local resort=$(mktemp)
     local website="$1"
     # [[ -s "hugo/content/${website//./}.md" ]] && return
-    printf "%s\n" "---" > hugo/content/${website//./}.md
-    printf "%s\n" "title: \"$website\"" >> hugo/content/${website//./}.md
-    printf "%s\n" "date: $EPOCHSECONDS" >> hugo/content/${website//./}.md
-    printf "%s\n" "---" >> hugo/content/${website//./}.md
+    printf "%s\n" "---" "title: \"$website\"" "date: $EPOCHSECONDS" "---" > hugo/content/${website//./}.md
 
     check_tosdr "$website" "$TSLOOKUP" "tosdr"
     check_data_header "$website" "$MBLOOKUP" "mbfc"
@@ -435,7 +461,7 @@ function do_record(){
 
 function do_list(){
 while read website; do 
-    local IDLIST_LENGTH=$(wc -l $1 | cut -d' ' -f1 )
+    local IDLIST_LENGTH=$(wc -l < $1)
     local lineno=$(grep -i -n "^${website}$" $1)
     do_record "${website}" "$1" 
 done < $1
@@ -449,8 +475,8 @@ rm $STATUSF/.list.* &>/dev/null
 
 # rm hugo/content/ -rf
 # mkdir -p hugo/content
-splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l websites.list | cut -d' ' -f1)/16"))
-split -l$splitnum <(grep "^patagonia" websites.list) $STATUSF/.list.
+splitnum=$(printf "%.0f" $(bc -l <<<"$(wc -l < websites.list)/16"))
+split -l$splitnum <(grep "^" websites.list) $STATUSF/.list.
 
 for list in $STATUSF/.list.*; do
     do_list $list &
