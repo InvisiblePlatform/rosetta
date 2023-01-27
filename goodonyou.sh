@@ -14,21 +14,23 @@ do_brand(){
 }
 
 pushd goodonyou
-  pushd categories
-    for category in ${categories[@]}; do
-      do_category $category
-    done
-    jq -r .pageProps.category.brands[].id *.json | sort -u > ../brand_id_list.list
-  popd
+  #pushd categories
+  #  for category in ${categories[@]}; do
+  #    do_category $category
+  #  done
+  #  jq -r .pageProps.category.brands[].id *.json | sort -u > ../brand_id_list.list
+  #popd
   pushd brands
-    while read brand; do
-      do_brand $brand
-    done < ../brand_id_list.list
-    jq -r ".pageProps.brand | [.website, .id.id ] | @csv" *.json  \
-        | sed -e "s@?[^\"]*@@g;s@http[s]*://@@g;s/www[0-9]*\.//g;s@\/[a-z][a-z][_-][a-z][a-z][/]*@/@gi;s@/index\.htm[l]*@@g;s@\([^/]\)\",@\1/\",@g;s@/[a-z][a-z][/\"]@/@ig" \
-        | sed -e "s@/\"@\"@g" \
-        | sed -e "s@/home\"@\"@g;s@/shop\"@\"@g;s@/men\"@\"@g;s@/women\"@\"@g;s@/store\"@\"@g;s@/homepage\"@\"@g;s@/global\"@\"@g;s@/[a-z][a-z]\"@\"@g;s@/online\"@\"@g;s@/all\"@\"@g;s@/collections\"@\"@g;s@/row\"@\"@g;s@/[a-z][a-z][a-z]\"@\"@gi;s@/about\"@\"@g;s@/retail\"@\"@g;s@/eshop\"@\"@g;s@/home\.jsp\"@\"@g;s@/jeans\.html\"@\"@g;s@/home\.html\"@\"@g;s@/ \"@\"@g" \
-        > ../goodforyou_web_brandid.csv
+    # while read brand; do
+    #   do_brand $brand
+    # done < ../brand_id_list.list
+        
+      jq -r '.pageProps.brand | .website |= sub("http[s]*://(www.)*" ; "") | .website |= sub("[/]*\\?.*";"") | .website |= sub("/.*";"") | [ .website, .id.id ] | @csv ' *.json 2>/dev/null > ../goodforyou_web_brandid.csv
+
+      while read -r entry; do
+          sed -i "/${entry}/d" ../goodforyou_web_brandid.csv
+      done < ../removeables.list
+      cat ../hardcoded.csv >> ../goodforyou_web_brandid.csv
 
   popd
 popd
