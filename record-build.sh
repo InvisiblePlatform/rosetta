@@ -2,16 +2,17 @@
 # set -eo xtrace
 LC_ALL=C; LC_COLLATE=C
 STATUSOUT=1; SKIPGEN=; CONNECTIONOUT=; RECORDOUT=
+rootdir="."
 function build_list(){
     printf "Build list of websites\n"
-    WDLOOKUP="wikidata/website_id_list.csv"
-    MBLOOKUP="mbfc/website_bias.csv"
-    BCLOOKUP="bcorp/website_stub_bcorp.csv"
-    GYLOOKUP="goodonyou/goodforyou_web_brandid.csv"
-    GDLOOKUP="glassdoor/website_glassdoorneo.list"
-    TSLOOKUP="tosdr/site_id.list"
-    WPLOOKUP="wikipedia/wikititle_webpage_id_filtered.csv"
-    ISLOOKUP="static/document_isin.list"
+    WDLOOKUP="${rootdir}/wikidata/website_id_list.csv"
+    MBLOOKUP="${rootdir}/mbfc/website_bias.csv"
+    BCLOOKUP="${rootdir}/bcorp/website_stub_bcorp.csv"
+    GYLOOKUP="${rootdir}/goodonyou/goodforyou_web_brandid.csv"
+    GDLOOKUP="${rootdir}/glassdoor/website_glassdoorneo.list"
+    TSLOOKUP="${rootdir}/tosdr/site_id.list"
+    WPLOOKUP="${rootdir}/wikipedia/wikititle_webpage_id_filtered.csv"
+    ISLOOKUP="${rootdir}/static/document_isin.list"
     STATUSF="/mnt/tmpcache"
     
     cut -d, -f1 \
