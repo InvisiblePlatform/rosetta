@@ -11,6 +11,7 @@ glassdoor/backup/
 glassdoor/data/
 glassdoor/data_json/*.json
 goodonyou/brands/*.json
+goodonyou/categories/*.json
 https-everywhere/*.csv
 https-everywhere/lists/*
 https-everywhere/rules/*
