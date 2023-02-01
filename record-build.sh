@@ -2,7 +2,7 @@
 # set -eo xtrace
 LC_ALL=C; LC_COLLATE=C
 STATUSOUT=1; SKIPGEN=; CONNECTIONOUT=; RECORDOUT=
-rootdir="."
+rootdir="data_collection"
 function build_list(){
     printf "Build list of websites\n"
     WDLOOKUP="${rootdir}/wikidata/website_id_list.csv"
@@ -72,8 +72,7 @@ function ramcache(){
     printf "%s\n" "Copy wikidatacache"
     mkdir -p /mnt/tmpcache/wikidata /mnt/tmpcache/bcorp \
         /mnt/tmpcache/goodonyou /mnt/tmpcache/glassdoor /mnt/tmpcache/mbfc \
-        /mnt/tmpcache/tosdr /mnt/tmpcache/graph-parts /mnt/tmpcache/wikipedia \
-        /mnt/tmpcache/static
+        /mnt/tmpcache/tosdr /mnt/tmpcache/wikipedia /mnt/tmpcache/static
     printf "%s\n" "Copy lookups"
     cp $WDLOOKUP /mnt/tmpcache/$WDLOOKUP
     cp $MBLOOKUP /mnt/tmpcache/$MBLOOKUP
@@ -107,7 +106,7 @@ function add_values_from_wikidata(){
     local hold=1
     local WIKIDS
     WIKIDS=$(printf "%s\n" ${WIKIDATAIDS[*]//\"/} | /snap/bin/yq 'split(" ")' -o j -I0)
-    screen -S "$connection" -p 0 -X stuff "file_out=\"${tempfile}\";main_node=${WIKIDS};load(\"mongoscripts/wikidata_records.js\");^M"
+    screen -S "$connection" -p 0 -X stuff "file_out=\"${tempfile}\";main_node=${WIKIDS};load(\"tools/mongoscripts/wikidata_records.js\");^M"
     printf '%s\n' "wikidata_id: $WIKIDS" >> "$resort"
     while [ $hold == "1" ]; do
         if [ -a "$tempfile" ]; then
@@ -128,7 +127,7 @@ function isin_via_wikidata(){
 function check_data_bcorp(){
     if [[ ${bcorp["\"${website//./__}\""]} ]]; then
         local id="${bcorp["\"${website//./__}\""]}"
-        RATING=$(/snap/bin/yq -r .latestVerifiedScore "bcorp/split_files/bcorp_${id//\"/}.json")
+        RATING=$(/snap/bin/yq -r .latestVerifiedScore "${rootdir}/bcorp/split_files/bcorp_${id//\"/}.json")
         printf "%s\n" "bcorp: ${id}" \
                       "bcorp_source: \"$website\"" \
                       "bcorp_rating: $RATING" \
@@ -138,7 +137,7 @@ function check_data_bcorp(){
 function check_data_glassdoor(){
     if [[ ${glassdoor["\"${website//./__}\""]} ]]; then
         local id="${glassdoor["\"${website//./__}\""]}"
-        RATING=$(/snap/bin/yq -r .glasroom_rating.ratingValue "glassdoor/data_json/${id//\"/}.json")
+        RATING=$(/snap/bin/yq -r .glasroom_rating.ratingValue "${rootdir}/glassdoor/data_json/${id//\"/}.json")
         printf "%s\n" "glassdoor: ${id}" \
                       "glassdoor_source: \"$website\"" \
                       "glassdoor_rating: $RATING" \
@@ -147,7 +146,7 @@ function check_data_glassdoor(){
 }
 
 function check_associated_for_graph(){
-    screen -S "$connection" -p 0 -X stuff "file_out=\"${graphfile}\";main_node=\"${WIKIDATAIDS[0]}\";load(\"mongoscripts/plain_node.js\");^M"
+    screen -S "$connection" -p 0 -X stuff "file_out=\"${graphfile}\";main_node=\"${WIKIDATAIDS[0]}\";load(\"tools/mongoscripts/plain_node.js\");^M"
 }
 function do_record(){
     local resort; resort=$(mktemp)
