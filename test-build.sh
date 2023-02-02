@@ -1,13 +1,9 @@
 #!/bin/bash
 #set -o xtrace
 
-#jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}' wikidata/graph-parts/graph-Q355.json wikidata/graph-parts/graph-Q350.json > $TEMP
-#
-#
-#jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add ' wikidata/graph-parts/graph-Q1336.json $TEMP
-
-
-#sitehash="fd33606649281874a091e4c1d0243953"
+# jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add | {"nodes":.nodes}' wikidata/graph-parts/graph-Q355.json wikidata/graph-parts/graph-Q350.json > $TEMP
+# jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add ' wikidata/graph-parts/graph-Q1336.json $TEMP
+# sitehash="fd33606649281874a091e4c1d0243953"
 FIELDS=( "bcorp" "emailaddress" "facebookid" "facebookpage" "gabuser" "glassdoor" "goodonyou" "instagramid" "isin" "mastodon" "mbfc" "medium" "officialblog" "parleruser" "patreon" "polalignment" "polideology" "reddituser" "soundcloud" "subreddit" "telegram" "tiktok" "tosdr" "truthsocial" "tumblr" "twitch" "twittername" "yesg" "youtubechannelid" "glassdoor_source" "glassdoor_rating" "glassdoor" "wikidata_id" "mbfc_source" "ticker")
 
 #sitehash=$(grep "^bbc.co.uk," rosetta/site_to_hash.csv | cut -d"," -f2 )

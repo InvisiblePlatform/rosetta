@@ -1,7 +1,9 @@
 {{ $newId := . }}
-{{ $theFile := (print "data/wikidata/longcache/" $newId ".json") }}
-{{ with $data := getJSON (cond (fileExists $theFile) $theFile (print "https://www.wikidata.org/entity/" $newId)) }}
-{{ $label := default "" (index $data.entities $newId).labels.en.value}}
+{{ with $data := getJSON (print "http://localhost:8080/rop/wikidata?filter=" "{\"id\":\"" $newId "\"}&pagesize=1" ) }}
+{{ range first 1 $data }}
+{{ $label := default "" .labels.en.value }}
 {{ $label | upper }}
+{{ end }}
 {{ else }}
 {{ end }}
+
