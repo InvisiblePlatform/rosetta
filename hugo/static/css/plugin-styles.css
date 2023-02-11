@@ -748,9 +748,6 @@ g>path { z-index:5; }
     border: none;
 }
 
-.Q5 { fill: red; }
-.Q219577 { fill: white!important; }
-
 #graph {
     overflow: visible;
     background-color: var(--c-background);
@@ -1198,7 +1195,7 @@ input:checked + .slider:before {
 #priority-list {
  border: var(--c-light-text) solid 1px;
  position: relative;
- padding-bottom: 12px;
+ padding-bottom: 150px;
  display: flex;
  flex-flow: column;
 }

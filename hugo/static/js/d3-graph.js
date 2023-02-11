@@ -91,6 +91,10 @@
                 colors_array.push(d3.interpolateSinebow(d));
          });
          var color = d3.scaleOrdinal(types, colors_array);
+         const nodeIds = new Set(graph.nodes.map(node => node.id));
+         const filteredLinks = graph.links.filter(link => nodeIds.has(link.source) && nodeIds.has(link.target));
+         graph.links = filteredLinks;
+
 
          svg.call(d3.zoom()
               .extent([[0, 0], [width, height]])
@@ -146,7 +150,7 @@
            .data(graph.links)
            .enter().append("path")
 		   .attr("stroke", d => color(d.type))
-           .attr("marker-end", d => `url(#arrow-${d.type})`);
+           .attr("marker-mid", d => `url(#arrow-${d.type})`);
          var node = svg.append("g")
              .attr("class", "nodes")
              .attr("fill", "currentColor")
@@ -410,13 +414,9 @@
                }).attr("fill", function(d){
                     if (d.id == wikidataid){
                         return "var(--c-linky-text)";
+                    } else {
+                        return "unset";
                     }
-                   if (d.groups.includes("Q5")){
-                        return "red";
-                   } else {
-                        return "var(--c-main)";
-                   }
-                   return "unset";
 
                })
            .attr("class", function(d){ return d.groups.toString().replace(/,/g,' '); });
@@ -486,6 +486,8 @@
 	     const r = 0;
 	     return `
 		       M${d.source.x},${d.source.y}
+		       A${r},${r} 0 0,1 ${(d.source.x+d.target.x)/2},${(d.source.y+d.target.y)/2}
+		       M${(d.source.x+d.target.x)/2},${(d.source.y+d.target.y)/2}
 		       A${r},${r} 0 0,1 ${d.target.x},${d.target.y}
 		     `;
 	   }
