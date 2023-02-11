@@ -1,4 +1,9 @@
 #!/bin/bash
+# 
+# real	53m13.516s
+# user	46m20.762s
+# sys	15m16.977s
+# 
 
 # Universal hash list
 function universal_hash_list(){
