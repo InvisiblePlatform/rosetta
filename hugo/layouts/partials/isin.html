@@ -6,6 +6,14 @@
   {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/research/2021-just-transition-assessment/" }}
   {{ $source.Set "title" "Low Carbon Transition" }}
   {{ $source.Set "id" "isin lct" }}
+  {{ else if eq $path "data/static/2022_FinancialBenchmark.json"}}
+  {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/publication/financial-system/" }}
+  {{ $source.Set "title" "Financial System Benchmark" }}
+  {{ $source.Set "id" "isin fin" }}
+  {{ else if eq $path "data/static/2022-TransportBenchmark.json"}}
+  {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/publication/transport/" }}
+  {{ $source.Set "title" "Transport Benchmark" }}
+  {{ $source.Set "id" "isin tra" }}
   {{ else if eq $path "data/static/Food-and-Agriculture-Benchmark-detailed-scoring-sheet-2021-2.json"}}
   {{ $source.Set "source" "https://www.worldbenchmarkingalliance.org/food-and-agriculture-benchmark/" }}
   {{ $source.Set "title" "Food & Agricultural Sustainability" }}
