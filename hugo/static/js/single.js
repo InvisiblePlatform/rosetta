@@ -50,6 +50,7 @@ let resetBack = function(){
     backButton.style.transform = "rotate(180deg)";
     networkGraph.style.visibility = 'hidden';
     backButton.setAttribute("onclick", 'justSendBack()');
+    backButton.style.transform = "";
 }
 let setBack = function(x){
     backButton.setAttribute("onclick", x);

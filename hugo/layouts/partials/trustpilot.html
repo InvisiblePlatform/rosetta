@@ -2,7 +2,7 @@
     {{ if eq (int .numberOfReviews.total) 0 }}
     {{ else }}
         <section id="trust-pilot">
-        <h2 class='sectionTitle' data-i18n='tp.title'>Trust Pilot</h2>
+        <h2 class='sectionTitle'>Trust Pilot</h2>
         <div class="twoCharts">
         <table>
         <tr><td><score class="ratingOutOf" style="--outOf:'/5';">{{ .score.trustScore }}</score></td></tr>
