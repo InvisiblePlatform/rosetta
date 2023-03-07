@@ -31,6 +31,7 @@
            array.forEach(function(a) {
                count[a] = (count[a] || 0) + 1;
            });
+           console.log(count);
            return Object.keys(count).reduce(function(r, k, i) {
                if (!i || count[k] > count[r[0]]) {
                    return [k, r];
@@ -39,7 +40,7 @@
                    r.push(k);
                }
                if (k) return [r, k];
-               return [r];
+               return [r,r];
            });
 
        }
@@ -157,7 +158,9 @@
                ids.push(urls[i].replace(/#.*/g, "").replace(/.*\//, ""))
 
            var wikidataid = getMostCommon(ids)[0];
+           if (wikidataid == "Q") wikidataid = getMostCommon(ids);
            var wikidataidbackup = getMostCommon(ids)[1];
+           if (wikidataidbackup == "Q") wikidataidbackup = getMostCommon(ids);
            var link = svg.append("g")
                .attr("stroke-width", 1.5)
                .attr("fill", "none")
@@ -214,6 +217,7 @@
                var main = d3.select("#" + wikidataid);
                console.log(wikidataid)
                var wikidataMainWiki;
+               try {
                switch (localStorage.preferred_language) {
                    case "hi":
                        wikidataMainWiki = main._groups[0][0].__data__.hiwiki;
@@ -239,6 +243,37 @@
                    default:
                        wikidataMainWiki = main._groups[0][0].__data__.enwiki;
                }
+                } catch (e){
+                    console.log(e);
+                   wikidataid = wikidataidbackup;
+                   console.log(wikidataidbackup);
+                   main = d3.select("#" + wikidataid);
+                   switch (localStorage.preferred_language) {
+                       case "hi":
+                           wikidataMainWiki = main._groups[0][0].__data__.hiwiki;
+                           break;
+                       case "fr":
+                           wikidataMainWiki = main._groups[0][0].__data__.frwiki;
+                           break;
+                       case "ar":
+                           wikidataMainWiki = main._groups[0][0].__data__.arwiki;
+                           break;
+                       case "zh":
+                           wikidataMainWiki = main._groups[0][0].__data__.zhwiki;
+                           break;
+                       case "en":
+                           wikidataMainWiki = main._groups[0][0].__data__.enwiki;
+                           break;
+                       case "es":
+                           wikidataMainWiki = main._groups[0][0].__data__.eswiki;
+                           break;
+                       case "eo":
+                           wikidataMainWiki = main._groups[0][0].__data__.eowiki;
+                           break;
+                       default:
+                           wikidataMainWiki = main._groups[0][0].__data__.enwiki;
+                   }
+                }
 
                if (wikidataMainWiki == 'null') {
                    wikidataid = wikidataidbackup;
@@ -269,10 +304,6 @@
                        default:
                            wikidataMainWiki = main._groups[0][0].__data__.enwiki;
                    }
-
-
-
-
                };
                if (wikidataMainWiki.includes("wikipedia.org")) {
                    wikidataMainWiki = wikidataMainWiki.split('/').slice(4).join("/");
