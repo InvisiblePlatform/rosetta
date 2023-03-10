@@ -106,22 +106,26 @@ function add_values_from_wikidata(){
     local hold=1
     local WIKIDS
     WIKIDS=$(printf "%s\n" ${WIKIDATAIDS[*]//\"/} | /snap/bin/yq 'split(" ")' -o j -I0)
+    rm "$tempfile" 2>/dev/null
     screen -S "$connection" -p 0 -X stuff "file_out=\"${tempfile}\";main_node=${WIKIDS};load(\"tools/mongoscripts/wikidata_records.js\");^M"
     printf '%s\n' "wikidata_id: $WIKIDS" >> "$resort"
     while [ $hold == "1" ]; do
         if [ -a "$tempfile" ]; then
             /snap/bin/yq '.[]? |= "[\""+join("\",\"")+"\"]" ' -P < "$tempfile" 2>/dev/null| sed -e "s/'//g" >> "$resort"
-            rm "$tempfile" 2>/dev/null
             hold=2
+            rm "$tempfile" 2>/dev/null
         fi
     done
 }
 function isin_via_wikidata(){
+    rm "$tempfile" 2>/dev/null
     while read -r isin; do
         grep "$isin" $ISLOOKUP >> "$tempfile"
     done < <(yq -r ".isin_id[]" "$resort" 2>/dev/null)
-    file_to_array "$tempfile" "isin" 
-    rm "$tempfile" 2>/dev/null
+    if [[ -s "$tempfile" ]]; then
+        file_to_array "$tempfile" "isin"
+        rm "$tempfile" 2>/dev/null 
+    fi
 }
 
 function check_data_bcorp(){
@@ -149,11 +153,11 @@ function check_associated_for_graph(){
     screen -S "$connection" -p 0 -X stuff "file_out=\"${graphfile}\";main_node=\"${WIKIDATAIDS[0]}\";load(\"tools/mongoscripts/plain_node.js\");^M"
 }
 function do_record(){
-    local resort; resort=$(mktemp)
+    local resort="${STATUSF}/.resort$2"
     local tempfile="${STATUSF}/.temp$2"
     local website="$1"; local connection="$3"
     local timestart="$EPOCHSECONDS"
-    local outfile="hugo/content/${website//./}.md"
+    local outfile="hugo/content/db/${website//./}.md"
     local graphfile="hugo/static/connections/${website//./}.json"
 
     [[ -s "$outfile" && $SKIPGEN ]] && return
@@ -199,7 +203,7 @@ function do_list(){
     done < "$1"
 }
 
-# rm hugo/content/ -rf 
+rm hugo/content/ -rf 
 rm $STATUSF/.list.* &>/dev/null
 mode=1
 divisor=10
@@ -210,7 +214,7 @@ splitnum=$(printf "%.0f" "$(bc -l <<<"$(wc -l < <(grep "$pattern" websites.list)
 split_count=$(find "$STATUSF"/.list.* -maxdepth 1| wc -l)
 
 #ramcache
-mkdir -p hugo/content
+mkdir -p hugo/content/db
 for list in "$STATUSF"/.list.*; do
     if ! grep -q "sessionIV${list//*./}" <(screen -ls 2>/dev/null); then
         screen -dmS "sessionIV${list//*./}" mongosh --quiet localhost:27017/rop 2>/dev/null

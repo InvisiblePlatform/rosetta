@@ -33,31 +33,32 @@
 {{ if isset .Params "tosdr" }}{{ partialCached "tosdr.html" .Params.tosdr .Params.tosdr  }}{{ end }}
 {{ if isset .Params "polideology" }}{{ range .Params.polideology }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
 {{ if isset .Params "polalignment" }}{{ range .Params.polalignment }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
+
+{{ $socialParams := slice "twittername" "subreddit" "facebookid" "facebookpage" "instagramid" "youtubechannelid" "truthsocial" "parleruser" "gabuser" "soundcloud" "tumblr" "medium" "telegram" "mastodon" "patreon" "reddituser" "twitch" "tiktok" "officialblog" "emailaddress" }}
+{{ $paramsSlice := slice }}
+
+{{ range $key, $value := .Params }}
+  {{ $paramsSlice = $paramsSlice | append $key }}
+{{ end }}
+
+{{ $commonParams := intersect $paramsSlice $socialParams }}
+{{ if gt (len $commonParams) 0 }}
 <section id="social-wikidata">
 <h2 class='sectionTitle' data-i18n="w.socialmedia">Social Media and Email</h2>
 <section id="social-links">
-{{ if isset .Params "twittername" }}{{ partialCached "wikidata-social.html" .Params.twittername .Params.twittername }}{{ end }}
-{{ if isset .Params "subreddit" }}{{ partialCached "wikidata-social.html" .Params.subreddit .Params.subreddit }}{{ end }}
-{{ if isset .Params "facebookid" }}{{ partialCached "wikidata-social.html" .Params.facebookid .Params.facebookid }}{{ end }}
-{{ if isset .Params "facebookpage" }}{{ partialCached "wikidata-social.html" .Params.facebookpage .Params.facebookpage }}{{ end }}
-{{ if isset .Params "instagramid" }}{{ partialCached "wikidata-social.html" .Params.instagramid .Params.instagramid }}{{ end }}
-{{ if isset .Params "youtubechannelid" }}{{ partialCached "wikidata-social.html" .Params.youtubechannelid .Params.youtubechannelid }}{{ end }}
-{{ if isset .Params "truthsocial" }}{{ partialCached "wikidata-social.html" .Params.truthsocial .Params.truthsocial }}{{ end }}
-{{ if isset .Params "parleruser" }}{{ partialCached "wikidata-social.html" .Params.parleruser .Params.parleruser }}{{ end }}
-{{ if isset .Params "gabuser" }}{{ partialCached "wikidata-social.html" .Params.gabuser .Params.gabuser }}{{ end }}
-{{ if isset .Params "soundcloud" }}{{ partialCached "wikidata-social.html" .Params.soundcloud .Params.soundcloud }}{{ end }}
-{{ if isset .Params "tumblr" }}{{ partialCached "wikidata-social.html" .Params.tumblr .Params.tumblr }}{{ end }}
-{{ if isset .Params "medium" }}{{ partialCached "wikidata-social.html" .Params.medium .Params.medium }}{{ end }}
-{{ if isset .Params "telegram" }}{{ partialCached "wikidata-social.html" .Params.telegram .Params.telegram }}{{ end }}
-{{ if isset .Params "mastodon" }}{{ partialCached "wikidata-social.html" .Params.mastodon .Params.mastodon }}{{ end }}
-{{ if isset .Params "patreon" }}{{ partialCached "wikidata-social.html" .Params.patreon .Params.patreon }}{{ end }}
-{{ if isset .Params "reddituser" }}{{ partialCached "wikidata-social.html" .Params.reddituser .Params.reddituser }}{{ end }}
-{{ if isset .Params "twitch" }}{{ partialCached "wikidata-social.html" .Params.twitch .Params.twitch }}{{ end }}
-{{ if isset .Params "tiktok" }}{{ partialCached "wikidata-social.html" .Params.tiktok .Params.tiktok }}{{ end }}
-{{ if isset .Params "officialblog" }}{{ partialCached "wikidata-link.html" .Params.officialblog .Params.officialblog }}{{ end }}
-{{ if isset .Params "emailaddress" }}{{ partialCached "wikidata-link.html" .Params.emailaddress .Params.emailaddress }}{{ end }}
+{{ range $param := $commonParams }}
+ {{ $value := index $.Params $param }}
+ {{ if or (eq $param "officialblog") (eq $param "emailaddress") }}
+      {{ partialCached "wikidata-link.html" $value $value }}
+    {{ else }}
+      {{ partialCached "wikidata-social.html" $value $value }}
+    {{ end }}
+  {{ end }}
 </section>
 </section>
+{{ else }}
+{{ end }}
+
 {{ partialCached "similar.html" .Params.title .Params.title }}
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>

@@ -77,7 +77,11 @@ output.forEach( function(result){
 })
 
 lines={}
-for (claim in datapool) if (datapool[claim].data.length > 0) lines[datapool[claim].label] = datapool[claim].data
+for (claim in datapool) {
+    if (datapool[claim].data.length > 0) {
+        lines[datapool[claim].label] = Array.from(new Set(datapool[claim].data));
+    }
+}
 
 fs.writeFileSync(file_out, JSON.stringify(lines))
 
