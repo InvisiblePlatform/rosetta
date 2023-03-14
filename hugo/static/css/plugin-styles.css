@@ -599,12 +599,6 @@ ul {
     background: linear-gradient(totop, var(--first-frame-from) 0 var(--first-frame-to) 100%);
 }
 
-section.expanded #wikipedia-infocard-frame,
-section.expanded #wikipedia-first-frame {
-    width: 100vw;
-    background-color: var(--c-background);
-    padding: 0;
-}
 
 #wikipedia-frame {
     width: 454px;
@@ -677,6 +671,13 @@ section.expanded #wikipedia-first-frame {
     left: 367px;
     position: absolute;
     transform: rotate(180deg);
+}
+
+section.expanded #wikipedia-infocard-frame,
+section.expanded #wikipedia-first-frame {
+    width: 100vw;
+    background-color: var(--c-background);
+    padding: 0;
 }
 
 section.expanded #wikipedia-infocard-frame>div,
@@ -1237,11 +1238,11 @@ section.expanded h2.sectionTitle {
     box-sizing: border-box;
     position: fixed;
     z-index: 4;
-    width: 100%;
     background: var(--c-background);
     border: var(--c-light-text) solid 1px;
     top: 0;
     height: 40px;
+    width: 100vw;
     padding: 8px;
 }
 
@@ -1251,6 +1252,7 @@ section.expanded h2.sectionTitle {
     top: 0;
     left: 0;
     right: 0;
+    width: 100vw !important;
     order: 4 !important;
     background: var(--c-background);
     padding: 0 !important;
@@ -1541,7 +1543,7 @@ td.biaslink {
     }
 }
 
-@media screen and (width: 640px) {
+@media (min-width: 638px) and (max-width: 641px) {
 
     #closeButton,
     #settingsButton {
@@ -1563,10 +1565,19 @@ td.biaslink {
     }
 }
 
-@media screen and (width: 840px) {
+@media (min-width: 838px) and (max-width: 841px) {
     #graph-container h2.sectionTitle {
         position: absolute;
         width: 840px;
+    }
+    #closeButton,
+    #settingsButton {
+        display: flex;
+    }
+    #backButton {
+        display: flex;
+        transform: rotate(180deg);
+        left: -1px;
     }
 
     .sectionTitle {
