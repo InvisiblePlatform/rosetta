@@ -3,7 +3,7 @@
 {{ if os.FileExists $path }}
 <section id="similar-site-wrapper">
 <h2 data-i18n="similar.title" class="sectionTitle" >Similar Websites</h2>
-<div id="similar-sites" class="hideInSmall">
+<section id="similar-sites" class="hideInSmall">
 {{ $sorted := slice }}
 {{ $data := (getJSON $path).SimilarSites }}
 {{ range $data }}
@@ -28,6 +28,6 @@
 <table>
     <tr><td><a target="_blank" class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a></td></tr>
 </table>
-</div>
+</section>
 </section>
 {{ end }}

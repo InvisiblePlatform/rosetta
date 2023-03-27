@@ -12,16 +12,18 @@
 {{ if isset .Params "wikidataid" }}
 <div id="wikidataid" style="display:none;">{{ .Params.wikidataid }}</div>
 {{ end }}
+<section id="titlebar">
+<button id="backButton" type="button" onclick="justSendBack()"></button>
+<span class="bk-bg co-name hideInSmall">{{ .Params.title }}</span>
+<button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
+<button id="closeButton" type="button"><div></div></button>
+</section>
 <div id="settings">
 <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
 {{ partialCached "translation_picker.html" . }}
 </div>
 <div class="content">
-<button id="backButton" type="button" onclick="justSendBack()"></button>
-<span class="bk-bg co-name">{{ .Params.title }}</span>
 <span class="blankForSmall" style="order:0;"> </span>
-<button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
-<button id="closeButton" type="button"><div></div></button>
 {{ if isset .Params "connections" }}{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}{{ end }}
 {{ if isset .Params "goodonyou" }}{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}{{ end }}
 {{ if isset .Params "glassdoor" }}{{ partialCached "glassdoor.html" .Params.glassdoor .Params.glassdoor }}{{ end }}

@@ -36,7 +36,18 @@ let wW = window.innerWidth;
 // })
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
+let coName = document.getElementsByClassName('co-name')[0];
+let content = document.getElementsByClassName('content')[0];
 closeButton.setAttribute('onclick', 'closeIV()');
+
+var mode = 0                                                                    
+const phoneRegex = /Mobile/i;                                                   
+                                                                                
+if (phoneRegex.test(navigator.userAgent)){                                      
+    mode = 1;
+    console.log("[ Invisible Voice ]: phone mode");
+    document.getElementsByClassName("content")[0].classList.add("mobile");
+}         
 
 let closeIV = function(){
     send_message("IVClose", "closeButton");
@@ -44,7 +55,7 @@ let closeIV = function(){
 
 
 let resetBack = function(){
-    settings.style.bottom = "100vh";
+    settings.style.bottom = "200vh";
     settings.style.top = "";
     settings.firstElementChild.style.top = "-40px";
     backButton.style.transform = "rotate(180deg)";
@@ -60,7 +71,6 @@ let settings = document.getElementById('settings');
 let networkGraph = document.getElementById('graph-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
-let coName = document.getElementsByClassName('co-name')[0];
 
 document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
 
@@ -86,7 +96,14 @@ let loadSettings = function(x) {
     settings.style.bottom = "0";
     settings.style.top = "40px";
     backButton.style.transform = "rotate(0deg)";
+    if (mode == "1"){
+        backButton.style.visibility = "visible";
+        backButton.style.display = "inherit";
+        backButton.style.order = "unset";
+    }
     settings.firstElementChild.style.top = "0";
+    coName.style.opacity = "0%";
+    content.style.display = "none";
     send_message("IVClicked", "settings");
     setBack('closeSettings()');
     }
@@ -120,6 +137,13 @@ let justSendBack = function(x) {
 }
 
 let closeSettings = function(x) {
+    if (mode == "1"){
+        backButton.style.visibility = "hidden";
+        backButton.style.display = "none";
+        backButton.style.order = "2";
+    }
+    coName.style.opacity = "100%";
+    content.style.display = "flex";
     if (infoCard.classList.contains("expanded")) {
         settings.style.visibility = 'hidden';
         setBack('closeInfoCard()');
@@ -359,3 +383,4 @@ window.addEventListener('message', function(e){
     if (decoded.message == "IVAutoOpen"){
     }
 });
+
