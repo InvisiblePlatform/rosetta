@@ -11,7 +11,7 @@
         {{ $remainingStar := sub .score.trustScore $numberOfStars }}
         {{ $starValues := slice "0" "0" "0" "0" "0" }}
         </table>
-        <table><tr class="hideInSmall"><td>
+        <table class="hideInSmall"><tr><td>
         {{ range (seq 5) }}
             {{ if ge $numberOfStars . }}
             <span class="coolStar" style="--division:1;"></span>
@@ -20,7 +20,16 @@
             {{ else }}
             <span class="coolStar" style="--division:0;"></span>
             {{ end }}
-        {{ end }}</td></tr></table>
+        {{ end }}</td></tr>
+        </table>
+        <table id="trustChart" class="hideTilExpanded">
+            <tr><th>Total Reviews</th><td>{{ int .numberOfReviews.total }}</td></tr>
+            <tr><th>One Star</th><td>{{ int .numberOfReviews.oneStar }}</td></tr>
+            <tr><th>Two Star</th><td>{{ int .numberOfReviews.twoStars }}</td></tr>
+            <tr><th>Three Star</th><td>{{ int .numberOfReviews.threeStars }}</td></tr>
+            <tr><th>Four Star</th><td>{{ int .numberOfReviews.fourStars }}</td></tr>
+            <tr><th>Five Star</th><td>{{ int .numberOfReviews.fiveStars }}</td></tr>
+        </table>
         </div>
         <table>
         {{ with .name.identifying }}

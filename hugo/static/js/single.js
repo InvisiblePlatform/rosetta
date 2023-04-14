@@ -36,6 +36,8 @@ let wW = window.innerWidth;
 // })
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
+let settingsButton = document.getElementById('settingsButton');
+let titleBar = document.getElementById('titlebar');
 let coName = document.getElementsByClassName('co-name')[0];
 let content = document.getElementsByClassName('content')[0];
 closeButton.setAttribute('onclick', 'closeIV()');
@@ -53,26 +55,38 @@ let closeIV = function(){
     send_message("IVClose", "closeButton");
 };
 
-
-let resetBack = function(){
-    settings.style.bottom = "200vh";
-    settings.style.top = "";
-    settings.firstElementChild.style.top = "-40px";
-    backButton.style.transform = "rotate(180deg)";
-    networkGraph.style.visibility = 'hidden';
-    backButton.setAttribute("onclick", 'justSendBack()');
-    backButton.style.transform = "";
-}
-let setBack = function(x){
-    backButton.setAttribute("onclick", x);
-}
-
 let settings = document.getElementById('settings');
 let networkGraph = document.getElementById('graph-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
 document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+
+
+let settingsOffset = settings.firstElementChild.clientHeight;
+let resetBack = function(){
+    settings.style.bottom = "200vh";
+    settings.style.top = "";
+    settings.firstElementChild.style.top = `-${settingsOffset}`;
+    backButton.style.transform = "rotate(180deg)";
+    networkGraph.style.visibility = 'hidden';
+    backButton.setAttribute("onclick", 'justSendBack()');
+    backButton.style.transform = '';
+    backButton.style.visibility = '';
+    backButton.style.display = '';
+    settingsButton.style.display = 'block';
+    titleBar.style.backgroundColor = "";
+    window.scrollTo(0,0);
+}
+let setBack = function(x){
+    backButton.setAttribute("onclick", x);
+    backButton.style.visibility = 'visible';
+    backButton.style.display = 'block';
+    backButton.style.order = 'unset';
+    settingsButton.style.display = 'none';
+    window.scrollTo(0,0);
+}
+
 
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
@@ -94,8 +108,8 @@ let loadSettings = function(x) {
         resetBack();
     } else {
     settings.style.bottom = "0";
-    settings.style.top = "40px";
-    backButton.style.transform = "rotate(0deg)";
+    settings.style.top = `${settingsOffset}`;
+    titleBar.style.backgroundColor = "transparent";
     if (mode == "1"){
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
@@ -111,6 +125,9 @@ let loadSettings = function(x) {
 
 let loadNetworkGraph = function(x) {
     networkGraph.style.visibility = 'visible';
+    if (mode == 1){
+        networkGraph.classList.add("expanded");
+    }
     backButton.style.transform = "rotate(0deg)";
     window.scrollTo(0,0);
     document.getElementsByTagName('content');
@@ -128,12 +145,27 @@ let closeInfoCard = function(x){
 }
 let closeNetworkGraph = function(x){
     networkGraph.style.visibility = 'hidden';
+    if (mode == 1){
+        networkGraph.classList.remove("expanded");
+    }
     send_message("IVClicked", "back");
     resetBack();
 }
 
 let justSendBack = function(x) {
     send_message("IVClicked", "back");
+}
+
+let openGenericPage = function(x){
+    element = document.getElementById(x)
+    element.classList.add('expanded');
+    setBack(`closeGenericPage("${x}")`);
+}
+
+let closeGenericPage = function(x){
+    element = document.getElementById(x)
+    element.classList.remove('expanded');
+    resetBack();
 }
 
 let closeSettings = function(x) {
@@ -176,7 +208,7 @@ let loadWikiInfo = function(x) {
 		x.lastElementChild.innerHTML = x.firstElementChild.innerHTML;
 	}
 	x.removeAttribute("onmouseover");
-  }
+}
 
 var IVKeepOnScreen = localStorage.IVKeepOnScreen;
 var IVDarkModeOverride = localStorage.IVDarkModeOverride;
@@ -287,7 +319,12 @@ function slist (target) {
         }
     }
     if (document.getElementById(value)){
-        document.getElementById(value).style.order = x + 5;
+        thiselement = document.getElementById(value);
+        thiselement.style.order = x + 5;
+        if (mode == 1){
+            thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+            // console.log("mode 1");
+        }
     }
 
   };

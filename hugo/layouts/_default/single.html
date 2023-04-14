@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width" />
+<link href="https://unpkg.com/@csstools/normalize.css" rel="stylesheet" />    
 <link rel="stylesheet" href="/css/generic.css">
 <link rel="stylesheet" href="/css/plugin-styles.css">
 <title>Invisible Voice - {{ .Params.title }}</title>
@@ -69,9 +71,9 @@
 <section id="Invisible-dislike" style="--dislikes:'0';" data-i18n="vote.dislike">Dislike</section>
 </section>
 <section id="Invisible-boycott" data-i18n="vote.boycott" class="hideInSmall">Boycott</section>
-<section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title">Disclaimer</div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information</p> <a class="hideInSmall" data-i18n="header.here" href="#">here.</a></section>
   {{ .Content }}
 </div>
+<section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title">Disclaimer</div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information</p> <a class="hideInSmall" data-i18n="header.here" href="#">here.</a></section>
 </div>
 <script src="/js/single.js" defer></script>
 </html>

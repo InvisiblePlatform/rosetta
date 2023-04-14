@@ -8,11 +8,11 @@
     <tr><td><score class="ratingOutOfFive">{{ $v.ethicalRating }}</score></td></tr>
     <tr><td><img class="dialBacking"><img class="dial" style="--score:{{ $v.ethicalRating }};--outOf:5;"/></td></tr>
 </table>
-<table class="leftBorder">
-    <tr><th class="hideInSmall" data-i18n="goy.lr">Labour Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.labourRating) 4) }}</td></tr>
-    <tr><th class="hideInSmall" data-i18n="goy.ar">Animal Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.animalRating) 4) }}</td></tr>
-    <tr><th class="hideInSmall" data-i18n="goy.evr">Environment Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.environmentRating) 4) }}</td></tr>
-    <tr><th class="hideInSmall" data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOf" style="--outOf:'/4';">{{ default "unrated" ($v.price) }}</td></tr>
+<table class="leftBorder hideInSmall" >
+    <tr><th data-i18n="goy.lr">Labour Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.labourRating) 4) }}</td></tr>
+    <tr><th data-i18n="goy.ar">Animal Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.animalRating) 4) }}</td></tr>
+    <tr><th data-i18n="goy.evr">Environment Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">{{ math.Floor (div (float $v.environmentRating) 4) }}</td></tr>
+    <tr><th data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOf" style="--outOf:'/4';">{{ default "unrated" ($v.price) }}</td></tr>
     </table>
 </div>
 <table>

@@ -31,7 +31,7 @@
            array.forEach(function(a) {
                count[a] = (count[a] || 0) + 1;
            });
-           console.log(count);
+           // console.log(count);
            return Object.keys(count).reduce(function(r, k, i) {
                if (!i || count[k] > count[r[0]]) {
                    return [k, r];
@@ -215,7 +215,7 @@
 
            if (wikidataid) {
                var main = d3.select("#" + wikidataid);
-               console.log(wikidataid)
+               // console.log(wikidataid)
                var wikidataMainWiki;
                try {
                switch (localStorage.preferred_language) {
@@ -244,9 +244,9 @@
                        wikidataMainWiki = main._groups[0][0].__data__.enwiki;
                }
                 } catch (e){
-                    console.log(e);
+                   // console.log(e);
                    wikidataid = wikidataidbackup;
-                   console.log(wikidataidbackup);
+                   // console.log(wikidataidbackup);
                    main = d3.select("#" + wikidataid);
                    switch (localStorage.preferred_language) {
                        case "hi":
@@ -277,7 +277,7 @@
 
                if (wikidataMainWiki == 'null') {
                    wikidataid = wikidataidbackup;
-                   console.log(wikidataidbackup);
+                   // console.log(wikidataidbackup);
                    main = d3.select("#" + wikidataid);
                    switch (localStorage.preferred_language) {
                        case "hi":
@@ -341,10 +341,10 @@
                                wikicardframe.innerHTML = "";
                                wikicardframe.appendChild(wikifirstframe.children[i]);
                            }
-                       var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2><div class='hideInSmall'>";
+                       var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2><div id='wikipedia-page' class='hideInSmall'>";
                        profiletext += wikicardframe.innerHTML + "</div><img src='/icon/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                        wikicardframe.innerHTML = profiletext;
-                       var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div class='hideInSmall'>";
+                       var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div id='wikipedia-know' class='hideInSmal'>";
                        companyinfotext += wikifirstframe.innerHTML + "</div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                        wikifirstframe.innerHTML = companyinfotext;
                    }).fail(function() {

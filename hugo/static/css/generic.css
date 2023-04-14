@@ -32,7 +32,7 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
-  font-family: "Roboto Flex", sans-serif;
+  /* font-family: "Roboto Flex", sans-serif; */
   transition: width 0.2s, 
              height 0.2s, 
                 top 0.2s,
@@ -110,6 +110,7 @@ html {
 	--brightness: 0;
     --first-frame-from: rgba(255,255,255, 1);
     --first-frame-to: rgba(255,255,255, 0);
+    --cool-star: calc(50vw / 8);
 }
 
 html.dark-theme {
@@ -191,7 +192,7 @@ body {
 }
 html {
     overflow-x: hidden;
-    background: var(--c-background);
+    background-color: var(--c-secondary-background);
 }
 
 

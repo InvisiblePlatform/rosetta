@@ -10,13 +10,13 @@
     <tr><td><div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></td></tr>
     <tr><td><img class="dialBacking"><img class="dial" style="--score:{{ $d.glasroom_rating.ratingValue }};--outOf:5;"/></td></tr>
 </table>
-<table class="leftBorder">
-<tr class="hideInSmall"><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
-<tr class="hideInSmall"><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">{{ $d.headquarters }}</td></tr>
-<tr class="hideInSmall"><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">{{ $d.founded }}</td></tr> 
-<tr class="hideInSmall"><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">{{ $d.industry }}</td></tr> 
-<tr class="hideInSmall"><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">{{ $d.revenue }}</td></tr>
-<tr class="hideInSmall"><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">{{ $d.size }}</td></tr>
+<table class="leftBorder hideInSmall">
+<tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
+<tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">{{ $d.headquarters }}</td></tr>
+<tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">{{ $d.founded }}</td></tr> 
+<tr><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">{{ $d.industry }}</td></tr> 
+<tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">{{ $d.revenue }}</td></tr>
+<tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">{{ $d.size }}</td></tr>
 </table>
 </div>
 <table>
