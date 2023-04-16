@@ -3,6 +3,10 @@
 LC_ALL=C; LC_COLLATE=C
 STATUSOUT=1; SKIPGEN=; CONNECTIONOUT=; RECORDOUT=
 rootdir="data_collection"
+# TODO: 20230416
+# There was some update to yq to change how the output works 
+# It's not script breaking but made an extra object on the output of some 
+# section, that should be found and fixed.
 function build_list(){
     printf "Build list of websites\n"
     WDLOOKUP="${rootdir}/wikidata/website_id_list.csv"
@@ -25,6 +29,7 @@ function build_list(){
         | tr '[:upper:]' '[:lower:]' \
         | sed -e "s/www[0-9]*\.//g;s/?[^/]*$//g" \
         | sed -e "/\//d;s/\"//g;/^$/d" \
+        | sed -e "s/:[0-9]*//g" \
         | sort -u > websites.list
 }
 
@@ -63,36 +68,36 @@ while IFS=, read -r -a values; do
    fi
 done < <(sed -e "s/www[0-9]*\.//g;s/?[^/]*$//g" $WDLOOKUP  | sed -e "/\//d;/^$/d;/^$/d" | sort -u )
 
-function ramcache(){
-    if ! [[ -d "/mnt/tmpcache" ]]; then 
-        sudo mount -t tmpfs -o size=20g tmpfs /mnt/tmpcache
-    fi
-    printf "%s\n" "Ramcache on"
-
-    printf "%s\n" "Copy wikidatacache"
-    mkdir -p /mnt/tmpcache/wikidata /mnt/tmpcache/bcorp \
-        /mnt/tmpcache/goodonyou /mnt/tmpcache/glassdoor /mnt/tmpcache/mbfc \
-        /mnt/tmpcache/tosdr /mnt/tmpcache/wikipedia /mnt/tmpcache/static
-    printf "%s\n" "Copy lookups"
-    cp $WDLOOKUP /mnt/tmpcache/$WDLOOKUP
-    cp $MBLOOKUP /mnt/tmpcache/$MBLOOKUP
-    cp $BCLOOKUP /mnt/tmpcache/$BCLOOKUP
-    cp $GYLOOKUP /mnt/tmpcache/$GYLOOKUP
-    cp $GDLOOKUP /mnt/tmpcache/$GDLOOKUP
-    cp $TSLOOKUP /mnt/tmpcache/$TSLOOKUP
-    cp $ISLOOKUP /mnt/tmpcache/$ISLOOKUP
-    cat $WPLOOKUP >> /mnt/tmpcache/$WDLOOKUP
-
-    WPLOOKUP="/mnt/tmpcache/wikipedia/wikititle_webpage_id_filtered.csv"
-    WDLOOKUP="/mnt/tmpcache/wikidata/website_id_list.csv"
-    MBLOOKUP="/mnt/tmpcache/mbfc/website_bias.csv"
-    BCLOOKUP="/mnt/tmpcache/bcorp/website_stub_bcorp.csv"
-    GYLOOKUP="/mnt/tmpcache/goodonyou/goodforyou_web_brandid.csv"
-    GDLOOKUP="/mnt/tmpcache/glassdoor/website_glassdoorneo.list"
-    TSLOOKUP="/mnt/tmpcache/tosdr/site_id.list"
-    ISLOOKUP="/mnt/tmpcache/static/document_isin.list"
-    printf "%s\n" "Ramcache loaded"
-}
+# function ramcache(){
+#     if ! [[ -d "/mnt/tmpcache" ]]; then 
+#         sudo mount -t tmpfs -o size=20g tmpfs /mnt/tmpcache
+#     fi
+#     printf "%s\n" "Ramcache on"
+# 
+#     printf "%s\n" "Copy wikidatacache"
+#     mkdir -p /mnt/tmpcache/wikidata /mnt/tmpcache/bcorp \
+#         /mnt/tmpcache/goodonyou /mnt/tmpcache/glassdoor /mnt/tmpcache/mbfc \
+#         /mnt/tmpcache/tosdr /mnt/tmpcache/wikipedia /mnt/tmpcache/static
+#     printf "%s\n" "Copy lookups"
+#     cp $WDLOOKUP /mnt/tmpcache/$WDLOOKUP
+#     cp $MBLOOKUP /mnt/tmpcache/$MBLOOKUP
+#     cp $BCLOOKUP /mnt/tmpcache/$BCLOOKUP
+#     cp $GYLOOKUP /mnt/tmpcache/$GYLOOKUP
+#     cp $GDLOOKUP /mnt/tmpcache/$GDLOOKUP
+#     cp $TSLOOKUP /mnt/tmpcache/$TSLOOKUP
+#     cp $ISLOOKUP /mnt/tmpcache/$ISLOOKUP
+#     cat $WPLOOKUP >> /mnt/tmpcache/$WDLOOKUP
+# 
+#     WPLOOKUP="/mnt/tmpcache/wikipedia/wikititle_webpage_id_filtered.csv"
+#     WDLOOKUP="/mnt/tmpcache/wikidata/website_id_list.csv"
+#     MBLOOKUP="/mnt/tmpcache/mbfc/website_bias.csv"
+#     BCLOOKUP="/mnt/tmpcache/bcorp/website_stub_bcorp.csv"
+#     GYLOOKUP="/mnt/tmpcache/goodonyou/goodforyou_web_brandid.csv"
+#     GDLOOKUP="/mnt/tmpcache/glassdoor/website_glassdoorneo.list"
+#     TSLOOKUP="/mnt/tmpcache/tosdr/site_id.list"
+#     ISLOOKUP="/mnt/tmpcache/static/document_isin.list"
+#     printf "%s\n" "Ramcache loaded"
+# }
 function file_to_array(){
     # $1 - file in
     # $2 - key
@@ -182,6 +187,7 @@ function do_record(){
     fi
 
     printf "%s\n" "buildtime: $(( EPOCHSECONDS - timestart ))" "---" >> "$resort" 
+    sed -i "/^{}$/d" "$resort"
     cp "$resort" "$outfile"
     [[ $CONNECTIONOUT ]] && /snap/bin/yq . "$graphfile"
     [[ $RECORDOUT ]] && cat "$outfile"

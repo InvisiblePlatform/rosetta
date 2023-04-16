@@ -3,7 +3,7 @@
            .on("zoom", zoomed);
 
        var svg2 = d3.select("#key");
-       var docwidth = 840;
+       var docwidth = window.innerWidth;
        var docHeight = window.innerHeight;
        var svg = d3.select("#graph").attr("height", docHeight).attr("width", docwidth);
        var resetButton = document.getElementById('graphZoomReset').setAttribute("onclick", "reset()");

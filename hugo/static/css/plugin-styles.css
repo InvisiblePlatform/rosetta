@@ -393,10 +393,6 @@ th {
     position: absolute;
 }
 
-#similar-site-wrapper h2 {
-    padding: 16px;
-}
-
 .hovertext {
     position: relative;
     border-bottom: 1px dotted #000;
@@ -602,6 +598,13 @@ ul {
 }
 
 
+.content.mobile #wikipedia-frame {
+	width: 100vw;
+	top: 0px;
+	right: 0px;
+	height: 100vh;
+	border: none;
+}
 #wikipedia-frame {
     width: 454px;
     background-color: var(--c-background);
@@ -612,7 +615,7 @@ ul {
     overflow-y: scroll;
     overflow-x: hidden;
     position: fixed;
-    z-index: 7;
+    z-index: 25;
     padding: 8px;
 }
 
@@ -659,13 +662,24 @@ ul {
     height: 16px;
 }
 
+.content.mobile #wikipedia-frame-close {
+	top: 9px;
+	right: 16px;
+	left: unset;
+    background-image: url(/icon/close.svg);
+    z-index: 30;
+	border-radius: 8px;
+    background-size: 12px 12px;
+    border: solid #aaa 1px;
+}
 #wikipedia-frame-close {
-    background: var(--c-background);
+    background: var(--c-light-text);
     z-index: 2;
+	filter: invert(1);
     background-image: url(/icon/chev-left.svg);
     border: var(--c-light-text) solid 1px;
-    width: 2.5em;
-    height: 2.5em;
+    min-width: 40px;
+    height: 40px;
     background-repeat: no-repeat;
     background-size: 24px 24px;
     background-position: center;
@@ -714,11 +728,28 @@ section.expanded .twoCharts{
     display: flex!important;
     flex-direction: row;
     flex-wrap: wrap;
-
 }
 
+section.expanded section#social-links,
+section.expanded section#similar-sites {
+    display: flex!important;
+    columns: 1;
+}
+section.expanded section#social-links > table,
+section.expanded section#similar-sites > section {
+    width: 100%;
+    border-right: none;
+}
 section.expanded {
     border: none!important;
+}
+div.content.mobile > section.expanded {
+	height: max-content!important;
+    min-height: 100dvh;
+}
+div.content.mobile > section.expanded > table > tbody > tr > td > a.source {
+	position: absolute;
+	z-index: 30;
 }
 
 section.expanded #wikipedia-infocard-frame>div,
@@ -747,7 +778,6 @@ section.expanded #wikipedia-infocard-frame>div:before,
 #wikipedia-infocard-frame>div,
 #wikipedia-first-frame>div {
     overflow: hidden;
-    padding: 16px;
 }
 
 #wikipedia-frame div h2,
@@ -1397,16 +1427,24 @@ input:checked+.slider {
 .thumb,
 .gallery,
 #wikipedia-infocard-frame:not(.expanded)>div,
-#wikipedia-first-frame img.iconclass,
+.content:not(.mobile) #wikipedia-first-frame img.iconclass,
 .content:has(.expanded)>section:not(.expanded) {
     display: none !important;
 }
 
+body:has(.expanded) section#disclaimer {
+    display: none;
+}
 body:has(.expanded) section#titlebar {
     background-color: transparent;
 }
 body:has(.expanded) section#titlebar > .co-name {
     display: none;
+}
+
+body:has(div.content.mobile section.expanded) {
+    margin-top: 0px!important;
+    background: var(--c-background);
 }
 
 .infobox-image,
@@ -1609,7 +1647,7 @@ td.biaslink {
     }
 
     #bcorp h2:after {
-        background-image: url(/icon/Bcorp.svg);
+        background-image: url(/icon/bcorp.svg);
     }
 
     #social-wikidata>h2:after {
@@ -1657,7 +1695,9 @@ td.biaslink {
 }
 
 div.content.mobile #key {
-    top:100px;
+    top: 9px;
+    margin: 0;
+	left: 64px;
 }
 div.content.mobile #graphButtons {
     width: 100%;
@@ -1686,7 +1726,7 @@ body:has(div.content.mobile) > section.expanded > h2.sectionTitle {
 }
 
 body:has(div.content.mobile) {
-    margin-top: 52px;
+    margin-top: 40px;
 }
 body:has(div.content.mobile) > section#titlebar {
     position: inherit;
@@ -1697,7 +1737,7 @@ body:has(div.content.mobile) > section#titlebar > #settingsButton {
     border-radius: 8px;
     min-width: 40px;
     height: 40px;
-    top: 54px;
+    top: 49px;
     right: 16px;
     position: absolute;
 }
@@ -1718,6 +1758,7 @@ body:has(div.content.mobile) > section#titlebar > #backButton{
     position: absolute;
     min-width: 40px;
     height: 40px;
+    position: fixed;
 }
 body:has(div.content.mobile) > section#titlebar .co-name{
     order: 1;
@@ -1726,7 +1767,7 @@ body:has(div.content.mobile) > section#titlebar .co-name{
     height: 56px;
     font-size: 22px;
     line-height: 26.4px;
-    padding-top: 10px;
+    padding-top: 16px;
 }
 .content.mobile .blankForSmall,
 .content.mobile .hideInSmall{
@@ -1758,8 +1799,9 @@ section.expanded table:has(img.dial) tr{
 }
 .content.mobile > section#Invisible-vote {
     position: absolute;
-    top: 0px;
-    width: calc((100% / 3) * 2);
+    top: -10px;
+    left: -10px;
+    width: calc(((100vw / 3) * 2) + 20px);
     border: none;
     height: 40px;
 }
@@ -1770,7 +1812,7 @@ section.expanded table:has(img.dial) tr{
 .content.mobile > section > section#Invisible-like,
 .content.mobile > section > section#Invisible-dislike,
 .content.mobile > section#Invisible-boycott {
-    display: unset!important;
+    display: unset;
     border-bottom: solid 1px;
     border-top: solid 1px;;
     border-right: solid 1px;
@@ -1784,11 +1826,12 @@ section.expanded table:has(img.dial) tr{
     bottom: unset;
     position: absolute;
 }
-.content.mobile > section {
+div.content.mobile > section  div table tbody tr td score {
+    font-size: 48px;
 }
 .content.mobile {
     columns: 2;
-    padding: 0 16px;
+    padding: 0 14px;
     flex-wrap: wrap;
     align-content: start;
     display: flex;
@@ -1808,11 +1851,19 @@ section.expanded table:has(img.dial) tr{
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    font-size: 14px
+    font-size: 14px;
+    padding: 0px;
 }
-.content.mobile > #graph-box,
-.content.mobile > #wikipedia-first-frame,
-.content.mobile > #wikipedia-infocard-frame{
+.content.mobile .expanded h2.sectionTitle {
+    font-size: 18px;
+    height: 52px;
+    padding: 16px!important;
+	width: 100%!important;
+	text-align: center!important;
+}
+.content.mobile > #graph-box:not(.expanded),
+.content.mobile > #wikipedia-first-frame:not(.expanded),
+.content.mobile > #wikipedia-infocard-frame:not(.expanded){
     flex: 2 1 100%;
 	display: inline-flex;
 	justify-content: space-evenly;
@@ -1849,9 +1900,7 @@ body:has(.content.mobile) > *:has(.invisible-disclaimer-title) h2,
 }
 .content.mobile img.iconclass {
 	order: -1;
-	width: 50%;
-	margin: auto !important;
-    height: 55px;
+    margin: 0 54px 8px !important;
 }
 body:has(.expanded) > *:has(.invisible-disclaimer-title){
     display: none;
@@ -1862,3 +1911,66 @@ body:has(.content.mobile) > *:has(.invisible-disclaimer-title){
     flex-grow: 2 1;
 }
 
+.content.mobile td:has(score){
+    padding-bottom: 0;
+}
+div.content.mobile section#social-wikidata:not(.expanded) h2:after,
+div.content.mobile section#similar-site-wrapper:not(.expanded) h2:after,
+div.content.mobile section#bcorp:not(.expanded) h2:after {
+    display: block;
+    content: ' ';
+    background-size: 42px 42px;
+    height: 80px;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position-x: 50%;
+    background-position-y: 50%;
+    object-fit: cover;
+    object-position: 0;
+}
+
+.content.mobile #similar-site-wrapper h2:after,
+.content.mobile #social-wikidata>h2:after,
+.content.mobile #bcorp h2:after {
+    filter: brightness(var(--brightness));
+}
+
+.content.mobile #similar-site-wrapper h2:after {
+    background-image: url(/icon/similar.svg);
+}
+
+.content.mobile #bcorp h2:after {
+    background-image: url(/icon/bcorp.svg);
+}
+
+.content.mobile #social-wikidata>h2:after {
+    background-image: url(/icon/social.svg);
+}
+
+.content.mobile .expanded #key > div > table {
+    background-color: var(--c-background);
+}
+.content.mobile .expanded #key > div:hover {
+	height: 300px;
+}
+.content.mobile .expanded #key > div:before {
+    content: 'Key:';
+    font-size: 14px;
+    margin: 3px 10px 12px;
+}
+.content.mobile .expanded #key > div {
+   display: flex; 
+   flex-direction: column;
+   height: 40px;
+   padding: 8px;
+   overflow: hidden;
+   border: solid 1px;
+   border-radius: 8px;
+   background-color: var(--c-background);
+}
+.content.mobile #graph-container.expanded {
+    border: none;
+}
+.content.mobile #graph-container.expanded h2.sectionTitle {
+    display: none;
+}
