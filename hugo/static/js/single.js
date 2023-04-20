@@ -414,8 +414,8 @@ window.addEventListener('message', function(e){
             likeC = "var(--c-light-text)";
             dlikeC = "var(--c-light-text)";
         }
-        IVDislike.setAttribute("style", "--dislikes:'" + decoded.dtotal + "';color:" + dlikeC + ";");
-        IVLike.setAttribute("style", "--likes:'" + decoded.utotal + "';color:"+ likeC + ";");
+        IVDislike.setAttribute("style", "--count:'" + decoded.dtotal + "';color:" + dlikeC + ";");
+        IVLike.setAttribute("style", "--count:'" + decoded.utotal + "';color:"+ likeC + ";");
     }
     if (decoded.message == "IVAutoOpen"){
     }

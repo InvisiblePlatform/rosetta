@@ -15,16 +15,8 @@
     filter: hue-rotate(222deg);
 }
 
-#Invisible-dislike:after {
-    content: ' ('var(--dislikes)')';
-}
-
-#Invisible-like:after {
-    content: ' ('var(--likes)')';
-}
-
-#Invisible-dislike:after,
-#Invisible-like:after {
+:is(#Invisible-dislike, #Invisible-like):after {
+    content: ' ('var(--count)')';
     display: inline-table;
     padding-left: 4px;
 }
@@ -52,13 +44,19 @@
     order: 99;
 }
 
-#disclaimer p:first-of-type,
-#disclaimer h2 {
+#disclaimer {
+    border-top: var(--c-light-text) solid 1px;
+    font-size: 0.75em;
+    display: block;
+    padding: 2.5em;
+    position: relative;
+}
+
+#disclaimer :is(p:first-of-type, h2) {
     padding: 0 0 16px;
 }
 
-#disclaimer p:last-of-type,
-#disclaimer>a {
+#disclaimer :is( p:last-of-type, a) {
     display: inline;
     padding: 0;
 }
@@ -68,13 +66,6 @@
     font-variation-settings: 'wght'600, 'wdth'100;
 }
 
-#disclaimer {
-    border-top: var(--c-light-text) solid 1px;
-    font-size: 0.75em;
-    display: block;
-    padding: 2.5em;
-    position: relative;
-}
 
 .sectionTitle {
     font-size: 1.125em;
@@ -294,55 +285,6 @@ td:has(.coolStar) {
     height: 2.5em;
     width: 100%;
     padding: 0 16px;
-}
-
-.dot:before {
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    position: absolute;
-    background-color: var(--c-light-text);
-    top: -10px;
-    left: -10px;
-    content: ' ';
-}
-
-.dot-right:before {
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    position: absolute;
-    background-color: var(--c-light-text);
-    top: -10px;
-    right: -10px;
-    content: ' ';
-}
-
-.hover-anchor {
-    position: relative;
-}
-
-.hover-anchor:hover .hover-pop {
-    visibility: visible;
-}
-
-.hover-pop {
-    visibility: hidden;
-    position: absolute;
-    top: 31px;
-    left: 0;
-    z-index: 99;
-    min-width: 200px;
-    max-width: 300px;
-    text-align: left;
-    color: var(--c-light-text);
-    background-color: var(--c-background);
-    padding: 10px;
-}
-
-.dot-right.hover-pop {
-    left: auto;
-    right: 0;
 }
 
 .wikipedia {
@@ -581,10 +523,6 @@ ul {
     margin-bottom: 120px;
 }
 
-.infobox-image.logo span span span.hover-anchor a {
-    background: none;
-}
-
 .iconclass {
     filter: brightness(var(--brightness));
     width: 3.75rem;
@@ -598,13 +536,14 @@ ul {
 }
 
 
-.content.mobile #wikipedia-frame {
-	width: 100vw;
-	top: 0px;
-	right: 0px;
-	height: 100vh;
-	border: none;
+.mobile #wikipedia-frame {
+    width: 100vw;
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    border: none;
 }
+
 #wikipedia-frame {
     width: 454px;
     background-color: var(--c-background);
@@ -625,8 +564,7 @@ ul {
     padding: 16px;
 }
 
-#graph-box img.iconclass,
-#wikipedia-infocard-frame img.iconclass {
+:is(#graph-box, #wikipedia-infocard-frame) img.iconclass {
     display: block;
     margin: 8px auto;
 }
@@ -662,20 +600,20 @@ ul {
     height: 16px;
 }
 
-.content.mobile #wikipedia-frame-close {
-	top: 9px;
-	right: 16px;
-	left: unset;
+.mobile #wikipedia-frame-close {
+    top: 9px;
+    right: 16px;
+    left: unset;
     background-image: url(/icon/close.svg);
     z-index: 30;
-	border-radius: 8px;
+    border-radius: 8px;
     background-size: 12px 12px;
     border: solid #aaa 1px;
 }
 #wikipedia-frame-close {
     background: var(--c-light-text);
     z-index: 2;
-	filter: invert(1);
+    filter: invert(1);
     background-image: url(/icon/chev-left.svg);
     border: var(--c-light-text) solid 1px;
     min-width: 40px;
@@ -710,19 +648,19 @@ section.expanded .hideTilExpanded {
 }
 
 section.expanded > .twoCharts table:first-of-type {
-   width: 50%!important;
+    width: 50%!important;
 }
 section.expanded > .twoCharts tbody {
     padding: 0;
 }
 section.expanded > .twoCharts > .leftBorder {
-   width: 100%!important;
-   border-left: none;
-   border-top: solid 1px !important;
-   padding: 0;
+    width: 100%!important;
+    border-left: none;
+    border-top: solid 1px !important;
+    padding: 0;
 }
 section.expanded > .twoCharts > .leftBorder{
-   border-top: none;
+    border-top: none;
 }
 section.expanded .twoCharts{
     display: flex!important;
@@ -743,13 +681,13 @@ section.expanded section#similar-sites > section {
 section.expanded {
     border: none!important;
 }
-div.content.mobile > section.expanded {
-	height: max-content!important;
+.mobile > section.expanded {
+    height: max-content!important;
     min-height: 100dvh;
 }
-div.content.mobile > section.expanded > table > tbody > tr > td > a.source {
-	position: absolute;
-	z-index: 30;
+.mobile > section.expanded > table > tbody > tr > td > a.source {
+    position: absolute;
+    z-index: 30;
 }
 
 section.expanded #wikipedia-infocard-frame>div,
@@ -816,7 +754,7 @@ figure {
 
 #mbfc-header,
 #small-wikidata,
-    {
+{
     margin-bottom: 8px;
     text-align: center;
     vertical-align: center;
@@ -1373,24 +1311,13 @@ section.expanded img.iconclass {
     display: none !important;
 }
 
-#Invisible-boycott:hover,
-#Invisible-dislike:hover,
-#Invisible-like:hover,
-#backButton:hover,
-#closeButton:hover,
-#settingsButton:hover,
-.fullView:hover,
-.sectionTitle:hover,
+:is(#Invisible-boycott, #Invisible-dislike, #Invisible-like, #backButton, 
+#closeButton, #settingsButton, .fullView, .sectionTitle):hover,
 .similar-site>a:hover {
     background-color: var(--c-hover);
 }
 
-#trust-pilot div,
-#isin div,
-#yahoo div,
-#bcorp div,
-#goodonyou div,
-#glassdoor div,
+:is(#trust-pilot, #isin, #yahoo, #bcorp #goodonyou, #glassdoor) div,
 .twoCharts table:last-of-type {
     float: right;
 }
@@ -1442,7 +1369,7 @@ body:has(.expanded) section#titlebar > .co-name {
     display: none;
 }
 
-body:has(div.content.mobile section.expanded) {
+body:has(.mobile section.expanded) {
     margin-top: 0px!important;
     background: var(--c-background);
 }
@@ -1694,16 +1621,16 @@ td.biaslink {
     }
 }
 
-div.content.mobile #key {
+.mobile #key {
     top: 9px;
     margin: 0;
-	left: 64px;
+    left: 64px;
 }
-div.content.mobile #graphButtons {
+.mobile #graphButtons {
     width: 100%;
 }
 
-.content.mobile > *:has(h2.sectionTitle) > #wikipedia-know {
+.mobile > *:has(h2.sectionTitle) > #wikipedia-know {
     display: none;
 }
 
@@ -1720,19 +1647,19 @@ body:has(div.mobile) > div#settings > div#onScreen {
     display: none;
 }
 
-body:has(div.content.mobile) > section.expanded > h2.sectionTitle {
+body:has(.mobile) > section.expanded > h2.sectionTitle {
     top: 10px;
     height: 2.5em;
 }
 
-body:has(div.content.mobile) {
+body:has(.mobile) {
     margin-top: 40px;
 }
-body:has(div.content.mobile) > section#titlebar {
+body:has(.mobile) > section#titlebar {
     position: inherit;
     border: none;
 }
-body:has(div.content.mobile) > section#titlebar > #settingsButton {
+body:has(.mobile) > section#titlebar > #settingsButton {
     border: solid #aaa 1px;
     border-radius: 8px;
     min-width: 40px;
@@ -1741,14 +1668,14 @@ body:has(div.content.mobile) > section#titlebar > #settingsButton {
     right: 16px;
     position: absolute;
 }
-body:has(div.content.mobile) > section#titlebar > #settingsButton> div {
+body:has(.mobile) > section#titlebar > #settingsButton> div {
     background-size: 22px 22px;
     object-fit: center;
     background-position-y: 7px;
     height: 40px;
 }
 
-body:has(div.content.mobile) > section#titlebar > #backButton{
+body:has(.mobile) > section#titlebar > #backButton{
     border: solid #aaa 1px;
     border-radius: 8px;
     visibility: hidden;
@@ -1760,7 +1687,7 @@ body:has(div.content.mobile) > section#titlebar > #backButton{
     height: 40px;
     position: fixed;
 }
-body:has(div.content.mobile) > section#titlebar .co-name{
+body:has(.mobile) > section#titlebar .co-name{
     order: 1;
     color: var(--c-light-text);
     background-color: var(--c-background);
@@ -1769,14 +1696,11 @@ body:has(div.content.mobile) > section#titlebar .co-name{
     line-height: 26.4px;
     padding-top: 16px;
 }
-.content.mobile .blankForSmall,
-.content.mobile .hideInSmall{
+.mobile :is(.hideInSmall, .blankForSmall){
     display: none;
 }
 
-section.expanded td.hideInSmall,
-section.expanded tr.hideInSmall,
-section.expanded table.hideInSmall {
+section.expanded :is(td.hideInSmall, tr.hideInSmall, table.hideInSmall) {
     display: table!important;
 }
 section.expanded td:has(img.dial){
@@ -1793,11 +1717,10 @@ section.expanded table:has(img.dial) tr{
     display: table-row!important;
 }
 
-.content.mobile > section > section#Invisible-dislike,
-.content.mobile > section {
+.mobile > section {
     border-right: none;
 }
-.content.mobile > section#Invisible-vote {
+.mobile > section#Invisible-vote {
     position: absolute;
     top: -10px;
     left: -10px;
@@ -1806,12 +1729,12 @@ section.expanded table:has(img.dial) tr{
     height: 40px;
 }
 
-.content.mobile > section > section#Invisible-like{
+.mobile > section > section#Invisible-like{
     border-left: solid 1px;
 }
-.content.mobile > section > section#Invisible-like,
-.content.mobile > section > section#Invisible-dislike,
-.content.mobile > section#Invisible-boycott {
+
+.mobile > section#Invisible-vote section,
+.mobile > section#Invisible-boycott {
     display: unset;
     border-bottom: solid 1px;
     border-top: solid 1px;;
@@ -1819,17 +1742,17 @@ section.expanded table:has(img.dial) tr{
     position: unset;
     height: 40px;
 }
-.content.mobile > section#Invisible-boycott {
+.mobile > section#Invisible-boycott {
     width: calc(100%/3);
     top: 0px;
     right: 0px;
     bottom: unset;
     position: absolute;
 }
-div.content.mobile > section  div table tbody tr td score {
+.mobile > section  div table tbody tr td score {
     font-size: 48px;
 }
-.content.mobile {
+.mobile {
     columns: 2;
     padding: 0 14px;
     flex-wrap: wrap;
@@ -1839,84 +1762,78 @@ div.content.mobile > section  div table tbody tr td score {
     width: 100%;
     padding-bottom: 16px;
 }
-.content.mobile > *:has(h2.sectionTitle) {
+.mobile > *:has(h2.sectionTitle) {
     flex: 0 1 auto;
     width: calc( 50% - 0.4em) ;
     height: 125px;
 }
-.content.mobile .twoCharts:not(.expanded) table {
+.mobile .twoCharts:not(.expanded) table {
     width: 100%;
 }
-.content.mobile h2.sectionTitle {
+.mobile h2.sectionTitle {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14px;
     padding: 0px;
 }
-.content.mobile .expanded h2.sectionTitle {
+.mobile .expanded h2.sectionTitle {
     font-size: 18px;
     height: 52px;
     padding: 16px!important;
-	width: 100%!important;
-	text-align: center!important;
+    width: 100%!important;
+    text-align: center!important;
 }
-.content.mobile > #graph-box:not(.expanded),
-.content.mobile > #wikipedia-first-frame:not(.expanded),
-.content.mobile > #wikipedia-infocard-frame:not(.expanded){
+.mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame):not(.expanded) {
     flex: 2 1 100%;
-	display: inline-flex;
-	justify-content: space-evenly;
+    display: inline-flex;
+    justify-content: space-evenly;
     height: 80px;
 }
-.content.mobile > #graph-box > h2.sectionTitle,
-.content.mobile > #wikipedia-first-frame > h2.sectionTitle,
-.content.mobile > #wikipedia-infocard-frame > h2.sectionTitle{
+.mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) > h2.sectionTitle {
     width: 50%;
     margin: auto;
     padding: 0 16px;
     text-align: left;
 }
 
-.content.mobile > *:has(h2.sectionTitle),
-.content.mobile > #graph-box,
-.content.mobile > #wikipedia-first-frame,
-.content.mobile > #wikipedia-infocard-frame{
+.mobile > *:has(h2.sectionTitle),
+.mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) {
     margin: 0.2em;
     border: solid #aaa 1px;
     border-radius: 8px;
 }
-body:has(.content.mobile) > *:has(.invisible-disclaimer-title) h2,
-.content.mobile > *:has(h2.sectionTitle) > section,
-.content.mobile > *:has(h2.sectionTitle) > section#social-links,
-.content.mobile > *:has(h2.sectionTitle) > section#similar-sites,
-.content.mobile > *:has(h2.sectionTitle) > button,
-.content.mobile tr:has(img.dial),
-.content.mobile > *:has(h2.sectionTitle):not(.expanded) > table {
+
+.mobile tr:has(img.dial),
+body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
+.mobile > *:has(h2.sectionTitle) > :is(section, button, #social-links, #similar-sites),
+.mobile > *:has(h2.sectionTitle):not(.expanded) > table {
     display: none;
 }
-.content.mobile .sectionTitle {
+
+.mobile .sectionTitle {
     border-bottom: unset;
 }
-.content.mobile img.iconclass {
-	order: -1;
+
+.mobile img.iconclass {
+    order: -1;
     margin: 0 54px 8px !important;
 }
+
 body:has(.expanded) > *:has(.invisible-disclaimer-title){
     display: none;
 }
-body:has(.content.mobile) > *:has(.invisible-disclaimer-title){
+body:has(.mobile) > *:has(.invisible-disclaimer-title){
     border-top: none!important;
     max-height: 100%;
     flex-grow: 2 1;
 }
 
-.content.mobile td:has(score){
+.mobile td:has(score){
     padding-bottom: 0;
 }
-div.content.mobile section#social-wikidata:not(.expanded) h2:after,
-div.content.mobile section#similar-site-wrapper:not(.expanded) h2:after,
-div.content.mobile section#bcorp:not(.expanded) h2:after {
+
+.mobile :is(#social-wikidata, #similar-site-wrapper, #bcorp):not(.expanded) h2:after{
     display: block;
     content: ' ';
     background-size: 42px 42px;
@@ -1927,50 +1844,45 @@ div.content.mobile section#bcorp:not(.expanded) h2:after {
     background-position-y: 50%;
     object-fit: cover;
     object-position: 0;
-}
-
-.content.mobile #similar-site-wrapper h2:after,
-.content.mobile #social-wikidata>h2:after,
-.content.mobile #bcorp h2:after {
     filter: brightness(var(--brightness));
 }
 
-.content.mobile #similar-site-wrapper h2:after {
+.mobile #similar-site-wrapper h2:after {
     background-image: url(/icon/similar.svg);
 }
 
-.content.mobile #bcorp h2:after {
+.mobile #bcorp h2:after {
     background-image: url(/icon/bcorp.svg);
 }
 
-.content.mobile #social-wikidata>h2:after {
+.mobile #social-wikidata>h2:after {
     background-image: url(/icon/social.svg);
 }
 
-.content.mobile .expanded #key > div > table {
+.mobile .expanded #key > div > table {
     background-color: var(--c-background);
 }
-.content.mobile .expanded #key > div:hover {
-	height: 300px;
+.mobile .expanded #key > div:hover {
+    height: 300px;
 }
-.content.mobile .expanded #key > div:before {
+.mobile .expanded #key > div:before {
     content: 'Key:';
     font-size: 14px;
     margin: 3px 10px 12px;
 }
-.content.mobile .expanded #key > div {
-   display: flex; 
-   flex-direction: column;
-   height: 40px;
-   padding: 8px;
-   overflow: hidden;
-   border: solid 1px;
-   border-radius: 8px;
-   background-color: var(--c-background);
+.mobile .expanded #key > div {
+    display: flex; 
+    flex-direction: column;
+    height: 40px;
+    padding: 8px;
+    overflow: hidden;
+    border: solid 1px;
+    border-radius: 8px;
+    background-color: var(--c-background);
 }
-.content.mobile #graph-container.expanded {
+.mobile #graph-container.expanded {
     border: none;
 }
-.content.mobile #graph-container.expanded h2.sectionTitle {
+.mobile #graph-container.expanded h2.sectionTitle {
     display: none;
 }
