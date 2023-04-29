@@ -29,26 +29,30 @@ pairings.forEach(function(pair){
     datapool[pair["id"]] = { "label": pair["label"], data: []}
 })
 datapool["P1387"] = {"label": "polalignment", data: []}
+datapool["P8525"] = {"label": "tosdr", data: []}
 datapool["P1142"] = {"label": "polideology", data: []}
 datapool["P414"] = {"label": "ticker", data: []}
 datapool["P946"] = {"label": "isin_id", data: []}
 
 // .entities[].claims.P414[].qualifiers.P249[].datavalue.value ticker
+// jq '.entities["Q380"].claims["P414"][].qualifiers["P249"][].datavalue.value' hugo/380.json
 // add_values_from_wikidata_id "$website" "$WDLOOKUP" "polalignment" "P1387" "$resort"
 // add_values_from_wikidata_id "$website" "$WDLOOKUP" "polideology" "P1142" "$resort"
 output = db.wikidata.find({
     id: {$in: main_node}
 }, {
     claims: {
+        // "P8525": {"mainsnak.datavalue.value": 1}, // tosdr
+        "P8525.mainsnak.datavalue.value": 1, // tosdr
         "P1142": {"mainsnak.datavalue.value.id": 1}, // political ideology
         "P1387": {"mainsnak.datavalue.value.id": 1}, // political alignment
         "P946": {"mainsnak.datavalue.value": 1}, // ISINID
-        "P414": {"qualifiers.P249": {"datavalue.value": 1}}, // ticker
+        "P414.qualifiers.P249.datavalue" : {"value": 1}, // ticker
         ...items
     }, 
     id: 1, _id:0})
 
-exceptions=["P1142", "P1387", "P414", "P946"]
+exceptions=["P1142", "P1387", "P414", "P946", "P8525"]
 
 output.forEach( function(result){
  for (claim in result.claims) {
@@ -56,11 +60,12 @@ output.forEach( function(result){
    if (Object.keys(claimer).length > 0){
     if (exceptions.includes(claim)){
      if (claim == "P414"){
-       if (Object.keys(claimer.qualifiers) > 0)
+       if (Object.keys(claimer.qualifiers).length > 0){
          claimer.qualifiers['P249'].forEach(x => datapool[claim].data.push(x.datavalue.value))
+       }
      } else {
        if (Object.keys(claimer.mainsnak).length > 0){
-         if (claim == "P946"){
+         if (claim == "P946" || claim == "P8525" ){
            datapool[claim].data.push(claimer.mainsnak.datavalue.value)
          } else {
            datapool[claim].data.push(claimer.mainsnak.datavalue.value.id+';'+claim+';'+result.id)

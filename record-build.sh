@@ -116,7 +116,7 @@ function add_values_from_wikidata(){
     printf '%s\n' "wikidata_id: $WIKIDS" >> "$resort"
     while [ $hold == "1" ]; do
         if [ -a "$tempfile" ]; then
-            /snap/bin/yq '.[]? |= "[\""+join("\",\"")+"\"]" ' -P < "$tempfile" 2>/dev/null| sed -e "s/'//g" >> "$resort"
+            /snap/bin/yq -oy '.[]? |= "[\""+join("\",\"")+"\"]" ' -P < "$tempfile" 2>/dev/null| sed -e "s/'//g" >> "$resort"
             hold=2
             rm "$tempfile" 2>/dev/null
         fi
@@ -126,7 +126,7 @@ function isin_via_wikidata(){
     rm "$tempfile" 2>/dev/null
     while read -r isin; do
         grep "$isin" $ISLOOKUP >> "$tempfile"
-    done < <(yq -r ".isin_id[]" "$resort" 2>/dev/null)
+    done < <(yq -oy -r ".isin_id[]" "$resort" 2>/dev/null)
     if [[ -s "$tempfile" ]]; then
         file_to_array "$tempfile" "isin"
         rm "$tempfile" 2>/dev/null 
@@ -166,9 +166,9 @@ function do_record(){
     local graphfile="hugo/static/connections/${website//./}.json"
 
     [[ -s "$outfile" && $SKIPGEN ]] && return
-    { printf "%s\n" "---" "title: \"$website\"" "date: $EPOCHSECONDS";
+    { printf "%s\n" "title: \"$website\"" "date: $EPOCHSECONDS";
     [[ ${tosdr["\"${website//./__}\""]} ]] && \
-        printf "%s\n" "tosdr: ${tosdr["\"${website//./__}\""]}";
+         printf "%s\n" "tosdr: [\"${tosdr["\"${website//./__}\""]}\"]";
     [[ ${goodonyou["\"${website//./__}\""]} ]] && \
         printf "%s\n" "goodonyou: ${goodonyou["\"${website//./__}\""]}" "goodonyou_source: \"$website\"";
     [[ ${mediabias["\"${website//./__}\""]} ]] && \
@@ -186,10 +186,12 @@ function do_record(){
             printf "%s\n" "connections: \"/connections/${website//./}.json\"" >> "$resort"
     fi
 
-    printf "%s\n" "buildtime: $(( EPOCHSECONDS - timestart ))" "---" >> "$resort" 
+    printf "%s\n" "buildtime: $(( EPOCHSECONDS - timestart ))" >> "$resort" 
     sed -i "/^{}$/d" "$resort"
-    cp "$resort" "$outfile"
-    [[ $CONNECTIONOUT ]] && /snap/bin/yq . "$graphfile"
+    printf "%s\n" "---" > "$outfile"
+    sort -u "$resort" >> "$outfile"
+    printf "%s\n" "---" >> "$outfile"
+    [[ $CONNECTIONOUT ]] && /snap/bin/yq -o j . "$graphfile"
     [[ $RECORDOUT ]] && cat "$outfile"
     [[ $STATUSOUT ]] && { \
         printf "\e[$2;0H %*s %*d %s %*d %2d\n" 100 "($website)" 6 "${lineno//:*/}" "of" 6 "$IDLIST_LENGTH" "$2";

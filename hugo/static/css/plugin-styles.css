@@ -495,9 +495,9 @@ g>path {
 
 #graphButtons {
     position: absolute;
-    bottom: 0;
     left: 0;
-    width: 82.5em;
+    top: calc(100dvh - 30px);
+    width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -647,8 +647,8 @@ section.expanded .hideTilExpanded {
     width: 100%;
 }
 
-section.expanded > .twoCharts table:first-of-type {
-    width: 50%!important;
+section.expanded > .twoCharts table:first-of-type tbody:first-of-type {
+    display: inline-flex;
 }
 section.expanded > .twoCharts tbody {
     padding: 0;
@@ -956,6 +956,7 @@ score:after {
 .twoCharts table tbody tr {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 .twoCharts table tbody:last-child {
 }
@@ -1312,7 +1313,7 @@ section.expanded img.iconclass {
 }
 
 :is(#Invisible-boycott, #Invisible-dislike, #Invisible-like, #backButton, 
-#closeButton, #settingsButton, .fullView, .sectionTitle):hover,
+#closeButton, #settingsButton, .fullView):hover,
 .similar-site>a:hover {
     background-color: var(--c-hover);
 }
@@ -1675,12 +1676,22 @@ body:has(.mobile) > section#titlebar > #settingsButton> div {
     height: 40px;
 }
 
+body:has(.mobile) > section#titlebar > #backButton.show {
+    --startx: -42px;
+    --starty: 12px;
+    --endx: 16px;
+    --endy: 12px;
+    animation-name: moveIn;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+    animation-duration: 0.2s;
+}
+
 body:has(.mobile) > section#titlebar > #backButton{
     border: solid #aaa 1px;
     border-radius: 8px;
-    visibility: hidden;
-    top: 12px;
-    left: 16px;
+    display: block;
+    transform: translate(-42px, 12px);
     background-size: 12px 12px;
     position: absolute;
     min-width: 40px;
@@ -1705,16 +1716,24 @@ section.expanded :is(td.hideInSmall, tr.hideInSmall, table.hideInSmall) {
 }
 section.expanded td:has(img.dial){
     border: none;
+    padding:0;
 }
 section.expanded tr:has(img.dial){
     position: absolute;
     right: 0;
     top: 0;
-    left: 100%;
+    left: 50%;
+    width: 50%;
 }
-section.expanded tr:has(img.dial),
+section.expanded table:has(img.dial) tr td{
+    display: block;
+}
+section.expanded table:has(img.dial) tbody{
+    display: table!important;
+}
 section.expanded table:has(img.dial) tr{
-    display: table-row!important;
+    width: 50%;
+    display: block;
 }
 
 .mobile > section {
@@ -1724,7 +1743,7 @@ section.expanded table:has(img.dial) tr{
     position: absolute;
     top: -10px;
     left: -10px;
-    width: calc(((100vw / 3) * 2) + 20px);
+    width: calc((100vw / 1.5 ) + 20px);
     border: none;
     height: 40px;
 }
@@ -1769,6 +1788,11 @@ section.expanded table:has(img.dial) tr{
 }
 .mobile .twoCharts:not(.expanded) table {
     width: 100%;
+}
+
+.mobile section#yahoo:not(.expanded) .leftBorder,
+.mobile section[id^="isin"]:not(.expanded) .leftBorder {
+    display: none;
 }
 .mobile h2.sectionTitle {
     white-space: nowrap;
@@ -1884,5 +1908,42 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
     border: none;
 }
 .mobile #graph-container.expanded h2.sectionTitle {
+    display: none;
+}
+.mobile :is(#yahoo, #mbfc-header, #small-wikidata) table:first-of-type tbody {
+    margin: 0;
+    padding: 0;
+}
+.mobile :is( #yahoo ) table:has(.biaslink),
+.mobile :is( #mbfc-header, #small-wikidata) table:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    height: calc(100% - 1em);
+    padding: 0;
+    border-collapse: unset;
+}
+.mobile :is(#yahoo, #mbfc-header, #small-wikidata) table:first-of-type .biaslink {
+    font-size: 0.625em;
+    border-radius: 4px;
+    border-collapse: unset;
+}
+.mobile :is(#yahoo) .twoCharts table:first-of-type tr {
+    padding: calc(25% - 1em) 0;
+}
+.mobile td:has(.coolStar) {
+    padding: var(--cool-star) calc(25% + var(--cool-star));
+}
+.mobile section[id^="isin"]:is(.expanded) .twoCharts table:first-of-type{
+    order: 2;
+}
+.mobile section[id^="isin"]:is(.expanded) .twoCharts table:first-of-type tbody:first-of-type{
+    display: table!important;
+}
+.mobile section[id^="isin"]:is(.expanded) .twoCharts table:last-of-type{
+    margin-bottom: 2.5em;
+}
+.mobile #yahoo:not(.expanded) table.esgKey {
     display: none;
 }

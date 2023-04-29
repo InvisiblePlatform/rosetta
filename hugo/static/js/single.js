@@ -1,3 +1,12 @@
+var mode = 0                                                                    
+const phoneRegex = /Mobile/i;                                                   
+                                                                                
+if (phoneRegex.test(navigator.userAgent)){                                      
+    mode = 1;
+    console.log("[ Invisible Voice ]: phone mode");
+    document.getElementsByClassName("content")[0].classList.add("mobile");
+}         
+
 function send_message(type, data){
     var msg = {
         type: type,
@@ -19,21 +28,8 @@ let allLinks = document.querySelectorAll('a');
 allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
 });
-// 
-// let hoverAnchors = document.querySelectorAll('.hover-anchor');
-let wW = window.innerWidth;
 
-// hoverAnchors.forEach(el => {
-//     return;
-//   let elPos = el.getBoundingClientRect();
-//   let sixty = wW * 60 / 100;
-//   let hoverPop = el.querySelector('.hover-pop');
-// 
-//   if (elPos.left > sixty) {
-//     hoverPop.classList.remove('dot');
-//     hoverPop.classList.add('dot-right');
-//   }
-// })
+let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
 let settingsButton = document.getElementById('settingsButton');
@@ -41,15 +37,6 @@ let titleBar = document.getElementById('titlebar');
 let coName = document.getElementsByClassName('co-name')[0];
 let content = document.getElementsByClassName('content')[0];
 closeButton.setAttribute('onclick', 'closeIV()');
-
-var mode = 0                                                                    
-const phoneRegex = /Mobile/i;                                                   
-                                                                                
-if (phoneRegex.test(navigator.userAgent)){                                      
-    mode = 1;
-    console.log("[ Invisible Voice ]: phone mode");
-    document.getElementsByClassName("content")[0].classList.add("mobile");
-}         
 
 let closeIV = function(){
     send_message("IVClose", "closeButton");
@@ -67,22 +54,20 @@ let settingsOffset = settings.firstElementChild.clientHeight;
 let resetBack = function(){
     settings.style.bottom = "200vh";
     settings.style.top = "";
+    titleBar.style.display = "";
     settings.firstElementChild.style.top = `-${settingsOffset}`;
-    backButton.style.transform = "rotate(180deg)";
     networkGraph.style.visibility = 'hidden';
     backButton.setAttribute("onclick", 'justSendBack()');
-    backButton.style.transform = '';
-    backButton.style.visibility = '';
-    backButton.style.display = '';
+    backButton.classList.remove("show");
     settingsButton.style.display = 'block';
     titleBar.style.backgroundColor = "";
+    titleBar.style.position = "";
+    titleBar.style.top = "";
     window.scrollTo(0,0);
 }
 let setBack = function(x){
     backButton.setAttribute("onclick", x);
-    backButton.style.visibility = 'visible';
-    backButton.style.display = 'block';
-    backButton.style.order = 'unset';
+    backButton.classList.add("show");
     settingsButton.style.display = 'none';
     window.scrollTo(0,0);
 }
@@ -90,14 +75,12 @@ let setBack = function(x){
 
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
-    backButton.style.transform = "rotate(0deg)";
     send_message("IVClicked", "wikipedia-first-frame");
     setBack('closeWikipediaPage()');
 }
 
 let loadProfileCard = function(x) {
     infoCard.classList.add('expanded');
-    backButton.style.transform = "rotate(0deg)";
     send_message("IVClicked", "wikipedia-infocard-frame");
     setBack('closeInfoCard()');
 }
@@ -110,6 +93,8 @@ let loadSettings = function(x) {
     settings.style.bottom = "0";
     settings.style.top = `${settingsOffset}`;
     titleBar.style.backgroundColor = "transparent";
+    titleBar.style.position = "fixed";
+    titleBar.style.top = "0";
     if (mode == "1"){
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
@@ -128,7 +113,8 @@ let loadNetworkGraph = function(x) {
     if (mode == 1){
         networkGraph.classList.add("expanded");
     }
-    backButton.style.transform = "rotate(0deg)";
+    titleBar.style.position = "fixed";
+    titleBar.style.top = "0";
     window.scrollTo(0,0);
     document.getElementsByTagName('content');
     send_message("IVClicked", "antwork");
@@ -170,12 +156,10 @@ let closeGenericPage = function(x){
 
 let closeSettings = function(x) {
     if (mode == "1"){
-        backButton.style.visibility = "hidden";
-        backButton.style.display = "none";
         backButton.style.order = "2";
     }
     coName.style.opacity = "100%";
-    content.style.display = "flex";
+    content.style.display = "";
     if (infoCard.classList.contains("expanded")) {
         settings.style.visibility = 'hidden';
         setBack('closeInfoCard()');

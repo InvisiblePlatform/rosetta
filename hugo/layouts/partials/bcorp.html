@@ -5,13 +5,13 @@
 {{ $d := getJSON $path }}
 <h2 class="sectionTitle">B Corp</h2>
 <div class="twoCharts">
-<table class="hideInSmall">
+<table class="ratingTable hideInSmall">
 {{ if isset $d "latestVerifiedScore" }}
 <tr><td><score class="ratingOutOf" style='--outOf:"/140+";'>{{ $d.latestVerifiedScore }}</score></td></tr>
 {{ end }}
 <tr><td><img class="iconclass" src="/icon/Bcorp.svg"/></td></tr>
 </table>
-<table class="hideInSmall leftBorder">
+<table class="dataTable hideInSmall leftBorder">
 {{ if isset $d "assessments" }}
 {{ $a := index $d.assessments 0 }}
 {{ range $a.impactAreas }}
