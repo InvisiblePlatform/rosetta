@@ -34,6 +34,11 @@ wikiframeclose.onclick = function() {
     document.getElementById("graphButtons").setAttribute("style", "")
 };
 
+function getMyCentroid(element) {
+    var bbox = element.getBBox();
+    return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
+}
+
 function getMostCommon(array) {
     var count = {};
     array.forEach(function(a) {
@@ -57,7 +62,8 @@ var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) {
         return d.id;
     }).distance(50))
-    .force("charge", d3.forceManyBody().strength(-400).distanceMax(400))
+    .force("charge", d3.forceManyBody().strength(-400))
+    // .force("charge", d3.forceManyBody())
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 svg.call(zoom);
@@ -155,7 +161,7 @@ d3.json(graphLoc).then(function(graph) {
             return "graph." + d.toLowerCase();
         });
 
-    var key_include_size = svg2.append("div").text(`${docwidth}, ${docHeight}`);
+    // var key_include_size = svg2.append("div").text(`${docwidth}, ${docHeight}`);
 
 
     var urls = [];
@@ -179,6 +185,12 @@ d3.json(graphLoc).then(function(graph) {
         .enter().append("path")
         .attr("stroke", d => color(d.type))
         .attr("marker-mid", d => `url(#arrow-${d.type})`);
+
+    var linkColors = {};
+    link.each(function(d) {
+        linkColors[d.target] = d3.select(this).style("stroke");
+    });
+
     var node = svg.append("g")
         .attr("class", "nodes")
         .attr("fill", "currentColor")
@@ -494,33 +506,42 @@ d3.json(graphLoc).then(function(graph) {
             });
 
         })
-        .append("circle")
-        .attr("r", function(d) {
+
+    var rects = circles.append("rect")
+        .attr("fill", function(d) {
             if (d.id == wikidataid) {
-                return 20;
-            }
-            if (d.groups.includes("Q5")) {
-                return 6;
-            } else if (d.groups.includes("Q219577")) {
-                return 15;
+                return "var(--c-light-text)";
             } else {
-                return 10;
-            }
-        }).attr("fill", function(d) {
-            if (d.id == wikidataid) {
-                return "var(--c-linky-text)";
-            } else {
-                return "unset";
+                return "var(--c-background)";
             }
 
         })
+    //     .attr("stroke", function(d) {
+    //         if (d.id == wikidataid) {
+    //             return "var(--c-background)";
+    //         } else {
+    //             return "var(--c-light-text)";
+    //         }
+
+    //     })
+        .attr("ry", "4")
+        .attr("rx", "4")
+        .attr("text-anchor", "center")
         .attr("class", function(d) {
             return d.groups.toString().replace(/,/g, ' ');
         });
 
-    var lables = node.append("text")
+    var lables = circles.append("text")
         .attr("class", "label-text")
         .attr("text-anchor", "middle")
+        .attr("fill", function(d) {
+            if (d.id == wikidataid) {
+                return "var(--c-background)";
+            } else {
+                return "var(--c-light-text)";
+            }
+
+        })
         .attr("z-index", function(d) {
             if (d.groups.includes("Q5")) {
                 return "100";
@@ -529,15 +550,32 @@ d3.json(graphLoc).then(function(graph) {
             }
         })
         .attr("font-size", function(d) {
-            if (d.groups.includes("Q5")) {
-                return "6px";
+            if (d.id == wikidataid){
+                return "18px";
             } else {
-                return "10px";
+                if (d.groups.includes("Q5")) {
+                    return "6px";
+                } else {
+                    return "10px";
+                }
             }
         })
         .text(function(d) {
             return d.label;
         });
+
+
+    node.selectAll('rect')
+    .attr('width', function(d) { return (document.getElementById(d.id).getBBox().width)/16 + 1 + "em"; })
+    .attr('height', function(d) { return (document.getElementById(d.id).getBBox().height)/16 + 1 + "em"; })
+    .attr('x', function(d) { 
+        return document.getElementById(d.id).getBBox().x - 8; 
+    })
+    .attr('y', function(d) { 
+        return document.getElementById(d.id).getBBox().y - 8; 
+    }).style("stroke", function(d) { return linkColors[d.id]; });
+
+
 
 
     // Create a drag handler and append it to the node object instead
@@ -550,17 +588,26 @@ d3.json(graphLoc).then(function(graph) {
 
     simulation
         .nodes(graph.nodes)
-        .on("tick", ticked);
+        .on("tick", ticked)
 
     simulation.force("link")
         .links(graph.links);
 
-    function ticked() {
+    function ticked(){
         link.attr("d", linkArc)
-        node.attr("transform", function(d) {
-            return "translate(" + d.x + "," + d.y + ")";
-        })
-    }
+        // node.attr("transform", function(d) {
+        //     var b = document.getElementById(d.id).getBBox();
+
+		//     var diffX = d.x - b.x;
+		//     var diffY = d.y - b.y;
+		//     var dist = Math.sqrt(diffX * diffX + diffY * diffY);
+		//     var shiftX = b.width * (diffX - dist) / (dist * 2);
+		//     var shiftY = b.height * (diffY - dist) / (dist * 2);
+        //     return "translate(" + (shiftX+d.x) + "," + (shiftY+d.y) + ")";
+        // })
+        node.attr("transform", function(d) { 
+		 			return "translate(" + d.x + "," + d.y + ")";});
+    };
 });
 
 function dragstarted(event, d) {

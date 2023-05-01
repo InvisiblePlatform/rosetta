@@ -438,19 +438,16 @@ g>path {
     z-index: 5;
 }
 
-.nodes circle {
+.nodes rect {
     stroke-width: 1.5px;
-    stroke: var(--c-background);
     paint-order: stroke fill;
     z-index: 5;
 }
 
 .nodes text {
-    stroke-width: 4px;
-    stroke: var(--c-background);
-    fill: var(--c-light-text);
     paint-order: stroke fill;
     z-index: 5;
+    font-family: "Roboto Mono";
 }
 
 #key {
@@ -882,6 +879,17 @@ tr:has(td score) {
 score {
     font-size: 3.75em;
 }
+.mobile :is(.ratingOutOf,
+.ratingOutOf16,
+.ratingOutOfFour,
+.ratingOutOfFive,
+.ratingOutOfBcorp,
+.ratingOutOf100,
+.ratingOutOf20,
+.ratingOutOfESG) {
+    font-family: 'Space Grotesk';
+    font-weight: 300;
+}
 
 .ratingOutOf,
 .ratingOutOf16,
@@ -1308,7 +1316,7 @@ section.expanded>div {
 }
 
 section.expanded button,
-section.expanded img.iconclass {
+section.expanded:not(#bcorp) img.iconclass {
     display: none !important;
 }
 
@@ -1630,6 +1638,15 @@ td.biaslink {
 .mobile #graphButtons {
     width: 100%;
 }
+.mobile h2.sectionTitle {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+}
+
+.mobile section > .twoCharts table:first-of-type tbody:first-of-type{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+}
 
 .mobile > *:has(h2.sectionTitle) > #wikipedia-know {
     display: none;
@@ -1769,7 +1786,7 @@ section.expanded table:has(img.dial) tr{
     position: absolute;
 }
 .mobile > section  div table tbody tr td score {
-    font-size: 48px;
+    font-size: 32px;
 }
 .mobile {
     columns: 2;
@@ -1827,10 +1844,14 @@ section.expanded table:has(img.dial) tr{
     border: solid #aaa 1px;
     border-radius: 8px;
 }
+.mobile:has(.expanded) > *:has(h2.sectionTitle){
+    margin: 0;
+}
 
 .mobile tr:has(img.dial),
 body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
 .mobile > *:has(h2.sectionTitle) > :is(section, button, #social-links, #similar-sites),
+.mobile > *:has(h2.sectionTitle):not(.expanded) tr:has(.ratingCount),
 .mobile > *:has(h2.sectionTitle):not(.expanded) > table {
     display: none;
 }
@@ -1839,7 +1860,7 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
     border-bottom: unset;
 }
 
-.mobile img.iconclass {
+.mobile section:not(.expanded) img.iconclass {
     order: -1;
     margin: 0 54px 8px !important;
 }
@@ -1926,7 +1947,8 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 }
 .mobile :is(#yahoo, #mbfc-header, #small-wikidata) table:first-of-type .biaslink {
     font-size: 0.625em;
-    border-radius: 4px;
+    border-radius: 154px;
+    border: 4px solid var(--c-light-text);
     border-collapse: unset;
 }
 .mobile :is(#yahoo) .twoCharts table:first-of-type tr {
@@ -1946,4 +1968,38 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 }
 .mobile #yahoo:not(.expanded) table.esgKey {
     display: none;
+}
+.mobile:has(section.expanded){
+    padding: 0 0;
+}
+
+.mobile > *:has(h2.sectionTitle):not(.expanded) .twoCharts {
+    height: calc(100% - 2em);
+    align-items: center;
+}
+.mobile #bcorp.expanded th {
+    width: 100%;
+}
+.mobile #bcorp.expanded .twoCharts .ratingTable td {
+    border-top: none;
+}
+
+.mobile #wikipedia-know {
+    margin: 0 16px;
+    font-family: "Roboto Serif", serif;
+    font-size: 14px;
+    line-height: 28px;
+    letter-spacing: 0.04em;
+    text-align: left;
+    font-variation-settings: 'wdth' 80, 'GRAD' 0, 'wght' 450;
+}
+
+.mobile #wikipedia-know a {
+    color: var(--c-linky-text-minor);
+    font-variation-settings: 'wdth' 80, 'GRAD' 0, 'wght' 500;
+}
+.mobile #wikipedia-know figure {
+    display: block;
+    margin: 0 auto;
+    float: unset;
 }
