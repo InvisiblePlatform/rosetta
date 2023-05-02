@@ -150,30 +150,29 @@ option {
     height: 2.5rem;
 }
 
-tbody:has(.coolStar) {
-    border: 0;
-    display: flex;
+section:not(.expanded) .coolStar {
+    --division: 1!important;
 }
-td:has(.coolStar) {
-    border: 0;
-    padding: var(--cool-star);
-    display: inherit;
-}
-
 .coolStar {
+    --relwidth: calc(var(--cool-star) * var(--division));
     box-sizing: content-box;
     content: url(/icon/star.svg);
-    width: calc(var(--cool-star) * var(--division));
+    width: var(--relwidth);
     filter: brightness(var(--brightness));
     object-fit: cover;
     object-position: 0;
-    bottom: 0;
+    height: var(--cool-star);
     background-image: url(/icon/star-empty.svg);
     background-repeat: no-repeat;
+    transition: width 0.5s, padding-right 0.5s;
     background-size: var(--cool-star) var(--cool-star);
-    padding-right: calc(var(--cool-star) - (var(--cool-star)*var(--division)));
+    padding-right: calc( var(--cool-star) - var(--relwidth));
     margin: 0 2px;
 }
+.stars .coolStar:nth-child(1){transition-delay: 1s;}
+.stars .coolStar:nth-child(2){transition-delay: 0.75s;}
+.stars .coolStar:nth-child(3){transition-delay: 0.5s;}
+.stars .coolStar:nth-child(4){transition-delay: 0.25s;}
 
 #settings > label select {
     border-radius: 8px 8px 0 0;
@@ -692,11 +691,7 @@ section.expanded section#similar-sites > section {
 section.expanded section#similar-sites > section {
     margin: 0.5em auto;
 }
-section.expanded {
-    border: none!important;
-}
 .mobile > section.expanded {
-    height: max-content!important;
     min-height: 100dvh;
 }
 .mobile > section.expanded > table > tbody > tr > td > a.source {
@@ -705,7 +700,7 @@ section.expanded {
 }
 
 section.expanded #wikipedia-infocard-frame>div,
-#wikipedia-first-frame>div {
+section.expanded #wikipedia-first-frame>div {
     max-height: 166px;
     -webkit-box-orient: vertical;
     display: block;
@@ -730,6 +725,10 @@ section.expanded #wikipedia-infocard-frame>div:before,
 #wikipedia-infocard-frame>div,
 #wikipedia-first-frame>div {
     overflow: hidden;
+}
+.expanded:is(#wikipedia-infocard-frame, #wikipedia-first-frame)>div {
+    overflow: unset;
+    display: block!important;
 }
 
 #wikipedia-frame div h2,
@@ -876,15 +875,17 @@ tr:has(td.biaslink) {
 }
 
 .biaslink {
-    border: var(--c-light-text) solid 1px;
-    border-radius: 2px;
-    font-family: 'Roboto Flex', sans-serif;
-    font-size: 0.625em;
-    width: 12.5em;
-    line-height: 90%;
-    font-variation-settings: 'wght'1000, 'wdth'151, 'XTRA'603;
-    font-weight: 1000;
-    padding: .2em .3em;
+    border: var(--c-border-color) solid 4px;
+    border-radius: 154px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    line-height: 14.4px;
+    letter-spacing: .04em;
+    height: fit-content;
+    text-align: center;
+    font-variation-settings: 'wght' 700;
+    font-weight: 700;
+    padding: 8px 16px;
 }
 
 .spacelinks {
@@ -903,6 +904,20 @@ tr:has(td score) {
 
 score {
     font-size: 3.75em;
+    font-family: 'Space Grotesk';
+    font-variation-settings: 'wght' 300;
+    font-weight: 300;
+}
+
+.mobile section:not(.expanded) :is(.ratingOutOf,
+.ratingOutOf16,
+.ratingOutOfFour,
+.ratingOutOfFive,
+.ratingOutOfBcorp,
+.ratingOutOf100,
+.ratingOutOf20,
+.ratingOutOfESG) {
+    width: fit-content!important;
 }
 .mobile :is(.ratingOutOf,
 .ratingOutOf16,
@@ -914,6 +929,21 @@ score {
 .ratingOutOfESG) {
     font-family: 'Space Grotesk';
     font-weight: 300;
+    position: relative;
+    overflow: visible;
+    margin: 0 auto;
+}
+
+.mobile :not(td):is(.ratingOutOf,
+.ratingOutOf16,
+.ratingOutOfFour,
+.ratingOutOfFive,
+.ratingOutOfBcorp,
+.ratingOutOf100,
+.ratingOutOf20,
+.ratingOutOfESG):after {
+    position: absolute;
+    font-size: 0.6em;
 }
 
 .ratingOutOf,
@@ -927,13 +957,16 @@ score {
     font-family: 'Roboto Flex';
     font-variation-settings: 'wght'200;
     font-weight: 200;
-    font-size: 3.75em;
 }
-
-.ratingOutOf:not(score) {
-    font-size: 1rem;
-    font-family: 'Roboto Mono';
-    padding-right: 16px;
+:not(td):is(.ratingOutOf,
+.ratingOutOf16,
+.ratingOutOfFour,
+.ratingOutOfFive,
+.ratingOutOfBcorp,
+.ratingOutOf100,
+.ratingOutOf20,
+.ratingOutOfESG) {
+    font-size: 3.75em;
 }
 
 div.ratingCount:after {
@@ -948,7 +981,7 @@ div.ratingCount:before {
     text-align: center;
     font-size: 0.875em;
     float: none !important;
-    padding-bottom: 8px;
+    margin: 16px auto;
 }
 
 .ratingOutOf:after {
@@ -1324,7 +1357,7 @@ section.expanded td.infobox-image img{
     height: auto;
 }
 
-section.expanded div>* {
+section.expanded div>*:not(.coolStar) {
     box-sizing: border-box;
 }
 
@@ -1333,13 +1366,13 @@ section.expanded div.quotebox {
     margin: auto;
 }
 
-section.expanded>div:not(.pie) {
+section.expanded > div:not(.pie) {
     box-sizing: border-box;
     background: var(--c-background);
-    display: inline-block !important;
-    overflow: unset !important;
-    overflow-y: scroll;
-    max-height: unset !important;
+    overflow: unset;
+}
+section.expanded :nth-child(1 of div.scoreText) {
+    margin-top: 24px;
 }
 
 section.expanded button,
@@ -1353,7 +1386,7 @@ section.expanded:not(#bcorp) img.iconclass {
     background-color: var(--c-hover);
 }
 
-:is(#trust-pilot, #isin, #bcorp #goodonyou, #glassdoor) div,
+:is(#isin, #bcorp #goodonyou, #glassdoor) div,
 .twoCharts table:last-of-type {
     float: right;
 }
@@ -1390,10 +1423,20 @@ input:checked+.slider {
 .thumb,
 .gallery,
 #wikipedia-infocard-frame:not(.expanded)>div,
-:not(.expanded)>.scoreText,
-.content:not(.mobile) #wikipedia-first-frame img.iconclass,
-.content:has(.expanded)>section:not(.expanded) {
+.content:not(.mobile) #wikipedia-first-frame img.iconclass{
     display: none !important;
+}
+.content:has(.expanded)>section:is(.expanded) {
+    position: absolute;
+    height: fit-content;
+    min-height: 100dvh;
+}
+.blankForSmall,
+.content:has(.expanded)>section:not(.expanded, #Invisible-vote, #Invisible-boycott) {
+    transform: translate(-200%);
+}
+.content:has(.expanded)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
+    transform: translateY(-100%);
 }
 
 body:has(.expanded) section#disclaimer {
@@ -1833,6 +1876,7 @@ section.expanded table:has(img.dial) tr{
     flex: 0 1 auto;
     width: calc( 50% - 0.4em) ;
     height: 125px;
+    min-height: 125px;
 }
 .mobile .twoCharts:not(.expanded) table {
     width: 100%;
@@ -1848,6 +1892,8 @@ section.expanded table:has(img.dial) tr{
     overflow: hidden;
     font-size: 14px;
     padding: 0px;
+    max-width: 100%;
+    max-height: 100dvh;
 }
 .mobile .expanded h2.sectionTitle {
     font-size: 18px;
@@ -1861,6 +1907,8 @@ section.expanded table:has(img.dial) tr{
     display: inline-flex;
     justify-content: space-evenly;
     height: 80px;
+    min-height: 80px;
+    width: unset;
 }
 .mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) > h2.sectionTitle {
     width: 50%;
@@ -1874,9 +1922,12 @@ section.expanded table:has(img.dial) tr{
     margin: 0.2em;
     border: solid var(--c-border-color) 1px;
     border-radius: 8px;
+    display: grid;
+    justify-items: center;
 }
 .mobile:has(.expanded) > *:has(h2.sectionTitle){
-    margin: 0;
+    margin: 0!important;
+    display: unset;
 }
 
 .mobile tr:has(img.dial),
@@ -1892,7 +1943,6 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
 }
 
 .mobile section:not(.expanded) img.iconclass {
-    order: -1;
     margin: 0 54px 8px !important;
 }
 
@@ -1977,15 +2027,10 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 }
 .mobile :not(.expanded):is(#yahoo, #mbfc-header, #small-wikidata) .biaslink {
     font-size: 0.625em;
-    border-radius: 154px;
-    border: 4px solid var(--c-light-text);
     border-collapse: unset;
 }
 .mobile :is(#yahoo) .twoCharts table:first-of-type tr {
     padding: calc(25% - 1em) 0;
-}
-.mobile td:has(.coolStar) {
-    padding: var(--cool-star) calc(25% + var(--cool-star));
 }
 .mobile section[id^="isin"]:is(.expanded) .twoCharts table:first-of-type{
     order: 2;
@@ -2042,24 +2087,78 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
     border-radius: 8px;
 }
 
+:not(.expanded) score:after {
+    left: unset !important;
+}
+:not(.expanded) score {
+    font-size: 32px;
+}
+:not(.expanded):is(#tosdr-link) score {
+    font-size: 32px!important;
+}
 .expanded score {
-    color: red;
     text-align: center;
     border: none;
     font-size: 20px;
     font-family: 'Space Grotesk';
     font-variation-settings: 'wght' 300;
     font-weight: 300;
-    width: unset;
-    height: 200px;
-    display: block;
+    width: 180px;
+    max-width: 180px;
+    height: 180px;
+    display: table-cell;
     z-index: 10;
     position: relative;
-    transform: translateY(43%);
+    vertical-align: middle;
+    left: calc(50vw - 90px);
+    top: 8px;
+    padding: 0;
+    line-height: initial;
+}
+.expanded:is(#bcorp) > score {
+    left: unset;
+}
+.expanded:is(#bcorp, #trust-pilot) > score {
+    font-size: 64px;
+    transform: translateY(10%);
+    height: 1em;
+    margin: 16px auto;
 }
 
+.stars {
+    display: flex;
+    justify-content: center;
+    margin: 16px auto; 
+}
+
+.scoreText {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--animation-delay);
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+.scoreText > div {
+    overflow: hidden;
+}
 .expanded .scoreText {
-    display: block;
     width: 100%;
+    height: unset;
+    grid-template-rows: 1fr;
     padding: 0 16px;
+    position: unset;
+}
+.expanded .scoreText.fullBleed {
+    padding: 0;
+}
+
+.expanded .iconclass {
+    width: 200px;
+    height: 200px;
+    left: calc(50% - 100px);
+}
+
+.mobile .expanded :is(.hideInSmall){
+    display: unset;
 }

@@ -35,6 +35,7 @@ let closeButton = document.getElementById('closeButton');
 let settingsButton = document.getElementById('settingsButton');
 let titleBar = document.getElementById('titlebar');
 let coName = document.getElementsByClassName('co-name')[0];
+let blank = document.getElementsByClassName('blankForSmall')[0];
 let content = document.getElementsByClassName('content')[0];
 closeButton.setAttribute('onclick', 'closeIV()');
 
@@ -144,12 +145,34 @@ let justSendBack = function(x) {
 
 let openGenericPage = function(x){
     element = document.getElementById(x)
+    var bb = element.getBoundingClientRect()
+    var startW = bb['width'];
+    var startH = bb['height'];
+    element.style.height = startH + "px";
+    element.style.width = startW + "px";
+    element.style.transform = "translate( -" + bb['x'] + "px, -" + bb['y'] + "px)";
+    element.style.top = bb['y'] + "px";
+    element.style.left = bb['x'] + "px";
     element.classList.add('expanded');
+    console.log(element.style.order, startH, startW);
+    blank.style.order = element.style.order;
+    blank.style.display = "block";
+    blank.style.height = startH + "px";
+    blank.style.width = startW + "px";
+    blank.style.margin = "6px";
+
     setBack(`closeGenericPage("${x}")`);
 }
 
 let closeGenericPage = function(x){
     element = document.getElementById(x)
+    element.style.height = "";
+    element.style.width = "";
+    element.style.transform = "";
+    element.style.top = "";
+    element.style.left = "";
+    blank.style.order = 0;
+    blank.style.display = "none";
     element.classList.remove('expanded');
     resetBack();
 }

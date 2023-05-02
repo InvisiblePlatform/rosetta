@@ -41,7 +41,9 @@
                 {{ end }}
             {{ end }}
         {{ end }}
-        <table class="leftBorder hideInSmall">
+        <div class="scoreText fullBleed">
+            <div>
+        <table class="leftBorder">
         {{ range $keylist, $value := . }}
             {{ if in $keylist "(" }}
                 {{ $key := split $keylist "(" }}
@@ -56,6 +58,8 @@
     <table>
     <tr><td><a target="_blank" class="source" href='{{ $source.Get "source" }}'>WORLDBENCHMARK</a></td></tr>
     </table>
+            </div>
+            </div>
 </section>
 {{ end }}
 {{ end }}

@@ -8,10 +8,12 @@
 <section id="mbfc-header" >
 <h2 class='sectionTitle' data-i18n="mbfc.title">Media Bias</h2>
 <div class="pie hideTilExpanded"></div>
-<score class="biaslink"><a data-i18n="bias.{{ $bias }}" href="{{ (index $dataB $bias).url }}">{{ (index $dataB $bias).name | upper }}</a></score>
+<score class="biaslink" data-i18n="bias.{{ $bias }}">{{ (index $dataB $bias).name | upper }}</score>
 <div class="scoreText">
+    <div>
     <h3>{{ (index $dataB $bias).name }}</h3>
     <p>{{ (index $dataB $bias).description }}</p>
+    </div>
 </div>
 <table>
 <tr><td><a target="_blank" class="source blanksource" href="{{ $dataJ.u }}" >MEDIA BIAS FACT CHECKER</a></td></tr>

@@ -369,11 +369,11 @@ d3.json(graphLoc).then(function(graph) {
                         wikicardframe.innerHTML = "";
                         wikicardframe.appendChild(wikifirstframe.children[i]);
                     }
-                var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2><div id='wikipedia-page' class='hideInSmall'>";
-                profiletext += wikicardframe.innerHTML + "</div><img src='/icon/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2><div class='scoreText'><div id='wikipedia-page' class='hideInSmall'>";
+                profiletext += wikicardframe.innerHTML + "</div></div><img src='/icon/profile.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source blanksource'>WIKIPEDIA</a></td></table><button type='button' onclick='loadProfileCard()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                 wikicardframe.innerHTML = profiletext;
-                var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div id='wikipedia-know' class='hideInSmal'>";
-                companyinfotext += wikifirstframe.innerHTML + "</div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div class='scoreText'><div id='wikipedia-know' class='hideInSmal'>";
+                companyinfotext += wikifirstframe.innerHTML + "</div></div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
                 wikifirstframe.innerHTML = companyinfotext;
             }).fail(function() {
                 console.log("oh no")

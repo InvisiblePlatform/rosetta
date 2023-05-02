@@ -7,8 +7,9 @@
 <section id="tosdr-link">
 <h2 class='sectionTitle' data-i18n="tos.title">Privacy</h2>
 <div class="pie hideTilExpanded"></div>
-<score>{{ (index $data $id ).rated }}</score></td></tr>
+<score style="font-size: 64px;">{{ (index $data $id ).rated }}</score></td></tr>
 <div class="scoreText">
+    <div>
 <h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> {{ $grade }}</h3>
 {{ if eq $grade "E" }}
 <p data-i18n="tos.e">The terms of service raise very serious concerns.</p>
@@ -22,10 +23,11 @@
 <p data-i18n="tos.a">The best terms of services: they treat you fairly, respect your rights and will not abuse your data.</p>
 {{ end }}
 </td></tr>
-</div>
 <table>
 <tr><td><a target="_blank" class="source" href="https://tosdr.org/en/service/{{ $id }}">TOS;DR</a></td></tr>
 </table>
+</div>
+</div>
 </section>
 {{ end }}
 {{ end }}

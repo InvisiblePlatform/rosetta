@@ -2,9 +2,9 @@
 {{ if os.FileExists $path }}
 {{ $grade := newScratch }}
 <section id="yahoo">
-<div class="pie hideTilExpanded"></div>
 {{ $d := (getJSON $path).quoteSummary.result }}
 <h2 data-i18n='esg.title' class='sectionTitle'>ESG Risk</h2>
+<div class="pie hideTilExpanded"></div>
 {{ with (index $d 0).esgScores }}
 {{ if isset .totalEsg "fmt" }}
 {{ if lt .totalEsg.fmt "9" }}
@@ -22,8 +22,8 @@
 {{ end }}
 {{ end }}
 <score class="biaslink" data-i18n='esg.{{ $grade.Get "score" }}'>{{ $grade.Get "score" }}</score>
-<div class="hideTilExpanded"> 
-<div class="ratingOutOf" style="--outOf:'/40+';text-align: center;" >{{ default "N/A" .totalEsg.fmt }}</div>
+<div class="scoreText fullBleed"> 
+<div class="ratingOutOf hideTilExpanded" style="--outOf:'/40+';text-align: center;" >{{ default "N/A" .totalEsg.fmt }}</div>
 <table class="leftBorder">
 {{ if isset .environmentScore "fmt" }}
 <tr>
@@ -74,8 +74,8 @@
 </table>
 </div>
 </div>
-<table class="hideInSmall">
-<tr><td><a target="_blank" class="source" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
+<table>
+<tr><td><a target="_blank" class="source hideInSmall" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
 </table>
 </section>
 {{ end }}
