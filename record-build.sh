@@ -121,12 +121,13 @@ function add_values_from_wikidata(){
             rm "$tempfile" 2>/dev/null
         fi
     done
+    isin_via_wikidata 
 }
 function isin_via_wikidata(){
     rm "$tempfile" 2>/dev/null
     while read -r isin; do
         grep "$isin" $ISLOOKUP >> "$tempfile"
-    done < <(yq -oy -r ".isin_id[]" "$resort" 2>/dev/null)
+    done < <(yq -r ".isin_id[]" "$resort" 2>/dev/null)
     if [[ -s "$tempfile" ]]; then
         file_to_array "$tempfile" "isin"
         rm "$tempfile" 2>/dev/null 
@@ -180,7 +181,6 @@ function do_record(){
     if [[ ${wdata["\"${website//./__}\""]} ]]; then
         local WIKIDATAIDS=($(sed -e "s/@/ /g" <<< ${wdata["\"${website//./__}\""]} ))
         add_values_from_wikidata 
-        isin_via_wikidata 
         check_associated_for_graph 
         [[ -s "$graphfile" ]] && \
             printf "%s\n" "connections: \"/connections/${website//./}.json\"" >> "$resort"

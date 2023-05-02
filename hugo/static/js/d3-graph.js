@@ -20,6 +20,8 @@ var zoomOutButton = document.getElementById('graphZoomOut').setAttribute("onclic
 var width = +svg.attr("width");
 var height = +svg.attr("height");
 var wikiframe = document.getElementById("wikipedia-frame");
+var titlebar = document.getElementById("titlebar");
+var keyDiv = document.getElementById("key");
 var wikiframeclose = document.getElementById("wikipedia-frame-close");
 var wikicardframe = document.getElementById("wikipedia-infocard-frame");
 var wikifirstframe = document.getElementById("wikipedia-first-frame");
@@ -31,6 +33,10 @@ var infoCardContainer = document.getElementById("wikicard-container");
 wikiframeclose.onclick = function() {
     wikiframe.style.display = "none";
     wikiframeclose.style.display = "none";
+    wikiframeclose.style.display = "none";
+    wikiframe.classList.remove("floating")
+    titlebar.style.transform = "";
+    keyDiv.style.transform = "";
     document.getElementById("graphButtons").setAttribute("style", "")
 };
 
@@ -155,7 +161,7 @@ d3.json(graphLoc).then(function(graph) {
     var key_labels = key.append("td")
         .attr("class", "key-text")
         .text(function(d) {
-            return d.replace("_", " ");
+            return d.replaceAll("_", " ");
         })
         .attr("data-i18n", function(d) {
             return "graph." + d.toLowerCase();
@@ -478,6 +484,9 @@ d3.json(graphLoc).then(function(graph) {
             let skipsections = ["See_also", "References", "Further_reading", "External_links", "Sources", "undefined"];
             if (wikiframe.style.display == "none") {
                 wikiframe.style.display = "block";
+                titlebar.style.transform = "translate(0, -200px)";
+                keyDiv.style.transform = "translate(0, -200px)";
+                wikiframe.classList.add("floating")
                 wikiframeclose.style.display = "block";
             }
             $.ajax({
@@ -500,7 +509,8 @@ d3.json(graphLoc).then(function(graph) {
                     text += item;
 
                 }
-                wikiframe.innerHTML = text;
+                var title = '<div class="sectionTitle" style="font-variation-settings:\'wght\'500;">' + data.lead.normalizedtitle + '</div>';
+                wikiframe.innerHTML = title + text;
             }).fail(function() {
                 console.log("oh no")
             });
@@ -510,9 +520,9 @@ d3.json(graphLoc).then(function(graph) {
     var rects = circles.append("rect")
         .attr("fill", function(d) {
             if (d.id == wikidataid) {
-                return "var(--c-light-text)";
-            } else {
                 return "var(--c-background)";
+            } else {
+                return "var(--c-light-text)";
             }
 
         })
@@ -536,9 +546,9 @@ d3.json(graphLoc).then(function(graph) {
         .attr("text-anchor", "middle")
         .attr("fill", function(d) {
             if (d.id == wikidataid) {
-                return "var(--c-background)";
-            } else {
                 return "var(--c-light-text)";
+            } else {
+                return "var(--c-background)";
             }
 
         })
@@ -566,14 +576,19 @@ d3.json(graphLoc).then(function(graph) {
 
 
     node.selectAll('rect')
-    .attr('width', function(d) { return (document.getElementById(d.id).getBBox().width)/16 + 1 + "em"; })
-    .attr('height', function(d) { return (document.getElementById(d.id).getBBox().height)/16 + 1 + "em"; })
+    .attr('width', function(d) { return (document.getElementById(d.id).getBBox().width) + 32; })
+    .attr('height', function(d) { return (document.getElementById(d.id).getBBox().height) + 16; })
     .attr('x', function(d) { 
-        return document.getElementById(d.id).getBBox().x - 8; 
+        return document.getElementById(d.id).getBBox().x - 16; 
     })
     .attr('y', function(d) { 
         return document.getElementById(d.id).getBBox().y - 8; 
-    }).style("stroke", function(d) { return linkColors[d.id]; });
+    }).style("stroke", function(d) { 
+        if ( d.id == wikidataid ){
+            return "var(--c-light-text)";
+        }
+        return linkColors[d.id]; 
+    });
 
 
 

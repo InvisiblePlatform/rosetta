@@ -270,7 +270,7 @@ document.addEventListener('mouseup', function(event){
 var defaultOrder = [
     { value:"wikipedia-first-frame", label: "Wikipedia"},
     { value:"networkgraph", label: "Network Graph and Company Info"},
-    { value:"wikidata-small", label: "Political Alignment"},
+    { value:"small-wikidata", label: "Political Alignment"},
     { value:"mbfc-header", label: "Media Bias"},
     { value:"trust-pilot", label: "Trust Pilot"},
     { value:"yahoo", label: "ESG Risk"},

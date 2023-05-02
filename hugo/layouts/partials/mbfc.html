@@ -3,19 +3,16 @@
 {{ $dataJ := index $data.sources . }}
 {{ $dataB := $data.biases }}
 {{ if isset $data.sources . }}
+{{ $biaskey := dict "C" "center" "L" "left" "LC" "left-center" "R" "right" "RC" "right-center" "PS" "pro-science" "FN" "fake-news" "CP" "conspiracy" "S" "satire" }}
+{{ $bias := index $biaskey $dataJ.b }}
 <section id="mbfc-header" >
 <h2 class='sectionTitle' data-i18n="mbfc.title">Media Bias</h2>
-<table>
-{{ if eq $dataJ.b "C"         }}<tr><td class="biaslink"><a data-i18n="bias.center"        href="{{ (index $dataB "center").url       }}">{{ (index $dataB "center").name       | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "L")  }}<tr><td class="biaslink"><a data-i18n="bias.left"          href="{{ (index $dataB "left").url         }}">{{ (index $dataB "left").name         | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "LC") }}<tr><td class="biaslink"><a data-i18n="bias.left-center"   href="{{ (index $dataB "left-center").url  }}">{{ (index $dataB "left-center").name  | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "R")  }}<tr><td class="biaslink"><a data-i18n="bias.right"         href="{{ (index $dataB "right").url        }}">{{ (index $dataB "right").name        | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "RC") }}<tr><td class="biaslink"><a data-i18n="bias.right-center"  href="{{ (index $dataB "right-center").url }}">{{ (index $dataB "right-center").name | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "PS") }}<tr><td class="biaslink"><a data-i18n="bias.pro-science"   href="{{ (index $dataB "pro-science").url  }}">{{ (index $dataB "pro-science").name  | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "FN") }}<tr><td class="biaslink"><a data-i18n="bias.fake-news"     href="{{ (index $dataB "fake-news").url    }}">{{ (index $dataB "fake-news").name    | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "CP") }}<tr><td class="biaslink"><a data-i18n="bias.conspiracy"    href="{{ (index $dataB "conspiracy").url   }}">{{ (index $dataB "conspiracy").name   | upper }}</a></td></tr>
-{{ else if (eq $dataJ.b "S")  }}<tr><td class="biaslink"><a data-i18n="bias.satire"        href="{{ (index $dataB "satire").url       }}">{{ (index $dataB "satire").name       | upper }}</a></td></tr>{{ end }}
-</table>
+<div class="pie hideTilExpanded"></div>
+<score class="biaslink"><a data-i18n="bias.{{ $bias }}" href="{{ (index $dataB $bias).url }}">{{ (index $dataB $bias).name | upper }}</a></score>
+<div class="scoreText">
+    <h3>{{ (index $dataB $bias).name }}</h3>
+    <p>{{ (index $dataB $bias).description }}</p>
+</div>
 <table>
 <tr><td><a target="_blank" class="source blanksource" href="{{ $dataJ.u }}" >MEDIA BIAS FACT CHECKER</a></td></tr>
 </table>

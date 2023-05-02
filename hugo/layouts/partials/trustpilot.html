@@ -3,15 +3,12 @@
     {{ else }}
         <section id="trust-pilot">
         <h2 class='sectionTitle'>Trust Pilot</h2>
-        <div class="twoCharts">
-        <table>
-        <tr><td><score class="ratingOutOf" style="--outOf:'/5';">{{ .score.trustScore }}</score></td></tr>
-        <tr><td><div class="ratingCount">{{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></div></td></tr>
+        <score class="ratingOutOf" style="--outOf:'/5';">{{ .score.trustScore }}</score>
+        <div class="scoreText">
+        <div class="ratingCount">{{ int .numberOfReviews.total }} <span data-i18n="glassdoor.reviews"></span></div>
         {{ $numberOfStars := math.Floor .score.trustScore }}
         {{ $remainingStar := sub .score.trustScore $numberOfStars }}
         {{ $starValues := slice "0" "0" "0" "0" "0" }}
-        </table>
-        <table class="hideInSmall"><tr><td>
         {{ range (seq 5) }}
             {{ if ge $numberOfStars . }}
             <span class="coolStar" style="--division:1;"></span>
@@ -20,8 +17,7 @@
             {{ else }}
             <span class="coolStar" style="--division:0;"></span>
             {{ end }}
-        {{ end }}</td></tr>
-        </table>
+        {{ end }}
         <table id="trustChart" class="hideTilExpanded">
             <tr><th>Total Reviews</th><td>{{ int .numberOfReviews.total }}</td></tr>
             <tr><th>One Star</th><td>{{ int .numberOfReviews.oneStar }}</td></tr>
@@ -30,7 +26,6 @@
             <tr><th>Four Star</th><td>{{ int .numberOfReviews.fourStars }}</td></tr>
             <tr><th>Five Star</th><td>{{ int .numberOfReviews.fiveStars }}</td></tr>
         </table>
-        </div>
         <table>
         {{ with .name.identifying }}
         <tr><td><a target="_blank" class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a></td></tr>
@@ -38,6 +33,7 @@
         <tr><td><a class="source" target="_blank" href="https://trustpilot.com/review/{{.name}}" >TRUST PILOT</a></td></tr>
         {{ end }}
         </table>
+        </div>
         </section>
     {{ end }}
 {{ end }}
