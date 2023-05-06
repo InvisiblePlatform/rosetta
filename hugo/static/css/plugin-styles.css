@@ -27,12 +27,16 @@
     text-align: center;
     position: fixed;
     bottom: 2.5em;
+    margin: 0;
+    border-radius: 0;
     z-index: 6;
 }
 
 #Invisible-boycott {
     position: fixed;
     bottom: 0;
+    border-radius: 0;
+    margin: 0;
     text-align: center;
     z-index: 5;
     border-right: none;
@@ -54,6 +58,7 @@
     font-size: 0.75em;
     display: block;
     padding: 2.5em;
+    padding-bottom: 90px;
     position: relative;
 }
 
@@ -86,10 +91,15 @@
     margin-bottom: 0;
 }
 
-.content>section {
+.content:has(.mobile) {
+}
+.content:has(.mobile)>section {
     padding: 10px;
-    border-top: var(--c-light-text) solid 1px;
-    border-right: var(--c-light-text) solid 1px;
+}
+.content>section {
+    border: var(--c-light-text) solid 1px;
+    margin: 8px;
+    border-radius: 4px;
     box-sizing: border-box;
 }
 
@@ -231,7 +241,6 @@ section:not(.expanded) .coolStar {
 #settingsButton {
     background-color: transparent;
     color: var(--c-light-text);
-    border-radius: 0;
     border: var(--c-light-text) solid 0px;
     border-right: var(--c-border-color) solid 1px;
     height: 3em;
@@ -299,9 +308,6 @@ section:not(.expanded) .coolStar {
 }
 
 .co-name {
-    background-color: var(--c-heavy-text);
-    border-bottom: var(--c-light-text) solid 1px;
-    color: var(--c-background-units);
     font-weight: 600;
     line-height: 240%;
     height: 2.5em;
@@ -387,7 +393,7 @@ th {
 }
 
 .source {
-    color: var(--c-main);
+    color: var(--c-main)!important;
     font-size: 0.625em;
     font-family: 'Roboto Mono';
     font-weight: 400;
@@ -610,9 +616,8 @@ ul {
 #graph-box,
 #wikipedia-infocard-frame {
     justify-content: center;
-    width: 50%;
+    width: calc(50% - 16px);
 }
-
 .fullView {
     width: 100%;
     font-family: 'Roboto Mono', monospace;
@@ -623,6 +628,7 @@ ul {
     color: var(--c-light-text);
     background-color: var(--c-background);
     border: 0;
+    border-radius: 0 0 4px 4px;
     border-top: var(--c-light-text) solid 1px;
     display: flex;
     align-items: center;
@@ -732,6 +738,12 @@ section.expanded section#similar-sites > section {
     position: absolute;
     z-index: 30;
 }
+#wikipedia-infocard-frame a,
+#wikipedia-first-frame a {
+    color: var(--c-light-text);
+    font-variation-settings: 'wdth' 80, 'GRAD' 0, 'wght' 500;
+    font-weight: 500;
+}
 
 section.expanded #wikipedia-infocard-frame>div,
 section.expanded #wikipedia-first-frame>div {
@@ -763,6 +775,8 @@ section.expanded #wikipedia-first-frame>div:before {
 .expanded:is(#wikipedia-infocard-frame, #wikipedia-first-frame)>div {
     overflow: unset;
     display: block!important;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 #wikipedia-frame div h2,
@@ -1400,7 +1414,7 @@ section.expanded > div:not(.pie) {
     overflow: unset;
 }
 section.expanded :nth-child(1 of div.scoreText) {
-    margin-top: 24px;
+    padding-top: 24px;
 }
 
 section.expanded button,
@@ -1450,8 +1464,7 @@ input:checked+.slider {
 .nomobile,
 .thumb,
 .gallery,
-#wikipedia-infocard-frame:not(.expanded)>div,
-.content:not(.mobile) #wikipedia-first-frame img.iconclass{
+#wikipedia-infocard-frame:not(.expanded)>div{
     display: none !important;
 }
 .content:has(.expanded)>section:is(.expanded) {
@@ -1463,8 +1476,11 @@ input:checked+.slider {
 .content:has(.expanded)>section:not(.expanded, #Invisible-vote, #Invisible-boycott) {
     transform: translate(-200%);
 }
-.content:has(.expanded)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
+.content:has(.expanded):has(.mobile)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
     transform: translateY(-100%);
+}
+.content:has(.expanded):not(.mobile)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
+    transform: translateY(200%);
 }
 
 body:has(.expanded) section#disclaimer {
@@ -1498,6 +1514,10 @@ td.biaslink {
         border-bottom: var(--c-light-text) solid 1px;
     }
 
+    :not(.expanded) score {
+        display: table;
+    }
+
     .twoCharts table tbody tr td:has(img) {
         padding: 0;
     }
@@ -1518,6 +1538,7 @@ td.biaslink {
     .dial,
     .dialBacking,
     .disclaimer-text,
+    #roundelButton,
     .source,
     #social-links,
     #similar-sites>section,
@@ -1530,10 +1551,6 @@ td.biaslink {
     #wikipedia-first-frame {
         order: 4;
         width: 160px;
-    }
-
-    .biaslink {
-        font-size: 0.875em;
     }
 
     #wikipedia-first-frame img.iconclass {
@@ -1559,11 +1576,10 @@ td.biaslink {
         border-top: none;
     }
 
-
     .sectionTitle {
         font-size: 1rem;
         border-bottom: none;
-        padding: 12px;
+        padding: 6px 12px 12px ;
     }
 
     #disclaimer {
@@ -1723,12 +1739,44 @@ td.biaslink {
     .sectionTitle {
         font-size: 1.125em;
     }
+    #roundelButton,
     #Invisible-boycott,
     #Invisible-like,
     #Invisible-dislike,
     #Invisible-vote {
         display: none;
     }
+}
+
+.content:not(.mobile) :not(.expanded) score {
+    display: table;
+    margin: 16px auto;
+}
+
+.content:not(.mobile) .biaslink {
+    font-size: 12px!important;
+    padding: 4px 8px;
+}
+body:not(.mobile) > section#titlebar #roundelButton {
+    display: none;
+}
+body:not(.mobile) > section#titlebar span.co-name {
+    padding-left: 12px;
+}
+
+div:not(.mobile).content{
+    border-right: 0;
+    padding-top: 1px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+:not(.mobile) #Invisible-dislike {
+    border-right: 0;
+}
+:not(.mobile) #Invisible-vote {
+    padding: 0;
+    border-bottom: var(--c-border-color) solid 1px;
 }
 
 .mobile #key {
@@ -1857,9 +1905,9 @@ section.expanded table:has(img.dial) tr{
 }
 .mobile > section#Invisible-vote {
     position: absolute;
-    top: -10px;
-    left: -10px;
-    width: calc((100vw / 1.5 ) + 20px);
+    top: 0px;
+    left: 0px;
+    width: calc(100vw / 1.5 );
     border: none;
     height: 40px;
 }
@@ -1916,7 +1964,7 @@ section.expanded table:has(img.dial) tr{
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14px;
-    padding: 0px;
+    padding: 14px 0px 0px;
     max-width: 100%;
     max-height: 100dvh;
 }
@@ -1968,7 +2016,7 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
 }
 
 .mobile section:not(.expanded) img.iconclass {
-    margin: 0 54px 8px !important;
+    margin: 8px 54px 8px !important;
 }
 
 body:has(.expanded) > *:has(.invisible-disclaimer-title){
