@@ -24,6 +24,7 @@ function send_message(type, data){
 }
 
 let allLinks = document.querySelectorAll('a');
+let noOpen = false;
 
 allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
@@ -32,10 +33,12 @@ allLinks.forEach(el => {
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
+let roundelButton = document.getElementById('roundelButton');
 let settingsButton = document.getElementById('settingsButton');
 let titleBar = document.getElementById('titlebar');
 let coName = document.getElementsByClassName('co-name')[0];
 let blank = document.getElementsByClassName('blankForSmall')[0];
+let fullPage = document.documentElement;
 let content = document.getElementsByClassName('content')[0];
 closeButton.setAttribute('onclick', 'closeIV()');
 
@@ -44,12 +47,26 @@ let closeIV = function(){
 };
 
 let settings = document.getElementById('settings');
+let graphButtons = document.getElementById('graphButtons');
 let networkGraph = document.getElementById('graph-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
 document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
 
+const spinRoundelFrames = [
+ { transform: "rotate(0)" },
+ { transform: "rotate(360deg)" },
+];
+
+const spinRoundelTiming = {
+    duration: 500,
+    iterations: 1,
+}
+
+let spinRoundel = function(){
+    roundelButton.animate(spinRoundelFrames, spinRoundelTiming);
+}
 
 let settingsOffset = settings.firstElementChild.clientHeight;
 let resetBack = function(){
@@ -59,29 +76,37 @@ let resetBack = function(){
     settings.firstElementChild.style.top = `-${settingsOffset}`;
     networkGraph.style.visibility = 'hidden';
     backButton.setAttribute("onclick", 'justSendBack()');
+    backButton.style.backgroundColor = '';
     backButton.classList.remove("show");
     settingsButton.style.display = 'block';
     titleBar.style.backgroundColor = "";
     titleBar.style.position = "";
     titleBar.style.top = "";
+    backButton.style.borderColor = '';
+    roundelButton.style.opacity = '';
     window.scrollTo(0,0);
 }
 let setBack = function(x){
     backButton.setAttribute("onclick", x);
     backButton.classList.add("show");
     settingsButton.style.display = 'none';
+    roundelButton.style.opacity = '0';
     window.scrollTo(0,0);
 }
 
 
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
+    noOpen = true;
     send_message("IVClicked", "wikipedia-first-frame");
+    backButton.style.backgroundColor = 'var(--c-background)';
     setBack('closeWikipediaPage()');
 }
 
 let loadProfileCard = function(x) {
     infoCard.classList.add('expanded');
+    noOpen = true;
+    backButton.style.backgroundColor = 'var(--c-background)';
     send_message("IVClicked", "wikipedia-infocard-frame");
     setBack('closeInfoCard()');
 }
@@ -102,20 +127,26 @@ let loadSettings = function(x) {
         backButton.style.order = "unset";
     }
     settings.firstElementChild.style.top = "0";
+    backButton.style.backgroundColor = 'var(--c-secondary-background)';
+    backButton.style.borderColor = 'var(--c-light-text)';
     coName.style.opacity = "0%";
-    content.style.display = "none";
+    fullPage.style.overflow = "hidden";
     send_message("IVClicked", "settings");
     setBack('closeSettings()');
     }
 }
 
 let loadNetworkGraph = function(x) {
+    backButton.style.borderColor = 'var(--c-border-color)';
+    backButton.style.backgroundColor = 'var(--c-background)';
     networkGraph.style.visibility = 'visible';
     if (mode == 1){
         networkGraph.classList.add("expanded");
+        noOpen = true;
     }
     titleBar.style.position = "fixed";
     titleBar.style.top = "0";
+    graphButtons.style.top = "12px";
     window.scrollTo(0,0);
     document.getElementsByTagName('content');
     send_message("IVClicked", "antwork");
@@ -124,17 +155,21 @@ let loadNetworkGraph = function(x) {
 
 let closeWikipediaPage = function(x){
     wikipediaPage.classList.remove('expanded');
+    noOpen = false;
     resetBack();
 }
 let closeInfoCard = function(x){
     infoCard.classList.remove('expanded');
+    noOpen = false;
     resetBack();
 }
 let closeNetworkGraph = function(x){
     networkGraph.style.visibility = 'hidden';
     if (mode == 1){
         networkGraph.classList.remove("expanded");
+        noOpen = false;
     }
+    graphButtons.style.top = "";
     send_message("IVClicked", "back");
     resetBack();
 }
@@ -144,17 +179,21 @@ let justSendBack = function(x) {
 }
 
 let openGenericPage = function(x){
+    if (noOpen){
+        return;
+    }
+    backButton.style.backgroundColor = 'var(--c-background)';
     element = document.getElementById(x)
     var bb = element.getBoundingClientRect()
     var startW = bb['width'];
     var startH = bb['height'];
-    element.style.height = startH + "px";
+    // element.style.height = startH + "px";
     element.style.width = startW + "px";
     element.style.transform = "translate( -" + bb['x'] + "px, -" + bb['y'] + "px)";
     element.style.top = bb['y'] + "px";
     element.style.left = bb['x'] + "px";
     element.classList.add('expanded');
-    console.log(element.style.order, startH, startW);
+    noOpen = true;
     blank.style.order = element.style.order;
     blank.style.display = "block";
     blank.style.height = startH + "px";
@@ -174,6 +213,7 @@ let closeGenericPage = function(x){
     blank.style.order = 0;
     blank.style.display = "none";
     element.classList.remove('expanded');
+    noOpen = false;
     resetBack();
 }
 
@@ -182,7 +222,7 @@ let closeSettings = function(x) {
         backButton.style.order = "2";
     }
     coName.style.opacity = "100%";
-    content.style.display = "";
+    fullPage.style.overflow = "";
     if (infoCard.classList.contains("expanded")) {
         settings.style.visibility = 'hidden';
         setBack('closeInfoCard()');
@@ -338,13 +378,19 @@ function slist (target) {
 
 
   // (B) MAKE ITEMS DRAGGABLE + SORTABLE
+  var position = 0;
   for (let i of items) {
+    position += 1;
+    i.style.order = position;
     // (B1) ATTACH DRAGGABLE
     i.draggable = true;
+
 
     // (B2) DRAG START - YELLOW HIGHLIGHT DROPZONES
     i.ondragstart = (ev) => {
       current = i;
+      ev.dataTransfer.setData('text/plain', 'hello');
+      ev.dataTransfer.dropEffect = 'copy';
       for (let it of items) {
         if (it != current) { it.classList.add("hint"); }
       }
@@ -354,6 +400,65 @@ function slist (target) {
     i.ondragenter = (ev) => {
       if (i != current) { i.classList.add("active"); }
     };
+
+    i.addEventListener('touchmove', function(e){
+        var tl = e.targetTouches[0];
+        iPlace = i.getBoundingClientRect();
+        i.style.height = iPlace.height + "px";
+        i.style.width = iPlace.width + "px";
+        i.style.top = tl.clientY + "px";
+        i.classList.add("held");
+    })
+    i.addEventListener('touchend', function(e){
+        var touchLocation = e.targetTouches[0];
+        i.classList.remove("held");
+        iPlace = i.style.top.split("px")[0];
+        i.style.top = "";
+        i.style.left = "";
+        // oord = Number(i.style.order);
+        // for (let it=0; it<items.length; it++){
+        //     posY = items[it].getBoundingClientRect().y;
+        // }
+        // for (let it=0; it<items.length; it++){
+        //     ord = Number(items[it].style.order);
+        // }
+        sorting = [];
+        for (let it=0; it<items.length; it++) {
+            if (i.getAttribute("value") != items[it].getAttribute("value")){
+                posY = items[it].getBoundingClientRect().y;
+            } else {
+                posY = Number(iPlace);
+            }
+            sorting.push({key: items[it].getAttribute("value"), value: posY});
+        }
+        sorted = sorting.sort(sort_by("value", false, Number));
+        sortedKeys = {}
+        lookupLabel = {}
+        for (let it=1; it<sorted.length+1; it++){
+            sortedKeys[`${sorted[it-1].key}`] = it;
+        }
+        for (let it=0; it<items.length; it++) {
+            items[it].style.order = sortedKeys[`${items[it].getAttribute("value")}`];
+            lookupLabel[`${items[it].getAttribute("value")}`] = items[it].innerHTML;
+        }
+        let outItems = []
+        for (let it=1; it<sorted.length+1; it++){
+            outItems.push({value: sorted[it-1].key, label: lookupLabel[`${sorted[it-1].key}`]});
+            let value = sorted[it-1].key;
+            if (value == "networkgraph"){
+                if (document.getElementById("graph-box")){
+                    document.getElementById("graph-box").style.order = it + 4;
+                }
+                if (document.getElementById("wikipedia-infocard-frame")){
+                    document.getElementById("wikipedia-infocard-frame").style.order = it + 4;
+                }
+            }
+            if (document.getElementById(value)){
+                document.getElementById(value).style.order = it + 4;
+            }
+        }
+        localStorage.IVPropertyOrder = JSON.stringify(outItems);
+    });
 
     // (B4) DRAG LEAVE - REMOVE RED HIGHLIGHT
     i.ondragleave = () => {
@@ -402,6 +507,43 @@ function slist (target) {
       }
       localStorage.IVPropertyOrder = JSON.stringify(outItems);
     };
+
+    // i.addEventListener('touchend', function(e){
+    //     var touchLocation = e.targetTouches[0];
+    //     i.style.left = touchLocation.pageX + 'px';
+    //     i.style.top = touchLocation.pageY + 'px';
+    //     for (let j of items) {
+    //         if (j != current) {
+    //           let currentpos = 0, droppedpos = 0;
+    //           for (let it=0; it<items.length; it++) {
+    //             if (current == items[it]) { currentpos = it; }
+    //             if (i == items[it]) { droppedpos = it; }
+    //           }
+    //           if (currentpos < droppedpos) {
+    //             i.parentNode.insertBefore(current, i.nextSibling);
+    //           } else {
+    //             i.parentNode.insertBefore(current, i);
+    //           }
+    //         }
+    //         let outItems = [];
+    //         for (let it=0; it<items.length; it++){
+    //             outItems.push({value: items[it].getAttribute("value"), label: items[it].innerHTML});
+    //               let value = items[it].getAttribute("value");
+    //               if (value == "networkgraph"){
+    //                   if (document.getElementById("graph-box")){
+    //                       document.getElementById("graph-box").style.order = it + 5;
+    //                   }
+    //                   if (document.getElementById("wikipedia-infocard-frame")){
+    //                       document.getElementById("wikipedia-infocard-frame").style.order = it + 5;
+    //                   }
+    //               }
+    //               if (document.getElementById(value)){
+    //                   document.getElementById(value).style.order = it + 5;
+    //               }
+    //         }
+    //         localStorage.IVPropertyOrder = JSON.stringify(outItems);
+    //     }
+    // })
   }
 }
 
@@ -428,3 +570,20 @@ window.addEventListener('message', function(e){
     }
 });
 
+
+const sort_by = (field, reverse, primer) => {
+
+  const key = primer ?
+    function(x) {
+      return primer(x[field])
+    } :
+    function(x) {
+      return x[field]
+    };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function(a, b) {
+    return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+  }
+}

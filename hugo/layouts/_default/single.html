@@ -16,6 +16,7 @@
 <div id="wikidataid" style="display:none;">{{ .Params.wikidataid }}</div>
 {{ end }}
 <section id="titlebar">
+<button id="roundelButton" type="button" onclick="spinRoundel()"></button>
 <button id="backButton" type="button" onclick="justSendBack()"></button>
 <span class="bk-bg co-name hideInSmall">{{ .Params.title }}</span>
 <button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
@@ -51,6 +52,7 @@
 <section id="social-wikidata">
 <h2 class='sectionTitle' data-i18n="w.socialmedia">Social Media and Email</h2>
 <section id="social-links">
+<table>
 {{ range $param := $commonParams }}
  {{ $value := index $.Params $param }}
  {{ if or (eq $param "officialblog") (eq $param "emailaddress") }}
@@ -59,6 +61,7 @@
       {{ partialCached "wikidata-social.html" $value $value }}
     {{ end }}
   {{ end }}
+</table>
 </section>
 </section>
 {{ else }}

@@ -5,12 +5,11 @@
 <div class="pie hideTilExpanded"></div>
 {{ $name := partialCached "wikidata-name.html" (index $key 0) (index $key 0) }}
 <score class="biaslink" >{{ $name }}</score>
-<div class="scoreText">
+<div class="scoreText fullBleed">
     <div>
     <h3>{{ $name }}</h3>
-    <p>"https://wikidata.org/wiki/{{ index $key 0 }}"</p>
     <table>
-    <tr><td><a target="_blank" class="hideInSmall source blanksource" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a></td></tr>
+    <tr><td><a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a></td></tr>
     </table>
     </div>
 </div>

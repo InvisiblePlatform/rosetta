@@ -2,7 +2,5 @@
 {{ $firstkey := split (index . 0 ) ";" }}
 {{ range . }}
 {{ $key := split . ";" }}
-<table>
 <tr><th>{{ index (split (index $props (index $firstkey 1) ) " " ) 0 | title }}</th><td><a class="spacelinks" href="{{ index $key 0 }}">{{ index $key 0 }}</a><a class="minisource" target="_blank" href="https://wikidata.org/wiki/{{ index $firstkey 2 }}#{{ index $firstkey 1 }}"></a></td></tr>
-</table>
 {{ end }}

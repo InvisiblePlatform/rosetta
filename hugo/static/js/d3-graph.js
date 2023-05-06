@@ -64,26 +64,25 @@ function getMostCommon(array) {
 
 }
 
+var forceLink = d3.forceLink().id(function(d) {return d.id; }).distance(100);
+var charge = d3.forceManyBody().distanceMin(50).distanceMax(5000).strength(-1500);
+
 var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d) {
-        return d.id;
-    }).distance(50))
-    .force("charge", d3.forceManyBody().strength(-400))
-    // .force("charge", d3.forceManyBody())
+    .force("link", forceLink )
+    // .force("charge", d3.forceManyBody().strength(-200).distanceMin(50))
+    .force("charge", charge)
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 svg.call(zoom);
 
 function zoomIn() {
-    d3.selectAll('svg g')
-        .transition()
-        .call(zoom.scaleBy, 2);
+   svg.transition()
+       .call(zoom.scaleBy, 2);
 }
 
 function zoomOut() {
-    d3.selectAll('svg g')
-        .transition()
-        .call(zoom.scaleBy, 0.5);
+   svg.transition()
+       .call(zoom.scaleBy, 0.5);
 }
 
 function reset() {
@@ -102,9 +101,7 @@ function clicked(event, [x, y]) {
     );
 }
 
-function zoomed({
-    transform
-}) {
+function zoomed({ transform }) {
     d3.select('svg g').attr("transform", transform);
     d3.select('svg g.nodes').attr("transform", transform);
 }
@@ -125,10 +122,6 @@ d3.json(graphLoc).then(function(graph) {
 
 
     svg.call(d3.zoom()
-        .extent([
-            [0, 0],
-            [width, height]
-        ])
         .scaleExtent([-4, 8])
         .on("zoom", zoomed));
 

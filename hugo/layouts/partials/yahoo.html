@@ -8,42 +8,42 @@
 {{ with (index $d 0).esgScores }}
 {{ if isset .totalEsg "fmt" }}
 {{ if lt .totalEsg.fmt "9" }}
-{{ $grade.Set "score" "NEGLIGIBLE" }}
+{{ $grade.Set "score" "Negligible" }}
 {{ else if lt .totalEsg.fmt "19" }}
-{{ $grade.Set "score" "LOW" }}
+{{ $grade.Set "score" "Low" }}
 {{ else if lt .totalEsg.fmt "29" }}
-{{ $grade.Set "score" "MEDIUM" }}
+{{ $grade.Set "score" "Medium" }}
 {{ else if lt .totalEsg.fmt "39" }}
-{{ $grade.Set "score" "HIGH" }}
+{{ $grade.Set "score" "High" }}
 {{ else if gt .totalEsg.fmt "40" }}
-{{ $grade.Set "score" "SEVERE" }}
+{{ $grade.Set "score" "Severe" }}
 {{ else }}
-{{ $grade.Set "score" "NOT FOUND" }}
+{{ $grade.Set "score" "Not Found" }}
 {{ end }}
 {{ end }}
-<score class="biaslink" data-i18n='esg.{{ $grade.Get "score" }}'>{{ $grade.Get "score" }}</score>
+<score class="biaslink">{{ $grade.Get "score" }}</score>
 <div class="scoreText fullBleed"> 
 <div class="ratingOutOf hideTilExpanded" style="--outOf:'/40+';text-align: center;" >{{ default "N/A" .totalEsg.fmt }}</div>
 <table class="leftBorder">
 {{ if isset .environmentScore "fmt" }}
 <tr>
     <th data-i18n='esg.environmental' >Environmental Risk Score</th> 
-    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .environmentScore.fmt }}</td>
+    <td class="" style="--outOf:'/ 40+';">{{ default "Not Found" .environmentScore.fmt }}</td>
 </tr>{{ end }}
 {{ if isset .socialScore "fmt" }}
 <tr>
     <th data-i18n='esg.social' >Social Risk Score</th>
-    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .socialScore.fmt }}</td>
+    <td class="" style="--outOf:'/ 40+';">{{ default "Not Found" .socialScore.fmt }}</td>
 </tr>{{ end }}
 {{ if isset .governanceScore "fmt" }}
 <tr>
     <th data-i18n='esg.governance' >Governance Risk Score</th>
-    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .governanceScore.fmt }}</td>
+    <td class="" style="--outOf:'/ 40+';">{{ default "Not Found" .governanceScore.fmt }}</td>
 </tr>{{ end }}
 {{ if isset .totalEsg "fmt" }}
 <tr>
     <th data-i18n='esg.total'>Total ESG</th>
-    <td class="" style="--outOf:'/40+';">{{ default "Not Found" .totalEsg.fmt }}</td>
+    <td class="" style="--outOf:'/ 40+';">{{ default "Not Found" .totalEsg.fmt }}</td>
 </tr>{{ end }}
 {{ end }}
 </table>
@@ -52,23 +52,23 @@
 <div class="esgKey" data-i18n="esg.gradingscale"><h3>Grading Scale</h3>
 <table class="esgKey">
     <tr>
-        <th><div class="biaslink" data-i18n="esg.NEGLIGIBLE">NEGLIGIBLE</div></th>
+        <th><div class="biaslink">Negligible</div></th>
         <td>0 - 9.9  </td>
     </tr>
     <tr>
-        <th><div class="biaslink" data-i18n="esg.LOW">LOW</div></th>
+        <th><div class="biaslink">Low</div></th>
         <td>10 - 19.9</td>
     </tr>
     <tr>
-        <th><div class="biaslink" data-i18n="esg.MEDIUM">MEDIUM</div></th>
+        <th><div class="biaslink">Medium</div></th>
         <td>20 - 29.9</td>
     </tr>
     <tr>
-        <th><div class="biaslink" data-i18n="esg.HIGH">HIGH</div></th>
+        <th><div class="biaslink">High</div></th>
         <td>30 - 39.9</td>
     </tr>
     <tr>
-        <th><div class="biaslink" data-i18n="esg.SEVERE">SEVERE</div></th>
+        <th><div class="biaslink">Severe</div></th>
         <td>40+      </td>
     </tr>
 </table>

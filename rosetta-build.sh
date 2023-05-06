@@ -28,7 +28,7 @@ update_with_hash(){
             break
         fi
     done < <(grep "$sitehash" rosetta/site_to_hash.csv \
-            | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\//g")
+            | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\/db\//g")
     
     [ $shouldwego ] || return
     
@@ -37,7 +37,7 @@ update_with_hash(){
     TEMP2=$(mktemp)
     TEMP3=$(mktemp)
     grep "$sitehash" rosetta/site_to_hash.csv \
-        | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\//g" \
+        | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\/db\//g" \
         | xargs cat 2>/dev/null | sort -u | sed -e "/^date:/d;/^title:/d" > "$TEMP"
 
    for field in "${FIELDS[@]}"; do
@@ -78,7 +78,7 @@ update_with_hash(){
         fi
 
     done < <(grep "$sitehash" rosetta/site_to_hash.csv \
-        | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\//g")
+        | cut -d, -f1| sed -e "s/\.//g;s/$/.md/g;s/^/hugo\/content\/db\//g")
 rm "$TEMP" "$TEMP2" "$TEMP3"
 }
 

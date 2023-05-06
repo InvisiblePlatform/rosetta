@@ -9,7 +9,7 @@
 <score class="ratingOutOf hideTilExpanded" style='--outOf:"/140+";'>{{ $d.latestVerifiedScore }}</score>
 {{ end }}
 <div class="scoreText fullBleed"><div>
-<table class="dataTable hideInSmall leftBorder">
+<table class="dataTable hideInSmall">
 {{ if isset $d "assessments" }}
 {{ $a := index $d.assessments 0 }}
 {{ range $a.impactAreas }}

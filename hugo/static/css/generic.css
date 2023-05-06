@@ -150,6 +150,10 @@ html {
     --first-frame-from: rgba(255,255,255, 1);
     --first-frame-to: rgba(255,255,255, 0);
     --cool-star: calc(50vw / 8);
+    --chart-back: #DDD;
+    --chart-fore: #343434;
+    --button-back: #343434;
+    --button-text: #FFF;
 }
 
 html.dark-theme {
@@ -284,7 +288,7 @@ hr {
 .pie {
   --p:100;
   --b:16px;
-  --c:var(--c-border-color);
+  --c:var(--chart-back);
   --w:180px;
 
   width: var(--w);

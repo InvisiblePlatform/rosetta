@@ -1,7 +1,7 @@
 #!/bin/bash
-# set -eo xtrace
+#set -eo xtrace
 LC_ALL=C; LC_COLLATE=C
-STATUSOUT=1; SKIPGEN=; CONNECTIONOUT=; RECORDOUT=
+STATUSOUT=1; SKIPGEN=1; CONNECTIONOUT=; RECORDOUT=
 rootdir="data_collection"
 # TODO: 20230416
 # There was some update to yq to change how the output works 
@@ -147,7 +147,7 @@ function check_data_bcorp(){
 function check_data_glassdoor(){
     if [[ ${glassdoor["\"${website//./__}\""]} ]]; then
         local id="${glassdoor["\"${website//./__}\""]}"
-        RATING=$(/snap/bin/yq -r .glasroom_rating.ratingValue "${rootdir}/glassdoor/data_json/${id//\"/}.json")
+        RATING=$(/snap/bin/yq -r -oy .glasroom_rating.ratingValue "${rootdir}/glassdoor/data_json/${id//\"/}.json")
         printf "%s\n" "glassdoor: ${id}" \
                       "glassdoor_source: \"$website\"" \
                       "glassdoor_rating: $RATING" \
@@ -159,14 +159,14 @@ function check_associated_for_graph(){
     screen -S "$connection" -p 0 -X stuff "file_out=\"${graphfile}\";main_node=\"${WIKIDATAIDS[0]}\";load(\"tools/mongoscripts/plain_node.js\");^M"
 }
 function do_record(){
+    local website="$1"; local connection="$3"
+    local outfile="hugo/content/db/${website//./}.md"
+    [[ -s "$outfile" && $SKIPGEN ]] && return
     local resort="${STATUSF}/.resort$2"
     local tempfile="${STATUSF}/.temp$2"
-    local website="$1"; local connection="$3"
     local timestart="$EPOCHSECONDS"
-    local outfile="hugo/content/db/${website//./}.md"
     local graphfile="hugo/static/connections/${website//./}.json"
 
-    [[ -s "$outfile" && $SKIPGEN ]] && return
     { printf "%s\n" "title: \"$website\"" "date: $EPOCHSECONDS";
     [[ ${tosdr["\"${website//./__}\""]} ]] && \
          printf "%s\n" "tosdr: [\"${tosdr["\"${website//./__}\""]}\"]";
@@ -211,10 +211,10 @@ function do_list(){
     done < "$1"
 }
 
-rm hugo/content/ -rf 
+# rm hugo/content/ -rf 
 rm $STATUSF/.list.* &>/dev/null
 mode=1
-divisor=10
+divisor=2
 pattern="^"
 splitnum=$(printf "%.0f" "$(bc -l <<<"$(wc -l < <(grep "$pattern" websites.list))/$divisor")")
 [[ "$mode" == 1 ]] && split -l"$splitnum" <(grep "$pattern" websites.list | shuf) $STATUSF/.list.
@@ -232,4 +232,5 @@ done
 [[ $STATUSOUT ]] && clear
 wait
 while read -r x; do screen -X -S "$x" quit >/dev/null; done < <(screen -ls 2>/dev/null | cut -d. -f2 | sed -e "s/\t.*//g")
+~/notification.sh "record_build"
 exit 0

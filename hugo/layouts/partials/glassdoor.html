@@ -5,11 +5,11 @@
 <h2 data-i18n="glassdoor.title" class='sectionTitle'>Employee Rating</h2>
 <div class="pie hideTilExpanded"></div>
 <score class="ratingOutOfFive">{{ $d.glasroom_rating.ratingValue }}</score>
-<div class="pie hideTilExpanded animate" style="--c:var(--c-light-text);--p:{{ mul (div (float $d.glasroom_rating.ratingValue) (float 5 )) 100 }};"></div>
+<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:{{ mul (div (float $d.glasroom_rating.ratingValue) (float 5 )) 100 }};"></div>
 <div class="scoreText fullBleed">
     <div>
 <div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></div>
-<table class="dataTable leftBorder">
+<table class="dataTable">
 <tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
 <tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">{{ $d.headquarters }}</td></tr>
 <tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">{{ $d.founded }}</td></tr> 

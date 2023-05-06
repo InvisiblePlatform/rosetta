@@ -57,6 +57,7 @@ exceptions=["P1142", "P1387", "P414", "P946", "P8525"]
 output.forEach( function(result){
  for (claim in result.claims) {
   result.claims[claim].forEach( function(claimer){ 
+      try {
    if (Object.keys(claimer).length > 0){
     if (exceptions.includes(claim)){
      if (claim == "P414"){
@@ -77,7 +78,9 @@ output.forEach( function(result){
        datapool[claim].data.push(claimer.mainsnak.datavalue.value+';'+claim+';'+result.id)
     }
    }
-  })
+  } catch (e){ console.error(e);};
+  }
+  )
  }
 })
 

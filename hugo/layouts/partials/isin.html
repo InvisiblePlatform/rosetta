@@ -37,19 +37,19 @@
                     {{ $outOf := index $key 1 | float }}
                     {{ $score := . | float  }}
                     <score class="ratingOutOf" style="--outOf:'/{{index $key 1}}';">{{.}}</score>
-                    <div class="pie hideTilExpanded animate" style="--c:var(--c-light-text);--p:{{ mul (div (float .) (float (index $key 1))) 100 }};"></div>
+                    <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:{{ mul (div (float .) (float (index $key 1))) 100 }};"></div>
                 {{ end }}
             {{ end }}
         {{ end }}
         <div class="scoreText fullBleed">
             <div>
-        <table class="leftBorder">
+        <table>
         {{ range $keylist, $value := . }}
             {{ if in $keylist "(" }}
                 {{ $key := split $keylist "(" }}
                 {{ if in (index $key 0 ) "Total" }}
                 {{ else }}
-                    <tr><th data-i18n='isin.{{ trim (index $key 0 | replaceRE " " "_" | lower) "_" }}'>{{ index $key 0 }}</th><td style="--outOf:'/{{index $key 1}}';" class="ratingOutOf" >{{.}}</td></tr>
+                    <tr><th data-i18n='isin.{{ trim (index $key 0 | replaceRE " " "_" | lower) "_" }}'>{{ index $key 0 }}</th><td style="--outOf:'/ {{index $key 1}}';" class="ratingOutOf" >{{.}}</td></tr>
                 {{ end }}
             {{ end }}
         {{ end }}
