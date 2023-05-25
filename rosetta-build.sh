@@ -14,9 +14,9 @@ FIELDS=( "bcorp" "emailaddress" "facebookid" "facebookpage" "gabuser"
     "reddituser" "soundcloud" "subreddit" "telegram" "tiktok" "tosdr" 
     "truthsocial" "tumblr" "twitch" "twittername" "yesg" "youtubechannelid" 
     "glassdoor_source" "glassdoor_rating" "glassdoor" "wikidata_id" 
-    "mbfc_source" "ticker")
+    "mbfc_source" "ticker" "buildtime")
 
-#sitehash=$(grep "^bbc.co.uk," rosetta/site_to_hash.csv | cut -d"," -f2 )
+# sitehash=$(grep "^ford.com," rosetta/site_to_hash.csv | cut -d"," -f2 )
 update_with_hash(){
     local sitehash=$1
     local shouldwego=
@@ -82,6 +82,9 @@ update_with_hash(){
 rm "$TEMP" "$TEMP2" "$TEMP3"
 }
 
-while read -r hash; do 
-    update_with_hash "$hash"
-done < <(cut -d, -f2 rosetta/site_to_hash.csv | sort | uniq -d )
+while read -r sitehash; do 
+    printf "%s\n" "$sitehash"
+    update_with_hash "$sitehash"
+done < <(cut -d, -f2 rosetta/site_to_hash.csv | sort -u )
+
+~/notification.sh "Rosetta Done"

@@ -61,6 +61,7 @@ time, mark, audio, video {
              height var(--animation-delay), 
          max-height var(--animation-delay), 
           transform var(--animation-delay), 
+         box-shadow var(--animation-delay), 
                 top var(--animation-delay),
                left var(--animation-delay),
              bottom var(--animation-delay),
@@ -137,10 +138,10 @@ html {
     --c-background-units: #FFF;
     --c-light-text: #343434;
     --c-heavy-text: #1A1A1A;
-    --c-interior-border: #DDDDDD;
+    --c-interior-border: #DDD;
     --c-secondary-background: #DDDDDD;
     --c-hover: #f5f5f5;
-    --c-border-color: #DDD;
+    --c-border-color: #AAA;
     --c-linky-text: #00F;
     --c-linky-text-minor: #222;
     --s-small: 160px;

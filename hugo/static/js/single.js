@@ -1,12 +1,3 @@
-var mode = 0                                                                    
-const phoneRegex = /Mobile/i;                                                   
-                                                                                
-if (phoneRegex.test(navigator.userAgent)){                                      
-    mode = 1;
-    console.log("[ Invisible Voice ]: phone mode");
-    document.getElementsByClassName("content")[0].classList.add("mobile");
-}         
-
 function send_message(type, data){
     var msg = {
         type: type,
@@ -54,6 +45,22 @@ let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
 document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
 
+var mode = 0                                                                    
+const phoneRegex = /Mobile/i;                                                   
+                                                                                
+if (phoneRegex.test(navigator.userAgent)){                                      
+    mode = 1;
+    console.log("[ Invisible Voice ]: phone mode");
+    document.getElementsByClassName("content")[0].classList.add("mobile");
+} else {
+    backButton.classList.add("show");
+    mode = 2;
+}
+
+if ( mode == 2 ){
+    closeButton.classList.add("closeExtention");
+}
+
 const spinRoundelFrames = [
  { transform: "rotate(0)" },
  { transform: "rotate(360deg)" },
@@ -75,10 +82,11 @@ let resetBack = function(){
     titleBar.style.display = "";
     settings.firstElementChild.style.top = `-${settingsOffset}`;
     networkGraph.style.visibility = 'hidden';
-    backButton.setAttribute("onclick", 'justSendBack()');
+        backButton.setAttribute("onclick", 'justSendBack()');
     backButton.style.backgroundColor = '';
-    backButton.classList.remove("show");
+    if ( mode == 1 ) backButton.classList.remove("show");
     settingsButton.style.display = 'block';
+    closeButton.style.display = "";
     titleBar.style.backgroundColor = "";
     titleBar.style.position = "";
     titleBar.style.top = "";
@@ -100,6 +108,7 @@ let loadWikipediaPage = function(x) {
     noOpen = true;
     send_message("IVClicked", "wikipedia-first-frame");
     backButton.style.backgroundColor = 'var(--c-background)';
+    graphButtons.setAttribute("style", "");
     setBack('closeWikipediaPage()');
 }
 
@@ -126,6 +135,9 @@ let loadSettings = function(x) {
         backButton.style.display = "inherit";
         backButton.style.order = "unset";
     }
+    if (mode == 2){
+        closeButton.style.display = "none";
+    }
     settings.firstElementChild.style.top = "0";
     backButton.style.backgroundColor = 'var(--c-secondary-background)';
     backButton.style.borderColor = 'var(--c-light-text)';
@@ -140,9 +152,12 @@ let loadNetworkGraph = function(x) {
     backButton.style.borderColor = 'var(--c-border-color)';
     backButton.style.backgroundColor = 'var(--c-background)';
     networkGraph.style.visibility = 'visible';
+    networkGraph.classList.add("expanded");
     if (mode == 1){
-        networkGraph.classList.add("expanded");
         noOpen = true;
+    }
+    if (mode == 2){
+        closeButton.style.display = "none";
     }
     titleBar.style.position = "fixed";
     titleBar.style.top = "0";
@@ -166,16 +181,19 @@ let closeInfoCard = function(x){
 let closeNetworkGraph = function(x){
     networkGraph.style.visibility = 'hidden';
     if (mode == 1){
-        networkGraph.classList.remove("expanded");
         noOpen = false;
     }
+    networkGraph.classList.remove("expanded");
     graphButtons.style.top = "";
     send_message("IVClicked", "back");
     resetBack();
 }
 
 let justSendBack = function(x) {
+    bw = backButton.getBoundingClientRect()['width'];
+    if ( bw == 40 || bw == 78 || mode == 1) {
     send_message("IVClicked", "back");
+    }
 }
 
 let openGenericPage = function(x){
@@ -232,29 +250,6 @@ let closeSettings = function(x) {
     } else {
        resetBack();
     }
-}
-
-let loadWikiInfo = function(x) {
-    return;
-	let url = x.firstElementChild.getAttribute("href");	
-	if (url != "null"){
-		let term = url.replace("https://en.wikipedia.org/wiki/", ""); 
-		let requestURL = "https://en.wikipedia.org/api/rest_v1/page/summary/" + term + "?redirect=true"
-		$.ajax({
-		    url: requestURL
-		  }).done(function(data) {
-			if (data.thumbnail){
-				x.lastElementChild.innerHTML = "<img class='thumbnail' width='100%' src='" + data.thumbnail.source + "'> " + data.extract_html;	
-			} else {
-				x.lastElementChild.innerHTML = data.extract_html;	
-			}
-		  }).fail(function() {
-			  console.log("oh no")
-		});
-	} else {
-		x.lastElementChild.innerHTML = x.firstElementChild.innerHTML;
-	}
-	x.removeAttribute("onmouseover");
 }
 
 var IVKeepOnScreen = localStorage.IVKeepOnScreen;
@@ -341,12 +336,29 @@ var defaultOrder = [
     { value:"isin fas", label: "Food & Agriculture Sustainability"},
     { value:"isin ssd", label: "Social & Sustainable Development"},
     { value:"goodonyou", label: "Ethical Sourcing"},
-    { value:"bcorp", label: "B corp"},
+    { value:"bcorp", label: "Bcorp"},
     { value:"tosdr-link", label: "Privacy"},
     { value:"glassdoor", label: "Employee Rating"},
     { value:"similar-site-wrapper", label: "Similar Websites"},
     { value:"social-wikidata", label: "Social Media + Email"},
 ];
+var translate = {
+"wikipedia-first-frame": "w.wikipedia",
+"networkgraph": "graph.title" ,
+"small-wikidata": "w.companyinfo",
+"mbfc-header": "mbfc.title",
+"trust-pilot": "",
+"yahoo": "esg.title",
+"isin lct": "",
+"isin fas": "",
+"isin ssd": "",
+"goodonyou": "goy.section-title",
+"bcorp": "",
+"tosdr-link": "tos.title",
+"glassdoor":"glassdoor.title",
+"similar-site-wrapper": "similar.title",
+"social-wikidata": "w.socialmedia",
+};
 var propertyOrder = localStorage.IVPropertyOrder ? JSON.parse(localStorage.IVPropertyOrder) : defaultOrder;
 slist(document.getElementById("sortlist"));
 function slist (target) {
@@ -356,6 +368,7 @@ function slist (target) {
   for (let x = 0; x < propertyOrder.length; x++){
     let value = propertyOrder[x].value;
     items[x].setAttribute("value", value);
+    items[x].setAttribute("data-i18n", translate[value]);
     items[x].innerHTML = propertyOrder[x].label;
     if (value == "networkgraph"){
         if (document.getElementById("graph-box")){
@@ -381,7 +394,9 @@ function slist (target) {
   var position = 0;
   for (let i of items) {
     position += 1;
-    i.style.order = position;
+    if (mode == 1) {
+        i.style.order = position;
+    }
     // (B1) ATTACH DRAGGABLE
     i.draggable = true;
 
@@ -401,6 +416,7 @@ function slist (target) {
       if (i != current) { i.classList.add("active"); }
     };
 
+    if (mode == 1) {
     i.addEventListener('touchmove', function(e){
         var tl = e.targetTouches[0];
         iPlace = i.getBoundingClientRect();
@@ -459,6 +475,7 @@ function slist (target) {
         }
         localStorage.IVPropertyOrder = JSON.stringify(outItems);
     });
+    }
 
     // (B4) DRAG LEAVE - REMOVE RED HIGHLIGHT
     i.ondragleave = () => {
