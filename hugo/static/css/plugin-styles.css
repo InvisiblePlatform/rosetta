@@ -1474,6 +1474,12 @@ td.biaslink {
     #wikipedia-first-frame img.iconclass {
         display: block;
     }
+    :is(#graph-box):not(.expanded):has(.graphList) > h2.sectionTitle{
+        display: block!important;
+    }
+    :is(#graph-box):not(.expanded) .graphList{
+        display: none;
+    }
 
     #backButton { width: 50%; }
     #closeButton{ display: block; }
@@ -2352,6 +2358,7 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
     font-size: 14px;
     padding: 16px 0px 24px 8px;
     font-family: 'Space Grotesk', sans-serif;
+    width: 70%;
 }
 :is(#graph-box):not(.expanded) > div.graphList li div {
 	white-space: nowrap;
@@ -2370,6 +2377,7 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 	position: absolute;
 	text-align: right;
 	transform: translate(25%,-1em );
+    opacity: 80%;
 }
 :is(#graph-box):not(.expanded) > div.graphList :nth-child(-n+5) {
     display: block;
@@ -2382,5 +2390,15 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 }
 :is(#graph-box):not(.expanded):has(.graphList) > .iconclass{
     order: 1;
-    margin: auto 27px auto 0;
+    margin: auto 20px auto 0;
+}
+:not(.mobile) > :is(#graph-box):not(.expanded):has(.graphList) > .iconclass{
+    margin-right: 0;
+}
+:not(.mobile) > :is(#graph-box):not(.expanded) > div.graphList {
+    margin-left: 0;
+    padding: 0;
+}
+:not(.mobile) > :is(#graph-box):not(.expanded) > div.graphList li i{
+    transform: translate(40%, -1em);
 }

@@ -147,16 +147,17 @@ html {
     --s-small: 160px;
     --s-medium: 640px;
     --s-large: 840px;
+    --cool-star: 50px;
 	--brightness: 0;
     --first-frame-from: rgba(255,255,255, 1);
     --first-frame-to: rgba(255,255,255, 0);
-    --cool-star: calc(50vw / 8);
     --chart-back: #DDD;
     --chart-fore: #343434;
     --button-back: #343434;
     --button-text: #FFF;
 }
 
+/* --cool-star: calc(50vw / 8); */
 html.dark-theme {
     --c-main: #08D735;
     --c-background: #1A1A1A;
