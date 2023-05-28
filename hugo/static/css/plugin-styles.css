@@ -589,7 +589,7 @@ ul {
     padding: 16px;
 }
 
-:is(#graph-box, #wikipedia-infocard-frame) img.iconclass {
+:is(#graph-box, #wikipedia-infocard-frame, #wikipedia-first-frame) img.iconclass {
     display: block;
     margin: 8px auto;
 }
@@ -2097,6 +2097,11 @@ section.expanded table:has(img.dial) tr{
     min-height: 80px;
     width: unset;
 }
+.mobile :is(#graph-box):not(.expanded):has(.graphList) {
+    height: 110px;
+    overflow-y: hidden;
+    width: unset;
+}
 .mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) > h2.sectionTitle {
     width: 50%;
     margin: auto;
@@ -2342,4 +2347,40 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
 
 #graph-container.expanded h2.sectionTitle {
     display: none;
+}
+:is(#graph-box):not(.expanded) > div.graphList {
+    font-size: 14px;
+    padding: 16px 0px 24px 8px;
+    font-family: 'Space Grotesk', sans-serif;
+}
+:is(#graph-box):not(.expanded) > div.graphList li div {
+	white-space: nowrap;
+	width: 70%;
+	margin-right:50%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	height: 1em;
+}
+:is(#graph-box):not(.expanded) > div.graphList li i{
+    font-size: 12px;
+	width: 50%;
+	height: 12px;
+	margin: auto;
+	white-space: nowrap;
+	position: absolute;
+	text-align: right;
+	transform: translate(25%,-1em );
+}
+:is(#graph-box):not(.expanded) > div.graphList :nth-child(-n+5) {
+    display: block;
+}
+:is(#graph-box):not(.expanded) > div.graphList :nth-child(n+6) {
+    display: none;
+}
+:is(#graph-box):not(.expanded):has(.graphList) > h2.sectionTitle{
+    display: none;
+}
+:is(#graph-box):not(.expanded):has(.graphList) > .iconclass{
+    order: 1;
+    margin: auto 27px auto 0;
 }

@@ -40,6 +40,23 @@ wikiframeclose.onclick = function() {
     document.getElementById("graphButtons").setAttribute("style", "top: 12px;")
 };
 
+
+const sort_byg = (field, reverse, primer) => {
+
+  const key = primer ?
+    function(x) {
+      return primer(x[field])
+    } :
+    function(x) {
+      return x[field]
+    };
+
+  reverse = !reverse ? 1 : -1;
+
+  return function(a, b) {
+    return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+  }
+}
 function getMyCentroid(element) {
     var bbox = element.getBBox();
     return [bbox.x + bbox.width/2, bbox.y + bbox.height/2];
@@ -107,6 +124,37 @@ function zoomed({ transform }) {
 }
 
 graphLoc = document.getElementById('graphLoc').innerHTML;
+
+fetch(graphLoc)
+  .then(function(response) {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Error: ' + response.status);
+    }
+  })
+  .then(function(data) {
+    // Process the JSON data
+    graphCon = data["links"];
+    graphNod = data["nodes"];
+  })
+  .catch(function(error) {
+    console.log('Error:', error);
+  });
+
+function getObjectsBySource(sourceValue, connectionList) {
+  return connectionList.filter(function(connection) {
+    return connection.source === sourceValue;
+  });
+}
+
+function getNodeById(sourceValue, nodeList) {
+  return nodeList.filter(function(node) {
+    return node.id === sourceValue;
+  });
+}
+
+
 
 d3.json(graphLoc).then(function(graph) {
     const types = Array.from(new Set(graph.links.map(d => d.type)));
@@ -176,6 +224,7 @@ d3.json(graphLoc).then(function(graph) {
     if (wikidataid == "Q") wikidataid = getMostCommon(ids);
     var wikidataidbackup = getMostCommon(ids)[1];
     if (wikidataidbackup == "Q") wikidataidbackup = getMostCommon(ids);
+
     var link = svg.append("g")
         .attr("stroke-width", 1.5)
         .attr("fill", "none")
@@ -373,7 +422,7 @@ d3.json(graphLoc).then(function(graph) {
                 wikicardframe.innerHTML = profiletext.replace(/<img/g,'<img loading=lazy ');
                 var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2><div class='scoreText'><div id='wikipedia-know' class='hideInSmal'>";
                 companyinfotext += wikifirstframe.innerHTML + "</div></div><img src='/icon/info.svg' class='iconclass' /><table><td><a href='" + wikichoice + "/wiki/" + wikidataMainWiki + "' class='source'>WIKIPEDIA</a></td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
-                wikifirstframe.innerHTML = companyinfotext;
+                wikifirstframe.innerHTML = companyinfotext.replace(/<img/g,'<img loading=lazy ');
             }).fail(function() {
                 console.log("oh no")
             });
@@ -396,7 +445,36 @@ d3.json(graphLoc).then(function(graph) {
         if (graphBox.style.display == "none") {
             graphBox.style.display = "";
         }
-
+        l1list = [];
+        try {
+            var matchingObjects = getObjectsBySource(wikidataid, graphCon);
+            for (object in matchingObjects){
+                personType = matchingObjects[object].type;
+                enlabel = getNodeById(matchingObjects[object].target, graphNod)[0].label;
+                l1list.push({"type": personType, "label": enlabel, "id": matchingObjects[object].target});
+            }
+        } catch(e) {
+            var matchingObjects = getObjectsBySource(wikidataidbackup, graphCon);
+            for (object in matchingObjects){
+                personType = matchingObjects[object].type;
+                enlabel = getNodeById(matchingObjects[object].target, graphNod)[0].label;
+                l1list.push({"type": personType, "label": enlabel, "id": matchingObjects[object].target});
+            }
+        }
+        sortedl1list = l1list.sort(sort_byg("id", true, String));
+        l1list_ids = [];
+        var list = document.createElement('div');
+        list.setAttribute('class', 'graphList');
+        for (item in sortedl1list){
+            itemData = sortedl1list[item];
+            if (!l1list_ids.includes(itemData.id)){
+            listItem = document.createElement('li');
+            listItem.innerHTML = `<div class="graphListName" >${itemData.label}</div><i>${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</i>`;
+            list.appendChild(listItem);
+            l1list_ids.push(itemData.id);
+            }
+        }
+        graphBox.appendChild(list)
     };
 
 
