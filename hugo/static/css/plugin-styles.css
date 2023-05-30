@@ -727,6 +727,7 @@ section.expanded #wikipedia-first-frame>div:before {
     display: block!important;
     padding-left: 0;
     padding-right: 0;
+    width: 100vw;
 }
 
 #wikipedia-frame div h2,
@@ -2127,6 +2128,9 @@ section.expanded table:has(img.dial) tr{
     margin: 0!important;
     display: unset;
 }
+.mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame).expanded {
+    border: 0;
+}
 
 .mobile tr:has(img.dial),
 body:has(.mobile) > *:has(.invisible-disclaimer-title) h2,
@@ -2258,6 +2262,17 @@ body:has(.mobile) > *:has(.invisible-disclaimer-title){
     display: block;
     margin: 0 auto;
     float: unset;
+}
+.expanded #wikipedia-frame figure a img,
+.expanded #wikipedia-know figure a img{
+    width: 50%;
+    height: auto;
+    margin: 0 25%;
+}
+.expanded #wikipedia-frame figure,
+.expanded #wikipedia-know figure {
+    width: 100%;
+    max-width: calc(100vw - 32px);
 }
 #wikipedia-frame:is(.floating) { 
     width: calc(100vw - 32px);

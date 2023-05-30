@@ -565,6 +565,7 @@ function slist (target) {
 }
 
 window.addEventListener('message', function(e){
+    console.log(e);
     const decoded = e.data
     var dlikeC = '';
     var likeC = '';

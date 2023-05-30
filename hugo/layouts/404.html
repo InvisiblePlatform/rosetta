@@ -1,7 +1,15 @@
-{{ define "main"}}
-    <main id="main">
-      <div>
-       <h1 id="title"><a href="{{ "" | relURL }}">Go Home</a></h1>
-      </div>
-    </main>
+{{ define "content"}}
+    <div>
+     <h1 id="title"><a href="{{ "" | relURL }}">Go Home</a></h1>
+     No page named 
+     <span id="page-url"></span>
+    </div>
+    <script>
+        // Get the current page URL
+        var pageURL = window.location.href;
+        
+        // Set the page URL as the content of the <span> element
+        document.getElementById("page-url").textContent = pageURL;
+
+    </script>
 {{ end }}
