@@ -1,22 +1,23 @@
 <!-- MediaBiasFactCheck -->
-{{ $data := getJSON "data/mbfc/combined.json" }}
-{{ $dataJ := index $data.sources . }}
-{{ $dataB := $data.biases }}
-{{ if isset $data.sources . }}
-{{ $biaskey := dict "C" "center" "L" "left" "LC" "left-center" "R" "right" "RC" "right-center" "PS" "pro-science" "FN" "fake-news" "CP" "conspiracy" "S" "satire" }}
-{{ $bias := index $biaskey $dataJ.b }}
-<section id="mbfc-header" >
-<h2 class='sectionTitle' data-i18n="mbfc.title">Media Bias</h2>
-<div class="pie hideTilExpanded"></div>
-<score class="biaslink" data-i18n="bias.{{ $bias }}">{{ (index $dataB $bias).name | title }}</score>
-<div class="scoreText">
-    <div>
-    <h3>{{ (index $dataB $bias).name }}</h3>
-    <p>{{ (index $dataB $bias).description }}</p>
-    <table>
-    <tr><td><a target="_blank" class="source blanksource" href="{{ $dataJ.u }}" >MEDIA BIAS FACT CHECKER</a></td></tr>
-    </table>
+{{ $data := getJSON "data/mbfc/combined.json" }} {{ $dataJ := index
+$data.sources . }} {{ $dataB := $data.biases }} {{ if isset $data.sources . }}
+{{ $biaskey := dict "C" "center" "L" "left" "LC" "left-center" "R" "right" "RC"
+"right-center" "PS" "pro-science" "FN" "fake-news" "CP" "conspiracy" "S"
+"satire" }} {{ $bias := index $biaskey $dataJ.b }}
+<section id="mbfc-header" class="contentSection">
+    <h2 class="sectionTitle" data-i18n="mbfc.title">Media Bias</h2>
+    <div class="pie hideTilExpanded"></div>
+    <score class="biaslink" data-i18n="bias.{{ $bias }}"
+        >{{ (index $dataB $bias).name | title }}</score
+    >
+    <div class="scoreText">
+        <div>
+            <h3>{{ (index $dataB $bias).name }}</h3>
+            <p>{{ (index $dataB $bias).description }}</p>
+            <a target="_blank" class="source blanksource" href="{{ $dataJ.u }}"
+                >MEDIA BIAS FACT CHECKER</a
+            >
+        </div>
     </div>
-</div>
 </section>
 {{ end }}

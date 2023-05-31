@@ -1,5 +1,5 @@
 {{ $props := getJSON "data/wikidata/props.json" }}
-<section id="small-wikidata" style="order:7;">
+<section id="small-wikidata" style="order:7;" class="contentSection">
 {{ $key := split . ";" }}
 <h2 class='sectionTitle'>{{ index $props (index $key 1) | title }}</h2> 
 <div class="pie hideTilExpanded"></div>
@@ -8,9 +8,7 @@
 <div class="scoreText fullBleed">
     <div>
     <h3>{{ $name }}</h3>
-    <table>
-    <tr><td><a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a></td></tr>
-    </table>
+    <a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a>
     </div>
 </div>
 </section>

@@ -1,5 +1,5 @@
 <!-- GoodOnYou -->
-<section id="goodonyou">
+<section id="goodonyou" class="contentSection">
 {{ $data := getJSON "data/goodonyou/brand_" . ".json" }}
 {{ $v := $data.pageProps.brand }}
 <h2 data-i18n="goy.section-title" class='sectionTitle'>Ethical Sourcing</h2>
@@ -15,7 +15,5 @@
     <tr><th data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOf" style="--outOf:'/4';">{{ default "unrated" ($v.price) }}</td></tr>
     </table>
 </div>
-<table>
-<tr><td><a class="source" target="_blank" href="https://directory.goodonyou.eco/brand/{{.}}">GOODONYOU.ECO</a></td></tr>
-</table>
+<a class="source" target="_blank" href="https://directory.goodonyou.eco/brand/{{.}}">GOODONYOU.ECO</a>
 </section>

@@ -1,7 +1,7 @@
 <!-- Similar Sites -->
 {{ $path := print "data/similar/sites/similar_site_" . ".json" }}
 {{ if os.FileExists $path }}
-<section id="similar-site-wrapper">
+<section id="similar-site-wrapper" class="contentSection">
 <h2 data-i18n="similar.title" class="sectionTitle" >Similar Websites</h2>
 <div class="scoreText fullBleed"><div>
 <section id="similar-sites" class="hideInSmall">
@@ -26,9 +26,7 @@
         {{ index . "Site" }}</a> <div class="percent">{{ index . "Grade" | mul 100 | math.Floor  }}</div>
 </section>
 {{ end }}
-<table>
-    <tr><td><a target="_blank" class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a></td></tr>
-</table>
+<a target="_blank" class="source" href="https://similarsites.com/site/{{ . }}" style="order:101;">SIMILARSITES.COM</a>
 </section>
     </div></div>
 </section>

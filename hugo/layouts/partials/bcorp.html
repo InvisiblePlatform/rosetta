@@ -1,5 +1,5 @@
 <!-- BCorp -->
-<section id="bcorp">
+<section id="bcorp" class="contentSection">
 {{ $path := print "data/bcorp/bcorp_" . ".json"}}
 {{ if os.FileExists $path }}
 {{ $d := getJSON $path }}
@@ -17,9 +17,7 @@
 {{ end }}
 {{ end }}
 </table>
-<table>
-<tr><td><a class="source hideInSmall" target="_blank" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a></td></tr>
-</table>
+<a class="source hideInSmall" target="_blank" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/{{ . }}">BCORP</a>
 </div>
 </div>
 

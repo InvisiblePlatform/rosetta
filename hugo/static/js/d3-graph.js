@@ -297,23 +297,22 @@ d3.json(graphLoc).then(function(graph) {
                 var wikiVars = [ 'w.wikipedia', 'company-info', "Wikipedia", 'wikipedia-know', wikifirstframe.innerHTML, '/icon/info.svg', "loadWikipediaPage()"];
                 var fullWikiUrl = `${wikichoice}/wiki/${wikidataMainWiki}`;
                 var oh = "<h2 class='sectionTitle' id='{}' data-i18n='w.wikipedia'>Wikipedia</h2>" +
-                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmal'>" +
+                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmall'>" +
                                       `${wikifirstframe.innerHTML}</div></div><img src='/icon/info.svg' class='iconclass' />` +
-                                      `<table><td><a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
-                                      "</td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                                      `<a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
+                                      "<button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
 
                 var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2>" +
                                   "<div class='scoreText'><div id='wikipedia-page' class='hideInSmall'>" + 
                                   `${wikicardframe.innerHTML}</div></div><img src='/icon/profile.svg' class='iconclass' />` + 
-                                  `<table><td><a href='${fullWikiUrl}' class='source blanksource'>` + 
-                                  "WIKIPEDIA</a></td></table>";
+                                  `<a href='${fullWikiUrl}' class='source blanksource'>WIKIPEDIA</a>`;
                 wikicardframe.innerHTML = profiletext.replace(/<img/g,'<img loading=lazy ');
 
                 var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2>" +
-                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmal'>" +
+                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmall'>" +
                                       `${wikifirstframe.innerHTML}</div></div><img src='/icon/info.svg' class='iconclass' />` +
-                                      `<table><td><a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
-                                      "</td></table><button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                                      `<a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
+                                      "<button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
 
                 wikifirstframe.innerHTML = companyinfotext.replace(/<img/g,'<img loading=lazy ');
             }).fail(function() {
@@ -331,8 +330,8 @@ d3.json(graphLoc).then(function(graph) {
         contentsLength = document.getElementsByClassName("content").length;
         lastContent = document.getElementsByClassName("content")[contentsLength - 1];
         graphBox.innerHTML = "<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2>" + 
-                             "<img src='/icon/network.svg' class='iconclass'/><table><td>" + 
-                             `<a href='https://wikidata.org/wiki/${wikidataid}' class='source blanksource'>WIKIDATA</a></td></table>`;
+                             "<img src='/icon/network.svg' class='iconclass'/>" + 
+                             `<a href='https://wikidata.org/wiki/${wikidataid}' class='source blanksource'>WIKIDATA</a>`;
         lastContent.appendChild(graphBox);
         if (graphBox.style.display == "none") graphBox.style.display = "";
         l1list = [];
@@ -355,6 +354,8 @@ d3.json(graphLoc).then(function(graph) {
         l1list_ids = [];
         var list = document.createElement('div');
         list.setAttribute('class', 'graphList');
+        graphBox.childNodes[0].classList.add("noShowTitle");
+        graphBox.childNodes[1].classList.add("graphIconOffset");
         for (item in sortedl1list){
             itemData = sortedl1list[item];
             if (!l1list_ids.includes(itemData.id)){

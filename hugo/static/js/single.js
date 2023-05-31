@@ -31,6 +31,7 @@ let coName = document.getElementsByClassName('co-name')[0];
 let blank = document.getElementsByClassName('blankForSmall')[0];
 let fullPage = document.documentElement;
 let content = document.getElementsByClassName('content')[0];
+let body = document.body;
 closeButton.setAttribute('onclick', 'closeIV()');
 
 let closeIV = function(){
@@ -52,13 +53,17 @@ if (phoneRegex.test(navigator.userAgent)){
     mode = 1;
     console.log("[ Invisible Voice ]: phone mode");
     document.getElementsByClassName("content")[0].classList.add("mobile");
+    body.classList.add("mobile");
 } else {
     backButton.classList.add("show");
     mode = 2;
+    document.getElementsByClassName("content")[0].classList.add("desktop");
+    body.classList.add("desktop");
 }
 
 if ( mode == 2 ){
     closeButton.classList.add("closeExtention");
+    settingsButton.style.right = "64px";
 }
 
 const spinRoundelFrames = [
@@ -105,6 +110,8 @@ let setBack = function(x){
 
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
+    content.classList.add('somethingIsOpen');
+    body.classList.add('somethingIsOpen');
     noOpen = true;
     send_message("IVClicked", "wikipedia-first-frame");
     backButton.style.backgroundColor = 'var(--c-background)';
@@ -114,12 +121,15 @@ let loadWikipediaPage = function(x) {
 
 let loadProfileCard = function(x) {
     infoCard.classList.add('expanded');
+    content.classList.add('somethingIsOpen');
+    body.classList.add('somethingIsOpen');
     noOpen = true;
     backButton.style.backgroundColor = 'var(--c-background)';
     send_message("IVClicked", "wikipedia-infocard-frame");
     setBack('closeInfoCard()');
 }
 let loadSettings = function(x) {
+    body.classList.add("settingsOpen");
     if (settings.style.bottom == "0px"){
         closeSettings();
         send_message("IVClicked", "unsettings");
@@ -153,6 +163,8 @@ let loadNetworkGraph = function(x) {
     backButton.style.backgroundColor = 'var(--c-background)';
     networkGraph.style.visibility = 'visible';
     networkGraph.classList.add("expanded");
+    content.classList.add('somethingIsOpen');
+    body.classList.add('somethingIsOpen');
     if (mode == 1){
         noOpen = true;
     }
@@ -170,11 +182,15 @@ let loadNetworkGraph = function(x) {
 
 let closeWikipediaPage = function(x){
     wikipediaPage.classList.remove('expanded');
+    content.classList.remove('somethingIsOpen');
+    body.classList.remove('somethingIsOpen');
     noOpen = false;
     resetBack();
 }
 let closeInfoCard = function(x){
     infoCard.classList.remove('expanded');
+    content.classList.remove('somethingIsOpen');
+    body.classList.remove('somethingIsOpen');
     noOpen = false;
     resetBack();
 }
@@ -184,6 +200,8 @@ let closeNetworkGraph = function(x){
         noOpen = false;
     }
     networkGraph.classList.remove("expanded");
+    content.classList.remove('somethingIsOpen');
+    body.classList.remove('somethingIsOpen');
     graphButtons.style.top = "";
     send_message("IVClicked", "back");
     resetBack();
@@ -211,6 +229,8 @@ let openGenericPage = function(x){
     element.style.top = bb['y'] + "px";
     element.style.left = bb['x'] + "px";
     element.classList.add('expanded');
+    content.classList.add('somethingIsOpen');
+    body.classList.add('somethingIsOpen');
     noOpen = true;
     blank.style.order = element.style.order;
     blank.style.display = "block";
@@ -231,11 +251,14 @@ let closeGenericPage = function(x){
     blank.style.order = 0;
     blank.style.display = "none";
     element.classList.remove('expanded');
+    content.classList.remove('somethingIsOpen');
+    body.classList.remove('somethingIsOpen');
     noOpen = false;
     resetBack();
 }
 
 let closeSettings = function(x) {
+    body.classList.remove("settingsOpen");
     if (mode == "1"){
         backButton.style.order = "2";
     }

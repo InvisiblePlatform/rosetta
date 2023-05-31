@@ -1,6 +1,6 @@
 {{ with $path := print "data/glassdoor/data_json/" . ".json"}}
 {{ if os.FileExists . }}
-<section id="glassdoor">
+<section id="glassdoor" class="contentSection">
 {{ $d := getJSON . }}
 <h2 data-i18n="glassdoor.title" class='sectionTitle'>Employee Rating</h2>
 <div class="pie hideTilExpanded"></div>
@@ -17,9 +17,7 @@
 <tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">{{ $d.revenue }}</td></tr>
 <tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">{{ $d.size }}</td></tr>
 </table>
-<table>
-<tr><td><a class="source hideInSmall" target="_blank" href="{{ $d.url }}">GLASSDOOR</a></td></tr>
-</table>
+<a class="source hideInSmall" target="_blank" href="{{ $d.url }}">GLASSDOOR</a>
 </div>
 </div>
 {{ end }}

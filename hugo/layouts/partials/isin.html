@@ -25,7 +25,7 @@
   {{ end }}
 {{ if eq $path "data/static/2022-January_Just-Transition-Assessment_Datasheet_SocialData.json" }}
 {{ else }}
-<section id='{{ $source.Get "id" }}'>
+<section id='{{ $source.Get "id" }}' class="contentSection">
     <h2 class="sectionTitle" data-i18n='{{ $source.Get "id" | replaceRE " " "." }}' >{{ $source.Get "title" }}</h2>
     <div class="pie hideTilExpanded"></div>
     {{ $data := getJSON $path }}
@@ -55,11 +55,9 @@
         {{ end }}
         </table>
     {{ end }}
-    <table>
-    <tr><td><a target="_blank" class="source" href='{{ $source.Get "source" }}'>WORLDBENCHMARK</a></td></tr>
-    </table>
-            </div>
-            </div>
+    <a target="_blank" class="source" href='{{ $source.Get "source" }}'>WORLDBENCHMARK</a>
+    </div>
+    </div>
 </section>
 {{ end }}
 {{ end }}

@@ -1,7 +1,7 @@
 {{ $path := print "data/yahoo/" . ".json"}}
 {{ if os.FileExists $path }}
 {{ $grade := newScratch }}
-<section id="yahoo">
+<section id="yahoo" class="contentSection">
 {{ $d := (getJSON $path).quoteSummary.result }}
 <h2 data-i18n='esg.title' class='sectionTitle'>ESG Risk</h2>
 <div class="pie hideTilExpanded"></div>
@@ -73,9 +73,7 @@
     </tr>
 </table>
 </div>
-<table>
-<tr><td><a target="_blank" class="source hideInSmall" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a></td></tr>
-</table>
+<a target="_blank" class="source hideInSmall" href="https://finance.yahoo.com/quote/{{ . }}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a>
 </div>
 </section>
 {{ end }}
