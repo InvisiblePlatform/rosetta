@@ -1,0 +1,2846 @@
+{
+    "US88579Y1010": {
+        "ISIN": "US88579Y1010",
+        "name": "3M Company",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/3m-company",
+        "totalscr": "17.2",
+        "govandstrat": "18.7",
+        "ecoandbio": "14.8",
+        "socialincl": "20.4"
+    },
+    "GB0030927254": {
+        "ISIN": "GB0030927254",
+        "name": "Asos",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/asos",
+        "totalscr": "13.4",
+        "govandstrat": "25.0",
+        "ecoandbio": "2.9",
+        "socialincl": "25.3"
+    },
+    "US00287Y1091": {
+        "ISIN": "US00287Y1091",
+        "name": "AbbVie",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/abbvie",
+        "totalscr": "15.2",
+        "govandstrat": "23.7",
+        "ecoandbio": "12.4",
+        "socialincl": "16.4"
+    },
+    "US0028962076": {
+        "ISIN": "US0028962076",
+        "name": "Abercrombie & Fitch",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/abercrombie-fitch-2",
+        "totalscr": "11.0",
+        "govandstrat": "12.5",
+        "ecoandbio": "9.0",
+        "socialincl": "13.4"
+    },
+    "ES0125220311": {
+        "ISIN": "ES0125220311",
+        "name": "ACCIONA",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/acciona",
+        "totalscr": "42.0",
+        "govandstrat": "73.7",
+        "ecoandbio": "25.8",
+        "socialincl": "54.9"
+    },
+    "ES0167050915": {
+        "ISIN": "ES0167050915",
+        "name": "ACS Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/acs-group",
+        "totalscr": "23.0",
+        "govandstrat": "36.2",
+        "ecoandbio": "15.6",
+        "socialincl": "29.3"
+    },
+    "DE000A1EWWW0": {
+        "ISIN": "DE000A1EWWW0",
+        "name": "Adidas",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/adidas-4",
+        "totalscr": "25.6",
+        "govandstrat": "23.7",
+        "ecoandbio": "11.3",
+        "socialincl": "48.7"
+    },
+    "US00766T1007": {
+        "ISIN": "US00766T1007",
+        "name": "AECOM",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/aecom",
+        "totalscr": "12.8",
+        "govandstrat": "17.5",
+        "ecoandbio": "5.8",
+        "socialincl": "21.9"
+    },
+    "FR0000120073": {
+        "ISIN": "FR0000120073",
+        "name": "Air Liquide",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/air-liquide",
+        "totalscr": "27.3",
+        "govandstrat": "46.2",
+        "ecoandbio": "15.9",
+        "socialincl": "37.7"
+    },
+    "NL0013267909": {
+        "ISIN": "NL0013267909",
+        "name": "Akzo Nobel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/akzo-nobel",
+        "totalscr": "21.1",
+        "govandstrat": "18.7",
+        "ecoandbio": "9.6",
+        "socialincl": "40.2"
+    },
+    "US0138721065": {
+        "ISIN": "US0138721065",
+        "name": "Alcoa",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/alcoa",
+        "totalscr": "31.0",
+        "govandstrat": "35.0",
+        "ecoandbio": "24.9",
+        "socialincl": "38.8"
+    },
+    "JE00BJ1F3079": {
+        "ISIN": "JE00BJ1F3079",
+        "name": "Amcor",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/amcor",
+        "totalscr": "14.0",
+        "govandstrat": "30.0",
+        "ecoandbio": "10.4",
+        "socialincl": "13.4"
+    },
+    "": {
+        "ISIN": "",
+        "name": "Yatai Building Materials",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/yatai-building-materials",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "US02553E1064": {
+        "ISIN": "US02553E1064",
+        "name": "American Eagle Outfitters",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/american-eagle-outfitters-3",
+        "totalscr": "18.3",
+        "govandstrat": "23.7",
+        "ecoandbio": "18.1",
+        "socialincl": "16.4"
+    },
+    "CNE0000019V8": {
+        "ISIN": "CNE0000019V8",
+        "name": "Anhui Conch Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/anhui-conch-cement",
+        "totalscr": "6.7",
+        "govandstrat": "23.7",
+        "ecoandbio": "3.7",
+        "socialincl": "4.5"
+    },
+    "LU1598757687": {
+        "ISIN": "LU1598757687",
+        "name": "ArcelorMittal",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/arcelormittal-2",
+        "totalscr": "18.1",
+        "govandstrat": "31.5",
+        "ecoandbio": "14.2",
+        "socialincl": "18.9"
+    },
+    "US03966V1070": {
+        "ISIN": "US03966V1070",
+        "name": "Arconic",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/arconic",
+        "totalscr": "14.5",
+        "govandstrat": "6.2",
+        "ecoandbio": "13.0",
+        "socialincl": "20.4"
+    },
+    "LU1565283667": {
+        "ISIN": "LU1565283667",
+        "name": "Ardagh Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ardagh-group",
+        "totalscr": "14.0",
+        "govandstrat": "23.7",
+        "ecoandbio": "11.9",
+        "socialincl": "13.4"
+    },
+    "FR0010313833": {
+        "ISIN": "FR0010313833",
+        "name": "Arkema",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/arkema",
+        "totalscr": "24.5",
+        "govandstrat": "40.0",
+        "ecoandbio": "22.9",
+        "socialincl": "20.8"
+    },
+    "JP3111200006": {
+        "ISIN": "JP3111200006",
+        "name": "Asahi Kasei Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/asahi-kasei-corporation",
+        "totalscr": "20.6",
+        "govandstrat": "23.7",
+        "ecoandbio": "21.5",
+        "socialincl": "17.9"
+    },
+    "US04351G2003": {
+        "ISIN": "US04351G2003",
+        "name": "Ascena Retail Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ascena-retail-group-2",
+        "totalscr": "3.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "8.9"
+    },
+    "TW0001102002": {
+        "ISIN": "TW0001102002",
+        "name": "Asia Cement Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/asia-cement-corporation",
+        "totalscr": "21.7",
+        "govandstrat": "51.2",
+        "ecoandbio": "18.7",
+        "socialincl": "14.4"
+    },
+    "JP3118000003": {
+        "ISIN": "JP3118000003",
+        "name": "ASICS",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/asics",
+        "totalscr": "17.4",
+        "govandstrat": "35.0",
+        "ecoandbio": "12.6",
+        "socialincl": "17.9"
+    },
+    "ZAE000066692": {
+        "ISIN": "ZAE000066692",
+        "name": "Aspen Pharmacare",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/aspen-pharmacare",
+        "totalscr": "15.6",
+        "govandstrat": "38.7",
+        "ecoandbio": "7.2",
+        "socialincl": "19.3"
+    },
+    "JP3942400007": {
+        "ISIN": "JP3942400007",
+        "name": "Astellas Pharma",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/astellas-pharma",
+        "totalscr": "20.6",
+        "govandstrat": "35.0",
+        "ecoandbio": "18.7",
+        "socialincl": "17.9"
+    },
+    "GB0009895292": {
+        "ISIN": "GB0009895292",
+        "name": "AstraZeneca",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/astrazeneca",
+        "totalscr": "27.4",
+        "govandstrat": "46.2",
+        "ecoandbio": "24.1",
+        "socialincl": "25.0"
+    },
+    "INE406A01037": {
+        "ISIN": "INE406A01037",
+        "name": "Aurobindo Pharma",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/aurobindo-pharma",
+        "totalscr": "13.6",
+        "govandstrat": "28.7",
+        "ecoandbio": "17.4",
+        "socialincl": "1.5"
+    },
+    "DE0006766504": {
+        "ISIN": "DE0006766504",
+        "name": "Aurubis",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/aurubis",
+        "totalscr": "24.9",
+        "govandstrat": "33.7",
+        "ecoandbio": "19.7",
+        "socialincl": "29.4"
+    },
+    "US0536111091": {
+        "ISIN": "US0536111091",
+        "name": "Avery Dennison Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/avery-dennison-corporation",
+        "totalscr": "21.1",
+        "govandstrat": "25.0",
+        "ecoandbio": "21.3",
+        "socialincl": "19.3"
+    },
+    "GB0000961622": {
+        "ISIN": "GB0000961622",
+        "name": "Balfour Beatty",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/balfour-beatty",
+        "totalscr": "16.5",
+        "govandstrat": "30.0",
+        "ecoandbio": "9.6",
+        "socialincl": "21.9"
+    },
+    "US0584981064": {
+        "ISIN": "US0584981064",
+        "name": "Ball Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ball-corporation",
+        "totalscr": "15.2",
+        "govandstrat": "0.0",
+        "ecoandbio": "12.9",
+        "socialincl": "24.9"
+    },
+    "NL0000337319": {
+        "ISIN": "NL0000337319",
+        "name": "Royal BAM Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/royal-bam-group",
+        "totalscr": "16.4",
+        "govandstrat": "40.0",
+        "ecoandbio": "10.3",
+        "socialincl": "16.4"
+    },
+    "DE000BASF111": {
+        "ISIN": "DE000BASF111",
+        "name": "BASF",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bbasf-4",
+        "totalscr": "29.0",
+        "govandstrat": "37.7",
+        "ecoandbio": "28.3",
+        "socialincl": "26.8"
+    },
+    "DE000BAY0017": {
+        "ISIN": "DE000BAY0017",
+        "name": "Bayer",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bayer",
+        "totalscr": "36.4",
+        "govandstrat": "75.5",
+        "ecoandbio": "30.2",
+        "socialincl": "30.9"
+    },
+    "CNE1000010M4": {
+        "ISIN": "CNE1000010M4",
+        "name": "BBMG Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bbmg-corporation",
+        "totalscr": "5.3",
+        "govandstrat": "23.7",
+        "ecoandbio": "2.9",
+        "socialincl": "1.5"
+    },
+    "US08579W1036": {
+        "ISIN": "US08579W1036",
+        "name": "Berry Global",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/berry-global",
+        "totalscr": "28.0",
+        "govandstrat": "35.0",
+        "ecoandbio": "27.5",
+        "socialincl": "25.9"
+    },
+    "AU000000BHP4": {
+        "ISIN": "AU000000BHP4",
+        "name": "BHP Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bhp-group-2",
+        "totalscr": "26.1",
+        "govandstrat": "25.0",
+        "ecoandbio": "16.1",
+        "socialincl": "42.3"
+    },
+    "US09739D1000": {
+        "ISIN": "US09739D1000",
+        "name": "Boise Cascade Company",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/boise-cascade-company",
+        "totalscr": "5.2",
+        "govandstrat": "12.5",
+        "ecoandbio": "0.0",
+        "socialincl": "10.4"
+    },
+    "AU000000BLD2": {
+        "ISIN": "AU000000BLD2",
+        "name": "Boral",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/boral",
+        "totalscr": "19.8",
+        "govandstrat": "35.0",
+        "ecoandbio": "17.2",
+        "socialincl": "17.9"
+    },
+    "FR0000120503": {
+        "ISIN": "FR0000120503",
+        "name": "Bouygues Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bouygues-group",
+        "totalscr": "16.8",
+        "govandstrat": "28.7",
+        "ecoandbio": "14.0",
+        "socialincl": "16.4"
+    },
+    "JP3830800003": {
+        "ISIN": "JP3830800003",
+        "name": "Bridgestone",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bridgestone",
+        "totalscr": "32.7",
+        "govandstrat": "23.7",
+        "ecoandbio": "23.4",
+        "socialincl": "51.0"
+    },
+    "US1101221083": {
+        "ISIN": "US1101221083",
+        "name": "Bristol Myers Squibb",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bristol-myers-squibb",
+        "totalscr": "19.6",
+        "govandstrat": "40.0",
+        "ecoandbio": "16.5",
+        "socialincl": "16.4"
+    },
+    "US12008R1077": {
+        "ISIN": "US12008R1077",
+        "name": "Builders FirstSource",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/builders-firstsource",
+        "totalscr": "4.7",
+        "govandstrat": "6.2",
+        "ecoandbio": "1.6",
+        "socialincl": "8.9"
+    },
+    "ID1000068703": {
+        "ISIN": "ID1000068703",
+        "name": "Bumi Resources",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bumi-resources",
+        "totalscr": "11.8",
+        "govandstrat": "27.5",
+        "ecoandbio": "8.0",
+        "socialincl": "11.5"
+    },
+    "IT0001347308": {
+        "ISIN": "IT0001347308",
+        "name": "Buzzi Unicem",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/buzzi-unicem",
+        "totalscr": "8.8",
+        "govandstrat": "23.7",
+        "ecoandbio": "3.0",
+        "socialincl": "11.9"
+    },
+    "VGG1890L1076": {
+        "ISIN": "VGG1890L1076",
+        "name": "Capri Holdings",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/capri-holdings-2",
+        "totalscr": "8.0",
+        "govandstrat": "17.5",
+        "ecoandbio": "2.1",
+        "socialincl": "13.4"
+    },
+    "US1462291097": {
+        "ISIN": "US1462291097",
+        "name": "Carter's",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/carters-4",
+        "totalscr": "14.4",
+        "govandstrat": "25.0",
+        "ecoandbio": "9.6",
+        "socialincl": "17.9"
+    },
+    "US1508701034": {
+        "ISIN": "US1508701034",
+        "name": "Celanese",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/celanese",
+        "totalscr": "13.5",
+        "govandstrat": "25.0",
+        "ecoandbio": "6.1",
+        "socialincl": "20.4"
+    },
+    "MXP225611567": {
+        "ISIN": "MXP225611567",
+        "name": "CEMEX",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/cemex",
+        "totalscr": "35.0",
+        "govandstrat": "70.0",
+        "ecoandbio": "20.1",
+        "socialincl": "44.2"
+    },
+    "TW0002105004": {
+        "ISIN": "TW0002105004",
+        "name": "Cheng Shin Rubber",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/cheng-shin-rubber",
+        "totalscr": "11.6",
+        "govandstrat": "21.2",
+        "ecoandbio": "10.8",
+        "socialincl": "8.9"
+    },
+    "CNE100001FN5": {
+        "ISIN": "CNE100001FN5",
+        "name": "China Communications Construction",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-communications-construction",
+        "totalscr": "0.5",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "1.5"
+    },
+    "CNE1000023C8": {
+        "ISIN": "CNE1000023C8",
+        "name": "China Energy Engineering Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-energy-engineering-group",
+        "totalscr": "6.6",
+        "govandstrat": "16.2",
+        "ecoandbio": "7.4",
+        "socialincl": "1.5"
+    },
+    "KYG211501005": {
+        "ISIN": "KYG211501005",
+        "name": "China Hongqiao Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-hongqiao-group",
+        "totalscr": "7.2",
+        "govandstrat": "10.0",
+        "ecoandbio": "10.2",
+        "socialincl": "1.5"
+    },
+    "KYG2116M1015": {
+        "ISIN": "KYG2116M1015",
+        "name": "China Shanshui Cement Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-shanshui-cement-group",
+        "totalscr": "8.3",
+        "govandstrat": "5.0",
+        "ecoandbio": "12.6",
+        "socialincl": "3.0"
+    },
+    "CNE100000F46": {
+        "ISIN": "CNE100000F46",
+        "name": "China State Construction Engineering",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-state-construction-engineering",
+        "totalscr": "0.9",
+        "govandstrat": "6.2",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "TW0002002003": {
+        "ISIN": "TW0002002003",
+        "name": "China Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-steel",
+        "totalscr": "25.2",
+        "govandstrat": "50.0",
+        "ecoandbio": "32.0",
+        "socialincl": "4.5"
+    },
+    "CNE100000H77": {
+        "ISIN": "CNE100000H77",
+        "name": "China West Construction Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-west-construction-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": null
+    },
+    "US1985161066": {
+        "ISIN": "US1985161066",
+        "name": "Columbia Sportswear",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/columbia-sportswear-2",
+        "totalscr": "15.4",
+        "govandstrat": "11.2",
+        "ecoandbio": "13.3",
+        "socialincl": "20.4"
+    },
+    "DE0005439004": {
+        "ISIN": "DE0005439004",
+        "name": "Continental",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/continental",
+        "totalscr": "16.8",
+        "govandstrat": "17.5",
+        "ecoandbio": "9.5",
+        "socialincl": "28.0"
+    },
+    "DE0006062144": {
+        "ISIN": "DE0006062144",
+        "name": "Covestro",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/covestro",
+        "totalscr": "21.8",
+        "govandstrat": "30.0",
+        "ecoandbio": "12.8",
+        "socialincl": "32.7"
+    },
+    "IE0001827041": {
+        "ISIN": "IE0001827041",
+        "name": "CRH",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/crh",
+        "totalscr": "29.0",
+        "govandstrat": "60.5",
+        "ecoandbio": "16.2",
+        "socialincl": "36.2"
+    },
+    "US2283681060": {
+        "ISIN": "US2283681060",
+        "name": "Crown Holdings",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/crown-holdings",
+        "totalscr": "14.2",
+        "govandstrat": "12.5",
+        "ecoandbio": "12.4",
+        "socialincl": "17.9"
+    },
+    "US23331A1097": {
+        "ISIN": "US23331A1097",
+        "name": "D.R. Horton",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/d-r-horton",
+        "totalscr": "2.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "6.0"
+    },
+    "KR7047040001": {
+        "ISIN": "KR7047040001",
+        "name": "Daewoo Engineering & Construction",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/daewoo-engineering-construction",
+        "totalscr": "8.9",
+        "govandstrat": "16.2",
+        "ecoandbio": "6.1",
+        "socialincl": "10.4"
+    },
+    "JP3505000004": {
+        "ISIN": "JP3505000004",
+        "name": "Daiwa House Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/daiwa-house-group",
+        "totalscr": "28.5",
+        "govandstrat": "45.0",
+        "ecoandbio": "33.1",
+        "socialincl": "14.9"
+    },
+    "INE00R701025": {
+        "ISIN": "INE00R701025",
+        "name": "Dalmia Bharat",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/dalmia-bharat",
+        "totalscr": "13.9",
+        "govandstrat": "40.0",
+        "ecoandbio": "15.1",
+        "socialincl": "1.5"
+    },
+    "US2505651081": {
+        "ISIN": "US2505651081",
+        "name": "Designer Brands",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/designer-brands",
+        "totalscr": "3.5",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "10.4"
+    },
+    "JP3493400000": {
+        "ISIN": "JP3493400000",
+        "name": "DIC Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/dic-corporation",
+        "totalscr": "17.6",
+        "govandstrat": "28.7",
+        "ecoandbio": "19.4",
+        "socialincl": "10.4"
+    },
+    "US2605571031": {
+        "ISIN": "US2605571031",
+        "name": "DOW",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/dow",
+        "totalscr": "23.3",
+        "govandstrat": "41.2",
+        "ecoandbio": "18.8",
+        "socialincl": "23.4"
+    },
+    "GB0008220112": {
+        "ISIN": "GB0008220112",
+        "name": "DS Smith",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ds-smith",
+        "totalscr": "23.1",
+        "govandstrat": "23.7",
+        "ecoandbio": "23.5",
+        "socialincl": "22.3"
+    },
+    "US26614N1028": {
+        "ISIN": "US26614N1028",
+        "name": "DuPont",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/dupont",
+        "totalscr": "18.1",
+        "govandstrat": "35.0",
+        "ecoandbio": "11.3",
+        "socialincl": "21.9"
+    },
+    "US2774321002": {
+        "ISIN": "US2774321002",
+        "name": "Eastman Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/eastman-chemical",
+        "totalscr": "24.3",
+        "govandstrat": "30.0",
+        "ecoandbio": "24.1",
+        "socialincl": "22.4"
+    },
+    "FR0000130452": {
+        "ISIN": "FR0000130452",
+        "name": "Eiffage",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/eiffage",
+        "totalscr": "15.3",
+        "govandstrat": "12.5",
+        "ecoandbio": "19.2",
+        "socialincl": "10.4"
+    },
+    "US5324571083": {
+        "ISIN": "US5324571083",
+        "name": "Eli Lilly and Company",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/eli-lilly-and-company",
+        "totalscr": "19.1",
+        "govandstrat": "25.0",
+        "ecoandbio": "24.1",
+        "socialincl": "8.9"
+    },
+    "US29084Q1004": {
+        "ISIN": "US29084Q1004",
+        "name": "EMCOR Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/emcor-group",
+        "totalscr": "7.4",
+        "govandstrat": "5.0",
+        "ecoandbio": "3.2",
+        "socialincl": "14.9"
+    },
+    "DE000EVNK013": {
+        "ISIN": "DE000EVNK013",
+        "name": "Evonik",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/evonik-3",
+        "totalscr": "20.1",
+        "govandstrat": "28.7",
+        "ecoandbio": "16.6",
+        "socialincl": "22.3"
+    },
+    "GB00B71N6K86": {
+        "ISIN": "GB00B71N6K86",
+        "name": "Evraz",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/evraz",
+        "totalscr": "24.1",
+        "govandstrat": "41.2",
+        "ecoandbio": "21.1",
+        "socialincl": "21.9"
+    },
+    "JP3802300008": {
+        "ISIN": "JP3802300008",
+        "name": "Fast Retailing",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/fast-retailing-4",
+        "totalscr": "39.4",
+        "govandstrat": "51.2",
+        "ecoandbio": "34.8",
+        "socialincl": "41.8"
+    },
+    "ES0118900010": {
+        "ISIN": "ES0118900010",
+        "name": "Ferrovial",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ferrovial",
+        "totalscr": "27.6",
+        "govandstrat": "30.0",
+        "ecoandbio": "29.4",
+        "socialincl": "23.8"
+    },
+    "NZFBUE0001S0": {
+        "ISIN": "NZFBUE0001S0",
+        "name": "Fletcher Building",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/fletcher-building",
+        "totalscr": "11.8",
+        "govandstrat": "18.7",
+        "ecoandbio": "6.1",
+        "socialincl": "17.9"
+    },
+    "US3434121022": {
+        "ISIN": "US3434121022",
+        "name": "Fluor",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/fluor",
+        "totalscr": "14.5",
+        "govandstrat": "28.7",
+        "ecoandbio": "10.0",
+        "socialincl": "15.9"
+    },
+    "TW0001301000": {
+        "ISIN": "TW0001301000",
+        "name": "Formosa Plastics",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/formosa-plastics",
+        "totalscr": "11.8",
+        "govandstrat": "32.5",
+        "ecoandbio": "9.2",
+        "socialincl": "7.4"
+    },
+    "US3448491049": {
+        "ISIN": "US3448491049",
+        "name": "Foot Locker",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/foot-locker-2",
+        "totalscr": "10.8",
+        "govandstrat": "18.7",
+        "ecoandbio": "2.6",
+        "socialincl": "20.4"
+    },
+    "US35671D8570": {
+        "ISIN": "US35671D8570",
+        "name": "Freeport-McMoRan",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/freeport-mcmoran-2",
+        "totalscr": "24.1",
+        "govandstrat": "30.0",
+        "ecoandbio": "11.5",
+        "socialincl": "41.7"
+    },
+    "BMG5485F1692": {
+        "ISIN": "BMG5485F1692",
+        "name": "Fung Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/fung-group-3",
+        "totalscr": "3.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "8.9"
+    },
+    "US3647601083": {
+        "ISIN": "US3647601083",
+        "name": "Gap",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gap-2",
+        "totalscr": "34.6",
+        "govandstrat": "36.2",
+        "ecoandbio": "29.3",
+        "socialincl": "42.3"
+    },
+    "US36237H1014": {
+        "ISIN": "US36237H1014",
+        "name": "G-III Apparel Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/g-iii-apparel-group",
+        "totalscr": "3.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "8.9"
+    },
+    "CA3759161035": {
+        "ISIN": "CA3759161035",
+        "name": "Gildan Activewear",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gildan-activewear-2",
+        "totalscr": "36.9",
+        "govandstrat": "41.2",
+        "ecoandbio": "26.7",
+        "socialincl": "51.3"
+    },
+    "US3755581036": {
+        "ISIN": "US3755581036",
+        "name": "Gilead Sciences",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gilead-sciences",
+        "totalscr": "14.4",
+        "govandstrat": "12.5",
+        "ecoandbio": "11.7",
+        "socialincl": "19.3"
+    },
+    "JE00B4T3BW64": {
+        "ISIN": "JE00B4T3BW64",
+        "name": "Glencore",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/glencore-3",
+        "totalscr": "33.8",
+        "govandstrat": "51.0",
+        "ecoandbio": "19.1",
+        "socialincl": "50.1"
+    },
+    "US3825501014": {
+        "ISIN": "US3825501014",
+        "name": "Goodyear Tire & Rubber",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/goodyear-tire-rubber",
+        "totalscr": "18.5",
+        "govandstrat": "40.0",
+        "ecoandbio": "9.5",
+        "socialincl": "24.1"
+    },
+    "US3886891015": {
+        "ISIN": "US3886891015",
+        "name": "Graphic Packaging International",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/graphic-packaging-international",
+        "totalscr": "20.4",
+        "govandstrat": "41.2",
+        "ecoandbio": "16.9",
+        "socialincl": "17.4"
+    },
+    "COT09PA00035": {
+        "ISIN": "COT09PA00035",
+        "name": "Cementos Argos",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/cementos-argos",
+        "totalscr": "24.1",
+        "govandstrat": "40.0",
+        "ecoandbio": "18.3",
+        "socialincl": "26.8"
+    },
+    "MXP370841019": {
+        "ISIN": "MXP370841019",
+        "name": "Grupo Mexico",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/grupo-mexico-2",
+        "totalscr": "26.3",
+        "govandstrat": "35.0",
+        "ecoandbio": "17.4",
+        "socialincl": "36.8"
+    },
+    "KR7006360002": {
+        "ISIN": "KR7006360002",
+        "name": "GS Engineering & Construction",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gs-engineering-construction",
+        "totalscr": "20.9",
+        "govandstrat": "45.0",
+        "ecoandbio": "19.5",
+        "socialincl": "13.4"
+    },
+    "GB0009252882": {
+        "ISIN": "GB0009252882",
+        "name": "GSK",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gsk",
+        "totalscr": "29.4",
+        "govandstrat": "51.2",
+        "ecoandbio": "24.5",
+        "socialincl": "28.3"
+    },
+    "US4016171054": {
+        "ISIN": "US4016171054",
+        "name": "Guess?",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/guess",
+        "totalscr": "11.7",
+        "govandstrat": "33.7",
+        "ecoandbio": "9.7",
+        "socialincl": "6.0"
+    },
+    "SE0000106270": {
+        "ISIN": "SE0000106270",
+        "name": "Hennes & Mauritz (H&M)",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hennes-mauritz-hm-2",
+        "totalscr": "32.8",
+        "govandstrat": "43.7",
+        "ecoandbio": "21.2",
+        "socialincl": "46.8"
+    },
+    "US4103451021": {
+        "ISIN": "US4103451021",
+        "name": "Hanesbrands",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hanesbrands-3",
+        "totalscr": "20.6",
+        "govandstrat": "12.5",
+        "ecoandbio": "15.8",
+        "socialincl": "31.3"
+    },
+    "KR7161390000": {
+        "ISIN": "KR7161390000",
+        "name": "Hankook Tire & Technology",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hankook-tire-technology",
+        "totalscr": "20.6",
+        "govandstrat": "45.0",
+        "ecoandbio": "16.0",
+        "socialincl": "17.9"
+    },
+    "JP3777800008": {
+        "ISIN": "JP3777800008",
+        "name": "Hanwa",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hanwa",
+        "totalscr": "3.2",
+        "govandstrat": "12.5",
+        "ecoandbio": "1.0",
+        "socialincl": "3.0"
+    },
+    "KR7009830001": {
+        "ISIN": "KR7009830001",
+        "name": "Hanwha Solutions",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hanwha-solutions",
+        "totalscr": "16.5",
+        "govandstrat": "28.7",
+        "ecoandbio": "17.3",
+        "socialincl": "10.4"
+    },
+    "JP3768600003": {
+        "ISIN": "JP3768600003",
+        "name": "Haseko Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/haseko-corporation",
+        "totalscr": "11.4",
+        "govandstrat": "18.7",
+        "ecoandbio": "11.1",
+        "socialincl": "8.9"
+    },
+    "DE0006047004": {
+        "ISIN": "DE0006047004",
+        "name": "Heidelberg Materials",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/heidelbergcement-2",
+        "totalscr": "22.2",
+        "govandstrat": "36.0",
+        "ecoandbio": "13.8",
+        "socialincl": "29.9"
+    },
+    "CNE0000018V0": {
+        "ISIN": "CNE0000018V0",
+        "name": "Hengli Petrochemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hengli-petrochemical",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "DE0006048432": {
+        "ISIN": "DE0006048432",
+        "name": "Henkel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/henkel",
+        "totalscr": "27.0",
+        "govandstrat": "45.0",
+        "ecoandbio": "27.4",
+        "socialincl": "19.3"
+    },
+    "FR0000052292": {
+        "ISIN": "FR0000052292",
+        "name": "Hermes International",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hermes-international-2",
+        "totalscr": "26.9",
+        "govandstrat": "36.2",
+        "ecoandbio": "25.8",
+        "socialincl": "24.9"
+    },
+    "KR7005010004": {
+        "ISIN": "KR7005010004",
+        "name": "HBIS Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hbis-group-hesteel",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "INE038A01020": {
+        "ISIN": "INE038A01020",
+        "name": "Hindalco Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hindalco-industries",
+        "totalscr": "22.5",
+        "govandstrat": "40.0",
+        "ecoandbio": "20.1",
+        "socialincl": "19.3"
+    },
+    "DE000A1PHFF7": {
+        "ISIN": "DE000A1PHFF7",
+        "name": "Hugo Boss",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hugo-boss-2",
+        "totalscr": "21.1",
+        "govandstrat": "25.0",
+        "ecoandbio": "13.6",
+        "socialincl": "31.2"
+    },
+    "US4470111075": {
+        "ISIN": "US4470111075",
+        "name": "Huntsman Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/huntsman-corporation",
+        "totalscr": "16.7",
+        "govandstrat": "18.7",
+        "ecoandbio": "12.6",
+        "socialincl": "22.3"
+    },
+    "KR7004020004": {
+        "ISIN": "KR7004020004",
+        "name": "Hyundai Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/hyundai-steel",
+        "totalscr": "23.8",
+        "govandstrat": "33.7",
+        "ecoandbio": "15.6",
+        "socialincl": "32.7"
+    },
+    "INE383A01012": {
+        "ISIN": "INE383A01012",
+        "name": "India Cements",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/india-cements",
+        "totalscr": "2.7",
+        "govandstrat": "5.0",
+        "ecoandbio": "2.9",
+        "socialincl": "1.5"
+    },
+    "TH1027010004": {
+        "ISIN": "TH1027010004",
+        "name": "Indorama Ventures",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/indorama-ventures",
+        "totalscr": "23.0",
+        "govandstrat": "50.0",
+        "ecoandbio": "13.3",
+        "socialincl": "27.3"
+    },
+    "ES0148396007": {
+        "ISIN": "ES0148396007",
+        "name": "Industria de Dise\u00f1o Textil (Inditex)",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/industria-de-diseno-textil-inditex-2",
+        "totalscr": "38.7",
+        "govandstrat": "46.2",
+        "ecoandbio": "25.2",
+        "socialincl": "56.8"
+    },
+    "US4601461035": {
+        "ISIN": "US4601461035",
+        "name": "International Paper",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/international-paper",
+        "totalscr": "19.1",
+        "govandstrat": "50.0",
+        "ecoandbio": "11.1",
+        "socialincl": "19.3"
+    },
+    "US4698141078": {
+        "ISIN": "US4698141078",
+        "name": "Jacobs Solutions",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jacobs-engineering-group",
+        "totalscr": "15.9",
+        "govandstrat": "23.7",
+        "ecoandbio": "12.7",
+        "socialincl": "17.9"
+    },
+    "AU000000JHX1": {
+        "ISIN": "AU000000JHX1",
+        "name": "James Hardie Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/james-hardie-industries",
+        "totalscr": "14.7",
+        "govandstrat": "30.0",
+        "ecoandbio": "10.6",
+        "socialincl": "14.9"
+    },
+    "JP3386030005": {
+        "ISIN": "JP3386030005",
+        "name": "JFE Holdings",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jfe-holdings",
+        "totalscr": "18.8",
+        "govandstrat": "23.7",
+        "ecoandbio": "10.6",
+        "socialincl": "29.8"
+    },
+    "CNE000001P11": {
+        "ISIN": "CNE000001P11",
+        "name": "Jiangsu Shagang Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jiangsu-shagang-group",
+        "totalscr": "0.9",
+        "govandstrat": "0.0",
+        "ecoandbio": "1.6",
+        "socialincl": "0.0"
+    },
+    "CNE0000019P0": {
+        "ISIN": "CNE0000019P0",
+        "name": "Jiangxi Copper",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jiangxi-copper",
+        "totalscr": "0.9",
+        "govandstrat": "6.2",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "JP3389570007": {
+        "ISIN": "JP3389570007",
+        "name": "JK Holdings",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jk-holdings",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "US4781601046": {
+        "ISIN": "US4781601046",
+        "name": "Johnson & Johnson",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/johnson-johnson",
+        "totalscr": "30.5",
+        "govandstrat": "45.0",
+        "ecoandbio": "25.6",
+        "socialincl": "32.3"
+    },
+    "GB00BZ4BQC70": {
+        "ISIN": "GB00BZ4BQC70",
+        "name": "Johnson Matthey",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/johnson-matthey",
+        "totalscr": "20.7",
+        "govandstrat": "40.0",
+        "ecoandbio": "18.6",
+        "socialincl": "16.4"
+    },
+    "INE019A01038": {
+        "ISIN": "INE019A01038",
+        "name": "JSW Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jsw-group",
+        "totalscr": "23.6",
+        "govandstrat": "46.2",
+        "ecoandbio": "18.8",
+        "socialincl": "21.9"
+    },
+    "JP3210200006": {
+        "ISIN": "JP3210200006",
+        "name": "Kajima Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kajima-corporation",
+        "totalscr": "11.8",
+        "govandstrat": "22.5",
+        "ecoandbio": "7.1",
+        "socialincl": "14.9"
+    },
+    "FR0000121485": {
+        "ISIN": "FR0000121485",
+        "name": "Kering",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kering-4",
+        "totalscr": "55.2",
+        "govandstrat": "80.0",
+        "ecoandbio": "47.6",
+        "socialincl": "57.3"
+    },
+    "JP3289800009": {
+        "ISIN": "JP3289800009",
+        "name": "Kobe Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kobe-steel-kobelco",
+        "totalscr": "13.3",
+        "govandstrat": "17.5",
+        "ecoandbio": "12.3",
+        "socialincl": "13.4"
+    },
+    "US5002551043": {
+        "ISIN": "US5002551043",
+        "name": "Kohl's",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kohls-2",
+        "totalscr": "15.6",
+        "govandstrat": "6.2",
+        "ecoandbio": "15.6",
+        "socialincl": "19.3"
+    },
+    "JP3266800006": {
+        "ISIN": "JP3266800006",
+        "name": "Kumagai Gumi",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kumagai-gumi",
+        "totalscr": "11.8",
+        "govandstrat": "16.2",
+        "ecoandbio": "9.7",
+        "socialincl": "13.4"
+    },
+    "CH0012214059": {
+        "ISIN": "CH0012214059",
+        "name": "Holcim",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/holcim",
+        "totalscr": "37.6",
+        "govandstrat": "42.2",
+        "ecoandbio": "30.4",
+        "socialincl": "47.3"
+    },
+    "DE0005470405": {
+        "ISIN": "DE0005470405",
+        "name": "LANXESS",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lanxess",
+        "totalscr": "26.0",
+        "govandstrat": "33.7",
+        "ecoandbio": "20.0",
+        "socialincl": "32.3"
+    },
+    "INE018A01030": {
+        "ISIN": "INE018A01030",
+        "name": "Larsen & Toubro",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/larsen-toubro",
+        "totalscr": "10.9",
+        "govandstrat": "35.0",
+        "ecoandbio": "6.9",
+        "socialincl": "7.4"
+    },
+    "US5260571048": {
+        "ISIN": "US5260571048",
+        "name": "Lennar Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lennar-corporation",
+        "totalscr": "5.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "3.9",
+        "socialincl": "8.9"
+    },
+    "US52736R1023": {
+        "ISIN": "US52736R1023",
+        "name": "Levi Strauss & Co.",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/levi-strauss-co-3",
+        "totalscr": "26.1",
+        "govandstrat": "47.5",
+        "ecoandbio": "25.5",
+        "socialincl": "18.5"
+    },
+    "IE00BZ12WP82": {
+        "ISIN": "IE00BZ12WP82",
+        "name": "Linde",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/linde",
+        "totalscr": "22.9",
+        "govandstrat": "33.7",
+        "ecoandbio": "11.0",
+        "socialincl": "37.2"
+    },
+    "BRLRENACNOR1": {
+        "ISIN": "BRLRENACNOR1",
+        "name": "Lojas Renner",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lojas-renner-3",
+        "totalscr": "16.3",
+        "govandstrat": "28.7",
+        "ecoandbio": "10.2",
+        "socialincl": "20.8"
+    },
+    "PLLPP0000011": {
+        "ISIN": "PLLPP0000011",
+        "name": "LPP",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lpp-2",
+        "totalscr": "9.8",
+        "govandstrat": "17.5",
+        "ecoandbio": "1.8",
+        "socialincl": "19.3"
+    },
+    "US5500211090": {
+        "ISIN": "US5500211090",
+        "name": "Lululemon Athletica",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lululemon-athletica-2",
+        "totalscr": "29.3",
+        "govandstrat": "40.0",
+        "ecoandbio": "21.8",
+        "socialincl": "36.8"
+    },
+    "INE326A01037": {
+        "ISIN": "INE326A01037",
+        "name": "Lupin",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lupin",
+        "totalscr": "8.8",
+        "govandstrat": "11.2",
+        "ecoandbio": "4.3",
+        "socialincl": "14.9"
+    },
+    "FR0000121014": {
+        "ISIN": "FR0000121014",
+        "name": "LVMH Moet Hennessy - Louis Vuitton",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lvmh-moet-hennessy-louis-vuitton-3",
+        "totalscr": "17.4",
+        "govandstrat": "18.7",
+        "ecoandbio": "11.3",
+        "socialincl": "26.3"
+    },
+    "NL0009434992": {
+        "ISIN": "NL0009434992",
+        "name": "LyondellBasell Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lyondellbasell-industries",
+        "totalscr": "13.8",
+        "govandstrat": "28.7",
+        "ecoandbio": "8.4",
+        "socialincl": "16.4"
+    },
+    "CNE000000DD4": {
+        "ISIN": "CNE000000DD4",
+        "name": "Maanshan Iron & Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/maanshan-iron-steel",
+        "totalscr": "9.5",
+        "govandstrat": "23.7",
+        "ecoandbio": "10.1",
+        "socialincl": "3.0"
+    },
+    "US55616P1049": {
+        "ISIN": "US55616P1049",
+        "name": "Macy's",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/macys-2",
+        "totalscr": "10.3",
+        "govandstrat": "12.5",
+        "ecoandbio": "4.0",
+        "socialincl": "19.3"
+    },
+    "US5732841060": {
+        "ISIN": "US5732841060",
+        "name": "Martin Marietta Materials",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/martin-marietta-materials",
+        "totalscr": "11.8",
+        "govandstrat": "12.5",
+        "ecoandbio": "9.9",
+        "socialincl": "14.4"
+    },
+    "US58933Y1055": {
+        "ISIN": "US58933Y1055",
+        "name": "Merck & Co",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/merck-co",
+        "totalscr": "22.7",
+        "govandstrat": "46.0",
+        "ecoandbio": "18.3",
+        "socialincl": "20.4"
+    },
+    "DE0006599905": {
+        "ISIN": "DE0006599905",
+        "name": "Merck KGaA",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/merck-kgaa",
+        "totalscr": "33.2",
+        "govandstrat": "41.2",
+        "ecoandbio": "33.7",
+        "socialincl": "29.3"
+    },
+    "CNE100000FX6": {
+        "ISIN": "CNE100000FX6",
+        "name": "Metallurgical Corporation of China",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/metallurgical-corporation-of-china",
+        "totalscr": "5.8",
+        "govandstrat": "28.7",
+        "ecoandbio": "2.6",
+        "socialincl": "1.5"
+    },
+    "BRGOAUACNPR8": {
+        "ISIN": "BRGOAUACNPR8",
+        "name": "Metalurgica Gerdau",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/metalurgica-gerdau",
+        "totalscr": "23.2",
+        "govandstrat": "46.2",
+        "ecoandbio": "17.8",
+        "socialincl": "22.3"
+    },
+    "FR0000121261": {
+        "ISIN": "FR0000121261",
+        "name": "Michelin",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/michelin",
+        "totalscr": "30.6",
+        "govandstrat": "41.2",
+        "ecoandbio": "24.1",
+        "socialincl": "36.5"
+    },
+    "GB00B1CRLC47": {
+        "ISIN": "GB00B1CRLC47",
+        "name": "Mondi",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/mondi",
+        "totalscr": "42.1",
+        "govandstrat": "61.2",
+        "ecoandbio": "43.7",
+        "socialincl": "31.8"
+    },
+    "ZAE000200457": {
+        "ISIN": "ZAE000200457",
+        "name": "Mr. Price",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/mr-price-2",
+        "totalscr": "13.6",
+        "govandstrat": "32.5",
+        "ecoandbio": "5.2",
+        "socialincl": "19.3"
+    },
+    "ZAE000071676": {
+        "ISIN": "ZAE000071676",
+        "name": "Nampak",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nampak",
+        "totalscr": "9.6",
+        "govandstrat": "21.2",
+        "ecoandbio": "3.2",
+        "socialincl": "14.9"
+    },
+    "TW0001303006": {
+        "ISIN": "TW0001303006",
+        "name": "Nan Ya Plastics Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nan-ya-plastics-corporation",
+        "totalscr": "12.4",
+        "govandstrat": "38.7",
+        "ecoandbio": "11.3",
+        "socialincl": "3.5"
+    },
+    "GB0032089863": {
+        "ISIN": "GB0032089863",
+        "name": "Next",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/next-2",
+        "totalscr": "27.9",
+        "govandstrat": "23.7",
+        "ecoandbio": "18.2",
+        "socialincl": "44.7"
+    },
+    "US6541061031": {
+        "ISIN": "US6541061031",
+        "name": "Nike",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nike-4",
+        "totalscr": "21.8",
+        "govandstrat": "25.0",
+        "ecoandbio": "19.7",
+        "socialincl": "23.8"
+    },
+    "BMG653181005": {
+        "ISIN": "BMG653181005",
+        "name": "Nine Dragons Paper",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nine-dragons-paper",
+        "totalscr": "12.1",
+        "govandstrat": "23.7",
+        "ecoandbio": "13.9",
+        "socialincl": "4.5"
+    },
+    "JP3381000003": {
+        "ISIN": "JP3381000003",
+        "name": "Nippon Steel Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nippon-steel-corporation-2",
+        "totalscr": "19.6",
+        "govandstrat": "18.7",
+        "ecoandbio": "25.6",
+        "socialincl": "10.4"
+    },
+    "US6556641008": {
+        "ISIN": "US6556641008",
+        "name": "Nordstrom",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nordstrom-2",
+        "totalscr": "16.2",
+        "govandstrat": "23.7",
+        "ecoandbio": "6.8",
+        "socialincl": "27.8"
+    },
+    "RU0007288411": {
+        "ISIN": "RU0007288411",
+        "name": "Nornickel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nornickel",
+        "totalscr": "30.6",
+        "govandstrat": "45.0",
+        "ecoandbio": "23.9",
+        "socialincl": "35.4"
+    },
+    "NO0005052605": {
+        "ISIN": "NO0005052605",
+        "name": "Norsk Hydro",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/norsk-hydro",
+        "totalscr": "46.8",
+        "govandstrat": "35.0",
+        "ecoandbio": "36.9",
+        "socialincl": "67.4"
+    },
+    "CH0012005267": {
+        "ISIN": "CH0012005267",
+        "name": "Novartis",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/novartis",
+        "totalscr": "39.0",
+        "govandstrat": "46.2",
+        "ecoandbio": "35.7",
+        "socialincl": "41.2"
+    },
+    "DK0060534915": {
+        "ISIN": "DK0060534915",
+        "name": "Novo Nordisk",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/novo-nordisk",
+        "totalscr": "17.9",
+        "govandstrat": "12.5",
+        "ecoandbio": "8.0",
+        "socialincl": "35.7"
+    },
+    "RU0009046452": {
+        "ISIN": "RU0009046452",
+        "name": "NLMK Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nlmk-group",
+        "totalscr": "29.6",
+        "govandstrat": "46.2",
+        "ecoandbio": "27.7",
+        "socialincl": "25.8"
+    },
+    "US6703461052": {
+        "ISIN": "US6703461052",
+        "name": "Nucor Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nucor-corporation",
+        "totalscr": "15.9",
+        "govandstrat": "28.7",
+        "ecoandbio": "14.6",
+        "socialincl": "12.9"
+    },
+    "US62944T1051": {
+        "ISIN": "US62944T1051",
+        "name": "NVR",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nvr",
+        "totalscr": "2.8",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.6",
+        "socialincl": "7.4"
+    },
+    "JP3190000004": {
+        "ISIN": "JP3190000004",
+        "name": "Obayashi Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/obayashi-corporation",
+        "totalscr": "13.8",
+        "govandstrat": "23.7",
+        "ecoandbio": "6.8",
+        "socialincl": "20.8"
+    },
+    "US67098H1041": {
+        "ISIN": "US67098H1041",
+        "name": "O-I",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/o-i",
+        "totalscr": "13.6",
+        "govandstrat": "23.7",
+        "ecoandbio": "13.1",
+        "socialincl": "10.4"
+    },
+    "JP3188220002": {
+        "ISIN": "JP3188220002",
+        "name": "Otsuka",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/otsuka",
+        "totalscr": "20.7",
+        "govandstrat": "12.5",
+        "ecoandbio": "15.2",
+        "socialincl": "32.7"
+    },
+    "US6907421019": {
+        "ISIN": "US6907421019",
+        "name": "Owens Corning",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/owens-corning",
+        "totalscr": "30.9",
+        "govandstrat": "41.2",
+        "ecoandbio": "29.9",
+        "socialincl": "28.3"
+    },
+    "US6951561090": {
+        "ISIN": "US6951561090",
+        "name": "Packaging Corporation of America (PCA)",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/packaging-corporation-of-america-pca",
+        "totalscr": "15.2",
+        "govandstrat": "23.7",
+        "ecoandbio": "13.2",
+        "socialincl": "14.9"
+    },
+    "US7170811035": {
+        "ISIN": "US7170811035",
+        "name": "Pfizer",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/pfizer",
+        "totalscr": "29.6",
+        "govandstrat": "47.2",
+        "ecoandbio": "21.1",
+        "socialincl": "35.9"
+    },
+    "IT0005278236": {
+        "ISIN": "IT0005278236",
+        "name": "Pirelli & C",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/pirelli-c",
+        "totalscr": "25.3",
+        "govandstrat": "30.0",
+        "ecoandbio": "20.3",
+        "socialincl": "31.4"
+    },
+    "KR7005490008": {
+        "ISIN": "KR7005490008",
+        "name": "POSCO",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/posco-2",
+        "totalscr": "32.2",
+        "govandstrat": "40.0",
+        "ecoandbio": "27.4",
+        "socialincl": "36.8"
+    },
+    "TW0009904003": {
+        "ISIN": "TW0009904003",
+        "name": "Pou Chen Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/pou-chen-corporation",
+        "totalscr": "13.3",
+        "govandstrat": "27.5",
+        "ecoandbio": "7.0",
+        "socialincl": "17.4"
+    },
+    "ZAE000170049": {
+        "ISIN": "ZAE000170049",
+        "name": "PPC",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ppc",
+        "totalscr": "6.4",
+        "govandstrat": "22.5",
+        "ecoandbio": "2.6",
+        "socialincl": "6.0"
+    },
+    "US6935061076": {
+        "ISIN": "US6935061076",
+        "name": "PPG Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ppg-industries",
+        "totalscr": "11.9",
+        "govandstrat": "23.7",
+        "ecoandbio": "5.1",
+        "socialincl": "17.9"
+    },
+    "IT0003874101": {
+        "ISIN": "IT0003874101",
+        "name": "Prada",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/prada-2",
+        "totalscr": "17.2",
+        "govandstrat": "23.7",
+        "ecoandbio": "15.2",
+        "socialincl": "17.9"
+    },
+    "US7458671010": {
+        "ISIN": "US7458671010",
+        "name": "PulteGroup",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/pultegroup",
+        "totalscr": "8.6",
+        "govandstrat": "11.2",
+        "ecoandbio": "4.0",
+        "socialincl": "14.9"
+    },
+    "DE0006969603": {
+        "ISIN": "DE0006969603",
+        "name": "Puma",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/puma-2",
+        "totalscr": "28.1",
+        "govandstrat": "41.2",
+        "ecoandbio": "14.5",
+        "socialincl": "44.2"
+    },
+    "US6936561009": {
+        "ISIN": "US6936561009",
+        "name": "PVH",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/pvh-4",
+        "totalscr": "32.1",
+        "govandstrat": "36.2",
+        "ecoandbio": "26.5",
+        "socialincl": "39.3"
+    },
+    "US74762E1029": {
+        "ISIN": "US74762E1029",
+        "name": "Quanta Services",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/quanta-services",
+        "totalscr": "14.7",
+        "govandstrat": "23.7",
+        "ecoandbio": "8.4",
+        "socialincl": "20.8"
+    },
+    "US7512121010": {
+        "ISIN": "US7512121010",
+        "name": "Ralph Lauren Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ralph-lauren-corporation-3",
+        "totalscr": "23.4",
+        "govandstrat": "30.0",
+        "ecoandbio": "17.0",
+        "socialincl": "30.9"
+    },
+    "INE331A01037": {
+        "ISIN": "INE331A01037",
+        "name": "Ramco Cements",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ramco-cements",
+        "totalscr": "0.9",
+        "govandstrat": "0.0",
+        "ecoandbio": "1.6",
+        "socialincl": "0.0"
+    },
+    "US7595091023": {
+        "ISIN": "US7595091023",
+        "name": "Reliance Steel & Aluminum",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/reliance-steel-aluminum",
+        "totalscr": "6.2",
+        "govandstrat": "6.2",
+        "ecoandbio": "1.6",
+        "socialincl": "13.4"
+    },
+    "GB0007188757": {
+        "ISIN": "GB0007188757",
+        "name": "Rio Tinto",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/rio-tinto-2",
+        "totalscr": "45.1",
+        "govandstrat": "65.2",
+        "ecoandbio": "35.1",
+        "socialincl": "52.9"
+    },
+    "CH0012032113": {
+        "ISIN": "CH0012032113",
+        "name": "Roche",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/roche",
+        "totalscr": "23.3",
+        "govandstrat": "25.0",
+        "ecoandbio": "15.9",
+        "socialincl": "34.2"
+    },
+    "CNE100000W60": {
+        "ISIN": "CNE100000W60",
+        "name": "Rongsheng Petro Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/rongsheng-petro-chemical",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "US7782961038": {
+        "ISIN": "US7782961038",
+        "name": "Ross Stores",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ross-stores-2",
+        "totalscr": "10.0",
+        "govandstrat": "18.7",
+        "ecoandbio": "6.6",
+        "socialincl": "11.9"
+    },
+    "FR0000125007": {
+        "ISIN": "FR0000125007",
+        "name": "Saint-Gobain",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/saint-gobain",
+        "totalscr": "22.0",
+        "govandstrat": "25.0",
+        "ecoandbio": "17.3",
+        "socialincl": "28.3"
+    },
+    "IT0004712375": {
+        "ISIN": "IT0004712375",
+        "name": "Ferragamo",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/salvatore-ferragamo-2",
+        "totalscr": "19.8",
+        "govandstrat": "40.0",
+        "ecoandbio": "13.0",
+        "socialincl": "22.3"
+    },
+    "DE0006202005": {
+        "ISIN": "DE0006202005",
+        "name": "Salzgitter",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/salzgitter",
+        "totalscr": "9.1",
+        "govandstrat": "12.5",
+        "ecoandbio": "10.2",
+        "socialincl": "6.0"
+    },
+    "FR0000120578": {
+        "ISIN": "FR0000120578",
+        "name": "Sanofi",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sanofi",
+        "totalscr": "36.4",
+        "govandstrat": "30.0",
+        "ecoandbio": "36.7",
+        "socialincl": "38.7"
+    },
+    "BE0944264663": {
+        "ISIN": "BE0944264663",
+        "name": "SCR Sibelco",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/scr-sibelco",
+        "totalscr": "7.6",
+        "govandstrat": "0.0",
+        "ecoandbio": "4.0",
+        "socialincl": "16.4"
+    },
+    "ID1000106800": {
+        "ISIN": "ID1000106800",
+        "name": "Semen Indonesia",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/semen-indonesia",
+        "totalscr": "17.0",
+        "govandstrat": "40.0",
+        "ecoandbio": "13.3",
+        "socialincl": "13.4"
+    },
+    "RU0009046510": {
+        "ISIN": "RU0009046510",
+        "name": "Severstal",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/severstal-2",
+        "totalscr": "20.6",
+        "govandstrat": "40.0",
+        "ecoandbio": "20.2",
+        "socialincl": "13.4"
+    },
+    "CNE000001JV1": {
+        "ISIN": "CNE000001JV1",
+        "name": "Shandong Iron & Steel Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shandong-iron-steel-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "CNE000000WR4": {
+        "ISIN": "CNE000000WR4",
+        "name": "Shanghai Construction Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shanghai-construction-group",
+        "totalscr": "0.5",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "1.5"
+    },
+    "CNE100002H00": {
+        "ISIN": "CNE100002H00",
+        "name": "ShenZhen YUTO Packaging Technology",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shenzhen-yuto-packaging-technology",
+        "totalscr": "8.6",
+        "govandstrat": "28.7",
+        "ecoandbio": "7.9",
+        "socialincl": "1.5"
+    },
+    "KYG8087W1015": {
+        "ISIN": "KYG8087W1015",
+        "name": "Shenzhou International",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shenzhou-international",
+        "totalscr": "7.6",
+        "govandstrat": "12.5",
+        "ecoandbio": "10.2",
+        "socialincl": "1.5"
+    },
+    "JP3358800005": {
+        "ISIN": "JP3358800005",
+        "name": "Shimizu Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shimizu-corporation",
+        "totalscr": "16.6",
+        "govandstrat": "22.5",
+        "ecoandbio": "20.1",
+        "socialincl": "8.9"
+    },
+    "JP3371200001": {
+        "ISIN": "JP3371200001",
+        "name": "Shin-Etsu Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shin-etsu-chemical",
+        "totalscr": "13.8",
+        "govandstrat": "23.7",
+        "ecoandbio": "13.3",
+        "socialincl": "10.4"
+    },
+    "JP3368000000": {
+        "ISIN": "JP3368000000",
+        "name": "Showa Denko",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/showa-denko",
+        "totalscr": "14.3",
+        "govandstrat": "25.0",
+        "ecoandbio": "11.2",
+        "socialincl": "14.9"
+    },
+    "INE070A01015": {
+        "ISIN": "INE070A01015",
+        "name": "Shree Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/shree-cement",
+        "totalscr": "15.1",
+        "govandstrat": "38.7",
+        "ecoandbio": "11.0",
+        "socialincl": "11.9"
+    },
+    "TH0003010Z04": {
+        "ISIN": "TH0003010Z04",
+        "name": "Siam Cement (SCG)",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/siam-cement-scg",
+        "totalscr": "33.4",
+        "govandstrat": "56.2",
+        "ecoandbio": "30.4",
+        "socialincl": "28.8"
+    },
+    "TH0021010Z06": {
+        "ISIN": "TH0021010Z06",
+        "name": "Siam City Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/siam-city-cement",
+        "totalscr": "14.5",
+        "govandstrat": "28.7",
+        "ecoandbio": "10.7",
+        "socialincl": "14.9"
+    },
+    "SE0000113250": {
+        "ISIN": "SE0000113250",
+        "name": "Skanska",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/skanska",
+        "totalscr": "17.5",
+        "govandstrat": "25.0",
+        "ecoandbio": "13.5",
+        "socialincl": "20.8"
+    },
+    "US8305661055": {
+        "ISIN": "US8305661055",
+        "name": "Skechers",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/skechers-2",
+        "totalscr": "4.3",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.5",
+        "socialincl": "11.9"
+    },
+    "IE00B1RR8406": {
+        "ISIN": "IE00B1RR8406",
+        "name": "Smurfit Kappa Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/smurfit-kappa-group",
+        "totalscr": "27.6",
+        "govandstrat": "40.0",
+        "ecoandbio": "27.1",
+        "socialincl": "23.4"
+    },
+    "BE0003470755": {
+        "ISIN": "BE0003470755",
+        "name": "Solvay",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/solvay",
+        "totalscr": "22.8",
+        "govandstrat": "50.0",
+        "ecoandbio": "18.0",
+        "socialincl": "19.3"
+    },
+    "AU000000S320": {
+        "ISIN": "AU000000S320",
+        "name": "South32",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/south32",
+        "totalscr": "31.2",
+        "govandstrat": "46.2",
+        "ecoandbio": "24.2",
+        "socialincl": "36.3"
+    },
+    "CNE100000WR3": {
+        "ISIN": "CNE100000WR3",
+        "name": "Souyute Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/souyute-group-3",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "CA85472N1096": {
+        "ISIN": "CA85472N1096",
+        "name": "Stantec",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/stantec",
+        "totalscr": "17.4",
+        "govandstrat": "28.7",
+        "ecoandbio": "17.1",
+        "socialincl": "13.4"
+    },
+    "US8581191009": {
+        "ISIN": "US8581191009",
+        "name": "Steel Dynamics",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/steel-dynamics",
+        "totalscr": "8.7",
+        "govandstrat": "17.5",
+        "ecoandbio": "2.6",
+        "socialincl": "14.9"
+    },
+    "AT000000STR1": {
+        "ISIN": "AT000000STR1",
+        "name": "STRABAG",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/strabag",
+        "totalscr": "12.0",
+        "govandstrat": "27.5",
+        "ecoandbio": "5.2",
+        "socialincl": "16.4"
+    },
+    "JP3400900001": {
+        "ISIN": "JP3400900001",
+        "name": "Sumitomo Osaka Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sumitomo-osaka-cement",
+        "totalscr": "1.5",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "4.5"
+    },
+    "US86614U1007": {
+        "ISIN": "US86614U1007",
+        "name": "Summit Materials",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/summit-materials",
+        "totalscr": "11.1",
+        "govandstrat": "18.7",
+        "ecoandbio": "5.1",
+        "socialincl": "17.4"
+    },
+    "INE044A01036": {
+        "ISIN": "INE044A01036",
+        "name": "Sun Pharma",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sun-pharma",
+        "totalscr": "9.6",
+        "govandstrat": "38.7",
+        "ecoandbio": "1.6",
+        "socialincl": "10.4"
+    },
+    "JP3449020001": {
+        "ISIN": "JP3449020001",
+        "name": "Taiheiyo Cement Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/taiheiyo-cement-corporation",
+        "totalscr": "9.7",
+        "govandstrat": "35.0",
+        "ecoandbio": "4.7",
+        "socialincl": "7.4"
+    },
+    "US87403A1079": {
+        "ISIN": "US87403A1079",
+        "name": "Tailored Brands",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tailored-brands-2",
+        "totalscr": "3.5",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "10.4"
+    },
+    "JP3443600006": {
+        "ISIN": "JP3443600006",
+        "name": "Taisei Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/taisei-corporation",
+        "totalscr": "24.8",
+        "govandstrat": "35.0",
+        "ecoandbio": "18.2",
+        "socialincl": "31.2"
+    },
+    "TW0001101004": {
+        "ISIN": "TW0001101004",
+        "name": "Taiwan Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/taiwan-cement",
+        "totalscr": "17.8",
+        "govandstrat": "45.0",
+        "ecoandbio": "11.7",
+        "socialincl": "16.4"
+    },
+    "JP3463000004": {
+        "ISIN": "JP3463000004",
+        "name": "Takeda",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/takeda",
+        "totalscr": "19.6",
+        "govandstrat": "17.5",
+        "ecoandbio": "22.2",
+        "socialincl": "16.4"
+    },
+    "JP3468820000": {
+        "ISIN": "JP3468820000",
+        "name": "TANAKA Precious Metals",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tanaka-precious-metals",
+        "totalscr": "3.3",
+        "govandstrat": "6.2",
+        "ecoandbio": "3.7",
+        "socialincl": "1.5"
+    },
+    "CNE000000GX5": {
+        "ISIN": "CNE000000GX5",
+        "name": "Tangshan Jidong Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tangshan-jidong-cement",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "US8760301072": {
+        "ISIN": "US8760301072",
+        "name": "Tapestry",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tapestry-2",
+        "totalscr": "21.0",
+        "govandstrat": "30.0",
+        "ecoandbio": "22.6",
+        "socialincl": "14.9"
+    },
+    "US8808901081": {
+        "ISIN": "US8808901081",
+        "name": "Ternium",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ternium",
+        "totalscr": "14.4",
+        "govandstrat": "12.5",
+        "ecoandbio": "12.6",
+        "socialincl": "17.9"
+    },
+    "IL0006290147": {
+        "ISIN": "IL0006290147",
+        "name": "Teva Pharmaceuticals",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/teva-pharmaceuticals",
+        "totalscr": "21.3",
+        "govandstrat": "40.0",
+        "ecoandbio": "16.8",
+        "socialincl": "20.8"
+    },
+    "US8725401090": {
+        "ISIN": "US8725401090",
+        "name": "The TJX Companies",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/the-tjx-companies",
+        "totalscr": "14.0",
+        "govandstrat": "23.7",
+        "ecoandbio": "9.0",
+        "socialincl": "17.9"
+    },
+    "DE0007500001": {
+        "ISIN": "DE0007500001",
+        "name": "thyssenkrupp",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/thyssenkrupp",
+        "totalscr": "17.1",
+        "govandstrat": "25.0",
+        "ecoandbio": "11.3",
+        "socialincl": "22.9"
+    },
+    "BE0974338700": {
+        "ISIN": "BE0974338700",
+        "name": "Titan Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/titan-cement",
+        "totalscr": "17.6",
+        "govandstrat": "25.0",
+        "ecoandbio": "14.6",
+        "socialincl": "19.3"
+    },
+    "CNE000000529": {
+        "ISIN": "CNE000000529",
+        "name": "Tongling Nonferrous Metals Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tongling-nonferrous-metals-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "JP3621000003": {
+        "ISIN": "JP3621000003",
+        "name": "Toray Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/toray-industries",
+        "totalscr": "12.3",
+        "govandstrat": "11.2",
+        "ecoandbio": "11.8",
+        "socialincl": "13.4"
+    },
+    "JP3595200001": {
+        "ISIN": "JP3595200001",
+        "name": "Tosoh",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tosoh",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "JP3613400005": {
+        "ISIN": "JP3613400005",
+        "name": "Toyo Seikan",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/toyo-seikan",
+        "totalscr": "18.7",
+        "govandstrat": "25.0",
+        "ecoandbio": "11.9",
+        "socialincl": "26.8"
+    },
+    "TH0212A10Z07": {
+        "ISIN": "TH0212A10Z07",
+        "name": "TPI Polene",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tpi-polene",
+        "totalscr": "12.2",
+        "govandstrat": "38.7",
+        "ecoandbio": "10.2",
+        "socialincl": "4.5"
+    },
+    "INE516A01017": {
+        "ISIN": "INE516A01017",
+        "name": "Uflex",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/uflex",
+        "totalscr": "8.5",
+        "govandstrat": "22.5",
+        "ecoandbio": "6.6",
+        "socialincl": "6.0"
+    },
+    "BE0974320526": {
+        "ISIN": "BE0974320526",
+        "name": "Umicore",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/umicore",
+        "totalscr": "18.5",
+        "govandstrat": "45.0",
+        "ecoandbio": "11.1",
+        "socialincl": "19.3"
+    },
+    "US9043111072": {
+        "ISIN": "US9043111072",
+        "name": "Under Armour",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/under-armour-3",
+        "totalscr": "24.5",
+        "govandstrat": "33.7",
+        "ecoandbio": "14.0",
+        "socialincl": "37.2"
+    },
+    "PEP239001006": {
+        "ISIN": "PEP239001006",
+        "name": "Union Andina de Cementos",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/union-andina-de-cementos",
+        "totalscr": "14.7",
+        "govandstrat": "38.7",
+        "ecoandbio": "10.2",
+        "socialincl": "11.9"
+    },
+    "US9129091081": {
+        "ISIN": "US9129091081",
+        "name": "U.S. Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/u-s-steel",
+        "totalscr": "13.7",
+        "govandstrat": "18.7",
+        "ecoandbio": "10.8",
+        "socialincl": "16.4"
+    },
+    "US9170471026": {
+        "ISIN": "US9170471026",
+        "name": "URBN",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/urbn",
+        "totalscr": "7.3",
+        "govandstrat": "12.5",
+        "ecoandbio": "5.0",
+        "socialincl": "8.9"
+    },
+    "BRVALEACNOR0": {
+        "ISIN": "BRVALEACNOR0",
+        "name": "Vale",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vale",
+        "totalscr": "43.6",
+        "govandstrat": "62.5",
+        "ecoandbio": "28.7",
+        "socialincl": "59.4"
+    },
+    "US9182041080": {
+        "ISIN": "US9182041080",
+        "name": "VF Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vf-corporation-3",
+        "totalscr": "27.8",
+        "govandstrat": "11.2",
+        "ecoandbio": "14.2",
+        "socialincl": "55.7"
+    },
+    "FR0000031775": {
+        "ISIN": "FR0000031775",
+        "name": "Vicat",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vicat",
+        "totalscr": "8.5",
+        "govandstrat": "6.2",
+        "ecoandbio": "5.0",
+        "socialincl": "14.9"
+    },
+    "VN000000BTS4": {
+        "ISIN": "VN000000BTS4",
+        "name": "Vicem",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vicem",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "FR0000125486": {
+        "ISIN": "FR0000125486",
+        "name": "VINCI",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vinci",
+        "totalscr": "20.0",
+        "govandstrat": "23.7",
+        "ecoandbio": "17.6",
+        "socialincl": "22.3"
+    },
+    "AT0000937503": {
+        "ISIN": "AT0000937503",
+        "name": "Voestalpine",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/voestalpine",
+        "totalscr": "13.1",
+        "govandstrat": "32.5",
+        "ecoandbio": "6.0",
+        "socialincl": "16.4"
+    },
+    "CNE0000016J9": {
+        "ISIN": "CNE0000016J9",
+        "name": "Wanhua Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/wanhua-chemical",
+        "totalscr": "7.7",
+        "govandstrat": "27.5",
+        "ecoandbio": "7.4",
+        "socialincl": "0.0"
+    },
+    "US9604131022": {
+        "ISIN": "US9604131022",
+        "name": "Westlake Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/westlake-chemical",
+        "totalscr": "11.5",
+        "govandstrat": "28.7",
+        "ecoandbio": "4.9",
+        "socialincl": "14.9"
+    },
+    "US96145D1054": {
+        "ISIN": "US96145D1054",
+        "name": "WestRock",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/westrock",
+        "totalscr": "18.9",
+        "govandstrat": "30.0",
+        "ecoandbio": "18.5",
+        "socialincl": "14.9"
+    },
+    "AT0000831706": {
+        "ISIN": "AT0000831706",
+        "name": "Wienerberger",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/wienerberger",
+        "totalscr": "13.1",
+        "govandstrat": "35.0",
+        "ecoandbio": "5.3",
+        "socialincl": "16.4"
+    },
+    "CNE000000KF4": {
+        "ISIN": "CNE000000KF4",
+        "name": "Wuchan Zhongda Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/wuchan-zhongda-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "JP3955800002": {
+        "ISIN": "JP3955800002",
+        "name": "Yokohama Rubber",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/yokohama-rubber",
+        "totalscr": "18.3",
+        "govandstrat": "23.7",
+        "ecoandbio": "18.8",
+        "socialincl": "15.5"
+    },
+    "CNE000000XR2": {
+        "ISIN": "CNE000000XR2",
+        "name": "Youngor Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/youngor-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "DE000ZAL1111": {
+        "ISIN": "DE000ZAL1111",
+        "name": "Zalando",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/zalando",
+        "totalscr": "13.2",
+        "govandstrat": "25.0",
+        "ecoandbio": "8.2",
+        "socialincl": "16.4"
+    },
+    "CNE100001104": {
+        "ISIN": "CNE100001104",
+        "name": "Semir",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/semir",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "CNE100000B24": {
+        "ISIN": "CNE100000B24",
+        "name": "Zijin Mining",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/zijin-mining",
+        "totalscr": "25.5",
+        "govandstrat": "56.2",
+        "ecoandbio": "16.8",
+        "socialincl": "26.9"
+    },
+    "INE081A01012": {
+        "ISIN": "INE081A01012",
+        "name": "Tata Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tata-steel",
+        "totalscr": "18.1",
+        "govandstrat": "41.2",
+        "ecoandbio": "10.4",
+        "socialincl": "20.8"
+    },
+    "BRVEBMCDAM15": {
+        "ISIN": "BRVEBMCDAM15",
+        "name": "Votorantim Cimentos",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/votorantim-cimentos",
+        "totalscr": "18.6",
+        "govandstrat": "27.5",
+        "ecoandbio": "18.7",
+        "socialincl": "14.9"
+    },
+    "RU000A1025V3": {
+        "ISIN": "RU000A1025V3",
+        "name": "United Company Rusal",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/united-company-rusal",
+        "totalscr": "22.2",
+        "govandstrat": "45.0",
+        "ecoandbio": "22.2",
+        "socialincl": "12.9"
+    },
+    "JP3486800000": {
+        "ISIN": "JP3486800000",
+        "name": "Daito Trust Construction",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/daito-trust-construction",
+        "totalscr": "4.7",
+        "govandstrat": "0.0",
+        "ecoandbio": "7.1",
+        "socialincl": "3.0"
+    },
+    "MX01AL0C0004": {
+        "ISIN": "MX01AL0C0004",
+        "name": "Alpek",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/alpek",
+        "totalscr": "13.6",
+        "govandstrat": "17.5",
+        "ecoandbio": "9.9",
+        "socialincl": "17.9"
+    },
+    "INE481G01011": {
+        "ISIN": "INE481G01011",
+        "name": "UltraTech Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ultratech-cement-2",
+        "totalscr": "16.4",
+        "govandstrat": "25.0",
+        "ecoandbio": "11.3",
+        "socialincl": "20.8"
+    },
+    "CNE0000014Q9": {
+        "ISIN": "CNE0000014Q9",
+        "name": "Nanjing Iron & Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/nanjing-iron-steel",
+        "totalscr": "4.7",
+        "govandstrat": "0.0",
+        "ecoandbio": "8.9",
+        "socialincl": "0.0"
+    },
+    "JP3402600005": {
+        "ISIN": "JP3402600005",
+        "name": "Sumitomo Metal Mining",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sumitomo-metal-mining",
+        "totalscr": "17.8",
+        "govandstrat": "40.0",
+        "ecoandbio": "19.6",
+        "socialincl": "6.0"
+    },
+    "CNE0000011P7": {
+        "ISIN": "CNE0000011P7",
+        "name": "Jiangsu Zhongnan Construction Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jiangsu-zhongnan-construction-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "KYG2113L1068": {
+        "ISIN": "KYG2113L1068",
+        "name": "China Resources Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-resources-cement",
+        "totalscr": "7.8",
+        "govandstrat": "23.7",
+        "ecoandbio": "7.7",
+        "socialincl": "1.5"
+    },
+    "US0126531013": {
+        "ISIN": "US0126531013",
+        "name": "Albemarle Corporation",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/albemarle-corporation",
+        "totalscr": "20.9",
+        "govandstrat": "35.0",
+        "ecoandbio": "12.5",
+        "socialincl": "28.4"
+    },
+    "US81211K1007": {
+        "ISIN": "US81211K1007",
+        "name": "Sealed Air",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sealed-air",
+        "totalscr": "14.6",
+        "govandstrat": "18.7",
+        "ecoandbio": "13.4",
+        "socialincl": "14.9"
+    },
+    "CA0679011084": {
+        "ISIN": "CA0679011084",
+        "name": "Barrick Gold",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/barrick-gold",
+        "totalscr": "27.6",
+        "govandstrat": "28.7",
+        "ecoandbio": "15.1",
+        "socialincl": "46.8"
+    },
+    "KR7051910008": {
+        "ISIN": "KR7051910008",
+        "name": "LG Chem",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lg-chem",
+        "totalscr": "12.0",
+        "govandstrat": "18.7",
+        "ecoandbio": "10.4",
+        "socialincl": "11.9"
+    },
+    "KR7011170008": {
+        "ISIN": "KR7011170008",
+        "name": "LOTTE Chemical",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/lotte-chemical",
+        "totalscr": "17.7",
+        "govandstrat": "51.2",
+        "ecoandbio": "13.8",
+        "socialincl": "10.4"
+    },
+    "US8243481061": {
+        "ISIN": "US8243481061",
+        "name": "Sherwin-Williams",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sherwin-williams",
+        "totalscr": "16.4",
+        "govandstrat": "25.0",
+        "ecoandbio": "16.1",
+        "socialincl": "13.4"
+    },
+    "CH0418792922": {
+        "ISIN": "CH0418792922",
+        "name": "Sika",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sika",
+        "totalscr": "18.1",
+        "govandstrat": "45.0",
+        "ecoandbio": "10.6",
+        "socialincl": "18.9"
+    },
+    "SA0007879121": {
+        "ISIN": "SA0007879121",
+        "name": "SABIC",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sabic",
+        "totalscr": "18.8",
+        "govandstrat": "46.2",
+        "ecoandbio": "15.3",
+        "socialincl": "13.4"
+    },
+    "NO0010716582": {
+        "ISIN": "NO0010716582",
+        "name": "Aker Solutions",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/aker-solutions",
+        "totalscr": "24.2",
+        "govandstrat": "35.0",
+        "ecoandbio": "19.8",
+        "socialincl": "26.8"
+    },
+    "CNE100000866": {
+        "ISIN": "CNE100000866",
+        "name": "CREC",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/crec",
+        "totalscr": "1.8",
+        "govandstrat": "0.0",
+        "ecoandbio": "3.4",
+        "socialincl": "0.0"
+    },
+    "AEDFXA14NUL7": {
+        "ISIN": "AEDFXA14NUL7",
+        "name": "Orascom",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/orascom",
+        "totalscr": "2.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "6.0"
+    },
+    "NL0000852580": {
+        "ISIN": "NL0000852580",
+        "name": "Boskalis",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/boskalis",
+        "totalscr": "17.4",
+        "govandstrat": "45.0",
+        "ecoandbio": "7.3",
+        "socialincl": "22.3"
+    },
+    "ES0182870214": {
+        "ISIN": "ES0182870214",
+        "name": "Sacyr",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sacyr",
+        "totalscr": "35.6",
+        "govandstrat": "51.2",
+        "ecoandbio": "39.4",
+        "socialincl": "23.4"
+    },
+    "IT0005252140": {
+        "ISIN": "IT0005252140",
+        "name": "Saipem",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/saipem",
+        "totalscr": "30.4",
+        "govandstrat": "46.2",
+        "ecoandbio": "29.0",
+        "socialincl": "26.3"
+    },
+    "LU0075646355": {
+        "ISIN": "LU0075646355",
+        "name": "Subsea 7",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/subsea-7",
+        "totalscr": "14.3",
+        "govandstrat": "25.0",
+        "ecoandbio": "9.2",
+        "socialincl": "17.9"
+    },
+    "IT0003865570": {
+        "ISIN": "IT0003865570",
+        "name": "Webuild",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/webuild",
+        "totalscr": "23.2",
+        "govandstrat": "33.7",
+        "ecoandbio": "10.6",
+        "socialincl": "38.7"
+    },
+    "INE047A01021": {
+        "ISIN": "INE047A01021",
+        "name": "Grasim Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/grasim-industries",
+        "totalscr": "13.1",
+        "govandstrat": "22.5",
+        "ecoandbio": "12.6",
+        "socialincl": "10.0"
+    },
+    "CA4969024047": {
+        "ISIN": "CA4969024047",
+        "name": "Kinross Gold",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kinross-gold",
+        "totalscr": "24.6",
+        "govandstrat": "27.5",
+        "ecoandbio": "17.4",
+        "socialincl": "34.8"
+    },
+    "CNE000000WS2": {
+        "ISIN": "CNE000000WS2",
+        "name": "China MinMetals",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/china-minmetals",
+        "totalscr": "2.4",
+        "govandstrat": "5.0",
+        "ecoandbio": "3.2",
+        "socialincl": "0.0"
+    },
+    "CNE100000T32": {
+        "ISIN": "CNE100000T32",
+        "name": "Tianqi Lithium",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/tianqi-lithium",
+        "totalscr": "11.5",
+        "govandstrat": "38.7",
+        "ecoandbio": "11.9",
+        "socialincl": "0.0"
+    },
+    "CA8787422044": {
+        "ISIN": "CA8787422044",
+        "name": "Teck Resources",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/teck-resources-2",
+        "totalscr": "39.8",
+        "govandstrat": "57.5",
+        "ecoandbio": "23.8",
+        "socialincl": "57.8"
+    },
+    "ZAE000018123": {
+        "ISIN": "ZAE000018123",
+        "name": "Gold Fields",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/gold-fields",
+        "totalscr": "28.7",
+        "govandstrat": "35.0",
+        "ecoandbio": "16.6",
+        "socialincl": "45.3"
+    },
+    "JE00B6T5S470": {
+        "ISIN": "JE00B6T5S470",
+        "name": "Polymetal",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/polymetal",
+        "totalscr": "33.0",
+        "govandstrat": "31.2",
+        "ecoandbio": "29.1",
+        "socialincl": "39.7"
+    },
+    "MXP554091415": {
+        "ISIN": "MXP554091415",
+        "name": "Industrias Pe\u00f1oles",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/industrias-penoles",
+        "totalscr": "14.4",
+        "govandstrat": "32.5",
+        "ecoandbio": "6.7",
+        "socialincl": "19.3"
+    },
+    "SG2F48989824": {
+        "ISIN": "SG2F48989824",
+        "name": "Halcyon Agri",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/halcyon-agri",
+        "totalscr": "20.8",
+        "govandstrat": "38.7",
+        "ecoandbio": "10.1",
+        "socialincl": "30.5"
+    },
+    "ID1000139306": {
+        "ISIN": "ID1000139306",
+        "name": "Kirana Megatara",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/kirana-megatara",
+        "totalscr": "7.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "6.3",
+        "socialincl": "11.0"
+    },
+    "LU0027967834": {
+        "ISIN": "LU0027967834",
+        "name": "Socfin Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/socfin-group",
+        "totalscr": "10.3",
+        "govandstrat": "12.5",
+        "ecoandbio": "5.5",
+        "socialincl": "17.0"
+    },
+    "VN000000GVR1": {
+        "ISIN": "VN000000GVR1",
+        "name": "Vietnam Rubber Group",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/vietnam-rubber-group",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "ZAE000043485": {
+        "ISIN": "ZAE000043485",
+        "name": "AngloGold Ashanti",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/anglogold-ashanti",
+        "totalscr": "26.5",
+        "govandstrat": "21.2",
+        "ecoandbio": "18.6",
+        "socialincl": "41.2"
+    },
+    "GB0000456144": {
+        "ISIN": "GB0000456144",
+        "name": "Antofagasta",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/antofagasta",
+        "totalscr": "18.4",
+        "govandstrat": "28.7",
+        "ecoandbio": "8.1",
+        "socialincl": "30.4"
+    },
+    "CNE100001NR0": {
+        "ISIN": "CNE100001NR0",
+        "name": "CMOC",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/cmoc",
+        "totalscr": "20.1",
+        "govandstrat": "33.7",
+        "ecoandbio": "9.2",
+        "socialincl": "31.8"
+    },
+    "CNE0000008J6": {
+        "ISIN": "CNE0000008J6",
+        "name": "CITIC Pacific Special Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/citic-pacific-special-steel",
+        "totalscr": "7.0",
+        "govandstrat": "27.5",
+        "ecoandbio": "4.2",
+        "socialincl": "3.0"
+    },
+    "CA3359341052": {
+        "ISIN": "CA3359341052",
+        "name": "First Quantum Minerals",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/first-quantum-minerals",
+        "totalscr": "15.2",
+        "govandstrat": "25.0",
+        "ecoandbio": "10.9",
+        "socialincl": "17.9"
+    },
+    "CNE100000SF6": {
+        "ISIN": "CNE100000SF6",
+        "name": "Ganfeng Lithium",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ganfeng-lithium",
+        "totalscr": "13.5",
+        "govandstrat": "35.0",
+        "ecoandbio": "11.8",
+        "socialincl": "7.4"
+    },
+    "ZAE000083648": {
+        "ISIN": "ZAE000083648",
+        "name": "Implats",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/implats",
+        "totalscr": "21.0",
+        "govandstrat": "50.0",
+        "ecoandbio": "16.5",
+        "socialincl": "16.4"
+    },
+    "AU000000NCM7": {
+        "ISIN": "AU000000NCM7",
+        "name": "Newcrest",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/newcrest-mining",
+        "totalscr": "28.8",
+        "govandstrat": "51.2",
+        "ecoandbio": "24.0",
+        "socialincl": "27.4"
+    },
+    "ZAE000298253": {
+        "ISIN": "ZAE000298253",
+        "name": "Northam Platinum",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/northam-platinum",
+        "totalscr": "17.7",
+        "govandstrat": "45.0",
+        "ecoandbio": "14.5",
+        "socialincl": "11.9"
+    },
+    "RU000A0JNAA8": {
+        "ISIN": "RU000A0JNAA8",
+        "name": "Polyus",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/polyus",
+        "totalscr": "34.2",
+        "govandstrat": "43.7",
+        "ecoandbio": "36.6",
+        "socialincl": "26.5"
+    },
+    "SA123GA0ITH7": {
+        "ISIN": "SA123GA0ITH7",
+        "name": "Ma'aden",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/maaden",
+        "totalscr": "19.4",
+        "govandstrat": "45.0",
+        "ecoandbio": "14.1",
+        "socialincl": "17.4"
+    },
+    "ZAE000259701": {
+        "ISIN": "ZAE000259701",
+        "name": "Sibanye Stillwater",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/sibanye-stillwater",
+        "totalscr": "36.7",
+        "govandstrat": "56.2",
+        "ecoandbio": "37.1",
+        "socialincl": "28.4"
+    },
+    "CNE100001VW3": {
+        "ISIN": "CNE100001VW3",
+        "name": "Huayou Cobalt",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/huayou-cobalt",
+        "totalscr": "6.7",
+        "govandstrat": "22.5",
+        "ecoandbio": "1.3",
+        "socialincl": "8.9"
+    },
+    "AU000000FMG4": {
+        "ISIN": "AU000000FMG4",
+        "name": "Fortescue",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/fortescue",
+        "totalscr": "22.4",
+        "govandstrat": "48.0",
+        "ecoandbio": "16.5",
+        "socialincl": "21.4"
+    },
+    "NGBUACEMENT3": {
+        "ISIN": "NGBUACEMENT3",
+        "name": "BUA Cement",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/bua-cement",
+        "totalscr": "3.8",
+        "govandstrat": "0.0",
+        "ecoandbio": "2.4",
+        "socialincl": "7.4"
+    },
+    "ZAE000054045": {
+        "ISIN": "ZAE000054045",
+        "name": "African Rainbow Minerals",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/african-rainbow-minerals",
+        "totalscr": "18.5",
+        "govandstrat": "33.7",
+        "ecoandbio": "17.8",
+        "socialincl": "13.4"
+    },
+    "EGS3C251C013": {
+        "ISIN": "EGS3C251C013",
+        "name": "Ezz Steel",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/ezz-steel",
+        "totalscr": "0.0",
+        "govandstrat": "0.0",
+        "ecoandbio": "0.0",
+        "socialincl": "0.0"
+    },
+    "ZAE000015228": {
+        "ISIN": "ZAE000015228",
+        "name": "Harmony Gold",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/harmony-gold",
+        "totalscr": "23.3",
+        "govandstrat": "50.0",
+        "ecoandbio": "19.2",
+        "socialincl": "18.9"
+    },
+    "INE761H01022": {
+        "ISIN": "INE761H01022",
+        "name": "Page Industries",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/page-industries-2",
+        "totalscr": "19.3",
+        "govandstrat": "43.7",
+        "ecoandbio": "21.5",
+        "socialincl": "6.0"
+    },
+    "CNE0000014W7": {
+        "ISIN": "CNE0000014W7",
+        "name": "Jiangsu Hengrui Medicine",
+        "link": "https://www.worldbenchmarkingalliance.org/publication/nature/companies/jiangsu-hengrui-medicine",
+        "totalscr": "3.7",
+        "govandstrat": "18.7",
+        "ecoandbio": "2.1",
+        "socialincl": "0.0"
+    }
+}

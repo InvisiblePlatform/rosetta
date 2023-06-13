@@ -2306,7 +2306,6 @@ div.mobile .expanded :is(.hideInSmall){
     transform: translateY(-1em);
 }
 .mobile :is(#graph-box):not(.expanded) > div.graphList {
-    background-color:  red;
     margin-right: 16px;
     margin-top: 8px;
     margin-bottom: 8px;
@@ -2317,9 +2316,6 @@ div.mobile .expanded :is(.hideInSmall){
 }
 :not(.expanded) :where(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) .source {
     display: none;
-}
-:not(.mobile) :not(.expanded) .source {
-    color: red;
 }
 body.settingsOpen .source {
     z-index: 0;

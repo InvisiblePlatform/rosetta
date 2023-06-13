@@ -1,4 +1,5 @@
 {{ $dataX := split . ":"}}
+{{ $dataNature := getJSON "data/static/2022_NatureCleaned.json" }}
 {{ $path := (print "data/" (index $dataX 0)) }}
 {{ $source := newScratch }}
 {{ if os.FileExists $path }}

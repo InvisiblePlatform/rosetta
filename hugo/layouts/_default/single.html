@@ -34,6 +34,7 @@
 {{ if isset .Params "bcorp" }}{{ partialCached "bcorp.html" .Params.bcorp .Params.bcorp }}{{ end }}
 {{ if isset .Params "ticker" }}{{ range .Params.ticker }}{{ partialCached "yahoo.html" . . }}{{ end }}{{ end }}
 {{ if isset .Params "isin" }}{{ range .Params.isin }}{{ partialCached "isin.html" . . }}{{ end }}{{ end }}
+{{ if isset .Params "isin_id" }}{{ range .Params.isin_id }}{{ partialCached "isin-id.html" . . }}{{ end }}{{ end }}
 {{ partialCached "trustpilot.html" .Params.title .Params.title }}
 {{ if isset .Params "mbfc" }}{{ partialCached "mbfc.html" .Params.mbfc_source .Params.title }}{{ end }}
 {{ if isset .Params "tosdr" }}{{ range .Params.tosdr }}{{ partialCached "tosdr.html" . .  }}{{ end }}{{ end }}
