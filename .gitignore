@@ -1,4 +1,6 @@
 data_collection/bcorp/*.json
+data_collection/opensecrets/html_cache/*.html
+data_collection/opensecrets/output_cleaned/*.json
 data_collection/bcorp/split_files/*.json
 data_collection/glassdoor/archive/
 data_collection/glassdoor/backup/

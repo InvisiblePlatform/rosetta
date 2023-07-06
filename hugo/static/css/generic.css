@@ -12,12 +12,8 @@
   font-weight: normal;
   font-style: normal; }
 /* END Black */
-@font-face {
-  font-family: "Roboto Mono";
-  src: url("/fonts/Roboto-Mono-700.woff2") format("woff2"), url("/fonts/Roboto-Mono-700.woff") format("woff");
-  font-weight: 700;
-  font-style: normal; }
-@font-face {
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+/* @font-face {
   font-family: "Space Grotesk";
   src: url("/fonts/SpaceGrotesk-Bold.ttf");
   font-weight: 700;}
@@ -37,6 +33,7 @@
   font-family: "Space Grotesk";
   src: url("/fonts/SpaceGrotesk-Light.ttf");
   font-weight: 300;}
+  */
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,

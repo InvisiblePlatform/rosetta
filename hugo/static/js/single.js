@@ -21,6 +21,7 @@ allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
 });
 
+console.log("[ IV ] Page load")
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
@@ -209,9 +210,9 @@ let closeNetworkGraph = function(x){
 
 let justSendBack = function(x) {
     bw = backButton.getBoundingClientRect()['width'];
-    if ( bw == 40 || bw == 78 || mode == 1) {
+    // if ( bw == 40 || bw == 78 || mode == 1) {
     send_message("IVClicked", "back");
-    }
+    // }
 }
 
 let openGenericPage = function(x){
@@ -314,20 +315,22 @@ document.addEventListener('mouseup', function(event){
         }
         event.target.scrollIntoView();
     };
-    if (event.target.parentElement.parentElement.matches('#permaDark')){
-        console.log("IVDarkModeOverride");
-		if (IVDarkModeOverride == "true") {
-			IVDarkModeOverride = false;
-			localStorage.IVDarkModeOverride = false;
-            document.lastChild.classList.toggle('dark-theme');
-		} else {
-			IVDarkModeOverride = true;
-			localStorage.IVDarkModeOverride = true;
-            
-            document.lastChild.classList.toggle('dark-theme');
-		}
-        send_message("IVDarkModeOverride", IVDarkModeOverride);
-    }
+    if (event.target.parentElement.parentElement) 
+        if (event.target.parentElement.parentElement.matches('#permaDark')){
+            console.log("IVDarkModeOverride");
+		    if (IVDarkModeOverride == "true") {
+		    	IVDarkModeOverride = false;
+		    	localStorage.IVDarkModeOverride = false;
+                document.lastChild.classList.toggle('dark-theme');
+		    } else {
+		    	IVDarkModeOverride = true;
+		    	localStorage.IVDarkModeOverride = true;
+                
+                document.lastChild.classList.toggle('dark-theme');
+		    }
+            send_message("IVDarkModeOverride", IVDarkModeOverride);
+        }
+    if (event.target.parentElement.parentElement) 
     if (event.target.parentElement.parentElement.matches('#onScreen')){
         console.log("IVKeepOnScreen");
         IVKeepOnScreen = localStorage.IVKeepOnScreen;
@@ -365,7 +368,7 @@ var defaultOrder = [
     { value:"tosdr-link", label: "Privacy"},
     { value:"glassdoor", label: "Employee Rating"},
     { value:"similar-site-wrapper", label: "Similar Websites"},
-    { value:"social-wikidata", label: "Social Media + Email"},
+    { value:"social-wikidata", label: "Social Media"},
 ];
 var translate = {
 "wikipedia-first-frame": "w.wikipedia",
@@ -387,13 +390,13 @@ var translate = {
 "social-wikidata": "w.socialmedia",
 };
 var propertyOrder = localStorage.IVPropertyOrder ? JSON.parse(localStorage.IVPropertyOrder) : defaultOrder;
-slist(document.getElementById("sortlist"));
 function slist (target) {
   // (A) SET CSS + GET ALL LIST ITEMS
   target.classList.add("slist");
   let items = target.getElementsByTagName("li"), current = null;
   for (let x = 0; x < propertyOrder.length; x++){
     let value = propertyOrder[x].value;
+    if (items[x] !== undefined){
     items[x].setAttribute("value", value);
     items[x].setAttribute("data-i18n", translate[value]);
     items[x].innerHTML = propertyOrder[x].label;
@@ -413,7 +416,7 @@ function slist (target) {
             // console.log("mode 1");
         }
     }
-
+    }
   };
 
 
@@ -592,6 +595,7 @@ function slist (target) {
 }
 
 window.addEventListener('message', function(e){
+    if (e.data.message === undefined) return
     console.log(e);
     const decoded = e.data
     var dlikeC = '';
@@ -632,3 +636,5 @@ const sort_by = (field, reverse, primer) => {
     return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
   }
 }
+
+window.onload = slist(document.getElementById("sortlist"));

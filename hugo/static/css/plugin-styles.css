@@ -163,13 +163,13 @@ option {
 .coolStar {
     --relwidth: calc(var(--cool-star) * var(--division));
     box-sizing: content-box;
-    content: url(/icon/star.svg);
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' fill='none'%3e%3cpath d='M.5.5v47h47V.5H.5zM24 6c1.243 0 2.486.694 2.977 2.082l2.228 6.314a3.147 3.147 0 0 0 2.912 2.083l6.791.134c2.986.06 4.22 3.795 1.84 5.57l-5.414 4.04a3.073 3.073 0 0 0-1.111 3.369l1.966 6.396c.865 2.814-2.362 5.123-4.814 3.444l-5.576-3.819a3.19 3.19 0 0 0-3.598 0l-5.576 3.819c-2.452 1.679-5.68-.63-4.814-3.444l1.966-6.396a3.073 3.073 0 0 0-1.111-3.37l-5.414-4.038c-2.38-1.776-1.147-5.51 1.84-5.57l6.79-.135a3.147 3.147 0 0 0 2.913-2.083l2.228-6.314C21.513 6.694 22.757 6 24 6z' style='fill:%23333'/%3e%3cpath stroke='%23343434' d='M.5.5h47v47H.5z'/%3e%3c/svg%3e");
     width: var(--relwidth);
     filter: brightness(var(--brightness));
     object-fit: cover;
     object-position: 0;
     height: var(--cool-star);
-    background-image: url(/icon/star-empty.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' fill='none'%3e%3cpath fill='white' stroke='%23343434' d='M.5.5h47v47H.5z' style='fill:none'/%3e%3cpath fill='white' stroke='%23343434' d='M21.024 8.082c.981-2.776 4.971-2.776 5.952 0l2.23 6.314a3.147 3.147 0 0 0 2.911 2.082l6.791.136c2.986.06 4.22 3.794 1.84 5.57l-5.413 4.039a3.073 3.073 0 0 0-1.112 3.368l1.967 6.398c.864 2.814-2.364 5.122-4.815 3.443l-5.576-3.818a3.192 3.192 0 0 0-3.598 0l-5.576 3.818c-2.451 1.679-5.68-.63-4.815-3.443l1.967-6.398a3.073 3.073 0 0 0-1.112-3.368l-5.412-4.039c-2.38-1.776-1.148-5.51 1.839-5.57l6.79-.136a3.147 3.147 0 0 0 2.912-2.082l2.23-6.314Z' style='fill:none'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     transition: width 0.5s, padding-right 0.5s;
     background-size: var(--cool-star) var(--cool-star);
@@ -244,7 +244,7 @@ option {
     display: none;
     border: none;
     background-color: var(--c-background);
-    background-image: url(/icon/roundel.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3ccircle cx='20' cy='20' r='18' fill='white'/%3e%3cpath fill='%231A1A1A' d='M18.201 14.181h3.657v14.536a1.823 1.823 0 0 1-1.828 1.817 1.823 1.823 0 0 1-1.829-1.817V14.181ZM18.201 10.547c0-1.003.819-1.817 1.829-1.817s1.828.814 1.828 1.817a1.823 1.823 0 0 1-1.828 1.817 1.823 1.823 0 0 1-1.829-1.817Z'/%3e%3cpath fill='%231A1A1A' d='m10.318 21.634 1.292-1.285a1.836 1.836 0 0 1 2.586 0l8.402 8.351-2.585 2.57-9.696-9.636Z'/%3e%3cpath fill='%231A1A1A' d='M25.804 20.349a1.836 1.836 0 0 1 2.586 0l1.293 1.285-9.696 9.636-2.585-2.57 8.402-8.351Z'/%3e%3cpath fill='%231A1A1A' fill-rule='evenodd' d='M40 20c0 11.046-8.954 20-20 20S0 31.046 0 20 8.954 0 20 0s20 8.954 20 20ZM20 37.46c9.643 0 17.46-7.817 17.46-17.46S29.643 2.54 20 2.54 2.54 10.357 2.54 20 10.357 37.46 20 37.46Z' clip-rule='evenodd'/%3e%3c/svg%3e");
     background-size: 40px 40px;
     transform: rotate(0deg);
     margin: 8px 16px;
@@ -265,7 +265,7 @@ option {
 }
 
 #settingsButton>div {
-    background-image: url(/icon/settings.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'%3e%3cpath stroke='%23343434' stroke-linecap='square' d='M19 15.889h-7.778m-6.222 0h1.556M19 8.111h-2.333M5 8.111h7M8.89 13.556a2.333 2.333 0 1 0 0 4.666 2.333 2.333 0 0 0 0-4.667ZM14.334 5.778a2.333 2.333 0 1 0 0 4.666 2.333 2.333 0 0 0 0-4.666Z'/%3e%3c/svg%3e");
 }
 
 #settingsButton {
@@ -398,7 +398,7 @@ th {
 .minisource {
     display: none;
     content: ' ';
-    background-image: url(/icon/source_link.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none'%3e%3cpath stroke='%2308D735' stroke-linecap='square' stroke-linejoin='round' d='M7.334 3.333h-4v9.334h9.333v-4M8.668 7.333l4.667-4.666M14 2h-4m4 0v4'/%3e%3c/svg%3e");
     background-size: 16px 16px;
     width: 16px;
     height: 16px;
@@ -407,7 +407,7 @@ th {
 .source:after {
     display: inline-block;
     content: ' ';
-    background-image: url(/icon/source_link.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none'%3e%3cpath stroke='%2308D735' stroke-linecap='square' stroke-linejoin='round' d='M7.334 3.333h-4v9.334h9.333v-4M8.668 7.333l4.667-4.666M14 2h-4m4 0v4'/%3e%3c/svg%3e");
     background-size: 16px 16px;
     background-repeat: no-repeat;
     padding-right: 16px;
@@ -1119,7 +1119,7 @@ div#onScreen {
 #priority-list ul>li:before {
     display: inline-table;
     content: ' ';
-    background-image: url(/icon/reorder.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='17' fill='none'%3e%3cpath fill='%23717171' d='M11 6a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0ZM6.5 6a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Zm-3 1.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM11 11a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Zm-3 1.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3ZM2 11a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0Z'/%3e%3c/svg%3e");
     filter: brightness(var(--brightness));
     background-size: 16px 16px;
     width: 16px;
@@ -1146,7 +1146,7 @@ div#onScreen {
     position: relative;
     display: inline-table;
     content: ' ';
-    background-image: url(/icon/network.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3ccircle cx='16.5' cy='14.5' r='7' stroke='%23343434'/%3e%3ccircle cx='30.5' cy='9.5' r='3' stroke='%23343434'/%3e%3ccircle cx='10' cy='26' r='3.5' stroke='%23343434'/%3e%3ccircle cx='19' cy='31' r='2.5' stroke='%23343434'/%3e%3ccircle cx='29' cy='28' r='4.5' stroke='%23343434'/%3e%3cpath stroke='%23343434' d='m23.154 12.271 4.571-1.632M21.195 19.86l4.597 4.95M11.316 22.749l1.431-2.453M24.739 29.343 21 30.5'/%3e%3c/svg%3e");
     filter: brightness(var(--brightness));
     background-size: 2.5em 2.5em;
     align-self: center;
@@ -1554,7 +1554,7 @@ td.biaslink {
     }
 
     #similar-site-wrapper h2:after {
-        background-image: url(/icon/similar.svg);
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath fill='%23343434' fill-rule='evenodd' d='M10 14.5a1.5 1.5 0 0 1 1.5-1.5h17a1.5 1.5 0 0 1 1.5 1.5v11a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5h-17a.5.5 0 0 0-.5.5V18h-1v-3.5Z' clip-rule='evenodd'/%3e%3cpath fill='%23343434' fill-rule='evenodd' d='M14 7.5A1.5 1.5 0 0 1 15.5 6h17A1.5 1.5 0 0 1 34 7.5v11a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5h-17a.5.5 0 0 0-.5.5V11h-1V7.5Z' clip-rule='evenodd'/%3e%3crect width='19' height='13' x='6.5' y='20.5' stroke='%23343434' rx='.5'/%3e%3cpath fill='%23343434' d='M7 22h18v1H7z'/%3e%3cpath stroke='%23343434' d='M8.5 24.5h6v6h-6z'/%3e%3cpath stroke='%23343434' stroke-width='.5' d='M17.25 24.25h6.5v.5h-6.5zM17.25 26.25h1.5v.5h-1.5zM20.25 26.25h3.5v.5h-3.5zM17.25 28.25h4.5v.5h-4.5zM17.25 30.25h2.5v.5h-2.5zM21.25 30.25h2.5v.5h-2.5zM23.25 28.25h.5v.5h-.5z'/%3e%3c/svg%3e");
     }
 
     #bcorp h2:after {
@@ -1562,7 +1562,7 @@ td.biaslink {
     }
 
     #social-wikidata>h2:after {
-        background-image: url(/icon/social.svg);
+        background-image: url('data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' fill='none'%3e%3cpath fill='%231A1A1A' fill-rule='evenodd' d='M12.204 2.092A20.75 20.75 0 0 1 41.5 20.999v2.857a6.465 6.465 0 0 1-12.674 1.797 9.317 9.317 0 0 1-8.076 4.667A9.321 9.321 0 1 1 30.071 21v2.857a4.965 4.965 0 0 0 9.929 0v-2.857a19.25 19.25 0 1 0-8.25 15.799l.857 1.23A20.75 20.75 0 1 1 12.204 2.093Zm16.367 18.907a7.821 7.821 0 1 0-15.642 0 7.821 7.821 0 0 0 15.642 0Z' clip-rule='evenodd'/%3e%3c/svg%3e');
     }
 
     #bcorp :is(score, img){
@@ -2008,7 +2008,6 @@ div.mobile :is(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame):no
     justify-content: space-evenly;
     height: 80px;
     min-height: 80px;
-    width: unset;
 }
 div.mobile #graph-box:not(.expanded) {
     height: unset;
@@ -2075,7 +2074,7 @@ div.mobile :is(#social-wikidata, #similar-site-wrapper, #bcorp):not(.expanded) h
 }
 
 div.mobile #similar-site-wrapper h2:after {
-    background-image: url(/icon/similar.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath fill='%23343434' fill-rule='evenodd' d='M10 14.5a1.5 1.5 0 0 1 1.5-1.5h17a1.5 1.5 0 0 1 1.5 1.5v11a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5h-17a.5.5 0 0 0-.5.5V18h-1v-3.5Z' clip-rule='evenodd'/%3e%3cpath fill='%23343434' fill-rule='evenodd' d='M14 7.5A1.5 1.5 0 0 1 15.5 6h17A1.5 1.5 0 0 1 34 7.5v11a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5h-17a.5.5 0 0 0-.5.5V11h-1V7.5Z' clip-rule='evenodd'/%3e%3crect width='19' height='13' x='6.5' y='20.5' stroke='%23343434' rx='.5'/%3e%3cpath fill='%23343434' d='M7 22h18v1H7z'/%3e%3cpath stroke='%23343434' d='M8.5 24.5h6v6h-6z'/%3e%3cpath stroke='%23343434' stroke-width='.5' d='M17.25 24.25h6.5v.5h-6.5zM17.25 26.25h1.5v.5h-1.5zM20.25 26.25h3.5v.5h-3.5zM17.25 28.25h4.5v.5h-4.5zM17.25 30.25h2.5v.5h-2.5zM21.25 30.25h2.5v.5h-2.5zM23.25 28.25h.5v.5h-.5z'/%3e%3c/svg%3e");
 }
 
 div.mobile #bcorp h2:after {
@@ -2083,7 +2082,7 @@ div.mobile #bcorp h2:after {
 }
 
 div.mobile #social-wikidata>h2:after {
-    background-image: url(/icon/social.svg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' fill='none'%3e%3cpath fill='%231A1A1A' fill-rule='evenodd' d='M12.204 2.092A20.75 20.75 0 0 1 41.5 20.999v2.857a6.465 6.465 0 0 1-12.674 1.797 9.317 9.317 0 0 1-8.076 4.667A9.321 9.321 0 1 1 30.071 21v2.857a4.965 4.965 0 0 0 9.929 0v-2.857a19.25 19.25 0 1 0-8.25 15.799l.857 1.23A20.75 20.75 0 1 1 12.204 2.093Zm16.367 18.907a7.821 7.821 0 1 0-15.642 0 7.821 7.821 0 0 0 15.642 0Z' clip-rule='evenodd'/%3e%3c/svg%3e");
 }
 
 #key > div > table {
@@ -2285,7 +2284,6 @@ div.mobile .expanded :is(.hideInSmall){
 :is(#graph-box):not(.expanded) > div.graphList li i{
     font-size: 12px;
 	height: 12px;
-	margin: auto;
 	white-space: nowrap;
 	text-align: right;
     opacity: 80%;

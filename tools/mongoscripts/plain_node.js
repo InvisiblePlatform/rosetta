@@ -1,3 +1,4 @@
+depth=4
 pairings=[
     {"id":"P1037","in":"Directed_By","out":"Director_of"},
     {"id":"P1040","in":"Film_Editor","out":"Film_Editor_of"},
@@ -138,7 +139,7 @@ node_one=do_node([main_node])
 gnodes.push(...node_one.nodes)
 links.push(...node_one.links)
 ids=new Set([main_node])
-for (i = 0; i < 4; i++){
+for (i = 0; i < depth; i++){
     oldids=new Set(gnodes.map(id => id.id ))
     ids=new Set(links.map(link => link.target))
     newids=[...difference(ids,oldids)]

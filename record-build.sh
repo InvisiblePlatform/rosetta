@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -eo xtrace
 LC_ALL=C; LC_COLLATE=C
-STATUSOUT=1; SKIPGEN=1; CONNECTIONOUT=; RECORDOUT=
+STATUSOUT=1; SKIPGEN=; CONNECTIONOUT=; RECORDOUT=
 rootdir="data_collection"
 # TODO: 20230416
 # There was some update to yq to change how the output works 
@@ -214,7 +214,7 @@ function do_list(){
 # rm hugo/content/ -rf 
 rm $STATUSF/.list.* &>/dev/null
 mode=1
-divisor=2
+divisor=10
 pattern="^"
 splitnum=$(printf "%.0f" "$(bc -l <<<"$(wc -l < <(grep "$pattern" websites.list))/$divisor")")
 [[ "$mode" == 1 ]] && split -l"$splitnum" <(grep "$pattern" websites.list | shuf) $STATUSF/.list.

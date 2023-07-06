@@ -293,45 +293,54 @@ d3.json(graphLoc).then(function(graph) {
                     }
                 }
                 // i18n, id, title, inId, innerHTML, icon, onclick
-                var cardVars = [ 'w.companyinfo', 'profile-card', "Company Info", 'wikipedia-page', wikicardframe.innerHTML, '/icon/profile.svg', "loadWikipediaCard()"];
-                var wikiVars = [ 'w.wikipedia', 'company-info', "Wikipedia", 'wikipedia-know', wikifirstframe.innerHTML, '/icon/info.svg', "loadWikipediaPage()"];
+                var cardVars = [ 'w.companyinfo', 'profile-card', "Company Info", 'wikipedia-page', wikicardframe.innerHTML, "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath stroke='%23343434' d='M12.5 8.5h16v7h-16z'/%3e%3cpath stroke='%23343434' d='M10.5 6.5h20v27h-20z'/%3e%3cpath stroke='%23343434' d='M12.5 27.5h16v4h-16zM14 17.5h3M14 21.5h3M14 25.5h3M14 19.5h3M14 23.5h3M19 17.5h8M19 21.5h8M19 25.5h8M19 19.5h8M19 23.5h8'/%3e%3c/svg%3e", "loadWikipediaCard()"];
+                var wikiVars = [ 'w.wikipedia', 'company-info', "Wikipedia", 'wikipedia-know', wikifirstframe.innerHTML, "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath stroke='%23343434' stroke-linecap='round' stroke-linejoin='round' d='M6 11.75S8.1 9 13 9s7 2.75 7 2.75V31s-2.1-1.375-7-1.375S6 31 6 31V11.75Zm14 0S22.1 9 27 9s7 2.75 7 2.75V31s-2.1-1.375-7-1.375S20 31 20 31V11.75Z'/%3e%3c/svg%3e", "loadWikipediaPage()"];
                 var fullWikiUrl = `${wikichoice}/wiki/${wikidataMainWiki}`;
-                var oh = "<h2 class='sectionTitle' id='{}' data-i18n='w.wikipedia'>Wikipedia</h2>" +
-                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmall'>" +
-                                      `${wikifirstframe.innerHTML}</div></div><img src='/icon/info.svg' class='iconclass' />` +
-                                      `<a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
-                                      "<button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                [ cardVars, wikiVars ].forEach(function(itemArray){
+                        var tempEl = `<h2 class='sectionTitle' id='${itemArray[1]}' data-i18n='${itemArray[0]}'>${itemArray[2]}</h2>
+                                      <div class='scoreText'><div id='${itemArray[3]}' class='hideInSmall'>"
+                                      ${itemArray[4]}</div></div><img src="${itemArray[5]}" class='iconclass' />
+                                      <a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>
+                                      <button type='button' onclick='${itemArray[6]}' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>`;
+                        contentsLength = document.getElementsByClassName("content").length;
+                        lastContent = document.getElementsByClassName("content")[contentsLength - 1];
+                        if (itemArray[1] == "profile-card") {
+                            wikicardframe.innerHTML = tempEl.replace(/<img/g,'<img loading=lazy ');
+                            lastContent.appendChild(wikicardframe);
+                        }
+                        if (itemArray[1] == "company-info") {
+                            wikifirstframe.innerHTML = tempEl.replace(/<img/g,'<img loading=lazy ');
+                            lastContent.appendChild(wikifirstframe);
+                        }
+                })
 
-                var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2>" +
-                                  "<div class='scoreText'><div id='wikipedia-page' class='hideInSmall'>" + 
-                                  `${wikicardframe.innerHTML}</div></div><img src='/icon/profile.svg' class='iconclass' />` + 
-                                  `<a href='${fullWikiUrl}' class='source blanksource'>WIKIPEDIA</a>`;
-                wikicardframe.innerHTML = profiletext.replace(/<img/g,'<img loading=lazy ');
+                // var profiletext = "<h2 class='sectionTitle' data-i18n='w.companyinfo' id='profile-card'>Company Info</h2>" +
+                //                   "<div class='scoreText'><div id='wikipedia-page' class='hideInSmall'>" + 
+                //                   `${wikicardframe.innerHTML}</div></div><img src='/icon/profile.svg' class='iconclass' />` + 
+                //                   `<a href='${fullWikiUrl}' class='source blanksource'>WIKIPEDIA</a>`;
+                // wikicardframe.innerHTML = profiletext.replace(/<img/g,'<img loading=lazy ');
 
-                var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2>" +
-                                      "<div class='scoreText'><div id='wikipedia-know' class='hideInSmall'>" +
-                                      `${wikifirstframe.innerHTML}</div></div><img src='/icon/info.svg' class='iconclass' />` +
-                                      `<a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
-                                      "<button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
+                // var companyinfotext = "<h2 class='sectionTitle' id='company-info' data-i18n='w.wikipedia'>Wikipedia</h2>" +
+                //                       "<div class='scoreText'><div id='wikipedia-know' class='hideInSmall'>" +
+                //                       `${wikifirstframe.innerHTML}</div></div><img src='/icon/info.svg' class='iconclass' />` +
+                //                       `<a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`+
+                //                       "<button type='button' onclick='loadWikipediaPage()' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>";
 
-                wikifirstframe.innerHTML = companyinfotext.replace(/<img/g,'<img loading=lazy ');
+                // wikifirstframe.innerHTML = companyinfotext.replace(/<img/g,'<img loading=lazy ');
+
+                lastContent.appendChild(wikifirstframe);
+                lastContent.appendChild(wikicardframe);
+                wikifirstframe.style.display = "";
+                wikicardframe.style.display = "";
             }).fail(function() {
                 console.log("oh no")
             });
-            contentsLength = document.getElementsByClassName("content").length;
-            lastContent = document.getElementsByClassName("content")[contentsLength - 1];
-
-            lastContent.appendChild(wikifirstframe);
-            lastContent.appendChild(wikicardframe);
-            wikifirstframe.style.display = "";
-            wikicardframe.style.display = "";
-
         };
         contentsLength = document.getElementsByClassName("content").length;
         lastContent = document.getElementsByClassName("content")[contentsLength - 1];
-        graphBox.innerHTML = "<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2>" + 
-                             "<img src='/icon/network.svg' class='iconclass'/>" + 
-                             `<a href='https://wikidata.org/wiki/${wikidataid}' class='source blanksource'>WIKIDATA</a>`;
+        graphBox.innerHTML = `<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2>
+                             <img src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3ccircle cx='16.5' cy='14.5' r='7' stroke='%23343434'/%3e%3ccircle cx='30.5' cy='9.5' r='3' stroke='%23343434'/%3e%3ccircle cx='10' cy='26' r='3.5' stroke='%23343434'/%3e%3ccircle cx='19' cy='31' r='2.5' stroke='%23343434'/%3e%3ccircle cx='29' cy='28' r='4.5' stroke='%23343434'/%3e%3cpath stroke='%23343434' d='m23.154 12.271 4.571-1.632M21.195 19.86l4.597 4.95M11.316 22.749l1.431-2.453M24.739 29.343 21 30.5'/%3e%3c/svg%3e" class='iconclass'/>
+                             <a href='https://wikidata.org/wiki/${wikidataid}' class='source blanksource'>WIKIDATA</a>`;
         lastContent.appendChild(graphBox);
         if (graphBox.style.display == "none") graphBox.style.display = "";
         l1list = [];
@@ -355,7 +364,7 @@ d3.json(graphLoc).then(function(graph) {
         var list = document.createElement('div');
         list.setAttribute('class', 'graphList');
         graphBox.childNodes[0].classList.add("noShowTitle");
-        graphBox.childNodes[1].classList.add("graphIconOffset");
+        graphBox.getElementsByTagName('img')[0].classList.add("graphIconOffset");
         for (item in sortedl1list){
             itemData = sortedl1list[item];
             if (!l1list_ids.includes(itemData.id)){

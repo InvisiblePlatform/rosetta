@@ -1,2 +1,3 @@
 Header always set Access-Control-Allow-Origin "*"
+ErrorDocument 404 /404.html
 
