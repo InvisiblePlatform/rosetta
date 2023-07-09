@@ -14,6 +14,9 @@ def get_domain(url):
 client = MongoClient('mongodb://localhost:27017/')
 db = client['rop']
 collection = db['wikidata']
+datapool={}
+items={}
+exceptions=[]
 
 website_list = set()
 rootdir = "data_collection"
@@ -43,6 +46,7 @@ with open(WDLOOKUP, "r") as f:
         domain = get_domain("http://"+i[0])
         website_list.add(domain)
         wikidata_array[domain] = i[1]
+        # FIXME: Needs multiple wikidataid support
 with open(MBLOOKUP, "r") as f:
     mediabias_file = csv.reader(f)
     for i in mediabias_file:
@@ -95,18 +99,97 @@ with open(OSLOOKUP, "r") as f:
         osid = opensecrets_file[i]["osid"]
         osid_array[i] = osid
 
+def build_pairings_and_datapool():
+    pairings=[
+        {"label":"twittername", "id":"P2002"},
+        {"label":"officialblog", "id":"P1581"},
+        {"label":"subreddit", "id":"P3984"},
+        {"label":"facebookid", "id":"P2013"},
+        {"label":"facebookpage", "id":"P4003"},
+        {"label":"instagramid", "id":"P2003"},
+        {"label":"youtubechannelid", "id":"P2397"},
+        {"label":"emailaddress", "id":"P968"},
+        {"label":"truthsocial", "id":"P10858"},
+        {"label":"parleruser", "id":"P8904"},
+        {"label":"gabuser", "id":"P8919"},
+        {"label":"soundcloud", "id":"P3040"},
+        {"label":"tumblr", "id":"P3943" },
+        {"label":"medium", "id":"P3899"},
+        {"label":"telegram", "id":"P3789"},
+        {"label":"mastodon", "id":"P4033"},
+        {"label":"patreon", "id":"P4175"},
+        {"label":"reddituser", "id":"P4265"},
+        {"label":"twitch", "id":"P5797"},
+        {"label":"tiktok", "id":"P7085"},
+    ]
+    for pair in pairings:
+        items[pair["id"]] = {"mainsnak.datavalue.value": 1}
+        datapool[pair["id"]] = {"label": pair["label"], "data": []}
+    datapool["P1387"] = {"label": "polalignment", "data": []}
+    datapool["P8525"] = {"label": "tosdr", "data": []}
+    datapool["P1142"] = {"label": "polideology", "data": []}
+    datapool["P414"] = {"label": "ticker", "data": []}
+    datapool["P946"] = {"label": "isin_id", "data": []}
+    exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
+
+def query_for_wikidata(wikiid):
+    tmpclient = MongoClient('mongodb://localhost:27017/')
+    tmpdb = tmpclient['rop']
+    tmpcollection = tmpdb['wikidata']
+    tmpdatapool = datapool
+    tmpquery = {
+        'id': wikiid
+    }
+    claims = items
+    tmpoutput = tmpcollection.find_one(tmpquery, {
+                "claims": claims,
+                "id": 1,
+                "_id": 0
+    })
+    pprint(tmpoutput)
+    for claim in tmpoutput["claims"]:
+        if len(tmpoutput["claims"][claim]) > 0:
+            if claim in exceptions:
+                if claim == "P414":
+                    if len(tmpoutput["claims"][claim]["qualifiers"]) > 0:
+                        startdata = tmpdatapool[claim]["data"]
+                        for qualifier in tmpoutput["claims"][claim]["qualifiers"]:
+                            startdata.append(tmpoutput["claims"][claim]["qualifiers"]["datavalue"]["value"])
+                        tmpdatapool[claim]["data"] = startdata
+                if claim in ["P946", "P8525"]:
+                    tmpdatapool[claim]["data"].append(tmpoutput["claims"][claim]["mainsnak"]["datavalue"]["value"])
+                else:
+                    tmpdatapool[claim]["data"].append(tmpoutput["claims"][claim]["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
+            else:
+                if len(tmpoutput["claims"][claim]) > 0:
+                    for i in tmpoutput["claims"][claim]:
+                        tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"] + ";" + claim + ";" + tmpoutput["id"])
+    result = 0
+    tmpclient.close()
+    return tmpdatapool
+
 def build_document(website):
     output = {}
     output["title"] = website
+    wid = ''
     graphfileloc = f"hugo/static/connection/{website}.json"
-    try:
-        wid = wikidata_array[website]
-        output["wikidata_id"] = wid
-        query = { 'id': wid }
-        document = collection.find_one(query)
+    wid = wikidata_array[website]
 
+    output["wikidata_id"] = wid
+    result = query_for_wikidata(wid)
+    for claim in result:
+        if result[claim]["data"] != []:
+            output[result[claim]["label"]] = result[claim]["data"]
+    try:
+        isin = output["isin_id"]
+        # FIXME: The logic for ISIN stuff needs to be added and checked
     except:
         pass
+    if wid != '':
+        try:
+            output["osid"] = osid_array[wid]
+        except:
+            pass
     try:
         output["tosdr_id"] = tosdr_array[website]
     except:
@@ -141,4 +224,5 @@ def build_document(website):
 
     pprint(output)
 
-build_document("facebook.com")
+build_pairings_and_datapool()
+build_document("shell.co.uk")
