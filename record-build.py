@@ -102,14 +102,20 @@ def build_pairings_and_datapool():
 exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
 
 def query_for_wikidata(wikiid):
-    tmpdatapool = datapool
+    tmpdatapool = None
+    tmpdatapool = datapool.copy()
     tmpoutput = collection.find_one({'id': wikiid }, {
                 "claims": items,
                 "id": 1,
                 "_id": 0
     })
     if not tmpoutput:
-        return tmpdatapool
+        return None
+    if len(tmpoutput["claims"]) == 0:
+        return {}
+    for claim in tmpdatapool:
+        if claim != "id":
+            tmpdatapool[claim]["data"] = []
     for claim in tmpoutput["claims"]:
         for i in tmpoutput["claims"][claim]:
             if claim not in exceptions:
@@ -117,30 +123,28 @@ def query_for_wikidata(wikiid):
                     tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"] + ";" + claim + ";" + tmpoutput["id"])
                 except:
                     pass
-                continue
             if claim == "P414":
-                if i["rank"] == 'deprecated':
-                    continue
-                startdata = tmpdatapool[claim]["data"]
-                try:
-                    for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
-                        startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
-                except:
-                    pass
-                tmpdatapool[claim]["data"] = startdata
-                continue
+                if i["rank"] != 'deprecated':
+                    startdata = tmpdatapool[claim]["data"]
+                    try:
+                        for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
+                            startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
+                    except:
+                        pass
+                    tmpdatapool[claim]["data"] = startdata
             if claim in ["P946", "P8525"]:
                 try:
                     tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
                 except:
                     pass
-                continue
-            try:
-                tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
-            except:
-                pass
-            continue
-        continue
+            if claim in exceptions: 
+                if claim not in ["P414", "P946", "P8525"]:
+                    if "datavalue" in i["mainsnak"]:
+                        try:
+                            tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
+                        except:
+                            pprint(i)
+                            pprint(claim)
     return tmpdatapool
 
 def write_output_file(domain, data):
@@ -160,12 +164,14 @@ def build_document(website):
     graphfileloc = f"hugo/static/connections/{website}.json"
     graphfileloc_rel = f"/connections/{website}.json"
     if website in wikidata_array:
-        wids = wikidata_array[website]
+        wids = list(set(wikidata_array[website]))
         output["wikidata_id"] = wids
         do_graph(main_node=wids, file_out=graphfileloc, collection=collection)
         output["connections"] = graphfileloc_rel
         for wid in wids:
             result = query_for_wikidata(wid)
+            if result is None:
+                continue
             for claim in result:
                 if result[claim]["data"] != []:
                     output[result[claim]["label"]] = result[claim]["data"]
@@ -287,6 +293,7 @@ build_pairings_and_datapool()
 pbar = tqdm(total=len(website_list))
 
 if __name__ == "__main__":
-    #domains = ["facebook.com", "meta.com"]
+    #domains = ["opendemocracy.net","facebook.com", "meta.com", "twitter.com", "poundland.co.uk", "walleniuslines.com"]
     #processed_results = process_domains_parrallel(domains)
     processed_results = process_domains_parrallel(website_list)
+    #processed_results = process_domains_parrallel(list(website_list)[:200])
