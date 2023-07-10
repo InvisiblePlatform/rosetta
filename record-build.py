@@ -2,9 +2,15 @@ import json
 import os
 import sys
 import csv
+import yaml
+import threading
+import time
 from pprint import pprint
 from pymongo import MongoClient
 from urllib.parse import urlparse
+from multiprocessing import Pool
+from tqdm import tqdm
+from tools.mongoscripts.plain_node import do_graph
 
 def get_domain(url):
     parsed_url = urlparse(url)
@@ -16,7 +22,9 @@ db = client['rop']
 collection = db['wikidata']
 datapool={}
 items={}
+query={}
 exceptions=[]
+output_dir="hugo/content/db/"
 
 website_list = set()
 rootdir = "data_collection"
@@ -36,68 +44,23 @@ WPLOOKUP = f"{rootdir}/wikipedia/wikititle_webpage_id_filtered.csv"
 wikipedia_array = {}
 ISLOOKUP = f"{rootdir}/static/document_isin.list"
 isin_array = {}
-OSLOOKUP = f"{rootdir}/opensecrets/opensecretsid1.json"
+OSLOOKUP = f"{rootdir}/opensecrets/opensecretsid_manualcorrection.json"
 osid_array = {}
-# Build lists of websites
 
-with open(WDLOOKUP, "r") as f:
-    wikidata_file = csv.reader(f)
-    for i in wikidata_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        wikidata_array[domain] = i[1]
-        # FIXME: Needs multiple wikidataid support
-with open(MBLOOKUP, "r") as f:
-    mediabias_file = csv.reader(f)
-    for i in mediabias_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        mediabias_array[domain] = i[1]
-with open(BCLOOKUP, "r") as f:
-    bcorp_file = csv.reader(f)
-    for i in bcorp_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        bcorp_array[domain] = i[1]
-with open(GYLOOKUP, "r") as f:
-    good_file = csv.reader(f)
-    for i in good_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        goodonyou_array[domain] = i[1]
-with open(GDLOOKUP, "r") as f:
-    glass_file = csv.reader(f)
-    for i in glass_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        glassdoor_array[domain] = i[1]
-with open(TSLOOKUP, "r") as f:
-    tosdr_file = csv.reader(f)
-    for i in tosdr_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        tosdr_array[domain] = i[1]
-with open(WPLOOKUP, "r") as f:
-    wiki_file = csv.reader(f)
-    for i in wiki_file:
-        domain = get_domain("http://"+i[0])
-        website_list.add(domain)
-        wikipedia_array[domain] = i[1]
-with open(ISLOOKUP, "r") as f:
-    isin_file = csv.reader(f)
-    for i in isin_file:
-        entry = i[0].split(':')
-        try:
-            lists = isin_array[entry[1]]
-        except:
-            lists = []
-        lists += entry[0]
-        isin_array[entry[1]] = lists
-with open(OSLOOKUP, "r") as f:
-    opensecrets_file = json.load(f)
-    for i in opensecrets_file:
-        osid = opensecrets_file[i]["osid"]
-        osid_array[i] = osid
+def progress():
+    time.sleep(3)  # Check progress after 3 seconds
+    print(f'total: {pbar.total} finish:{pbar.n}')
+
+
+def process_domains_parrallel(domains):
+    thread = threading.Thread(target=progress)
+    thread.start()
+    results = []
+    with Pool() as pool:
+        for result in pool.imap_unordered(build_document, domains):
+                results.append(result)
+                pbar.update(1)
+    return results
 
 def build_pairings_and_datapool():
     pairings=[
@@ -130,66 +93,102 @@ def build_pairings_and_datapool():
     datapool["P1142"] = {"label": "polideology", "data": []}
     datapool["P414"] = {"label": "ticker", "data": []}
     datapool["P946"] = {"label": "isin_id", "data": []}
-    exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
+    items["P8525.mainsnak.datavalue.value"] = 1
+    items["P1142"] = {"mainsnak.datavalue.value.id": 1}
+    items["P1387"] = {"mainsnak.datavalue.value.id": 1}
+    items["P946"] = {"mainsnak.datavalue.value": 1}
+    items["P414"] = 1
+
+exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
 
 def query_for_wikidata(wikiid):
-    tmpclient = MongoClient('mongodb://localhost:27017/')
-    tmpdb = tmpclient['rop']
-    tmpcollection = tmpdb['wikidata']
     tmpdatapool = datapool
-    tmpquery = {
-        'id': wikiid
-    }
-    claims = items
-    tmpoutput = tmpcollection.find_one(tmpquery, {
-                "claims": claims,
+    tmpoutput = collection.find_one({'id': wikiid }, {
+                "claims": items,
                 "id": 1,
                 "_id": 0
     })
-    pprint(tmpoutput)
+    if not tmpoutput:
+        return tmpdatapool
     for claim in tmpoutput["claims"]:
-        if len(tmpoutput["claims"][claim]) > 0:
-            if claim in exceptions:
-                if claim == "P414":
-                    if len(tmpoutput["claims"][claim]["qualifiers"]) > 0:
-                        startdata = tmpdatapool[claim]["data"]
-                        for qualifier in tmpoutput["claims"][claim]["qualifiers"]:
-                            startdata.append(tmpoutput["claims"][claim]["qualifiers"]["datavalue"]["value"])
-                        tmpdatapool[claim]["data"] = startdata
-                if claim in ["P946", "P8525"]:
-                    tmpdatapool[claim]["data"].append(tmpoutput["claims"][claim]["mainsnak"]["datavalue"]["value"])
-                else:
-                    tmpdatapool[claim]["data"].append(tmpoutput["claims"][claim]["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
-            else:
-                if len(tmpoutput["claims"][claim]) > 0:
-                    for i in tmpoutput["claims"][claim]:
-                        tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"] + ";" + claim + ";" + tmpoutput["id"])
-    result = 0
-    tmpclient.close()
+        for i in tmpoutput["claims"][claim]:
+            if claim not in exceptions:
+                try:
+                    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"] + ";" + claim + ";" + tmpoutput["id"])
+                except:
+                    pass
+                continue
+            if claim == "P414":
+                if i["rank"] == 'deprecated':
+                    continue
+                startdata = tmpdatapool[claim]["data"]
+                try:
+                    for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
+                        startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
+                except:
+                    pass
+                tmpdatapool[claim]["data"] = startdata
+                continue
+            if claim in ["P946", "P8525"]:
+                try:
+                    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
+                except:
+                    pass
+                continue
+            try:
+                tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
+            except:
+                pass
+            continue
+        continue
     return tmpdatapool
+
+def write_output_file(domain, data):
+    file_path = output_dir + domain.replace('.','') + ".md"
+    line = "---\n"
+    with open(file_path, "w") as file:
+        file.write(line)
+    with open(file_path, "a") as file:
+        yaml.dump(data, file, sort_keys=False)
+        file.write(line)
+
 
 def build_document(website):
     output = {}
     output["title"] = website
-    wid = ''
-    graphfileloc = f"hugo/static/connection/{website}.json"
-    wid = wikidata_array[website]
-
-    output["wikidata_id"] = wid
-    result = query_for_wikidata(wid)
-    for claim in result:
-        if result[claim]["data"] != []:
-            output[result[claim]["label"]] = result[claim]["data"]
-    try:
-        isin = output["isin_id"]
-        # FIXME: The logic for ISIN stuff needs to be added and checked
-    except:
-        pass
-    if wid != '':
-        try:
-            output["osid"] = osid_array[wid]
-        except:
-            pass
+    wids = []
+    graphfileloc = f"hugo/static/connections/{website}.json"
+    graphfileloc_rel = f"/connections/{website}.json"
+    if website in wikidata_array:
+        wids = wikidata_array[website]
+        output["wikidata_id"] = wids
+        do_graph(main_node=wids, file_out=graphfileloc, collection=collection)
+        output["connections"] = graphfileloc_rel
+        for wid in wids:
+            result = query_for_wikidata(wid)
+            for claim in result:
+                if result[claim]["data"] != []:
+                    output[result[claim]["label"]] = result[claim]["data"]
+            if "isin_id" in output:
+                for isin_id in output["isin_id"]:
+                    try:
+                        isin_array[isin_id]
+                        tempset = set()
+                        try:
+                            output["isin"]
+                        except:
+                            output["isin"] = []
+                        tempset = set(output["isin"])
+                        # String building
+                        for i in isin_array[isin_id]:
+                            tempset.add(i + ":" + isin_id)
+                        output["isin"] = list(tempset)
+                    except:
+                        pass
+            try:
+                output["osid"] = osid_array[wid]
+            except:
+                pass
     try:
         output["tosdr_id"] = tosdr_array[website]
     except:
@@ -218,11 +217,76 @@ def build_document(website):
             bcorpdata = json.load(f)
             output["bcorp_source"] = website
             output["bcorp_rating"] = bcorpdata["latestVerifiedScore"]
-            pprint(bcorpdata)
     except:
         pass
+    write_output_file(website, output)
 
-    pprint(output)
-
+def prepare():
+    with open(WDLOOKUP, "r") as f:
+        wikidata_file = csv.reader(f)
+        for i in wikidata_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            try:
+                wikidata_array[domain].append(i[1])
+            except:
+                wikidata_array[domain] = [i[1]]
+    with open(MBLOOKUP, "r") as f:
+        mediabias_file = csv.reader(f)
+        for i in mediabias_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            mediabias_array[domain] = i[1]
+    with open(BCLOOKUP, "r") as f:
+        bcorp_file = csv.reader(f)
+        for i in bcorp_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            bcorp_array[domain] = i[1]
+    with open(GYLOOKUP, "r") as f:
+        good_file = csv.reader(f)
+        for i in good_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            goodonyou_array[domain] = i[1]
+    with open(GDLOOKUP, "r") as f:
+        glass_file = csv.reader(f)
+        for i in glass_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            glassdoor_array[domain] = i[1]
+    with open(TSLOOKUP, "r") as f:
+        tosdr_file = csv.reader(f)
+        for i in tosdr_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            tosdr_array[domain] = i[1]
+    with open(WPLOOKUP, "r") as f:
+        wiki_file = csv.reader(f)
+        for i in wiki_file:
+            domain = get_domain("http://"+i[0])
+            website_list.add(domain)
+            wikipedia_array[domain] = i[1]
+    with open(ISLOOKUP, "r") as f:
+        isin_file = csv.reader(f)
+        for i in isin_file:
+            entry = i[0].split(':')
+            try:
+                lists = isin_array[entry[1]]
+            except:
+                lists = []
+            lists.append(entry[0])
+            isin_array[entry[1]] = lists
+    with open(OSLOOKUP, "r") as f:
+        opensecrets_file = json.load(f)
+        for i in opensecrets_file:
+            osid = opensecrets_file[i]["osid"]
+            osid_array[i] = osid
+prepare()
 build_pairings_and_datapool()
-build_document("shell.co.uk")
+pbar = tqdm(total=len(website_list))
+
+if __name__ == "__main__":
+    #domains = ["facebook.com", "meta.com"]
+    #processed_results = process_domains_parrallel(domains)
+    processed_results = process_domains_parrallel(website_list)

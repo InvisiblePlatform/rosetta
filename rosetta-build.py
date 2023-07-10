@@ -1,4 +1,7 @@
 import json
+from tqdm import tqdm
+import threading
+import time
 import os
 import frontmatter
 import json
@@ -14,9 +17,8 @@ def process_domain(domhash):
         total_connection_links = []
         for domain in domains:
             file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
-            json_loc = 'hugo/static/connections/' + domain.replace('.','') + ".json"
+            json_loc = 'hugo/static/connections/' + domain + ".json"
             if os.path.exists(file_loc):
-                print(file_loc)
                 with open(file_loc, "r") as file:
                     yaml_data = frontmatter.load(file)
                     for key in yaml_data.keys():
@@ -54,21 +56,31 @@ def process_domain(domhash):
                             if key != 'wikidata_id':
                                 yaml_data[key] = value
                     yaml_data['domhash'] = domhash
+                    yaml_data['connections'] = f'hugo/static/connections/{domhash}.json'
                     with open(output_loc, "w") as output:
                         output.writelines(frontmatter.dumps(yaml_data))
         connections_out = {}
         connections_out['nodes'] = total_connection_nodes
         connections_out['links'] = total_connection_links
-        json_output_file = 'matched_connections/' + domhash + '.json'
+        json_output_file = f'hugo/static/connections/{domhash}.json'
         with open(json_output_file, 'w') as output:
             json.dump(connections_out, output)
     except e:
         return [e, domhash]
     return [True, domhash]
 
+def progress():
+    time.sleep(3)  # Check progress after 3 seconds
+    print(f'total: {pbar.total} finish:{pbar.n}')
+
 def process_domains_parallel(domains):
+    thread = threading.Thread(target=progress)
+    thread.start()
+    results = []
     with Pool() as pool:
-        results = pool.map(process_domain, domains)
+        for result in pool.imap_unordered(process_domain, domains):
+                results.append(result)
+                pbar.update(1)
     return results
 
 
@@ -95,7 +107,6 @@ if __name__ == "__main__":
 
     found = 0
     hashtolook = None
-    print("---")
     hash_list = []
     for domhash in data:
         domains = data[domhash]
@@ -110,6 +121,6 @@ if __name__ == "__main__":
             # exit()
 
 
+    pbar = tqdm(total=len(data))
     processed_results = process_domains_parallel(hash_list)
-    pprint(processed_results)
 

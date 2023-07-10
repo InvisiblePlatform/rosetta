@@ -13,7 +13,7 @@ do_brand(){
   wget -nv "https://directory.goodonyou.eco/_next/data/$ID/brand/$1.json" -O "brand_$1.json"
 }
 
-pushd goodonyou || exit
+pushd data_collection/goodonyou || exit
   pushd categories || exit
     for category in "${categories[@]}"; do
       do_category "$category"
