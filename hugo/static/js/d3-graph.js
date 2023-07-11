@@ -270,9 +270,12 @@ d3.json(graphLoc).then(function(graph) {
             wikidataMainWiki = wikidataMainWiki.split('/').slice(4).join("/");
 
         if (wikidataMainWiki != "null") {
-            let requestURL = wikichoice + "/api/rest_v1/page/mobile-sections/" + wikidataMainWiki + "?redirect=true"
+            let requestURL = wikichoice + "/api/rest_v1/page/mobile-html/" + wikidataMainWiki + "?redirect=true"
+            $.support.cors = true;
             $.ajax({
-                url: requestURL
+                url: requestURL,
+                headers: { 'Api-User-Agent': "admin@invisible-voice.com"}
+
             }).done(function(data) {
                 var text = "";
                 text += data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
@@ -404,7 +407,9 @@ d3.json(graphLoc).then(function(graph) {
                 wikiframeclose.style.display = "block";
             }
             $.ajax({
-                url: requestURL
+                url: requestURL,
+                dataType: "jsonp",
+                headers: { 'Api-User-Agent': "admin@invisible-voice.com"}
             }).done(function(data) {
                 var text = data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
                 for (let x in data.remaining.sections) {

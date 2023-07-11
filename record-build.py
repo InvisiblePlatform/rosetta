@@ -201,6 +201,7 @@ def build_document(website):
         pass
     try:
         output["mbfc"] = mediabias_array[website]
+        output["mbfc_source"] = website
     except:
         pass
     try:
@@ -293,7 +294,7 @@ build_pairings_and_datapool()
 pbar = tqdm(total=len(website_list))
 
 if __name__ == "__main__":
-    #domains = ["opendemocracy.net","facebook.com", "meta.com", "twitter.com", "poundland.co.uk", "walleniuslines.com"]
+    #domains = ["opendemocracy.net","facebook.com", "meta.com", "twitter.com", "poundland.co.uk", "walleniuslines.com", "foxnews.com"]
     #processed_results = process_domains_parrallel(domains)
     processed_results = process_domains_parrallel(website_list)
     #processed_results = process_domains_parrallel(list(website_list)[:200])

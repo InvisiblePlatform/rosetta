@@ -25,7 +25,7 @@ pushd data_collection/goodonyou || exit
       do_brand "$brand"
     done < ../brand_id_list.list
         
-      jq -r '.pageProps.brand | .website |= sub("http[s]*://(www.)*" ; "") | .website |= sub("[/]*\\?.*";"") | .website |= sub("/.*";"") | [ .website, .id.id ] | @csv ' "*.json" 2>/dev/null > ../goodforyou_web_brandid.csv
+      jq -r '.pageProps.brand | .website |= sub("http[s]*://(www.)*" ; "") | .website |= sub("[/]*\\?.*";"") | .website |= sub("/.*";"") | [ .website, .id.id ] | @csv ' ./*.json 2>/dev/null > ../goodforyou_web_brandid.csv
 
       while read -r entry; do
           sed -i "/${entry}/d" ../goodforyou_web_brandid.csv
