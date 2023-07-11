@@ -21,6 +21,19 @@ allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
 });
 
+Url = {
+    get get(){
+        var vars= {};
+        if(window.location.search.length!==0)
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
+                key=decodeURIComponent(key);
+                if(typeof vars[key]==="undefined") {vars[key]= decodeURIComponent(value);}
+                else {vars[key]= [].concat(vars[key], decodeURIComponent(value));}
+            });
+        return vars;
+    }
+};
+
 console.log("[ IV ] Page load")
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
@@ -292,6 +305,11 @@ if (IVDarkModeOverride == "true"){
     document.getElementById('backButton').style.backgroundImage = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K')";
 }
 document.addEventListener("DOMContentLoaded", function(){
+    if (Url.get["app"] == 'true'){
+        closeButton.style.visibility = "hidden";
+    } else {
+        console.log("we have light")
+    }
 document.addEventListener('mouseup', function(event){
     if (event.target.matches('#Invisible-boycott')){
         send_message("IVBoycott", "please");

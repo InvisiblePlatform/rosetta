@@ -16,7 +16,10 @@
 <script src="/js/translations.js" defer></script>
 
 {{ if isset .Params "wikidataid" }}
-<div id="wikidataid" style="display:none;">{{ .Params.wikidataid }}</div>
+<div id="wikidataid" style="display:none;">{{ index .Params.wikidataid 0 }}</div>
+{{ end }}
+{{ if isset .Params "wikidata_id" }}
+<div id="wikidataid" style="display:none;">{{ index .Params.wikidata_id 0 }}</div>
 {{ end }}
 <section id="titlebar">
 <button id="roundelButton" type="button" onclick="spinRoundel()"></button>

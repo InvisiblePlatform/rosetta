@@ -9,7 +9,6 @@ if (phoneRegexG.test(navigator.userAgent)){
 const zoom = d3.zoom()
     .scaleExtent([-5, 40])
     .on("zoom", zoomed);
-
 var svg2 = d3.select("#key");
 var docwidth = mode == 1 ? window.innerWidth : "836";
 var docHeight = window.innerHeight; 
@@ -28,6 +27,7 @@ var wikifirstframe = document.getElementById("wikipedia-first-frame");
 var graphBox = document.getElementById("graph-box");
 var graphContainer = document.getElementById("graph-container");
 var infoCardContainer = document.getElementById("wikicard-container");
+var bigtext = ''
 
 var skipsections = ["See_also", "References", "Further_reading", "External_links",
                     "Sources", "undefined", "Notes", "Notes_et_références", 
@@ -75,7 +75,7 @@ function getMostCommon(array) {
     array.forEach(function(a) {
         count[a] = (count[a] || 0) + 1;
     });
-    // console.log(count);
+    console.log(count);
     return Object.keys(count).reduce(function(r, k, i) {
         if (!i || count[k] > count[r[0]]) {
             return [k, r];
@@ -155,10 +155,17 @@ d3.json(graphLoc).then(function(graph) {
             urls.push(document.links[i].href)
     for (var i = urls.length; i-- > 0;)
         ids.push(urls[i].replace(/#.*/g, "").replace(/.*\//, ""))
-    wikidataid = getMostCommon(ids)[0];
-    if (wikidataid == "Q") wikidataid = getMostCommon(ids);
-    wikidataidbackup = getMostCommon(ids)[1];
-    if (wikidataidbackup == "Q") wikidataidbackup = getMostCommon(ids);
+    try {
+        wikidataid = document.getElementById("wikidataid").innerText
+    } catch(e) {
+        console.error(e)
+    }
+    if (wikidataid == undefined){
+        wikidataid = getMostCommon(ids)[0];
+        if (wikidataid == "Q") wikidataid = getMostCommon(ids);
+        wikidataidbackup = getMostCommon(ids)[1];
+        if (wikidataidbackup == "Q") wikidataidbackup = getMostCommon(ids);
+    }
     graphCon = graph["links"];
     graphNod = graph["nodes"];
 
@@ -270,38 +277,46 @@ d3.json(graphLoc).then(function(graph) {
             wikidataMainWiki = wikidataMainWiki.split('/').slice(4).join("/");
 
         if (wikidataMainWiki != "null") {
-            let requestURL = wikichoice + "/api/rest_v1/page/mobile-html/" + wikidataMainWiki + "?redirect=true"
+            let requestURL = wikichoice + "/api/rest_v1/page/html/" + wikidataMainWiki + "?redirect=true"
             $.support.cors = true;
             $.ajax({
                 url: requestURL,
                 headers: { 'Api-User-Agent': "admin@invisible-voice.com"}
 
             }).done(function(data) {
-                var text = "";
-                text += data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
-                for (let x in data.remaining.sections) {
-                    let section = data.remaining.sections[x];
-                    if (!section.anchor) continue;
-                    if (skipsections.includes(section.anchor)) continue;
-                    text += `<p id="${section.anchor}"><h2>${section.line}</h2>` + 
-                        `${(section.text != '\n') ? `<div>${section.text.replace(/href=\"/g, 'href=\"' + wikichoice)}</div></p>` : '\n'}`;
-                }
-                wikifirstframe.innerHTML = text.replace(/<img/g,'<img loading=lazy ');
+                var tempObj = document.createElement("div")
+                tempObj.innerHTML = data
+                var tempElement = tempObj.getElementsByClassName("infobox")[0]
+                console.log(tempObj)
+                wikicardframe.innerHTML = ""
+                wikicardframe.appendChild(tempElement)
+                tempObj.getElementsByTagName("link")[2].remove()
+                wikifirstframe.innerHTML = ""
+                wikifirstframe.appendChild(tempObj)
 
-                for (var i = wikifirstframe.children.length; i-- > 0;){
-                    let child = wikifirstframe.children[i];
-                    if (child.classList.contains("infobox") || child.classList.contains("infobox_v2")) {
-                        wikicardframe.innerHTML = "";
-                        wikicardframe.appendChild(child);
-                    }
-                }
+                // for (let x in data.remaining.sections) {
+                //     let section = data.remaining.sections[x];
+                //     if (!section.anchor) continue;
+                //     if (skipsections.includes(section.anchor)) continue;
+                //     text += `<p id="${section.anchor}"><h2>${section.line}</h2>` + 
+                //         `${(section.text != '\n') ? `<div>${section.text.replace(/href=\"/g, 'href=\"' + wikichoice)}</div></p>` : '\n'}`;
+                // }
+                wikifirstframe.innerHTML = wikifirstframe.innerHTML.replace(/<img/g,'<img loading=lazy ');
+
+                // for (var i = wikifirstframe.children.length; i-- > 0;){
+                //     let child = wikifirstframe.children[i];
+                //     if (child.classList.contains("infobox") || child.classList.contains("infobox_v2")) {
+                //         wikicardframe.innerHTML = "";
+                //         wikicardframe.appendChild(child);
+                //     }
+                // }
                 // i18n, id, title, inId, innerHTML, icon, onclick
                 var cardVars = [ 'w.companyinfo', 'profile-card', "Company Info", 'wikipedia-page', wikicardframe.innerHTML, "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath stroke='%23343434' d='M12.5 8.5h16v7h-16z'/%3e%3cpath stroke='%23343434' d='M10.5 6.5h20v27h-20z'/%3e%3cpath stroke='%23343434' d='M12.5 27.5h16v4h-16zM14 17.5h3M14 21.5h3M14 25.5h3M14 19.5h3M14 23.5h3M19 17.5h8M19 21.5h8M19 25.5h8M19 19.5h8M19 23.5h8'/%3e%3c/svg%3e", "loadWikipediaCard()"];
                 var wikiVars = [ 'w.wikipedia', 'company-info', "Wikipedia", 'wikipedia-know', wikifirstframe.innerHTML, "data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' fill='none'%3e%3cpath stroke='%23343434' stroke-linecap='round' stroke-linejoin='round' d='M6 11.75S8.1 9 13 9s7 2.75 7 2.75V31s-2.1-1.375-7-1.375S6 31 6 31V11.75Zm14 0S22.1 9 27 9s7 2.75 7 2.75V31s-2.1-1.375-7-1.375S20 31 20 31V11.75Z'/%3e%3c/svg%3e", "loadWikipediaPage()"];
                 var fullWikiUrl = `${wikichoice}/wiki/${wikidataMainWiki}`;
                 [ cardVars, wikiVars ].forEach(function(itemArray){
                         var tempEl = `<h2 class='sectionTitle' id='${itemArray[1]}' data-i18n='${itemArray[0]}'>${itemArray[2]}</h2>
-                                      <div class='scoreText'><div id='${itemArray[3]}' class='hideInSmall'>"
+                                      <div class='scoreText'><div id='${itemArray[3]}' class='hideInSmall'>
                                       ${itemArray[4]}</div></div><img src="${itemArray[5]}" class='iconclass' />
                                       <a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>
                                       <button type='button' onclick='${itemArray[6]}' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>`;
