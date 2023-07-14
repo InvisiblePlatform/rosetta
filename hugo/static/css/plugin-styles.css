@@ -384,15 +384,17 @@ th {
 
 .source {
     color: var(--c-main)!important;
-    position: absolute;
+    position: relative;
     font-size: 0.625em;
     font-family: 'Roboto Mono';
     font-weight: 400;
     line-height: 13px;
     white-space: nowrap;
-    padding-right: 16px;
     order: 1001;
     z-index: 2;
+    bottom: 4px;
+    right: 20px;
+    float: right;
 }
 
 .minisource {
@@ -410,12 +412,11 @@ th {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none'%3e%3cpath stroke='%2308D735' stroke-linecap='square' stroke-linejoin='round' d='M7.334 3.333h-4v9.334h9.333v-4M8.668 7.333l4.667-4.666M14 2h-4m4 0v4'/%3e%3c/svg%3e");
     background-size: 16px 16px;
     background-repeat: no-repeat;
-    padding-right: 16px;
     width: 16px;
     height: 16px;
     right: -16px;
-    position: absolute;
     bottom: -2px;
+    position: absolute;
 }
 
 .wikipedia>button>span>span>a {
@@ -682,6 +683,8 @@ section.expanded section#similar-sites > section {
 }
 div.mobile > section.expanded {
     min-height: 100dvh;
+    border-radius: 0px;
+    border-style: none;
 }
 #wikipedia-infocard-frame a,
 #wikipedia-first-frame a {
@@ -1349,12 +1352,15 @@ section.expanded {
 .blankForSmall,
 .content.somethingIsOpen>section:not(.expanded, #Invisible-vote, #Invisible-boycott) {
     transform: translate(-200%);
+    position: absolute;
 }
 .content.somethingIsOpen.mobile>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
     transform: translateY(-100%);
+    position: absolute;
 }
 .content.somethingIsOpen:not(.mobile)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
     transform: translateY(200%);
+    position: absolute;
 }
 
 
@@ -1370,7 +1376,7 @@ body.somethingIsOpen section#titlebar > .co-name {
 body.mobile section#titlebar > .co-name {
     padding: 16px 0;
 }
-body.mobile section#titlebar > #settingsButton {
+body.mobile.topBar section#titlebar > #settingsButton {
     transform: translateY(36px);
 }
 body.mobile .content.somethingIsOpen :is(#Invisible-boycott, #Invisible-vote) {
@@ -1870,7 +1876,7 @@ section.expanded > h2.sectionTitle {
     height: 2.5em;
 }
 
-body.mobile {
+body.mobile.topBar {
     margin-top: 40px;
 }
 section#titlebar {
@@ -2146,6 +2152,7 @@ div.mobile #bcorp.expanded th {
     text-align: left;
     font-variation-settings: 'wdth' 80, 'GRAD' 0, 'wght' 450;
     font-weight: 450;
+    display: block;
 }
 
 #wikipedia-frame a,
@@ -2308,10 +2315,10 @@ div.mobile .expanded :is(.hideInSmall){
     margin-top: 8px;
     margin-bottom: 8px;
 }
-:not(.expanded) .source {
+/* :not(.expanded) .source {
     right: -8px;
     bottom: -16px;
-}
+}*/
 :not(.expanded) :where(#graph-box, #wikipedia-first-frame, #wikipedia-infocard-frame) .source {
     display: none;
 }
@@ -2323,4 +2330,41 @@ body.mobile:not(.somethingIsOpen) .source {
 }
 body.mobile #social-links {
     display:none;
+}
+.flavourText {
+    margin: 0 16px;
+}
+section:not(.expanded) .flavourText b {
+    font-size: 12px;
+}
+
+.charts {
+    margin: 0 16px;
+}
+.charts table {
+    margin: 16px 0 ;
+}
+.charts-css .tooltip {
+    z-index: 100;
+}
+.charts-css.bar.stacked tbody tr td span.data {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.charts-css.bar.stacked tbody tr {
+    min-height: 3em;
+}
+.charts-css.bar:not(.reverse) tbody tr td {
+    -webkit-box-pack: center!important;
+    -ms-flex-pack: center!important;
+    justify-content: center!important;
+}
+
+.charts-css.line {
+    height: 200px;
+    max-width: 400px;
+    margin: 0 auto;
+    word-break: keep-all;
+    white-space: nowrap;
 }

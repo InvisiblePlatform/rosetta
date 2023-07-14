@@ -38,6 +38,8 @@ console.log("[ IV ] Page load")
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
+let voteButtons = document.getElementById('Invisible-vote');
+let boyButton = document.getElementById('Invisible-boycott');
 let roundelButton = document.getElementById('roundelButton');
 let settingsButton = document.getElementById('settingsButton');
 let titleBar = document.getElementById('titlebar');
@@ -310,6 +312,16 @@ document.addEventListener("DOMContentLoaded", function(){
     } else {
         console.log("we have light")
     }
+    if (Url.get["vote"] == 'true' && mode == 1){
+        body.classList.add("topBar");
+    } else {
+        boyButton.style.visibility = "hidden";
+        voteButtons.style.visibility = "hidden";
+    }
+    if (Url.get["expanded"] && mode == 1){
+        document.getElementById(Url.get["expanded"]).classList.add("expanded")
+        content.classList.add('somethingIsOpen');
+    }
 document.addEventListener('mouseup', function(event){
     if (event.target.matches('#Invisible-boycott')){
         send_message("IVBoycott", "please");
@@ -395,17 +407,17 @@ var translate = {
 "networkgraph": "graph.title" ,
 "small-wikidata": "w.companyinfo",
 "mbfc-header": "mbfc.title",
-"trust-pilot": "",
+"trust-pilot": "trustpilot.title",
 "yahoo": "esg.title",
 "opensec": "os.title",
 "carbon": "carbon.title",
-"isin lct": "",
-"isin fas": "",
-"isin ssd": "",
-"isin nat": "",
-"isin dig": "",
+"isin lct": "isin.tlct",
+"isin fas": "isin.tfas",
+"isin ssd": "isin.tssd",
+"isin nat": "isin.tnat",
+"isin dig": "isin.tdig",
 "goodonyou": "goy.section-title",
-"bcorp": "",
+"bcorp": "bcorp.title",
 "tosdr-link": "tos.title",
 "glassdoor":"glassdoor.title",
 "similar-site-wrapper": "similar.title",
@@ -428,6 +440,7 @@ function slist (target) {
         }
         if (document.getElementById("wikipedia-infocard-frame")){
             document.getElementById("wikipedia-infocard-frame").style.order = x + 5;
+            document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("wikipedia-infocard-frame")`);
         }
     }
     if (document.getElementById(value)){
