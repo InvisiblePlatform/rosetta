@@ -382,25 +382,25 @@ document.addEventListener('mouseup', function(event){
 })},false);
 // {value: items[it].value, label: items[it].innerHTML}
 var defaultOrder = [
-    { value:"wikipedia-first-frame", label: "Wikipedia"},
-    { value:"networkgraph", label: "Network Graph and Company Info"},
-    { value:"small-wikidata", label: "Political Alignment"},
-    { value:"mbfc-header", label: "Media Bias"},
-    { value:"trust-pilot", label: "Trust Pilot"},
-    { value:"yahoo", label: "ESG Risk"},
-    { value:"opensec", label: "OpenSecrets"},
-    { value:"carbon", label: "Carbon Footprint"},
-    { value:"isin lct", label: "Low Carbon Transition"},
-    { value:"isin dig", label: "Digital Inclusion"},
-    { value:"isin nat", label: "Nature Benchmark"},
-    { value:"isin fas", label: "Food & Agriculture Sustainability"},
-    { value:"isin ssd", label: "Social & Sustainable Development"},
-    { value:"goodonyou", label: "Ethical Sourcing"},
-    { value:"bcorp", label: "Bcorp"},
-    { value:"tosdr-link", label: "Privacy"},
-    { value:"glassdoor", label: "Employee Rating"},
-    { value:"similar-site-wrapper", label: "Similar Websites"},
-    { value:"social-wikidata", label: "Social Media"},
+    "wikipedia-first-frame",
+    "networkgraph", 
+    "small-wikidata",
+    "mbfc-header", 
+    "trust-pilot",
+    "yahoo", 
+    "opensec", 
+    "carbon", 
+    "isin lct", 
+    "isin dig",
+    "isin nat", 
+    "isin fas", 
+    "isin ssd", 
+    "goodonyou", 
+    "bcorp", 
+    "tosdr-link", 
+    "glassdoor", 
+    "similar-site-wrapper", 
+    "social-wikidata", 
 ];
 var translate = {
 "wikipedia-first-frame": "w.wikipedia",
@@ -423,17 +423,14 @@ var translate = {
 "similar-site-wrapper": "similar.title",
 "social-wikidata": "w.socialmedia",
 };
-var propertyOrder = localStorage.IVPropertyOrder ? JSON.parse(localStorage.IVPropertyOrder) : defaultOrder;
-function slist (target) {
-  // (A) SET CSS + GET ALL LIST ITEMS
-  target.classList.add("slist");
+function recalculateList(){
+  var propertyOrder = localStorage.getItem("IVListOrder") ? localStorage.getItem("IVListOrder").split('|') : defaultOrder;
+  let target = document.getElementById("sortlist")
   let items = target.getElementsByTagName("li"), current = null;
   for (let x = 0; x < propertyOrder.length; x++){
-    let value = propertyOrder[x].value;
+    let value = propertyOrder[x];
     if (items[x] !== undefined){
-    items[x].setAttribute("value", value);
     items[x].setAttribute("data-i18n", translate[value]);
-    items[x].innerHTML = propertyOrder[x].label;
     if (value == "networkgraph"){
         if (document.getElementById("graph-box")){
             document.getElementById("graph-box").style.order = x + 5;
@@ -452,181 +449,42 @@ function slist (target) {
         }
     }
     }
+
   };
+  console.log("sorted")
+}
+function slist (target) {
+  // (A) SET CSS + GET ALL LIST ITEMS
+  target.classList.add("slist");
+  $('#sortlist').sortable({
+        group: 'iv-list',
+        animation: 200,
+	    store: {
+	    	/**
+	    	 * Get the order of elements. Called once during initialization.
+	    	 * @param   {Sortable}  sortable
+	    	 * @returns {Array}
+	    	 */
+	    	get: function (sortable) {
+	    		var order = localStorage.getItem("IVListOrder");
+	    		return order ? order.split('|') : [];
+	    	},
 
+	    	/**
+	    	 * Save the order of elements. Called onEnd (when the item is dropped).
+	    	 * @param {Sortable}  sortable
+	    	 */
+	    	set: function (sortable) {
+	    		var order = sortable.toArray();
+	    		localStorage.setItem("IVListOrder", order.join('|'));
+                recalculateList()
+	    	}
+	    }
+  });
+  recalculateList()
+  console.log($('#sortlist').sortable('toArray'));
+  
 
-  // (B) MAKE ITEMS DRAGGABLE + SORTABLE
-  var position = 0;
-  for (let i of items) {
-    position += 1;
-    if (mode == 1) {
-        i.style.order = position;
-    }
-    // (B1) ATTACH DRAGGABLE
-    i.draggable = true;
-
-
-    // (B2) DRAG START - YELLOW HIGHLIGHT DROPZONES
-    i.ondragstart = (ev) => {
-      current = i;
-      ev.dataTransfer.setData('text/plain', 'hello');
-      ev.dataTransfer.dropEffect = 'copy';
-      for (let it of items) {
-        if (it != current) { it.classList.add("hint"); }
-      }
-    };
-
-    // (B3) DRAG ENTER - RED HIGHLIGHT DROPZONE
-    i.ondragenter = (ev) => {
-      if (i != current) { i.classList.add("active"); }
-    };
-
-    if (mode == 1) {
-    i.addEventListener('touchmove', function(e){
-        var tl = e.targetTouches[0];
-        iPlace = i.getBoundingClientRect();
-        i.style.height = iPlace.height + "px";
-        i.style.width = iPlace.width + "px";
-        i.style.top = tl.clientY + "px";
-        i.classList.add("held");
-    })
-    i.addEventListener('touchend', function(e){
-        var touchLocation = e.targetTouches[0];
-        i.classList.remove("held");
-        iPlace = i.style.top.split("px")[0];
-        i.style.top = "";
-        i.style.left = "";
-        // oord = Number(i.style.order);
-        // for (let it=0; it<items.length; it++){
-        //     posY = items[it].getBoundingClientRect().y;
-        // }
-        // for (let it=0; it<items.length; it++){
-        //     ord = Number(items[it].style.order);
-        // }
-        sorting = [];
-        for (let it=0; it<items.length; it++) {
-            if (i.getAttribute("value") != items[it].getAttribute("value")){
-                posY = items[it].getBoundingClientRect().y;
-            } else {
-                posY = Number(iPlace);
-            }
-            sorting.push({key: items[it].getAttribute("value"), value: posY});
-        }
-        sorted = sorting.sort(sort_by("value", false, Number));
-        sortedKeys = {}
-        lookupLabel = {}
-        for (let it=1; it<sorted.length+1; it++){
-            sortedKeys[`${sorted[it-1].key}`] = it;
-        }
-        for (let it=0; it<items.length; it++) {
-            items[it].style.order = sortedKeys[`${items[it].getAttribute("value")}`];
-            lookupLabel[`${items[it].getAttribute("value")}`] = items[it].innerHTML;
-        }
-        let outItems = []
-        for (let it=1; it<sorted.length+1; it++){
-            outItems.push({value: sorted[it-1].key, label: lookupLabel[`${sorted[it-1].key}`]});
-            let value = sorted[it-1].key;
-            if (value == "networkgraph"){
-                if (document.getElementById("graph-box")){
-                    document.getElementById("graph-box").style.order = it + 4;
-                }
-                if (document.getElementById("wikipedia-infocard-frame")){
-                    document.getElementById("wikipedia-infocard-frame").style.order = it + 4;
-                }
-            }
-            if (document.getElementById(value)){
-                document.getElementById(value).style.order = it + 4;
-            }
-        }
-        localStorage.IVPropertyOrder = JSON.stringify(outItems);
-    });
-    }
-
-    // (B4) DRAG LEAVE - REMOVE RED HIGHLIGHT
-    i.ondragleave = () => {
-      i.classList.remove("active");
-    };
-
-    // (B5) DRAG END - REMOVE ALL HIGHLIGHTS
-    i.ondragend = () => { for (let it of items) {
-        it.classList.remove("hint");
-        it.classList.remove("active");
-    }};
-
-    // (B6) DRAG OVER - PREVENT THE DEFAULT "DROP", SO WE CAN DO OUR OWN
-    i.ondragover = (evt) => { evt.preventDefault(); };
-
-    // (B7) ON DROP - DO SOMETHING
-    i.ondrop = (evt) => {
-      evt.preventDefault();
-      if (i != current) {
-        let currentpos = 0, droppedpos = 0;
-        for (let it=0; it<items.length; it++) {
-          if (current == items[it]) { currentpos = it; }
-          if (i == items[it]) { droppedpos = it; }
-        }
-        if (currentpos < droppedpos) {
-          i.parentNode.insertBefore(current, i.nextSibling);
-        } else {
-          i.parentNode.insertBefore(current, i);
-        }
-      }
-      let outItems = [];
-      for (let it=0; it<items.length; it++){
-          outItems.push({value: items[it].getAttribute("value"), label: items[it].innerHTML});
-            let value = items[it].getAttribute("value");
-            if (value == "networkgraph"){
-                if (document.getElementById("graph-box")){
-                    document.getElementById("graph-box").style.order = it + 5;
-                }
-                if (document.getElementById("wikipedia-infocard-frame")){
-                    document.getElementById("wikipedia-infocard-frame").style.order = it + 5;
-                }
-            }
-            if (document.getElementById(value)){
-                document.getElementById(value).style.order = it + 5;
-            }
-      }
-      localStorage.IVPropertyOrder = JSON.stringify(outItems);
-    };
-
-    // i.addEventListener('touchend', function(e){
-    //     var touchLocation = e.targetTouches[0];
-    //     i.style.left = touchLocation.pageX + 'px';
-    //     i.style.top = touchLocation.pageY + 'px';
-    //     for (let j of items) {
-    //         if (j != current) {
-    //           let currentpos = 0, droppedpos = 0;
-    //           for (let it=0; it<items.length; it++) {
-    //             if (current == items[it]) { currentpos = it; }
-    //             if (i == items[it]) { droppedpos = it; }
-    //           }
-    //           if (currentpos < droppedpos) {
-    //             i.parentNode.insertBefore(current, i.nextSibling);
-    //           } else {
-    //             i.parentNode.insertBefore(current, i);
-    //           }
-    //         }
-    //         let outItems = [];
-    //         for (let it=0; it<items.length; it++){
-    //             outItems.push({value: items[it].getAttribute("value"), label: items[it].innerHTML});
-    //               let value = items[it].getAttribute("value");
-    //               if (value == "networkgraph"){
-    //                   if (document.getElementById("graph-box")){
-    //                       document.getElementById("graph-box").style.order = it + 5;
-    //                   }
-    //                   if (document.getElementById("wikipedia-infocard-frame")){
-    //                       document.getElementById("wikipedia-infocard-frame").style.order = it + 5;
-    //                   }
-    //               }
-    //               if (document.getElementById(value)){
-    //                   document.getElementById(value).style.order = it + 5;
-    //               }
-    //         }
-    //         localStorage.IVPropertyOrder = JSON.stringify(outItems);
-    //     }
-    // })
-  }
 }
 
 window.addEventListener('message', function(e){
