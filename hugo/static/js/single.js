@@ -21,6 +21,7 @@ allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
 });
 
+var debug = false;
 Url = {
     get get(){
         var vars= {};
@@ -33,8 +34,14 @@ Url = {
         return vars;
     }
 };
+if (Url.get["debug"] == 'true'){
+    debug = true;
+}
+if (localStorage.debugMode == "true") {
+    document.lastChild.classList.toggle("debugColors");
+    debug = true;
+}
 
-console.log("[ IV ] Page load")
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
@@ -62,26 +69,36 @@ let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
 document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
 
+
+
 var mode = 0                                                                    
 const phoneRegex = /Mobile/i;                                                   
                                                                                 
+if (Url.get["mode"] > 0){
+    mode = Url.get["mode"];
+    if (debug) console.log("mode override " + mode)
+} else {
 if (phoneRegex.test(navigator.userAgent)){                                      
     mode = 1;
-    console.log("[ Invisible Voice ]: phone mode");
+} else {
+    mode = 2;
+}
+}
+
+if ( mode == 1 ){
+    if (debug) console.log("[ Invisible Voice ]: phone mode");
     document.getElementsByClassName("content")[0].classList.add("mobile");
     body.classList.add("mobile");
-} else {
+}
+if ( mode == 2 ){
     backButton.classList.add("show");
-    mode = 2;
+    closeButton.classList.add("closeExtention");
+    settingsButton.style.right = "64px";
     document.getElementsByClassName("content")[0].classList.add("desktop");
     body.classList.add("desktop");
 }
 
-if ( mode == 2 ){
-    closeButton.classList.add("closeExtention");
-    settingsButton.style.right = "64px";
-}
-
+if (debug) console.log("[ IV ] Page load")
 const spinRoundelFrames = [
  { transform: "rotate(0)" },
  { transform: "rotate(360deg)" },
@@ -309,8 +326,6 @@ if (IVDarkModeOverride == "true"){
 document.addEventListener("DOMContentLoaded", function(){
     if (Url.get["app"] == 'true'){
         closeButton.style.visibility = "hidden";
-    } else {
-        console.log("we have light")
     }
     if (Url.get["vote"] == 'true' && mode == 1){
         body.classList.add("topBar");
@@ -322,6 +337,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById(Url.get["expanded"]).classList.add("expanded")
         content.classList.add('somethingIsOpen');
     }
+var debugModeCount = 0
 document.addEventListener('mouseup', function(event){
     if (event.target.matches('#Invisible-boycott')){
         send_message("IVBoycott", "please");
@@ -347,7 +363,22 @@ document.addEventListener('mouseup', function(event){
     };
     if (event.target.parentElement.parentElement) 
         if (event.target.parentElement.parentElement.matches('#permaDark')){
-            console.log("IVDarkModeOverride");
+            if (debugModeCount < 4){
+                console.log("ping " + debugModeCount);
+                debugModeCount += 1;
+            }
+            if (debugModeCount == 4){
+                debug = true;
+                if (localStorage.debugMode == "true") {
+                    localStorage.debugMode = false;
+                    document.lastChild.classList.toggle("debugColors");
+                } else {
+                    localStorage.debugMode = true;
+                    document.lastChild.classList.toggle("debugColors");
+                }
+            }
+
+            if (debug) console.log("IVDarkModeOverride");
 		    if (IVDarkModeOverride == "true") {
 		    	IVDarkModeOverride = false;
 		    	localStorage.IVDarkModeOverride = false;
@@ -362,14 +393,14 @@ document.addEventListener('mouseup', function(event){
         }
     if (event.target.parentElement.parentElement) 
     if (event.target.parentElement.parentElement.matches('#onScreen')){
-        console.log("IVKeepOnScreen");
+        if (debug) console.log("IVKeepOnScreen");
         IVKeepOnScreen = localStorage.IVKeepOnScreen;
 		if (IVKeepOnScreen == "true") {
 			localStorage.IVKeepOnScreen = false;
-            console.log("keep off")
+            if (debug) console.log("keep off")
 		} else {
 			localStorage.IVKeepOnScreen = true;
-            console.log("keep on")
+            if (debug) console.log("keep on")
 		}
     }
     if (event.target.matches('#backButton')){
@@ -377,7 +408,7 @@ document.addEventListener('mouseup', function(event){
     }
     if (event.target.matches('#profile-card')){
         send_message("biggen", "big");
-        console.log("bigg");
+        if (debug) console.log("bigg");
     }
 })},false);
 // {value: items[it].value, label: items[it].innerHTML}
@@ -451,7 +482,7 @@ function recalculateList(){
     }
 
   };
-  console.log("sorted")
+  if (debug) console.log("sorted")
 }
 function slist (target) {
   // (A) SET CSS + GET ALL LIST ITEMS
@@ -482,14 +513,14 @@ function slist (target) {
 	    }
   });
   recalculateList()
-  console.log($('#sortlist').sortable('toArray'));
+  if (debug) console.log($('#sortlist').sortable('toArray'));
   
 
 }
 
 window.addEventListener('message', function(e){
     if (e.data.message === undefined) return
-    console.log(e);
+    if (debug) console.log(e);
     const decoded = e.data
     var dlikeC = '';
     var likeC = '';

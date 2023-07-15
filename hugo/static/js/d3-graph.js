@@ -1,9 +1,25 @@
+var debug = false;
+Url = {
+    get get(){
+        var vars= {};
+        if(window.location.search.length!==0)
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
+                key=decodeURIComponent(key);
+                if(typeof vars[key]==="undefined") {vars[key]= decodeURIComponent(value);}
+                else {vars[key]= [].concat(vars[key], decodeURIComponent(value));}
+            });
+        return vars;
+    }
+};
+if (Url.get["debug"] == 'true'){
+    debug = true;
+}
 var mode = 0                                                                    
 const phoneRegexG = /Mobile/i;                                                   
                                                                                 
 if (phoneRegexG.test(navigator.userAgent)){                                      
     mode = 1;
-    console.log("[ Invisible Voice ]: phone mode");
+    if (debug) console.log("[ Invisible Voice ]: phone mode");
     document.getElementsByClassName("content")[0].classList.add("mobile");
 }         
 const zoom = d3.zoom()
@@ -75,7 +91,7 @@ function getMostCommon(array) {
     array.forEach(function(a) {
         count[a] = (count[a] || 0) + 1;
     });
-    console.log(count);
+    if (debug) console.log(count);
     return Object.keys(count).reduce(function(r, k, i) {
         if (!i || count[k] > count[r[0]]) {
             return [k, r];
@@ -287,7 +303,7 @@ d3.json(graphLoc).then(function(graph) {
                 var tempObj = document.createElement("div")
                 tempObj.innerHTML = data
                 var tempElement = tempObj.getElementsByClassName("infobox")[0]
-                console.log(tempObj)
+                if (debug) console.log(tempObj)
                 wikicardframe.innerHTML = ""
                 wikicardframe.appendChild(tempElement)
                 tempObj.getElementsByTagName("link")[2].remove()
@@ -351,7 +367,7 @@ d3.json(graphLoc).then(function(graph) {
                 wikifirstframe.style.display = "";
                 wikicardframe.style.display = "";
             }).fail(function() {
-                console.log("oh no")
+                if (debug) console.log("oh no")
             });
         };
         contentsLength = document.getElementsByClassName("content").length;
@@ -446,7 +462,7 @@ d3.json(graphLoc).then(function(graph) {
                 var title = '<div class="sectionTitle" style="font-variation-settings:\'wght\'500;">' + data.lead.normalizedtitle + '</div>';
                 wikiframe.innerHTML = title + text;
             }).fail(function() {
-                console.log("oh no")
+                if (debug) console.log("oh no")
             });
 
         })

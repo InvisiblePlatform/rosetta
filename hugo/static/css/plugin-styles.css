@@ -1404,6 +1404,9 @@ td.biaslink {
         border-bottom: var(--c-light-text) solid 1px;
         padding: 4px;
     }
+    body.desktop:not(.topBar) div.content {
+        padding-top: 56px;
+    }
 
     :not(.expanded) score {
         display: table;

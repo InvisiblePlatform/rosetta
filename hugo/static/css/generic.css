@@ -170,6 +170,21 @@ html.dark-theme {
     --first-frame-from: rgba(26,26,26, 1);
     --first-frame-to: rgba(26,26,26, 0);
 }
+html.debugColors {
+    --c-main: #08D735;
+    --c-background: #1A1A1A;
+    --c-background-units: #FFF;
+    --c-light-text: #ff4500;
+	--c-heavy-text: #1A1A1A;
+    --c-interior-border: #FFF;
+    --c-linky-text: #7373FF;
+    --c-linky-text-minor: #DDD;
+    --c-secondary-background: #1E1E1E;
+    --c-hover: #5f5f5f;
+	--brightness: 10;
+    --first-frame-from: rgba(26,26,26, 1);
+    --first-frame-to: rgba(26,26,26, 0);
+}
 
 #backButton{
     background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iIzM0MzQzNCIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K');
