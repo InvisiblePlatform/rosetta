@@ -67,9 +67,9 @@ let networkGraph = document.getElementById('graph-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
-document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
-
-
+if (document.getElementById('graph-box') != null){
+    document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+}
 
 var mode = 0                                                                    
 const phoneRegex = /Mobile/i;                                                   
@@ -119,8 +119,8 @@ let resetBack = function(){
     settings.style.top = "";
     titleBar.style.display = "";
     settings.firstElementChild.style.top = `-${settingsOffset}`;
-    networkGraph.style.visibility = 'hidden';
-        backButton.setAttribute("onclick", 'justSendBack()');
+    if (networkGraph != null) networkGraph.style.visibility = 'hidden';
+    backButton.setAttribute("onclick", 'justSendBack()');
     backButton.style.backgroundColor = '';
     if ( mode == 1 ) backButton.classList.remove("show");
     settingsButton.style.display = 'block';
@@ -297,12 +297,16 @@ let closeSettings = function(x) {
     }
     coName.style.opacity = "100%";
     fullPage.style.overflow = "";
+    if (infoCard != null) {
     if (infoCard.classList.contains("expanded")) {
         settings.style.visibility = 'hidden';
         setBack('closeInfoCard()');
     } else if (wikipediaPage.classList.contains("expanded")) {
         settings.style.visibility = 'hidden';
         setBack('closeWikipediaPage()');
+    } else {
+       resetBack();
+    }
     } else {
        resetBack();
     }

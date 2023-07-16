@@ -1610,7 +1610,8 @@ td.biaslink {
     }
     #backButton {
         background-color: var(--c-background);
-        transform: rotate(180deg);
+        transform: translate(42px, -12px);
+        rotate: 180deg;
         left: -1px;
         display: block;
     }
@@ -1808,7 +1809,7 @@ td.biaslink {
     }
     #backButton {
         display: block;
-        transform: rotate(180deg);
+        rotate: 180deg;
         left: -1px;
     }
 
@@ -1916,10 +1917,11 @@ section#titlebar > #settingsButton> div {
 }
 
 section#titlebar > #backButton.show {
-    --startx: -42px;
-    --starty: 12px;
-    --endx: 16px;
+    --starty: -42px;
+    --startx: 12px;
+    --endx: 12px;
     --endy: 12px;
+    transform-origin: center;
     animation-name: moveIn;
     animation-fill-mode: forwards;
     animation-timing-function: ease-out;
@@ -1929,7 +1931,7 @@ section#titlebar > #backButton.show {
 section#titlebar > #backButton{
     border-radius: 8px;
     display: block;
-    transform: translate(-42px, 12px);
+    transform: translate(12px, 12px);
     background-size: 16px 16px;
     position: absolute;
     min-width: 40px;
