@@ -1673,8 +1673,21 @@ td.biaslink {
         letter-spacing: 0.04em;
         font-weight: 700;
     }
-    .esgKey {
-        display: none;
+    :not(expanded):is(#yahoo) .esgKey tbody :is(td,th) {
+        display: table-cell;
+        text-align: center;
+    }
+    :not(expanded):is(#yahoo) .esgKey tbody :is(tr) {
+        display: inline-flex;
+        flex-direction: column;
+        width: 20%;
+    }
+    :is(div).esgKey {
+    /* display: none; */
+    width: 200%;
+    right: calc(100% - 8px);
+    position: relative;
+    background-color: var(--c-secondary-background);
     }
     section:not(.expanded)#wikipedia-infocard-frame {
         flex-direction: column;
@@ -1714,7 +1727,7 @@ td.biaslink {
         position: absolute;
         width: calc(100% - 16px);
         left: calc(-100% + 24px);
-        margin-top: 72px;
+        margin-top: 80px;
     }
 
     section:not(.expanded)#wikipedia-first-frame h2.sectionTitle {
@@ -1777,6 +1790,7 @@ td.biaslink {
     .fullView {
         position: absolute;
         bottom: 0;
+        display: none;
     }
 
     #titlebar:has(.closeExtention) #settingsButton {

@@ -5,7 +5,7 @@
     <h2 class="sectionTitle" data-i18n='isin.nature' >Nature Benchmark</h2>
     <div class="pie hideTilExpanded"></div>
         <score class="ratingOutOf" style="--outOf:'/100';">{{ index . "totalscr" }}</score>
-        <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:;"></div>
+        <div class="pie hideTilExpanded animate" style='--c:var(--chart-fore);--p:{{ index . "totalscr"}};'></div>
         <div class="scoreText fullBleed">
             <div>
         <table>
@@ -21,9 +21,9 @@
 {{ with index $dataDigital . }}
 <section id='isin dig' class="contentSection">
     <h2 class="sectionTitle" data-i18n='isin.digital' >Digital Inclusion</h2>
-    <div class="pie hideTilExpanded"></div>
+    <div class="pie hideTilExpanded"></div>{{ $perc := float (index . "DIB Score (0-100)")}}
         <score class="ratingOutOf" style="--outOf:'/100';">{{ index . "DIB Score (0-100)" }}</score>
-        <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:;"></div>
+        <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:{{ $perc }};"></div>
         <div class="scoreText fullBleed">
             <div>
         <table>
