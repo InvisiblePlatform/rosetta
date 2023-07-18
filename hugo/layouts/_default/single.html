@@ -80,11 +80,11 @@
 {{ partialCached "similar.html" .Params.title .Params.title }}
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
-<section id="Invisible-vote" class="hideInSmall">
-<section id="Invisible-like" style="--count:'0';" data-i18n="vote.like">Like</section>
-<section id="Invisible-dislike" style="--count:'0';" data-i18n="vote.dislike">Dislike</section>
+<section id="Invisible-vote" class="hideInSmall hide">
+<section id="Invisible-like" onclick="vote('up')" style="--count:'0';" data-i18n="vote.like">Like</section>
+<section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike</section>
 </section>
-<section id="Invisible-boycott" data-i18n="vote.boycott" class="hideInSmall">Boycott</section>
+<section id="Invisible-boycott" data-i18n="vote.boycott" class="hideInSmall hide">Boycott</section>
   {{ .Content }}
 </div>
 <section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title">Disclaimer</div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information</p> <a class="hideInSmall" data-i18n="header.here" href="#">here.</a></section>

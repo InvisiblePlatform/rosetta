@@ -41,11 +41,11 @@ if (localStorage.debugMode == "true") {
     document.lastChild.classList.toggle("debugColors");
     debug = true;
 }
-
 let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
 let voteButtons = document.getElementById('Invisible-vote');
+var voteNumbers = [2, 4];
 let boyButton = document.getElementById('Invisible-boycott');
 let roundelButton = document.getElementById('roundelButton');
 let settingsButton = document.getElementById('settingsButton');
@@ -56,11 +56,9 @@ let fullPage = document.documentElement;
 let content = document.getElementsByClassName('content')[0];
 let body = document.body;
 closeButton.setAttribute('onclick', 'closeIV()');
-
 let closeIV = function(){
     send_message("IVClose", "closeButton");
 };
-
 let settings = document.getElementById('settings');
 let graphButtons = document.getElementById('graphButtons');
 let networkGraph = document.getElementById('graph-container');
@@ -69,6 +67,61 @@ let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
 if (document.getElementById('graph-box') != null){
     document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+}
+
+// For voting 
+async function voteAsync(site, direction){
+   var voteHeaders;
+    try {
+        uuid = localStorage.uuid;
+    } catch(e) {
+        uuid = null
+    }
+    if (uuid == null){
+   voteHeaders = new Headers({
+   	'site': site,
+   	'direction': direction
+   });
+    } else {
+   voteHeaders = new Headers({
+   	'site': site,
+   	'direction': direction,
+    'user': uuid
+   });
+    }
+   var voteVars = {
+       method: 'POST',
+       headers: voteHeaders,
+       mode: 'cors',
+   };
+   console.log(site, direction);
+   var data = await fetch(
+       new Request(voteUrl + "/vote", voteVars)
+   ).then(response => response.json()
+   ).then(data => {
+       return data;
+   }
+   );
+   return data;
+}
+
+async function getTotalAsync(site){
+   var voteHeaders = new Headers({
+   	'site': site
+   });
+   var voteVars = {
+       method: 'GET',
+       headers: voteHeaders,
+       mode: 'cors',
+   };
+   var data = await fetch(
+       new Request(voteUrl + "/get-data", voteVars)
+   ).then(response => response.json()
+   ).then(data => {
+       return data;
+   }
+   );
+    return data;
 }
 
 var mode = 0                                                                    
@@ -181,6 +234,14 @@ let loadSettings = function(x) {
     if (mode == 2){
         closeButton.style.display = "none";
     }
+    if (debug == true && (!document.getElementById("debug-banner"))){
+        var banner = document.createElement("div");
+        banner.id = "debug-banner";
+        banner.classList.add("switchItem");
+        banner.innerHTML = `<h2 data-i85n="settings.debugBanner">Debug Mode</h2>
+            <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
+        settings.appendChild(banner);
+    }
     settings.firstElementChild.style.top = "0";
     backButton.style.backgroundColor = 'var(--c-secondary-background)';
     backButton.style.borderColor = 'var(--c-light-text)';
@@ -204,7 +265,7 @@ let loadNetworkGraph = function(x) {
     if (mode == 2){
         closeButton.style.display = "none";
     }
-    titleBar.style.position = "fixed";
+    titleBar.style.position = "";
     titleBar.style.top = "0";
     graphButtons.style.top = "12px";
     window.scrollTo(0,0);
@@ -331,8 +392,11 @@ document.addEventListener("DOMContentLoaded", function(){
     if (Url.get["app"] == 'true'){
         closeButton.style.visibility = "hidden";
     }
-    if (Url.get["vote"] == 'true' && mode == 1){
+    if (Url.get["vote"] == 'true'){
         body.classList.add("topBar");
+        boyButton.classList.toggle("hide");
+        voteButtons.classList.toggle("hide");
+        voteLoad();
     } else {
         boyButton.style.visibility = "hidden";
         voteButtons.style.visibility = "hidden";
@@ -343,19 +407,22 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 var debugModeCount = 0
 document.addEventListener('mouseup', function(event){
+    if (event.target.matches("html")){
+        return;
+    }
     if (event.target.matches('#Invisible-boycott')){
         send_message("IVBoycott", "please");
     };
-    if (event.target.matches('#Invisible-like')){
-        send_message("IVLike", "please");
-    };
-    if (event.target.matches('#Invisible-dislike')){
-        send_message("IVDislike", "please");
-    };
+    // if (event.target.matches('#Invisible-like')){
+    //     send_message("IVLike", "please");
+    // };
+    // if (event.target.matches('#Invisible-dislike')){
+    //     send_message("IVDislike", "please");
+    // };
     if (event.target.classList.contains('invisible-disclaimer-title')){
         send_message("IVClicked", "disclaimer");
     };
-    if (event.target.classList.contains('sectionTitle')|| event.target.classList.contains('iconclass')){
+    if (event.target.classList.contains('sectionTitle')|| event.target.classList.contains('iconclass')|| event.target.classList.contains('scoreText')){
         send_message("IVClicked", event.target.parentElement.id);
         if (event.target.parentElement.id == "wikipedia-first-frame"){
             loadWikipediaPage();
@@ -547,6 +614,96 @@ window.addEventListener('message', function(e){
     }
 });
 
+// Voting
+let voteUrl = "https://assets.reveb.la";
+var tempVoteDirection = "";
+var tempInvert = false;
+var invert = null;
+var uuid = null;
+async function voteLoad(){
+    site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
+    hash = md5(site);
+    data = await voteAsync(hash, "none").then(data => {
+        if (debug) console.log(data);
+        voteNumbers = [Number(data["up_total"]),Number(data["down_total"])];
+        uuid = data["user"];
+        localStorage.setItem("uuid", uuid);
+        voteUpdate();
+    });
+}
+function vote(direction){
+    try {
+        uuid = localStorage.uuid;
+    } catch(e) {
+        console.log(e)
+    }
+    // First look for hash
+    site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
+    hash = md5(site);
+    invert = false;
+    console.log(uuid);
+    olddirection = tempVoteDirection
+    // Then check if voted before
+    // Then check vote direction
+    // if directions are the same then unvote
+    if (direction == olddirection) invert = true;
+    // if directions are different but not "" then unvote the other direction
+    if (!invert && tempVoteDirection != ""){
+        if (direction == "up"){
+            voteRequest(hash, "down", true)
+        } else {
+            voteRequest(hash, "up", true)
+        }
+    }
+    // otherwise vote
+    voteRequest(hash, direction, invert)
+    // Update totals
+    tempVoteDirection = direction;
+    tempInvert = invert;
+    voteUpdate();
+}
+async function voteRequest(hash, direction, invert){
+    if (debug) console.log("vote request: " + hash + " " + direction + " " + invert);
+    newDirection = direction;
+    if (invert){
+        newDirection = "un" + direction;
+    }
+    data = await voteAsync(hash, newDirection).then(data => {
+        if (debug) console.log(data);
+        voteNumbers = [Number(data["up_total"]),Number(data["down_total"])];
+        uuid = data["user"];
+        localStorage.setItem("uuid", uuid);
+        voteUpdate();
+    });
+}
+function voteUpdate(){
+    direction = tempVoteDirection;
+    // if (direction == "up"){
+    //     if (invert) voteNumbers[0] -= 1;
+    //     if (!invert) voteNumbers[0] += 1;
+    // } else if (direction == "down") {
+    //     if (invert) voteNumbers[1] -= 1;
+    //     if (!invert) voteNumbers[1] += 1;
+    // } else {
+    //    voteNumbers[0] = oldNumbers[0];
+    //    voteNumbers[1] = oldNumbers[1];
+    //}
+    IVLike.setAttribute("style", "--count:'" + voteNumbers[0] + "';");
+    IVDislike.setAttribute("style", "--count:'" + voteNumbers[1] + "';");
+    if (!invert) {
+        if (direction == "up") {
+            IVLike.style.color = "green";
+            IVDislike.style.color = "";
+        } else {
+            IVLike.style.color = "";
+            IVDislike.style.color = "green";
+        }
+    } else {
+        tempVoteDirection = "";
+        IVDislike.style.color = "";
+        IVLike.style.color = "";
+    }
+}
 
 const sort_by = (field, reverse, primer) => {
 
@@ -565,4 +722,50 @@ const sort_by = (field, reverse, primer) => {
   }
 }
 
+//  Formatted version of a popular md5 implementation
+//  Original copyright (c) Paul Johnston & Greg Holt.
+//  The function itself is now 42 lines long.
+
+function md5(inputString) {
+    var hc="0123456789abcdef";
+    function rh(n) {var j,s="";for(j=0;j<=3;j++) s+=hc.charAt((n>>(j*8+4))&0x0F)+hc.charAt((n>>(j*8))&0x0F);return s;}
+    function ad(x,y) {var l=(x&0xFFFF)+(y&0xFFFF);var m=(x>>16)+(y>>16)+(l>>16);return (m<<16)|(l&0xFFFF);}
+    function rl(n,c)            {return (n<<c)|(n>>>(32-c));}
+    function cm(q,a,b,x,s,t)    {return ad(rl(ad(ad(a,q),ad(x,t)),s),b);}
+    function ff(a,b,c,d,x,s,t)  {return cm((b&c)|((~b)&d),a,b,x,s,t);}
+    function gg(a,b,c,d,x,s,t)  {return cm((b&d)|(c&(~d)),a,b,x,s,t);}
+    function hh(a,b,c,d,x,s,t)  {return cm(b^c^d,a,b,x,s,t);}
+    function ii(a,b,c,d,x,s,t)  {return cm(c^(b|(~d)),a,b,x,s,t);}
+    function sb(x) {
+        var i;var nblk=((x.length+8)>>6)+1;var blks=new Array(nblk*16);for(i=0;i<nblk*16;i++) blks[i]=0;
+        for(i=0;i<x.length;i++) blks[i>>2]|=x.charCodeAt(i)<<((i%4)*8);
+        blks[i>>2]|=0x80<<((i%4)*8);blks[nblk*16-2]=x.length*8;return blks;
+    }
+    var i,x=sb(""+inputString),a=1732584193,b=-271733879,c=-1732584194,d=271733878,olda,oldb,oldc,oldd;
+    for(i=0;i<x.length;i+=16) {olda=a;oldb=b;oldc=c;oldd=d;
+        a=ff(a,b,c,d,x[i+ 0], 7, -680876936);d=ff(d,a,b,c,x[i+ 1],12, -389564586);c=ff(c,d,a,b,x[i+ 2],17,  606105819);
+        b=ff(b,c,d,a,x[i+ 3],22,-1044525330);a=ff(a,b,c,d,x[i+ 4], 7, -176418897);d=ff(d,a,b,c,x[i+ 5],12, 1200080426);
+        c=ff(c,d,a,b,x[i+ 6],17,-1473231341);b=ff(b,c,d,a,x[i+ 7],22,  -45705983);a=ff(a,b,c,d,x[i+ 8], 7, 1770035416);
+        d=ff(d,a,b,c,x[i+ 9],12,-1958414417);c=ff(c,d,a,b,x[i+10],17,     -42063);b=ff(b,c,d,a,x[i+11],22,-1990404162);
+        a=ff(a,b,c,d,x[i+12], 7, 1804603682);d=ff(d,a,b,c,x[i+13],12,  -40341101);c=ff(c,d,a,b,x[i+14],17,-1502002290);
+        b=ff(b,c,d,a,x[i+15],22, 1236535329);a=gg(a,b,c,d,x[i+ 1], 5, -165796510);d=gg(d,a,b,c,x[i+ 6], 9,-1069501632);
+        c=gg(c,d,a,b,x[i+11],14,  643717713);b=gg(b,c,d,a,x[i+ 0],20, -373897302);a=gg(a,b,c,d,x[i+ 5], 5, -701558691);
+        d=gg(d,a,b,c,x[i+10], 9,   38016083);c=gg(c,d,a,b,x[i+15],14, -660478335);b=gg(b,c,d,a,x[i+ 4],20, -405537848);
+        a=gg(a,b,c,d,x[i+ 9], 5,  568446438);d=gg(d,a,b,c,x[i+14], 9,-1019803690);c=gg(c,d,a,b,x[i+ 3],14, -187363961);
+        b=gg(b,c,d,a,x[i+ 8],20, 1163531501);a=gg(a,b,c,d,x[i+13], 5,-1444681467);d=gg(d,a,b,c,x[i+ 2], 9,  -51403784);
+        c=gg(c,d,a,b,x[i+ 7],14, 1735328473);b=gg(b,c,d,a,x[i+12],20,-1926607734);a=hh(a,b,c,d,x[i+ 5], 4,    -378558);
+        d=hh(d,a,b,c,x[i+ 8],11,-2022574463);c=hh(c,d,a,b,x[i+11],16, 1839030562);b=hh(b,c,d,a,x[i+14],23,  -35309556);
+        a=hh(a,b,c,d,x[i+ 1], 4,-1530992060);d=hh(d,a,b,c,x[i+ 4],11, 1272893353);c=hh(c,d,a,b,x[i+ 7],16, -155497632);
+        b=hh(b,c,d,a,x[i+10],23,-1094730640);a=hh(a,b,c,d,x[i+13], 4,  681279174);d=hh(d,a,b,c,x[i+ 0],11, -358537222);
+        c=hh(c,d,a,b,x[i+ 3],16, -722521979);b=hh(b,c,d,a,x[i+ 6],23,   76029189);a=hh(a,b,c,d,x[i+ 9], 4, -640364487);
+        d=hh(d,a,b,c,x[i+12],11, -421815835);c=hh(c,d,a,b,x[i+15],16,  530742520);b=hh(b,c,d,a,x[i+ 2],23, -995338651);
+        a=ii(a,b,c,d,x[i+ 0], 6, -198630844);d=ii(d,a,b,c,x[i+ 7],10, 1126891415);c=ii(c,d,a,b,x[i+14],15,-1416354905);
+        b=ii(b,c,d,a,x[i+ 5],21,  -57434055);a=ii(a,b,c,d,x[i+12], 6, 1700485571);d=ii(d,a,b,c,x[i+ 3],10,-1894986606);
+        c=ii(c,d,a,b,x[i+10],15,   -1051523);b=ii(b,c,d,a,x[i+ 1],21,-2054922799);a=ii(a,b,c,d,x[i+ 8], 6, 1873313359);
+        d=ii(d,a,b,c,x[i+15],10,  -30611744);c=ii(c,d,a,b,x[i+ 6],15,-1560198380);b=ii(b,c,d,a,x[i+13],21, 1309151649);
+        a=ii(a,b,c,d,x[i+ 4], 6, -145523070);d=ii(d,a,b,c,x[i+11],10,-1120210379);c=ii(c,d,a,b,x[i+ 2],15,  718787259);
+        b=ii(b,c,d,a,x[i+ 9],21, -343485551);a=ad(a,olda);b=ad(b,oldb);c=ad(c,oldc);d=ad(d,oldd);
+    }
+    return rh(a)+rh(b)+rh(c)+rh(d);
+}
 window.onload = slist(document.getElementById("sortlist"));

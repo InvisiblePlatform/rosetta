@@ -423,13 +423,14 @@ d3.json(graphLoc).then(function(graph) {
         .on('click', function(d, i) {
             document.getElementById("graphButtons").setAttribute("style", "")
             var wikidataWiki;
-            wikidataWiki = langArray.indexOf(langPref) ? i[`${langPref}wiki`] : d.enwiki;
+            wikidataWiki = langArray.indexOf(langPref) ? i[`${langPref}wiki`] : i['enwiki'];
+            console.log(i)
             if (wikidataWiki == "null") return
             if (wikidataWiki.includes("wikipedia.org")) wikidataWiki = wikidataWiki.split('/').slice(4).join("/");
 
             d.preventDefault();
             // console.log("clicking on", this, wikidataWiki);
-            let requestURL = `${wikichoice}/api/rest_v1/page/mobile-sections/${wikidataWiki}?redirect=true`;
+            let requestURL = wikichoice + "/api/rest_v1/page/html/" + wikidataMainWiki + "?redirect=true"
             if (wikiframe.style.display == "none") {
                 wikiframe.style.display = "block";
                 titlebar.style.transform = "translate(0, -200px)";
@@ -437,30 +438,37 @@ d3.json(graphLoc).then(function(graph) {
                 wikiframe.classList.add("floating")
                 wikiframeclose.style.display = "block";
             }
+            $.support.cors = true;
             $.ajax({
                 url: requestURL,
-                dataType: "jsonp",
                 headers: { 'Api-User-Agent': "admin@invisible-voice.com"}
             }).done(function(data) {
-                var text = data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
-                for (let x in data.remaining.sections) {
-                    let section = data.remaining.sections[x];
-                    if (!section.anchor) continue;
-                    if (skipsections.includes(section.anchor)) {
-                        continue;
-                    }
-                    let item = '<p id="' +
-                        section.anchor +
-                        '"><h2>' +
-                        section.line +
-                        '</h2><div>' +
-                        section.text.replace(/href=\"/g, 'href=\"' + wikichoice) +
-                        '</div></p>';
-                    text += item;
+                var tempObj = document.createElement("div")
+                tempObj.innerHTML = data
+                tempObj.getElementsByTagName("link")[2].remove()
+                //var tempElement = tempObj.getElementsByClassName("infobox")[0]
+                //if (debug) console.log(tempObj)
+                wikiframe.innerHTML = ""
+                wikiframe.appendChild(tempObj)
+                // var text = data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
+                // for (let x in data.remaining.sections) {
+                //     let section = data.remaining.sections[x];
+                //     if (!section.anchor) continue;
+                //     if (skipsections.includes(section.anchor)) {
+                //         continue;
+                //     }
+                //     let item = '<p id="' +
+                //         section.anchor +
+                //         '"><h2>' +
+                //         section.line +
+                //         '</h2><div>' +
+                //         section.text.replace(/href=\"/g, 'href=\"' + wikichoice) +
+                //         '</div></p>';
+                //     text += item;
 
-                }
-                var title = '<div class="sectionTitle" style="font-variation-settings:\'wght\'500;">' + data.lead.normalizedtitle + '</div>';
-                wikiframe.innerHTML = title + text;
+                // }
+                // var title = '<div class="sectionTitle" style="font-variation-settings:\'wght\'500;">' + data.lead.normalizedtitle + '</div>';
+                // wikiframe.innerHTML = title + text;
             }).fail(function() {
                 if (debug) console.log("oh no")
             });

@@ -35,6 +35,10 @@
     z-index: 6;
 }
 
+.hide {
+    display: none!important;
+}
+
 #Invisible-boycott {
     border-right: none;
     bottom: 0;
@@ -384,7 +388,7 @@ th {
 
 .source {
     color: var(--c-main)!important;
-    position: relative;
+    position: absolute;
     font-size: 0.625em;
     font-family: 'Roboto Mono';
     font-weight: 400;
@@ -392,9 +396,18 @@ th {
     white-space: nowrap;
     order: 1001;
     z-index: 2;
-    bottom: 4px;
-    right: 20px;
+    bottom: -16px;
+    right: 7px;
     float: right;
+}
+.content.mobile > section > div > div .source {
+    position: relative;
+    bottom: 0px;
+    right: -24px;
+}
+
+:is(#similar-site-wrapper, #opensec) > div > div > a {
+    right: 24px;
 }
 
 .minisource {
@@ -1268,9 +1281,12 @@ section.expanded h2.sectionTitle {
     padding: 0 !important;
 }
 
-section.expanded tr,
-section.expanded table.infobox {
+#wikipedia-frame :is(section, table),
+section.expanded :is(tr, table.infobox) {
     width: 100%;
+    background-color: transparent;
+    color: var(--c-light-text);
+    border: unset;
 }
 section.expanded td.infobox-image img{
     width: 100%;
@@ -1610,7 +1626,10 @@ td.biaslink {
     }
     #backButton {
         background-color: var(--c-background);
-        transform: translate(42px, -12px);
+        --startx: -12px!important;
+        --starty: 12px!important;
+        --endx: -12px!important;
+        --endy: -12px!important;
         rotate: 180deg;
         left: -1px;
         display: block;
@@ -1652,6 +1671,10 @@ td.biaslink {
         position: relative;
         margin-left: calc(50% - 16px);
         right: 0;
+    }
+    #opensec div.scoreText {
+        width: calc(100% - 16px);
+        margin: 8px;
     }
     score {
         display: flex!important;
@@ -1931,7 +1954,7 @@ section#titlebar > #backButton.show {
 section#titlebar > #backButton{
     border-radius: 8px;
     display: block;
-    transform: translate(12px, 12px);
+    transform: translate(-12px, -42px);
     background-size: 16px 16px;
     position: absolute;
     min-width: 40px;
@@ -2165,6 +2188,7 @@ div.mobile #bcorp.expanded th {
 #wikipedia-know {
     margin: 0 16px;
     font-family: "Roboto Serif", serif;
+    color: var(--c-light-text);
     font-size: 14px;
     line-height: 28px;
     letter-spacing: 0.04em;
@@ -2186,22 +2210,42 @@ div.mobile #bcorp.expanded th {
     margin: 0 auto;
     float: unset;
 }
-.expanded #wikipedia-frame figure a img,
+#wikipedia-frame figure a img,
 .expanded #wikipedia-know figure a img{
     width: 50%;
     height: auto;
     margin: 0 25%;
 }
-.expanded #wikipedia-frame figure,
-.expanded #wikipedia-know figure {
+#wikipedia-frame :is(figure, figcaption),
+.expanded #wikipedia-know :is(figure, figcaption) {
     width: 100%;
     max-width: calc(100vw - 32px);
+    background-color: transparent;
 }
-#wikipedia-frame:is(.floating) { 
-    width: calc(100vw - 32px);
+#wikipedia-frame figcaption{
+    display: block;
+}
+#wikipedia-frame:is(.floating) {
+    width: calc(100vw - 16px);
+    max-width: 640px;
     inset: 16px auto;
-    outline: #0007 solid 100px;
+    outline: #0007 solid 1000px;
     border-radius: 8px;
+    float: right;
+}
+#wikipedia-frame > * {
+    background-color: transparent;
+    border-width: 0px;
+    color: var(--c-light-text);
+}
+*:is(h1, h2, h3, h4, h5, h6) {
+    color: var(--c-light-text)!important;
+}
+.content:not(.mobile) #graph-container #wikipedia-frame:is(.floating) {
+    right: 8px;
+}
+.content.mobile #graph-container #wikipedia-frame:is(.floating) {
+    right: -8px;
 }
 
 :not(.expanded) score:after {
@@ -2386,4 +2430,7 @@ section:not(.expanded) .flavourText b {
     margin: 0 auto;
     word-break: keep-all;
     white-space: nowrap;
+}
+#opensec > div > div > div > h4{
+    display: inline;
 }
