@@ -561,6 +561,7 @@ function slist (target) {
   $('#sortlist').sortable({
         group: 'iv-list',
         animation: 200,
+        ghostClass: "sortghost",
 	    store: {
 	    	/**
 	    	 * Get the order of elements. Called once during initialization.

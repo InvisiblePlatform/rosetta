@@ -56,7 +56,7 @@ def process_domain(domhash):
                             if key != 'wikidata_id':
                                 yaml_data[key] = value
                     yaml_data['domhash'] = domhash
-                    yaml_data['connections'] = f'static/connections/{domhash}.json'
+                    yaml_data['connections'] = f'/connections/{domhash}.json'
                     with open(output_loc, "w") as output:
                         output.writelines(frontmatter.dumps(yaml_data))
         connections_out = {}

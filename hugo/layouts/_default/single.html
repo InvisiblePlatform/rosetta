@@ -36,6 +36,7 @@
 </div>
 <div class="content">
 <span class="blankForSmall" style="order:0;"> </span>
+{{ partialCached "tools.html" .Params.title .Params.title }}
 {{ if isset .Params "connections" }}{{ partialCached "d3-graph.html" .Params.connections .Params.connections }}{{ end }}
 {{ if isset .Params "goodonyou" }}{{ partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou }}{{ end }}
 {{ if isset .Params "glassdoor" }}{{ partialCached "glassdoor.html" .Params.glassdoor .Params.glassdoor }}{{ end }}

@@ -55,6 +55,10 @@
     flex-direction: column;
 }
 
+.sortghost {
+    opacity: 20%;
+}
+
 #disclaimer {
     border-top: var(--c-light-text) solid 1px;
     font-size: 0.75em;
@@ -2319,6 +2323,29 @@ div.mobile #bcorp.expanded th {
     width: 200px;
     height: 200px;
     left: calc(50% - 100px);
+}
+
+
+@media (prefers-color-scheme: dark) {
+    .iconarray {
+        filter: invert(1);
+    }
+}
+.dark-theme .iconarray {
+    filter: invert(1);
+}
+.iconarray {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: center;
+}
+.iconarray div {
+    display: block;
+    margin: 8px;
+}
+.iconarray div a img {
+    width: 32px;
 }
 
 div.mobile .expanded :is(.hideInSmall){

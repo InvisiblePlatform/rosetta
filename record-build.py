@@ -163,6 +163,7 @@ def build_document(website):
     wids = []
     graphfileloc = f"hugo/static/connections/{website}.json"
     graphfileloc_rel = f"/connections/{website}.json"
+    output["published"] = True
     if website in wikidata_array:
         wids = list(set(wikidata_array[website]))
         output["wikidata_id"] = wids
