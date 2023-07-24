@@ -1,0 +1,11 @@
+scp static/css/styles.css ixt_testorange@ssh.phx.nearlyfreespeech.net:css/styles.css
+scp static/js/scrolling.js ixt_testorange@ssh.phx.nearlyfreespeech.net:js/scrolling.js
+scp public/database/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:database/index.html
+scp public/faqs/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:faqs/index.html
+scp public/install/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:install/index.html
+scp public/modules/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:modules/index.html
+scp public/mission/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:mission/index.html
+scp public/privacy/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:privacy/index.html
+scp public/reply/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:reply/index.html
+scp public/terms/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:terms/index.html
+scp public/w/*.svg ixt_testorange@ssh.phx.nearlyfreespeech.net:w/

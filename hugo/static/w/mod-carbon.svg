@@ -1,11 +1,6 @@
-<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="64" height="64" fill="#DDDDDD"/>
-<path d="M8.53345 55.4665C20.3155 55.4665 29.8668 44.9602 29.8668 31.9999C29.8668 19.0396 20.3155 8.5332 8.53345 8.5332V55.4665Z" fill="#1A1A1A"/>
-<circle cx="32.0001" cy="14.9332" r="6.4" fill="#1A1A1A"/>
-<circle cx="38.4" cy="29.8663" r="4.26667" fill="#1A1A1A"/>
-<circle cx="27.7334" cy="49.0669" r="2.13333" fill="#1A1A1A"/>
-<circle cx="46.9332" cy="17.0674" r="4" stroke="#1A1A1A" stroke-width="0.533333"/>
-<circle cx="53.3333" cy="53.3326" r="1.86667" stroke="#1A1A1A" stroke-width="0.533333"/>
-<circle cx="49.0667" cy="32.0005" r="1.86667" stroke="#1A1A1A" stroke-width="0.533333"/>
-<circle cx="38.4" cy="46.9346" r="4" stroke="#1A1A1A" stroke-width="0.533333"/>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="200" fill="#DDDDDD"/>
+<path d="M150 70V60H80C64 60 60 73.3333 60 80V140C60 156 73.3333 160 80 160H150V150H80C72 150 70 143.333 70 140V80C70 72 76.6667 70 80 70H150Z" fill="#1A1A1A"/>
+<path d="M50 30H32C30.8954 30 30 30.8954 30 32V40M30 40V48C30 49.1046 30.8954 50 32 50H48C49.1046 50 50 49.1046 50 48V42C50 40.8954 49.1046 40 48 40H30Z" stroke="#1A1A1A" stroke-width="1.67"/>
+<rect x="19.165" y="19.165" width="161.67" height="161.67" rx="1.835" stroke="#1A1A1A" stroke-width="1.67"/>
 </svg>

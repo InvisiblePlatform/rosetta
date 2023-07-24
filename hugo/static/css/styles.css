@@ -56,6 +56,11 @@ body {
     --c-white: #eee;
     --c-green: #08D735;
     --c-grey: #ddd;
+
+    --c-border: #eee;
+    --c-background: #fff;
+    --c-text-light: #000;
+    --c-text-dark: #fff;
 }
 
 body {
@@ -120,6 +125,7 @@ section:is(.horicontainer, .vertcontainer, .module-carosel) {
 }
 section.vertcontainer {
     flex-direction: column;
+    padding-left: 80px;
 }
 section.horicontainer {
     flex-direction: row;
@@ -130,16 +136,13 @@ section.horicontainer {
 }
 
 section.titlecontainer {
-    font-size: 70px;
     background-color: var(--c-black);
     color: var(--c-white);
-    width: 100vw;
-    right: calc( 50vw - 50%);
-    position:relative;
-    padding: 20px;
-    padding-left: calc( 20px + (50vw - 50%));
-
+    width: calc(100% - 80px);
+    position: relative;
+    padding: 40px;
 }
+
 section.lbblock {
     border-left: 10px solid var(--c-black);
     max-width: 420px;
@@ -201,6 +204,11 @@ section.bigtext{
     width: 80%;
     margin: auto;
 }
+h1 {
+    font-size: 70px;
+    font-weight: bold;
+    padding-bottom: 24px;
+}
 h2 {
     font-size: 48px;
     font-weight: normal;
@@ -211,12 +219,16 @@ h3 {
     font-weight: normal;
 }
 
+input[type=submit],
 a.button, .navdownload a {
     background-color: red;
-    padding: 8px 16px;
+    padding: 16px 24px;
     border: 0px solid black;
     border-radius: 8px;
-    word-break: none;
+    height: 16px;
+    width: fit-content;
+    font-size: 16px;
+    line-height: 1;
     display: inline-block;
 }
 
@@ -228,7 +240,7 @@ a.button.download, .navdownload a {
 }
 /* modules */
 section.module-carosel {
-    overflow-x: scroll;
+    overflow-x: hidden;
 }
 div.module-item{
     min-width: 400px;
@@ -325,6 +337,7 @@ section.footer{
 section.footer-news{
     flex: 2 1 30%;
     padding: 40px;
+    color: var(--c-text-dark);
 }
 section.footer-items{
     flex: 2 2 60%;
@@ -333,16 +346,13 @@ section.footer-items{
     flex-wrap: wrap;
     padding: 20px;
 }
-section.footer-news form input{
-    display: block;
-}
 div.footer-link {
     display: block;
     flex: 2 2 50%;
 }
 section.copystatement{
     flex: 1 1 100%;
-    border-top: 1px solid white;
+    border-top: 1px solid var(--c-text-dark);
     display: flex;
 }
 section.copystatement div{
@@ -351,6 +361,12 @@ section.copystatement div{
 
 /* Utility */
 .loading {filter: blur(20px);}
+.navbar {
+    justify-content: space-between;
+}
+.navburg {
+    display:none;
+}
 #hamburger-input{
     display: none;
 }
@@ -375,6 +391,77 @@ section.copystatement div{
    padding-top: 40px;
    padding-left: 40px;
 }
+/* Card */
+.gridContainer {
+    padding: 40px 20px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto;
+    gap: 2em;
+}
+.module-card .modimg {
+    width: 100%;
+}
+.module-card .modtext h2 {
+    font-size: 20px;
+    padding: 0px;
+}
+.module-card .modtext p {
+    font-size: 14px;
+}
+.module-card {
+    background: var(--c-background);
+    border: 1px solid var(--c-border);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 379px;
+}
+.module-card .modtext {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    padding: 16px;
+    justify-content: space-between;
+}
+.module-button-box {
+    display: flex;
+    justify-content: space-between;
+    width: auto!important;
+    margin: unset!important;
+}
+.module-button-box a:first-of-type{
+    background-color: var(--c-background);
+    border: 1px solid var(--c-text-light);
+    color: var(--c-text-light);
+}
+.module-button-box a:last-of-type{
+    color: var(--c-green);
+    background-color: transparent;
+}
+
+/* Search */
+
+input[type=submit] {
+    height: 48px;
+    background: none;
+}
+input[type=text] {
+    width:calc(100% - 160px);
+    border-radius: 8px;
+    height: 48px;
+}
+section.search {
+    width: 50%;
+    height: 48px;
+}
+form {
+    height: 48px;
+}
+form > *{
+    display: inline;
+}
+
 /*
 ********************************
 ********************************
@@ -459,5 +546,8 @@ section.copystatement div{
         justify-content: start;
         align-content: start;
         gap: 2em;
+    }
+    .gridContainer {
+        grid-template-columns: auto;
     }
 }
