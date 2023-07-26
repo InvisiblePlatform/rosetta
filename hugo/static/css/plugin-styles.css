@@ -2347,6 +2347,12 @@ div.mobile #bcorp.expanded th {
 .iconarray div a img {
     width: 32px;
 }
+div.mobile .iconarray{
+    gap: 0px;
+}
+div.mobile .iconarray div a img{
+    width: 16px;
+}
 
 div.mobile .expanded :is(.hideInSmall){
     display: unset;
