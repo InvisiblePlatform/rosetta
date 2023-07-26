@@ -256,6 +256,10 @@ a.button.download, .navdownload a {
     margin: auto 8px;
 }
 
+a.gbutton {
+    background-color: var(--c-grey);
+    white-space: nowrap;
+}
 input.tbuttonb,
 a.button.tbuttonb {
     background-color: transparent;
@@ -517,6 +521,12 @@ form > *{
 section.search form {
     margin: auto;
     width: 100%;
+}
+
+#search-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
 }
 
 /* Donation bar */
