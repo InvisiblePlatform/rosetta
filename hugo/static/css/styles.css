@@ -84,8 +84,8 @@ a:hover { color: #444;text-decoration: none;}
 a:visited { text-decoration: none; }
 /* Navigation */
 section.navigationbar {
-    background-color: var(--c-black);
-    color: var(--c-white);
+    background-color: var(--c-background);
+    color: var(--c-text-light);
     width: 100%;
     margin: 0;
     position: static;
@@ -109,7 +109,6 @@ section.navigation > * {
     display: block;
 }
 .logo {
-    filter: invert(1);
     display: block;
 }
 
@@ -192,6 +191,10 @@ img.fullBleed{
     width: 50%;
     background-color: var(--c-grey);
 }
+.installIcon img {
+    margin: auto 48px;
+
+}
 section.bigtext{
     line-height: 80%;
     padding: 40px 30px 40px 10px;
@@ -234,6 +237,16 @@ h3 {
     font-size: 40px;
     font-weight: normal;
 }
+h4 {
+    font-size: 20px;
+    padding: 12px 0px;
+
+}
+h5 {
+    font-size: 20px;
+    padding: 12px 0px;
+    font-weight: normal;
+}
 
 input[type=submit],
 a.button, .navdownload a {
@@ -251,14 +264,30 @@ a.button, .navdownload a {
 
 a.button.nb { background-color: transparent; padding: 8px;}
 a.button.downloadwhite { background-color: var(--c-white); color:var(--c-black);}
-a.button.download, .navdownload a { 
+.navdownload a { 
+    background-color: var(--c-black);
+    color: var(--c-white);
+    margin: auto 8px;
+}
+a.button.download { 
     background-color: var(--c-green);
     margin: auto 8px;
 }
 
+a.webbutton {
+    background-color: var(--c-greyl);
+    white-space: nowrap;
+    padding: 8px;
+}
 a.gbutton {
     background-color: var(--c-grey);
     white-space: nowrap;
+}
+a.wbutton {
+    background-color: var(--c-background);
+    border: 1px solid var(--c-text-light);
+    white-space: nowrap;
+    display: block;
 }
 input.tbuttonb,
 a.button.tbuttonb {
@@ -384,7 +413,7 @@ section.footer-items{
 }
 div.footer-link {
     display: block;
-    flex: 2 2 50%;
+    flex: 2 2 40%;
 }
 section.copystatement{
     flex: 1 1 100%;
@@ -409,6 +438,8 @@ section.copystatement div{
     gap: 2em;
     align-items: center;
     justify-content: space-around;
+    background-color: var(--c-background);
+    color: var(--c-text-light);
 }
 #hamburger-input{
     display: none;
@@ -511,9 +542,6 @@ section.search {
     width: 50%;
     display: flex;
 }
-form {
-    height: 48px;
-}
 form > *{
     display: inline;
 }
@@ -612,9 +640,14 @@ section.search form {
     .navburg .navitem {
         display: none;
         margin-left: 10px;
+        color: var(--c-white);
     }
     .navbar {
        display: none!important; 
+    }
+
+    .navdownload a { 
+        border: 1px solid var(--c-white);
     }
     section.titlecontainer {
         padding: 20px;
@@ -655,11 +688,15 @@ section.search form {
         padding-top: 40px;
         padding-left: 40px;
     }
+    section.navigationbar {
+        background-color: var(--c-black);
+    }
     .navigationbar .logo {
         position: absolute;
         top: 8px;
         left: 8px;
-        z-index: 3;
+        z-index: 4;
+        filter: invert(1); 
     }
     #hamburger-menu {
         display: inline;
@@ -691,6 +728,11 @@ section.search form {
 @media screen and (max-width: 375px) {
     h1 {
         font-size: 60px;
+    }
+    #search-input {
+        width: 100%;
+        width: -webkit-fill-available;
+        padding: 4px;
     }
     .halftext,
     .noBorderOnSmall {
@@ -730,4 +772,25 @@ section.search form {
         gap: 1em!important;
         flex-direction: column!important;
     }
+    .vertcontainer {
+        padding: 10px!important;
+    }
+    .donationsText {
+        padding-right: 0px!important;
+    }
+    form > * {
+        display: block;
+    }
+    :is(section.footer-items, section.footer-news) > * {
+        margin: 1em;
+    }
+    section.footer-items {
+        padding: 0px;
+    }
+    section.footer-news {
+        padding: 0px;
+    }
+    section.copystatement{
+    flex-direction: column;
+}
 }

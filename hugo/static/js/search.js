@@ -24,7 +24,7 @@ fetch('/index.json')
 
           // Display search results
           if (result.length > 0) {
-            const resultList = limitedResults.map((item) => `<p><a class="button gbutton" href="/db/${toUrl(item.item.d)}">${item.item.d}</a></p>`);
+            const resultList = limitedResults.map((item) => `<p><a class="button webbutton" href="/db/${toUrl(item.item.d)}">${item.item.d}</a></p>`);
             searchResults.innerHTML = resultList.join('');
           } else {
             searchResults.innerHTML = '<p>No results found</p>';
