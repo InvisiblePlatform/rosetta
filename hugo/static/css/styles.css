@@ -404,6 +404,16 @@ section.footer-news{
     padding: 40px;
     color: var(--c-text-dark);
 }
+section.footer-news input[type=text]{
+    width: 100%;
+    margin-bottom: 1em;
+    margin-top: 1em;
+}
+section.footer-news input[type=submit]{
+    color: var(--c-text-dark);
+    border: 1px solid var(--c-text-dark);
+    width:100%;
+}
 section.footer-items{
     flex: 2 2 60%;
     display: flex;
