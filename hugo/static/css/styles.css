@@ -793,4 +793,14 @@ section.search form {
     section.copystatement{
     flex-direction: column;
 }
+    div.affiliatesBox {
+       padding: 0px; 
+    }
+    section.lbblock {
+        margin-left: 0px;
+    }
+    section.horicontainer:has(.bigtext){
+        background-color: var(--c-black);
+        color: var(--c-white);
+    }
 }
