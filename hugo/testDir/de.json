@@ -6,7 +6,8 @@
     "customers": "Kunden:",
     "community": "Gemeinschaft:",
     "brackets": "(80+ ist zertifiziert)",
-    "lvs": "Neueste überprüfbare Punktzahl:"
+    "lvs": "Neueste überprüfbare Punktzahl:",
+    "title": "„BCorp“"
   },
   "bias": {
     "satire": "SATIRE",
@@ -19,6 +20,9 @@
     "conspiracy": "VERSCHWÖRUNG",
     "center": "CENTER"
   },
+  "carbon": {
+    "title": "„Kohlenstoff-Fußabdruck“"
+  },
   "common": {
     "elsewhere": "Irgendwo anders",
     "fullview": "VOLLANSICHT",
@@ -30,7 +34,19 @@
     "NEGLIGIBLE": "UNERHEBLICH",
     "MEDIUM": "MITTEL",
     "LOW": "NIEDRIG",
-    "HIGH": "HOCH"
+    "HIGH": "HOCH",
+    "severe": "Schwer",
+    "high": "Hoch",
+    "medium": "Mittel",
+    "low": "Niedrig",
+    "negligible": "Unerheblich",
+    "gradingscale": "Bewertungsskala",
+    "total": "„Gesamt-ESG-Rating“",
+    "governance": "„Governance-Risiko-Score“",
+    "social": "„Social Risk Score“",
+    "enviromental": "„Umweltrisikobewertung“",
+    "title": "„ESG-Risiko“",
+    "environmental": "„Umweltrisikobewertung“"
   },
   "glassdoor": {
     "title": "Mitarbeiterbewertung",
@@ -206,13 +222,33 @@
     "author_of": "Autor von",
     "invested_in": "darin investiert",
     "board_member_of": "Vorstandsmitglied von",
-    "subsidary_of": "Tochterunternehmen der"
+    "subsidary_of": "Tochterunternehmen der",
+    "executive_producer_of": "„Ausführender Produzent von“",
+    "producer_of": "„Produzent von“",
+    "film_editor_of": "„Filmredakteur von“"
   },
   "header": {
     "titledisclaimer": "Haftungsausschluss",
     "here": "hier.",
     "dislcaimerNote": "Wenn Sie der Meinung sind, dass eine der angezeigten Informationen falsch ist, können Sie sich an die Informationsquelle wenden.",
     "disclaimer": "Wir haben uns nach besten Kräften bemüht, Ihnen genaue Informationen über Unternehmen, Dienstleistungen und Ideen bereitzustellen, die sich im Allgemeinen auf die angezeigten Quellen stützen. Wir können jedoch nicht für die Genauigkeit der verwendeten Quellen bürgen und Sie stimmen zu, Ihre eigenen Nachforschungen anzustellen und Ihr eigenes Urteil darüber zu fällen, ob ein Unternehmen, eine Dienstleistung, eine Marke oder eine Idee Ihren Bedürfnissen entspricht. Durch die Verwendung von Invisible Voice stimmen Sie zu, dass wir nicht für Verluste oder Schäden haften, die durch Ihre Verwendung dieses Plugins entstehen."
+  },
+  "isin": {
+    "coresocial": "„Kernsoziale Indikatoren“",
+    "innovation": "Innovation",
+    "use": "Verwenden",
+    "skills": "Fähigkeiten",
+    "access": "Zugang",
+    "digital": "„Digitale Inklusion“",
+    "human_rights": "Menschenrechte",
+    "ethical_conduct": "Ethische Grundsätze",
+    "decent_work": "Ein anständiger Job",
+    "ssd": "„Soziale und nachhaltige Entwicklung“",
+    "tssd": "„Soziale und nachhaltige Entwicklung“",
+    "tfas": "„Nachhaltigkeit in Ernährung und Landwirtschaft“",
+    "tnat": "„Natur-Benchmark“",
+    "tdig": "„Digitale Inklusion“",
+    "tlct": "„Kohlenstoffarmer Übergang“"
   },
   "mbfc": {
     "title": "Politische Voreingenommenheit",
@@ -225,6 +261,20 @@
     "conspiracy_pseudoscience": "Verschwörung – Pseudowissenschaft",
     "satire": "Satire",
     "questionable_sources": "Fragwürdige Quellen"
+  },
+  "opensec": {
+    "year": "Jahr",
+    "democrats": "„Demokraten“",
+    "republicans": "„Republikaner“",
+    "senate": "Senat",
+    "house": "Haus",
+    "sourcestocandidates": "„Finanzierungsquellen für Kandidaten“",
+    "sources": "Geldquellen",
+    "recipients": "„Mittelempfänger“",
+    "title": "„OpenSecrets“"
+  },
+  "os": {
+    "title": "„OpenSecrets“"
   },
   "settings": {
     "title": "Einstellungen",
@@ -246,6 +296,15 @@
     "c": "Die Nutzungsbedingungen sind in Ordnung, aber einige Probleme müssen berücksichtigt werden.",
     "b": "Die Nutzungsbedingungen sind dem Nutzer gegenüber fair, aber verbesserungswürdig.",
     "a": "Die besten Servicebedingungen: Sie behandeln Sie fair, respektieren Ihre Rechte und missbrauchen Ihre Daten nicht."
+  },
+  "trustpilot": {
+    "five": "Fünf Sterne",
+    "four": "Vier Stern",
+    "three": "Drei Sterne",
+    "two": "Zwei Sterne",
+    "one": "Ein Stern",
+    "total": "Gesamt",
+    "title": "„Trustpilot“"
   },
   "vote": {
     "like": "Wie",

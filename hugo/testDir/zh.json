@@ -6,31 +6,47 @@
     "customers": "顾客:",
     "community": "社区:",
     "brackets": "(80+ 已通过认证)",
-    "lvs": "最新验证分数:"
+    "lvs": "最新验证分数:",
+    "title": "“BC公司”"
   },
   "bias": {
-    "satire": "“讽刺”",
-    "right-center": "“右中心”",
-    "right": "“正确的”",
-    "pro-science": "“专业科学”",
-    "left-center": "“左中”",
-    "left": "“剩下”",
-    "fake-news": "“可疑来源”",
-    "conspiracy": "“阴谋”",
-    "center": "“中央”"
+    "satire": "讽刺",
+    "right-center": "右中心",
+    "right": "正确的",
+    "pro-science": "专业科学",
+    "left-center": "左中",
+    "left": "剩下",
+    "fake-news": "可疑来源",
+    "conspiracy": "阴谋",
+    "center": "中央"
+  },
+  "carbon": {
+    "title": "《碳足迹》"
   },
   "common": {
-    "elsewhere": "“别的地方”",
-    "fullview": "“全视图”",
-    "stopscrolling": "“停止滚动这么多！！！”",
-    "language": "“语”"
+    "elsewhere": "别的地方",
+    "fullview": "全视图",
+    "stopscrolling": "停止滚动这么多！！！",
+    "language": "语"
   },
   "esg": {
-    "SEVERE": "“严重的”",
-    "NEGLIGIBLE": "“微不足道”",
-    "MEDIUM": "“中等的”",
-    "LOW": "“低的”",
-    "HIGH": "“高的”"
+    "SEVERE": "严重的",
+    "NEGLIGIBLE": "微不足道",
+    "MEDIUM": "中等的",
+    "LOW": "低的",
+    "HIGH": "高的",
+    "severe": "严重",
+    "high": "高的",
+    "medium": "中等的",
+    "low": "低的",
+    "negligible": "微不足道",
+    "gradingscale": "分级量表",
+    "total": "ESG 总评级",
+    "governance": "《治理风险评分》",
+    "social": "社会风险评分",
+    "enviromental": "《环境风险评分》",
+    "title": "ESG风险",
+    "environmental": "《环境风险评分》"
   },
   "glassdoor": {
     "title": "《员工评价》",
@@ -193,10 +209,10 @@
     "we_avoid": "我们避免"
   },
   "graph": {
-    "zoomout": "“缩小”",
-    "zoomin": "“放大”",
-    "title": "“网络图”",
-    "reset": "“重置”",
+    "zoomout": "缩小",
+    "zoomin": "放大",
+    "title": "网络图",
+    "reset": "重置",
     "owner_of": "的主人",
     "founder_of": "创始人",
     "parent_organisation": "上级组织",
@@ -206,16 +222,36 @@
     "author_of": "作者",
     "invested_in": "投资于",
     "board_member_of": "董事会成员",
-    "subsidary_of": "子公司"
+    "subsidary_of": "子公司",
+    "executive_producer_of": "《执行制片人》",
+    "producer_of": "《制作人》",
+    "film_editor_of": "《电影剪辑师》"
   },
   "header": {
-    "titledisclaimer": "“免责声明”",
-    "here": "“这里。”",
-    "dislcaimerNote": "“如果您认为显示的任何信息不正确，您可以联系信息来源”",
+    "titledisclaimer": "免责声明",
+    "here": "这里。",
+    "dislcaimerNote": "如果您认为显示的任何信息不正确，您可以联系信息来源",
     "disclaimer": "我们已尽最大努力为您提供有关公司、服务和想法的准确信息，这些信息通常依赖于所示来源。 但是，我们不能保证所使用来源的准确性，您同意自行查询并自行判断公司、服务、品牌或想法是否满足您的需求。 使用 Invisible Voice，即表示您同意我们对因您使用此插件而造成的任何损失或损害不承担任何责任。"
   },
+  "isin": {
+    "coresocial": "核心社会指标",
+    "innovation": "创新",
+    "use": "使用",
+    "skills": "技能",
+    "access": "使用权",
+    "digital": "数字包容",
+    "human_rights": "人权",
+    "ethical_conduct": "道德准则",
+    "decent_work": "体面的工作",
+    "ssd": "社会与可持续发展",
+    "tssd": "“社会与可持续发展”",
+    "tfas": "“粮食与农业可持续发展”",
+    "tnat": "“自然基准”",
+    "tdig": "“数字包容”",
+    "tlct": "“低碳转型”"
+  },
   "mbfc": {
-    "title": "“政治偏见”",
+    "title": "政治偏见",
     "left_bias": "左偏",
     "left_center_bias": "偏左偏心",
     "least_biased": "最小偏见",
@@ -226,35 +262,58 @@
     "satire": "讽刺",
     "questionable_sources": "有问题的消息来源"
   },
+  "opensec": {
+    "year": "年",
+    "democrats": "民主党人",
+    "republicans": "共和党人",
+    "senate": "参议院",
+    "house": "房子",
+    "sourcestocandidates": "候选人的资金来源",
+    "sources": "资金的来源",
+    "recipients": "资金接收者",
+    "title": "《公开的秘密》"
+  },
+  "os": {
+    "title": "《公开的秘密》"
+  },
   "settings": {
-    "title": "“设置”",
-    "priorityTitle": "“优先模块”",
-    "priorityOrder": "“拖动以重新排序模块”",
-    "dashboard": "“保持仪表板在屏幕上”",
-    "darkMode": "“黑暗模式”"
+    "title": "设置",
+    "priorityTitle": "优先模块",
+    "priorityOrder": "拖动以重新排序模块",
+    "dashboard": "保持仪表板在屏幕上",
+    "darkMode": "黑暗模式"
   },
   "similar": {
-    "title": "“类似网站”"
+    "title": "类似网站"
   },
   "similarity": "相似:",
   "source": "(资源)",
   "tos": {
-    "wordGrade": "“年级”",
-    "title": "“隐私”",
-    "e": "“服务条款引起了非常严重的担忧”",
-    "d": "“服务条款很不平衡，或者有一些重要的问题需要你注意。”",
-    "c": "“服务条款还可以，但有些问题需要你考虑。”",
-    "b": "“服务条款对用户公平，但可以改进。”",
-    "a": "“最好的服务条款：他们公平对待你，尊重你的权利，不会滥用你的数据。”"
+    "wordGrade": "年级",
+    "title": "隐私",
+    "e": "服务条款引起了非常严重的担忧",
+    "d": "服务条款很不平衡，或者有一些重要的问题需要你注意。",
+    "c": "服务条款还可以，但有些问题需要你考虑。",
+    "b": "服务条款对用户公平，但可以改进。",
+    "a": "最好的服务条款：他们公平对待你，尊重你的权利，不会滥用你的数据。"
+  },
+  "trustpilot": {
+    "five": "五星",
+    "four": "四星",
+    "three": "三星",
+    "two": "二星",
+    "one": "一星",
+    "total": "全部的",
+    "title": "信任飞行员"
   },
   "vote": {
-    "like": "“喜欢”",
-    "dislike": "“不喜欢”",
-    "boycott": "“联合抵制”"
+    "like": "喜欢",
+    "dislike": "不喜欢",
+    "boycott": "联合抵制"
   },
   "w": {
-    "socialmedia": "“社交媒体和电子邮件”",
-    "wikipedia": "“维基百科”",
-    "companyinfo": "“公司信息”"
+    "socialmedia": "社交媒体和电子邮件",
+    "wikipedia": "维基百科",
+    "companyinfo": "公司信息"
   }
 }

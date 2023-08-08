@@ -6,7 +6,8 @@
     "customers": "Klientoj:",
     "community": "Komunumo:",
     "brackets": "(80+ estas atestita)",
-    "lvs": "Lasta Kontrolita Poentaro:"
+    "lvs": "Lasta Kontrolita Poentaro:",
+    "title": "BCorp"
   },
   "bias": {
     "satire": "SATIRO",
@@ -19,6 +20,9 @@
     "conspiracy": "Konspiro",
     "center": "CENTRO"
   },
+  "carbon": {
+    "title": "Karbona piedsigno"
+  },
   "common": {
     "elsewhere": "Aliloke",
     "fullview": "PLENA VIDON",
@@ -30,7 +34,19 @@
     "NEGLIGIBLE": "NEGLEĜebla",
     "MEDIUM": "MEZONO",
     "LOW": "Malalta",
-    "HIGH": "ALTE"
+    "HIGH": "ALTE",
+    "severe": "Severa",
+    "high": "Alte",
+    "medium": "Mediumo",
+    "low": "Malalta",
+    "negligible": "Nekonsiderinda",
+    "gradingscale": "Gradadskalo",
+    "total": "Tota ESG-Taksado",
+    "governance": "Regado-Riska Poentaro",
+    "social": "Socia Riska Poentaro",
+    "enviromental": "Media Risko-Poentaro",
+    "title": "ESG-Risko",
+    "environmental": "Media Risko-Poentaro"
   },
   "glassdoor": {
     "title": "Taksado de dungitoj",
@@ -206,13 +222,33 @@
     "author_of": "Aŭtoro de",
     "invested_in": "Investita en",
     "board_member_of": "Estrarano de",
-    "subsidary_of": "Filial de"
+    "subsidary_of": "Filial de",
+    "executive_producer_of": "Administra Produktanto De",
+    "producer_of": "Produktanto de",
+    "film_editor_of": "Filmredaktisto de"
   },
   "header": {
     "titledisclaimer": "Malgarantio",
     "here": "ĉi tie.",
     "dislcaimerNote": "Se vi kredas, ke iu ajn el la montritaj informoj estas malĝusta, vi povas kontakti la fonton de la informoj",
     "disclaimer": "Ni uzis niajn plej bonajn klopodojn por alporti al vi precizajn informojn pri kompanioj, servoj kaj ideoj ĝenerale dependantaj de la montritaj fontoj. Ni ne povas tamen garantii pri la ĝusteco de la uzataj fontoj kaj vi konsentas fari viajn proprajn demandojn kaj uzi vian propran juĝon pri ĉu kompanio, servo, marko aŭ ideo kontentigas viajn bezonojn. Uzante Nevideblan Voĉon, vi konsentas, ke ni ne respondecas pri ajna perdo aŭ damaĝo, kiu estiĝas pro via uzo de ĉi tiu kromaĵo."
+  },
+  "isin": {
+    "coresocial": "Kernaj Sociaj Indikiloj",
+    "innovation": "Novigado",
+    "use": "Uzu",
+    "skills": "Kapabloj",
+    "access": "Aliro",
+    "digital": "Cifereca Inkludo",
+    "human_rights": "Homaj rajtoj",
+    "ethical_conduct": "Etika Konduto",
+    "decent_work": "Deca Laboro",
+    "ssd": "Socia kaj Daŭrigebla Evoluo",
+    "tssd": "Socia kaj Daŭrigebla Evoluo",
+    "tfas": "Manĝaĵo kaj Agrikulturo-Daŭripovo",
+    "tnat": "Natura Referenco",
+    "tdig": "Cifereca Inkludo",
+    "tlct": "Malalta Karbona Transiro"
   },
   "mbfc": {
     "title": "Politika Biaso",
@@ -225,6 +261,20 @@
     "conspiracy_pseudoscience": "Konspiro-Pseŭdoscienco",
     "satire": "Satiro",
     "questionable_sources": "Demandindaj Fontoj"
+  },
+  "opensec": {
+    "year": "jaro",
+    "democrats": "Demokratoj",
+    "republicans": "respublikanoj",
+    "senate": "Senato",
+    "house": "Domo",
+    "sourcestocandidates": "Fontoj de Financo al Kandidatoj",
+    "sources": "Fontoj de Financo",
+    "recipients": " Ricevantoj de Financoj ",
+    "title": "OpenSecrets"
+  },
+  "os": {
+    "title": "OpenSecrets"
   },
   "settings": {
     "title": "Agordoj",
@@ -246,6 +296,15 @@
     "c": "La servokondiĉoj estas en ordo, sed iuj aferoj bezonas vian konsideron.",
     "b": "La servokondiĉoj estas justaj al la uzanto sed ili povus esti plibonigitaj.",
     "a": "La plej bonaj kondiĉoj de servoj: ili traktas vin juste, respektas viajn rajtojn kaj ne misuzos viajn datumojn."
+  },
+  "trustpilot": {
+    "five": "Kvin Steloj",
+    "four": "Kvar Steloj",
+    "three": "Tri Steloj",
+    "two": "Du Steloj",
+    "one": "Unu Stelo",
+    "total": "Entute",
+    "title": "Fidpiloto"
   },
   "vote": {
     "like": "Ŝati",

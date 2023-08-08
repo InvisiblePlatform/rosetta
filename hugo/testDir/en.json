@@ -6,7 +6,8 @@
     "customers": "Customers:",
     "community": "Community:",
     "brackets": "(80+ is certified)",
-    "lvs": "Latest Verified Score:"
+    "lvs": "Latest Verified Score:",
+    "title": "BCorp"
   },
   "bias": {
     "satire": "SATIRE",
@@ -19,6 +20,9 @@
     "conspiracy": "CONSPIRACY",
     "center": "CENTER"
   },
+  "carbon": {
+    "title": "Carbon Footprint"
+  },
   "common": {
     "elsewhere": "Somewhere else",
     "fullview": "FULL-VIEW",
@@ -30,7 +34,19 @@
     "NEGLIGIBLE": "NEGLIGIBLE",
     "MEDIUM": "MEDIUM",
     "LOW": "LOW",
-    "HIGH": "HIGH"
+    "HIGH": "HIGH",
+    "severe": "Severe",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
+    "negligible": "Negligible",
+    "gradingscale": "Grading Scale",
+    "total": "Total ESG Rating",
+    "governance": "Governance Risk Score",
+    "social": "Social Risk Score",
+    "enviromental": "Enviromental Risk Score",
+    "title": "ESG Risk",
+    "environmental": "Environmental Risk Score"
   },
   "glassdoor": {
     "title": "Employee Rating",
@@ -206,13 +222,33 @@
     "author_of": "Author of",
     "invested_in": "Invested in",
     "board_member_of": "Board Member of",
-    "subsidary_of": "Subsidary of"
+    "subsidary_of": "Subsidary of",
+    "executive_producer_of": "Executive Producer Of",
+    "producer_of": "Producer Of",
+    "film_editor_of": "Film Editor Of"
   },
   "header": {
     "titledisclaimer": "Disclaimer",
     "here": "here.",
     "dislcaimerNote": "If you believe any of the information displayed is incorrect, you can contact the source of the information",
     "disclaimer": "We have used our best efforts to bring you accurate information about companies, services, and ideas generally relying on the sources shown. We cannot however vouch for the accuracy of the sources used and you agree to make your own inquiries and use your own judgement about whether a company, service, brand or idea meets your needs. By using Invisible Voice, you agree that we are not liable for any loss or damage that arises from your use of this plugin."
+  },
+  "isin": {
+    "coresocial": "Core Social Indicators",
+    "innovation": "Innovation",
+    "use": "Use",
+    "skills": "Skills",
+    "access": "Access",
+    "digital": "Digital Inclusion",
+    "human_rights": "Human Rights",
+    "ethical_conduct": "Ethical Conduct",
+    "decent_work": "Decent Work",
+    "ssd": "Social & Sustainable Development",
+    "tssd": "Social & Susainable Development",
+    "tfas": "Food & Agriculture Sustainability",
+    "tnat": "Nature Benchmark",
+    "tdig": "Digital Inclusion",
+    "tlct": "Low Carbon Transition"
   },
   "mbfc": {
     "title": "Political Bias",
@@ -225,6 +261,20 @@
     "conspiracy_pseudoscience": "Conspiracy-Pseudoscience",
     "satire": "Satire",
     "questionable_sources": "Questionable Sources"
+  },
+  "opensec": {
+    "year": "year",
+    "democrats": "Democrats",
+    "republicans": "Republicans",
+    "senate": "Senate",
+    "house": "House",
+    "sourcestocandidates": "Sources of Funds to Candidates",
+    "sources": "Sources of Funds",
+    "recipients": "Recipients of Funds",
+    "title": "OpenSecrets"
+  },
+  "os": {
+    "title": "OpenSecrets"
   },
   "settings": {
     "title": "Settings",
@@ -246,6 +296,15 @@
     "c": "The terms of service are okay but some issues need your consideration.",
     "b": "The terms of service are fair towards the user but they could be improved.",
     "a": "The best terms of services: they treat you fairly, respect your rights and will not abuse your data."
+  },
+  "trustpilot": {
+    "five": "Five Star",
+    "four": "Four Star",
+    "three": "Three Star",
+    "two": "Two Star",
+    "one": "One Star",
+    "total": "Total",
+    "title": "Trust Pilot"
   },
   "vote": {
     "like": "Like",

@@ -6,7 +6,8 @@
     "customers": "Clientes:",
     "community": "Comunidad:",
     "brackets": "(80+ está certificada)",
-    "lvs": "Última puntuación verificable:"
+    "lvs": "Última puntuación verificable:",
+    "title": "Corporación B"
   },
   "bias": {
     "satire": "SÁTIRA",
@@ -19,6 +20,9 @@
     "conspiracy": "CONSPIRACIÓN",
     "center": "CENTRO"
   },
+  "carbon": {
+    "title": "Huella de Carbono"
+  },
   "common": {
     "elsewhere": "En algún otro lugar",
     "fullview": "VISTA COMPLETA",
@@ -30,7 +34,19 @@
     "NEGLIGIBLE": "DESPRECIABLE",
     "MEDIUM": "MEDIO",
     "LOW": "BAJO",
-    "HIGH": "ALTO"
+    "HIGH": "ALTO",
+    "severe": "Severo",
+    "high": "Alto",
+    "medium": "Medio",
+    "low": "Bajo",
+    "negligible": "Despreciable",
+    "gradingscale": "Escala de calificación",
+    "total": "Calificación ESG total",
+    "governance": "Puntuación de riesgo de gobernanza",
+    "social": "Puntuación de riesgo social",
+    "enviromental": "Puntuación de riesgo ambiental",
+    "title": "Riesgo ESG",
+    "environmental": "Puntuación de riesgo ambiental"
   },
   "glassdoor": {
     "title": "Calificación de los empleados",
@@ -206,13 +222,33 @@
     "author_of": "Autor de",
     "invested_in": "Invertido en",
     "board_member_of": "Miembro de la Junta de",
-    "subsidary_of": "Subsidiario de"
+    "subsidary_of": "Subsidiario de",
+    "executive_producer_of": "Productor Ejecutivo de",
+    "producer_of": "Productor de",
+    "film_editor_of": "Editor de cine de"
   },
   "header": {
     "titledisclaimer": "Descargo de responsabilidad",
     "here": "aquí.",
     "dislcaimerNote": "Si cree que alguna de la información que se muestra es incorrecta, puede comunicarse con la fuente de la información",
     "disclaimer": "Hemos hecho todo lo posible para brindarle información precisa sobre empresas, servicios e ideas, generalmente basándonos en las fuentes que se muestran. Sin embargo, no podemos garantizar la exactitud de las fuentes utilizadas y usted acepta realizar sus propias consultas y utilizar su propio juicio sobre si una empresa, servicio, marca o idea satisface sus necesidades. Al usar Invisible Voice, acepta que no somos responsables de ninguna pérdida o daño que surja del uso de este complemento."
+  },
+  "isin": {
+    "coresocial": "Indicadores Sociales Básicos",
+    "innovation": "Innovación",
+    "use": "Usar",
+    "skills": "Habilidades",
+    "access": "Acceso",
+    "digital": "Inclusión Digital",
+    "human_rights": "Derechos humanos",
+    "ethical_conduct": "Conducta ética",
+    "decent_work": "Trabajo decente",
+    "ssd": "Desarrollo Social y Sostenible",
+    "tssd": "Desarrollo Social y Sostenible",
+    "tfas": "Sostenibilidad de la agricultura y la alimentación",
+    "tnat": "Referencia de la naturaleza",
+    "tdig": "Inclusión Digital",
+    "tlct": "Transición baja en carbono"
   },
   "mbfc": {
     "title": "Sesgo político",
@@ -225,6 +261,20 @@
     "conspiracy_pseudoscience": "Conspiración-Pseudociencia",
     "satire": "Sátira",
     "questionable_sources": "Fuentes Cuestionables"
+  },
+  "opensec": {
+    "year": "año",
+    "democrats": "demócratas",
+    "republicans": "Republicanos",
+    "senate": "Senado",
+    "house": "Casa",
+    "sourcestocandidates": "Fuentes de fondos para los candidatos",
+    "sources": "Fuente de fondos",
+    "recipients": "Destinatarios de Fondos",
+    "title": "Secretos abiertos"
+  },
+  "os": {
+    "title": "Secretos abiertos"
   },
   "settings": {
     "title": "Ajustes",
@@ -246,6 +296,15 @@
     "c": "Los términos del servicio están bien, pero algunos problemas necesitan su consideración.",
     "b": "Los términos del servicio son justos para el usuario, pero podrían mejorarse.",
     "a": "Los mejores términos de servicios: lo tratan de manera justa, respetan sus derechos y no abusarán de sus datos."
+  },
+  "trustpilot": {
+    "five": "Cinco estrellas",
+    "four": "Cuatro estrellas",
+    "three": "Tres estrellas",
+    "two": "Dos estrellas",
+    "one": "Una estrella",
+    "total": "Total",
+    "title": "Trustpilot"
   },
   "vote": {
     "like": "Me gusta",

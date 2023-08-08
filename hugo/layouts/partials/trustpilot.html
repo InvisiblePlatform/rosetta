@@ -2,7 +2,7 @@
     {{ if eq (int .numberOfReviews.total) 0 }}
     {{ else }}
         <section id="trust-pilot" class="contentSection">
-        <h2 class='sectionTitle'>Trust Pilot</h2>
+        <h2 class='sectionTitle' data-i18n="trustpilot.title">Trust Pilot</h2>
         <score class="ratingOutOf" style="--outOf:'/5';">{{ .score.trustScore }}</score>
         <div class="scoreText fullBleed">
             <div>
@@ -22,12 +22,12 @@
         {{ end }}
         </div>
         <table id="trustChart" class="hideTilExpanded">
-            <tr><th>Total Reviews</th><td>{{ int .numberOfReviews.total }}</td></tr>
-            <tr><th>One Star</th><td>{{ int .numberOfReviews.oneStar }}</td></tr>
-            <tr><th>Two Star</th><td>{{ int .numberOfReviews.twoStars }}</td></tr>
-            <tr><th>Three Star</th><td>{{ int .numberOfReviews.threeStars }}</td></tr>
-            <tr><th>Four Star</th><td>{{ int .numberOfReviews.fourStars }}</td></tr>
-            <tr><th>Five Star</th><td>{{ int .numberOfReviews.fiveStars }}</td></tr>
+            <tr><th data-i18n="trustpilot.total">Total Reviews</th><td>{{ int .numberOfReviews.total }}</td></tr>
+            <tr><th data-i18n="trustpilot.one">One Star</th><td>{{ int .numberOfReviews.oneStar }}</td></tr>
+            <tr><th data-i18n="trustpilot.two">Two Star</th><td>{{ int .numberOfReviews.twoStars }}</td></tr>
+            <tr><th data-i18n="trustpilot.three">Three Star</th><td>{{ int .numberOfReviews.threeStars }}</td></tr>
+            <tr><th data-i18n="trustpilot.four">Four Star</th><td>{{ int .numberOfReviews.fourStars }}</td></tr>
+            <tr><th data-i18n="trustpilot.five">Five Star</th><td>{{ int .numberOfReviews.fiveStars }}</td></tr>
         </table>
         {{ with .name.identifying }}
         <a target="_blank" class="source" href="https://trustpilot.com/review/{{.}}" >TRUST PILOT</a>

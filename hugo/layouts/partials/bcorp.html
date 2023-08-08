@@ -3,7 +3,7 @@
 {{ $path := print "data/bcorp/bcorp_" . ".json"}}
 {{ if os.FileExists $path }}
 {{ $d := getJSON $path }}
-<h2 class="sectionTitle">B Corp</h2>
+<h2 data-i18n="bcorp.title" class="sectionTitle">B Corp</h2>
 <img class="iconclass" src="/icon/bcorp.svg"/>
 {{ if isset $d "latestVerifiedScore" }}
 <score class="ratingOutOf hideTilExpanded" style='--outOf:"/140+";'>{{ $d.latestVerifiedScore }}</score>

@@ -6,7 +6,8 @@
     "customers": "Clients:",
     "community": "Communauté:",
     "brackets": "(80+ est certifié)",
-    "lvs": "Dernier score vérifié:"
+    "lvs": "Dernier score vérifié:",
+    "title": "BCorp"
   },
   "bias": {
     "satire": "SATIRE",
@@ -19,6 +20,9 @@
     "conspiracy": "CONSPIRATION",
     "center": "CENTRE"
   },
+  "carbon": {
+    "title": "Empreinte carbone"
+  },
   "common": {
     "elsewhere": "Ailleurs",
     "fullview": "VUE COMPLÈTE",
@@ -30,7 +34,19 @@
     "NEGLIGIBLE": "NÉGLIGEABLE",
     "MEDIUM": "MOYEN",
     "LOW": "BAS",
-    "HIGH": "HAUTE"
+    "HIGH": "HAUTE",
+    "severe": "Grave",
+    "high": "Haut",
+    "medium": "Moyen",
+    "low": "Faible",
+    "negligible": "Négligeable",
+    "gradingscale": "Échelle d'évaluation",
+    "total": "Note ESG totale",
+    "governance": "Score de risque de gouvernance",
+    "social": "Score de risque social",
+    "enviromental": "Score de risque environnemental",
+    "title": "Risque ESG",
+    "environmental": "Score de risque environnemental"
   },
   "glassdoor": {
     "title": "« Évaluation des employés »",
@@ -206,13 +222,33 @@
     "author_of": "Auteur de",
     "invested_in": "Investi dans",
     "board_member_of": "Membre du conseil de",
-    "subsidary_of": "Filiale"
+    "subsidary_of": "Filiale",
+    "executive_producer_of": "Producteur exécutif de",
+    "producer_of": "Producteur de",
+    "film_editor_of": "Monteur de films de"
   },
   "header": {
     "titledisclaimer": "Clause de non-responsabilité",
     "here": "ici.",
     "dislcaimerNote": "Si vous pensez que l'une des informations affichées est incorrecte, vous pouvez contacter la source de l'information",
     "disclaimer": "Nous avons fait de notre mieux pour vous apporter des informations précises sur les entreprises, les services et les idées en s'appuyant généralement sur les sources indiquées. Nous ne pouvons cependant pas garantir l'exactitude des sources utilisées et vous acceptez de faire vos propres recherches et d'utiliser votre propre jugement pour savoir si une entreprise, un service, une marque ou une idée répond à vos besoins. En utilisant Invisible Voice, vous acceptez que nous ne soyons pas responsables de toute perte ou dommage résultant de votre utilisation de ce plugin."
+  },
+  "isin": {
+    "coresocial": "Indicateurs sociaux de base",
+    "innovation": "Innovation",
+    "use": "Utiliser",
+    "skills": "Compétences",
+    "access": "Accès",
+    "digital": "Inclusion numérique",
+    "human_rights": "Droits humains",
+    "ethical_conduct": "Conduite éthique",
+    "decent_work": "Travail décent",
+    "ssd": "Développement Social & Durable",
+    "tssd": "Développement Social & Durable",
+    "tfas": "Durabilité de l'alimentation et de l'agriculture",
+    "tnat": "Repère Nature",
+    "tdig": "Inclusion numérique",
+    "tlct": "Transition bas carbone"
   },
   "mbfc": {
     "title": "« Biais politique »",
@@ -225,6 +261,20 @@
     "conspiracy_pseudoscience": "Complot-Pseudoscience",
     "satire": "Satire",
     "questionable_sources": "Des sources discutables"
+  },
+  "opensec": {
+    "year": "année",
+    "democrats": "Démocrates",
+    "republicans": "républicains",
+    "senate": "Sénat",
+    "house": "Loger",
+    "sourcestocandidates": "Sources de financement des candidats",
+    "sources": "Sources de fonds",
+    "recipients": "Bénéficiaires de fonds",
+    "title": "OpenSecrets"
+  },
+  "os": {
+    "title": "OpenSecrets"
   },
   "settings": {
     "title": "Réglages",
@@ -246,6 +296,15 @@
     "c": "Les conditions d'utilisation sont acceptables, mais certains problèmes nécessitent votre attention.",
     "b": "Les conditions d'utilisation sont équitables envers l'utilisateur mais elles pourraient être améliorées.",
     "a": "Les meilleures conditions de service : ils vous traitent équitablement, respectent vos droits et n'abuseront pas de vos données."
+  },
+  "trustpilot": {
+    "five": "Cinq étoiles",
+    "four": "Quatre étoiles",
+    "three": "Trois étoiles",
+    "two": "Deux étoiles",
+    "one": "Une étoile",
+    "total": "Total",
+    "title": "Truspilot"
   },
   "vote": {
     "like": "Comme",

@@ -1,10 +1,12 @@
-"common.elsewhere","Irgendwo anders"
-"bias.fake-news",„fragwürdige Quellen“
-"bias.satire","SATIRE"
-"bias.right-center","RECHTS-MITTE"
-"bias.right","RECHTS"
-"bias.pro-science","PRO-WISSENSCHAFT"
-"bias.left-center","LINKS-MITTE"
-"bias.left","LINKS"
-"bias.conspiracy","VERSCHWÖRUNG"
-"bias.center","CENTER"
+"esg.environmental",„Umweltrisikobewertung“
+"os.title",„OpenSecrets“
+"isin.tlct",„Kohlenstoffarmer Übergang“
+"isin.tdig",„Digitale Inklusion“
+"isin.tnat",„Natur-Benchmark“
+"carbon.title",„Kohlenstoff-Fußabdruck“
+"isin.tfas",„Nachhaltigkeit in Ernährung und Landwirtschaft“
+"isin.tssd",„Soziale und nachhaltige Entwicklung“
+"bcorp.title",„BCorp“
+"graph.film_editor_of",„Filmredakteur von“
+"graph.producer_of",„Produzent von“
+"graph.executive_producer_of",„Ausführender Produzent von“
