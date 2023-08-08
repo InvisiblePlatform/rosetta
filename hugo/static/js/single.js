@@ -396,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function(){
         body.classList.add("topBar");
         boyButton.classList.toggle("hide");
         voteButtons.classList.toggle("hide");
-        if (mode == "2") content.classList.add("padOnSmall");
+        if (mode == 2) content.classList.add("padOnSmall");
         voteLoad();
     } else {
         boyButton.style.visibility = "hidden";

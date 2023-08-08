@@ -1423,7 +1423,11 @@ td.biaslink {
         flex-wrap: wrap;
         border-bottom: var(--c-light-text) solid 1px;
         padding: 4px;
-        height: 100dvh;
+        min-height: 100dvh;
+        padding-bottom: 60px;
+    }
+    div:not(.mobile).content {
+        flex-flow: column;
     }
     .content.padOnSmall {
         padding-top: 60px;
@@ -1508,9 +1512,10 @@ td.biaslink {
         padding: 16px;
         box-shadow: #00000022 0px -1px 10px 1px;
         width: 100%;
-        bottom: 6px;
+        bottom: 0px;
         max-height: 48px;
-        position: absolute;
+        position: fixed;
+        background-color: var(--c-secondary-background);
     }
     .coolStar {
         --division: 1!important;
