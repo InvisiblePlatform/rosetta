@@ -547,7 +547,7 @@ function recalculateList(){
         thiselement = document.getElementById(value);
         thiselement.style.order = x + 5;
         if (mode == 1){
-            thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+            if (value != "carbon") thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
             // console.log("mode 1");
         }
     }

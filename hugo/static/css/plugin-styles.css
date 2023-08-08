@@ -1998,9 +1998,6 @@ section.expanded :is(td.hideInSmall, tr.hideInSmall, table.hideInSmall) {
     display: table!important;
 }
 
-div.mobile > section {
-    border-right: none;
-}
 div.mobile > section#Invisible-vote {
     position: absolute;
     top: 0px;
