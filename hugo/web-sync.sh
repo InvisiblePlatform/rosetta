@@ -11,3 +11,4 @@ scp public/reply/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:reply/in
 scp public/terms/index.html ixt_testorange@ssh.phx.nearlyfreespeech.net:terms/index.html
 scp public/index.json ixt_testorange@ssh.phx.nearlyfreespeech.net:./index.json
 scp public/w/*.svg ixt_testorange@ssh.phx.nearlyfreespeech.net:w/
+scp public/w/*.png ixt_testorange@ssh.phx.nearlyfreespeech.net:w/

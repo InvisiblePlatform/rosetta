@@ -430,7 +430,7 @@ d3.json(graphLoc).then(function(graph) {
 
             d.preventDefault();
             // console.log("clicking on", this, wikidataWiki);
-            let requestURL = wikichoice + "/api/rest_v1/page/html/" + wikidataMainWiki + "?redirect=true"
+            let requestURL = wikichoice + "/api/rest_v1/page/html/" + wikidataWiki + "?redirect=true"
             if (wikiframe.style.display == "none") {
                 wikiframe.style.display = "block";
                 titlebar.style.transform = "translate(0, -200px)";

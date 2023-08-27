@@ -65,8 +65,9 @@ def process_domain(domhash):
         json_output_file = f'hugo/static/connections/{domhash}.json'
         with open(json_output_file, 'w') as output:
             json.dump(connections_out, output)
-    except e:
-        return [e, domhash]
+    except:
+        pass
+        #return [e, domhash]
     return [True, domhash]
 
 def progress():

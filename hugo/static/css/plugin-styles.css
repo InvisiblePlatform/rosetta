@@ -1427,7 +1427,7 @@ td.biaslink {
         padding-bottom: 60px;
     }
     div:not(.mobile).content {
-        flex-flow: column;
+        flex-flow: column!important;
     }
     .content.padOnSmall {
         padding-top: 60px;
@@ -2484,4 +2484,28 @@ section:not(.expanded) .flavourText b {
 }
 #opensec > div > div > div > h4{
     display: inline;
+}
+#goodonyou > div > table:nth-child(1) > tbody > tr:nth-child(1) > td > score {
+    margin: 0!important;
+    text-align: center;
+
+}
+#goodonyou > div > table:nth-child(1) > tbody > tr:nth-child(2) > td {
+    display: flex;
+    position: relative;
+}
+#goodonyou > div > table:nth-child(1) > tbody > tr:nth-child(2) > td > img{
+    transform-origin: top;
+    left: 50%;
+    position: absolute;
+    margin: 0 auto;
+}
+
+div.content.mobile #goodonyou:not(.expanded) > div > table:nth-child(1) > tbody > tr:nth-child(2) > td > img{
+    display: none!important;
+}
+section#goodonyou.contentSection div.twoCharts {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
 }

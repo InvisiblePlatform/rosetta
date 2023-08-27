@@ -77,7 +77,7 @@ body {
 
 p {
 	margin-bottom: 24px;
-    font-size: 16px;
+    font-size: 17px;
 }
 
 a {
@@ -195,7 +195,7 @@ section.floatcontainer{
 section.floatcontainer div{
     background-color: var(--c-black);
     border: 1px solid var(--c-white);
-    padding: 70px 60px;
+    padding: 80px;
     max-width: 960px;
     margin: auto;
 }
@@ -213,8 +213,6 @@ section.bigtext{
     text-align: right;
     font-weight: normal;
     align-self: center;
-}
-section.bigtext{
     font-size: 8vw;
 }
 .fulltext{
@@ -222,11 +220,11 @@ section.bigtext{
     max-width: 100%!important;
 }
 .halftext{
-    padding: 16px;
+    padding: 80px;
+    width: 50%;
 }
 .halftext div{
-    width: 80%;
-    margin: auto;
+    margin: 0 auto;
 }
 h1 {
     font-size: 70px;
@@ -236,7 +234,7 @@ h1 {
 h2 {
     font-size: 48px;
     font-weight: normal;
-    padding-bottom: 12px;
+    padding-bottom: 24px;
 }
 h3 {
     font-size: 40px;
@@ -254,6 +252,7 @@ h5 {
 }
 
 input[type=submit],
+label.button,
 a.button, .navdownload a {
     background-color: red;
     padding: 16px 24px;
@@ -265,6 +264,15 @@ a.button, .navdownload a {
     line-height: 1;
     display: inline-block;
     white-space: nowrap;
+}
+:is(input[type=submit],
+div.button, a.button, a.button.downloadwhite, .navdownload a, .navitem a):hover {
+    color: var(--c-green);
+    background-color: var(--c-greyl)!important;
+}
+a.button.download:hover{
+    background-color: var(--c-white);
+    outline: 1px solid var(--c-black);
 }
 
 a.button.nb { background-color: transparent; padding: 8px;}
@@ -300,10 +308,36 @@ a.button.tbuttonb {
     border: 2px solid var(--c-text-light);
     white-space: nowrap;
 }
+label.fbutton {
+    background-color: transparent;
+}
+.filtercheck {
+    display: none;
+}
+.filtercheck:checked + label {
+    background-color: yellow;
+}
+.filtercheck:checked + label {
+    background-color: green;
+}
+.filtercheck:checked ~ label {
+    background-color: green;
+}
 
 /* modules */
+section.module-carosel-placeholder {
+    height: 220px;
+    margin: 40px 0px;
+}
 section.module-carosel {
     overflow-x: hidden;
+    gap: 24px;
+    margin: 40px 0px;
+    position:relative;
+    left: -10%;
+    width: 120%;
+    padding-left: 10%;
+    /* animation: scroll 200s linear infinite; */
 }
 div.module-item{
     min-width: 400px;
@@ -316,7 +350,6 @@ div.module-item{
     border-radius: 20px;
     background-color: var(--c-black);
     color: var(--c-white);
-    margin: 8px;
 }
 
 div.modtext, img.modimg{
@@ -350,14 +383,18 @@ section.downloadDisplay {
     align-items: center;
     gap: 10%;
 }
+div.downloadItem a {
+    font-size: 10px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-direction: column;
+}
 div.downloadItem a img {
     width: 100px;
     aspect-ratio: 1;
 }
 div.downloadItem {
-    display: inline-block;
-    width: 100px;
-    font-size: 8px;
     text-align: center;
 }
 
@@ -374,6 +411,7 @@ div.affiliatesBox {
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
+    justify-content: center;
 }
 div.affiliate {
     margin: 10px;
@@ -387,7 +425,8 @@ div.affiliate-2 {
 }
 div.affiliate-3 {
    flex: 2 2 auto;
-    height: 160px
+   height: 160px;
+   max-width: 30%;
 }
 
 .affiliate img{
@@ -396,13 +435,17 @@ div.affiliate-3 {
 }
 
 /* Footer */
+section.footer div.footerContainer {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
 section.footer{
     background-color: var(--c-black);
     font-size: 14px;
     color: var(--c-white);
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
 }
 section.footer-news{
     flex: 2 1 30%;
@@ -410,7 +453,7 @@ section.footer-news{
     color: var(--c-text-dark);
 }
 section.footer-news input[type=text]{
-    width: 100%;
+    width: calc(100% - 16px);
     margin-bottom: 1em;
     margin-top: 1em;
 }
@@ -548,6 +591,7 @@ input[type=submit] {
     background: none;
 }
 input[type=text] {
+    padding-left: 16px;
     width:calc(100% - 160px);
     border: 0px solid transparent;
     border-radius: 8px;
@@ -564,6 +608,9 @@ form > *{
 section.search form {
     margin: auto;
     width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 24px;
 }
 
 #search-results {
@@ -602,6 +649,15 @@ section.search form {
 ********************************
 ********************************
 */
+@media screen and (max-width: 1200px) {
+    .revRowOnSmall {
+        flex-direction: column-reverse!important;
+    }
+    img.fullBleed {
+        width: auto;
+    }
+
+}
 @media screen and (max-width: 890px) {
     .affiliate img {
         max-width: 100%;
@@ -609,6 +665,10 @@ section.search form {
     div.affiliate-2 {
         flex: 2 2 auto;
         height: 160px;
+    }
+    div.affiliate-3 {
+        max-width: 100%;
+        max-height: 100px;
     }
     div.affiliatesBox{
         padding: 20px;
@@ -744,12 +804,20 @@ section.search form {
         display:none!important;
     }
 }
+@media screen and (min-width: 1900px) {
+    section.bigtext {
+        font-size: 150px!important;
+    }
+}
 @media screen and (max-width: 890px) {
-    section.horicontainer.herocontainer {
+    section.horicontainer {
         flex-direction: column!important;
+    }
+    section.horicontainer.herocontainer {
         gap: 24px;
         padding: 40px 24px;
         min-height: unset;
+        margin-bottom: 32px;
     }
     section.bigtext {
         font-size: 20vw;
@@ -757,6 +825,12 @@ section.search form {
     }
     h1 {
         font-size: 60px;
+    }
+    h2, h3 {
+        font-size: 26px;
+    }
+    section.search {
+        width: 100%;
     }
     #search-input {
         width: 100%;
@@ -797,8 +871,9 @@ section.search form {
         gap: 1em!important;
         flex-direction: column!important;
     }
-    .vertcontainer {
+    section.vertcontainer {
         padding: 10px!important;
+        gap: 32px!important;
     }
     .donationsText {
         padding-right: 0px!important;
@@ -810,13 +885,13 @@ section.search form {
         flex-direction: column;
     }
     :is(section.footer-items, section.footer-news) > * {
-        margin: 1em;
+        margin: 0px 24px;
     }
     section.footer-items {
-        padding: 0px;
+        padding: 40px 0px 64px;
         order: 2;
         flex-direction: column;
-        gap: 16px;
+        gap: 40px;
     }
     section.footer-news {
         padding: 0px;
@@ -832,11 +907,72 @@ section.search form {
     section.lbblock {
         margin-left: 0px;
     }
-    section.lbblock div {
+    section.herocontainer section.lbblock div p {
+        margin-bottom: 32px;
+    }
+    section.herocontainer section.lbblock div {
         padding-left: 0px;
+    }
+    section.lbblock div {
+        padding-left: 22px;
+    }
+    section.lbblock div p {
+        margin-bottom: 0px;
+    }
+    section.module-carosel {
+        margin: 0px;
     }
     section.horicontainer:has(.bigtext){
         background-color: var(--c-black);
         color: var(--c-white);
     }
+    input[type=text] {
+    width: calc(100% - 16px);
+    border: 0px solid transparent;
+    border-radius: 8px;
+    height: 48px;
+}
+    section.search form {
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
+}
+    input.tbuttonb,
+    a.button.tbuttonb {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        display: table;
+    }
+    section.copystatement div {
+        margin: 1em 24px;
+        text-align: center;
+    }
+}
+
+ul, ol {
+    margin: 24px;
+}
+
+div.installIcon {
+    max-width: 50%;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100vw);
+    }
+
+}
+.affiliate img {
+    max-width: 50%;
+}
+
+div#input-array {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }

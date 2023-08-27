@@ -302,6 +302,9 @@ let closeNetworkGraph = function(x){
 }
 
 let justSendBack = function(x) {
+    if (Url.get["vote"] != "true"){
+        window.location.href = "https://test.reveb.la/" ;
+    }
     bw = backButton.getBoundingClientRect()['width'];
     // if ( bw == 40 || bw == 78 || mode == 1) {
     send_message("IVClicked", "back");
