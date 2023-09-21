@@ -83,9 +83,20 @@ for obj_key, obj_value in data.items():
         chart_data = json.loads(chart['data-source'])
         chart_key = chart_data['chart']['caption']
         output_dict['charts'][chart_key] = {}
+        years = {}
         try:
             output_dict['charts'][chart_key]['earliest_year'] = chart_data['categories'][0]['category'][0]['label']
             output_dict['charts'][chart_key]['latest_year'] = chart_data['categories'][0]['category'][-1]['label']
+            _ = 0
+            for year in chart_data['categories'][0]['category']:
+                party_one = chart_data['dataset'][0]['seriesname']
+                value_one = chart_data['dataset'][0]['data'][_]['value']
+                party_two = chart_data['dataset'][1]['seriesname']
+                value_two = chart_data['dataset'][1]['data'][_]['value']
+                years[year['label']] = { party_one: value_one,
+                                         party_two: value_two }
+                _ += 1
+            output_dict['charts'][chart_key]["all_data"] = years
             for party in chart_data['dataset']:
                 party_key = party['seriesname']
                 output_dict['charts'][chart_key][party_key] = {}
@@ -120,6 +131,24 @@ for obj_key, obj_value in data.items():
                 "percent": percent
             })
 
+    output_dict["lobbycards"] = []
+    # Org Lobbying card
+    for card in soup.select(".Orgs-summary-lobbying-card"):
+        year = card.select('.Orgs-summary-lobbying-card-total h2')[0].get_text(strip=True)
+        dollars = card.select('.Orgs-summary-lobbying-card-total div')[0].get_text(strip=True)
+        cardOut = { "year": year,
+                    "dollars": dollars}
+        rows = card.select("tr")
+        for row in rows:
+            title = row.select("td")[0].get_text(strip=True)
+            count = row.select("td")[1].get_text(strip=True)
+            percent = row.select("td")[2].get_text(strip=True)
+            if not title.find("Did"):
+                cardOut["notheld"] = { "count": count, "percent": percent }
+            else:
+                cardOut["held"] = { "count": count, "percent": percent }
+        output_dict["lobbycards"].append(cardOut)
+
     bill_most = soup.select("#bill")
     try:
         output_dict["bill_most_heading"] = bill_most[0].div.find_all()[0].get_text(strip=True)
@@ -128,6 +157,7 @@ for obj_key, obj_value in data.items():
         output_dict["bill_most_title"] = bill_most[0].div.find("span").get_text(strip=True)
     except:
         pass
-    pprint(output_dict['name'])
+    #pprint(output_dict)
+    #exit()
     with open("./output_cleaned/" + opensecrets_id + ".json", "w") as f:
         json.dump(output_dict, f)

@@ -78,6 +78,7 @@ body {
 p {
 	margin-bottom: 24px;
     font-size: 17px;
+    line-height: 1.4em;
 }
 
 a {
@@ -163,9 +164,14 @@ section.horicontainer.greybg {
 section.titlecontainer {
     background-color: var(--c-black);
     color: var(--c-white);
-    width: calc(100% - 80px);
+    /* width: calc(100% - 80px); */
     position: relative;
-    padding: 40px;
+    padding: 64px 80px;
+    max-width: 1440px;
+}
+section.titlecontainer .halftext {
+    padding: 0px;
+    font-size: 23px;
 }
 
 section.lbblock {
@@ -253,7 +259,7 @@ h5 {
 
 input[type=submit],
 label.button,
-a.button, .navdownload a {
+.button, .navdownload a {
     background-color: red;
     padding: 16px 24px;
     border: 0px solid black;
@@ -310,6 +316,13 @@ a.button.tbuttonb {
 }
 label.fbutton {
     background-color: transparent;
+}
+div.fbutton {
+    background-color: var(--c-background);
+    border: 2px solid var(--c-text-light);
+}
+div.fbutton:after {
+    content: 'O';
 }
 .filtercheck {
     display: none;
@@ -441,6 +454,7 @@ section.footer div.footerContainer {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
+    padding: 64px 80px;
 }
 section.footer{
     background-color: var(--c-black);
@@ -449,7 +463,6 @@ section.footer{
 }
 section.footer-news{
     flex: 2 1 30%;
-    padding: 40px;
     color: var(--c-text-dark);
 }
 section.footer-news input[type=text]{
@@ -467,19 +480,25 @@ section.footer-items{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 20px;
+    align-content: start;
+    gap: 40px;
 }
 div.footer-link {
     display: block;
     flex: 2 2 40%;
 }
-section.copystatement{
+section.copystatement {
     flex: 1 1 100%;
     border-top: 1px solid var(--c-text-dark);
-    display: flex;
 }
 section.copystatement div{
-    margin: 1em auto;
+    display: flex;
+    max-width: 1440px;
+    justify-content: space-between;
+    margin: auto;
+}
+section.copystatement div div{
+    margin: 1em 0px;
 }
 
 /* Utility */
@@ -577,6 +596,26 @@ section.copystatement div{
     grid-template-columns: auto auto auto;
     grid-template-rows: auto;
     gap: 1em;
+}
+.card div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.card div h3 {
+    font-size: 23px;
+    font-weight: 500;
+    padding: 0px;
+}
+.card div h4 {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 1.8px;
+    padding: 0px;
+}
+.card p {
+    font-size: 15px;
 }
 .card {
     background-color: var(--c-background);
@@ -972,7 +1011,9 @@ div.installIcon {
 }
 
 div#input-array {
-    display: flex;
+    display: none;
     flex-direction: row;
     flex-wrap: wrap;
+    height: 0px;
+    width: 0px;
 }

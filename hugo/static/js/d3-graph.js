@@ -54,6 +54,15 @@ var skipsections = ["See_also", "References", "Further_reading", "External_links
                     "參考資料", "外部連結", "सन्दर्भ", "बाहरी_कड़ियाँانظر_أيضًا", "مراجع", 
                     "وصلات_خارجية", "انظر_أيضًا"];
 
+function removeSectionsWithMatchingId() {
+  skipsections.forEach(function(section) {
+    var matchingh2 = document.getElementById(section);
+    if (matchingh2 != undefined) {
+        matchingh2.parentNode.remove();
+    }
+  });
+}
+
 wikiframeclose.onclick = function() {
     wikiframe.style.display = "none";
     wikiframeclose.style.display = "none";
@@ -345,6 +354,7 @@ d3.json(graphLoc).then(function(graph) {
                         if (itemArray[1] == "company-info") {
                             wikifirstframe.innerHTML = tempEl.replace(/<img/g,'<img loading=lazy ');
                             lastContent.appendChild(wikifirstframe);
+                            removeSectionsWithMatchingId();
                         }
                 })
 
@@ -364,6 +374,7 @@ d3.json(graphLoc).then(function(graph) {
 
                 lastContent.appendChild(wikifirstframe);
                 lastContent.appendChild(wikicardframe);
+                removeSectionsWithMatchingId();
                 wikifirstframe.style.display = "";
                 wikicardframe.style.display = "";
             }).fail(function() {
@@ -399,6 +410,19 @@ d3.json(graphLoc).then(function(graph) {
         list.setAttribute('class', 'graphList');
         graphBox.childNodes[0].classList.add("noShowTitle");
         graphBox.getElementsByTagName('img')[0].classList.add("graphIconOffset");
+        if (sortedl1list.length == 0){
+            try {
+                personType = "Organization"
+                enlabel = getNodeById(wikidataid, graphNod)[0].label 
+                sortedl1list.push({"type": personType, "label": enlabel, "id": wikidataid});
+            } catch(e) {
+                personType = "Organization"
+                enlabel = getNodeById(wikidataidbackup, graphNod)[0].label 
+                sortedl1list.push({"type": personType, "label": enlabel, "id": wikidataidbackup});
+                console.log("issue in no results list graph");
+            }
+
+        }
         for (item in sortedl1list){
             itemData = sortedl1list[item];
             if (!l1list_ids.includes(itemData.id)){
@@ -450,6 +474,8 @@ d3.json(graphLoc).then(function(graph) {
                 //if (debug) console.log(tempObj)
                 wikiframe.innerHTML = ""
                 wikiframe.appendChild(tempObj)
+                removeSectionsWithMatchingId();
+
                 // var text = data.lead.sections[0].text.replace(/href=\"/g, 'href=\"' + wikichoice);
                 // for (let x in data.remaining.sections) {
                 //     let section = data.remaining.sections[x];

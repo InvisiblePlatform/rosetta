@@ -8,6 +8,24 @@ import json
 from pprint import pprint
 from multiprocessing import Pool
 
+def sort_filenames_by_line_count(domains):
+    # Create a list of tuples with filename and line count
+    file_info = []
+
+    for domain in domains:
+        file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
+        if os.path.exists(file_loc):
+            with open(file_loc, 'r') as file:
+                line_count = sum(1 for _ in file)
+            file_info.append((domain, line_count))
+
+    # Sort the list of tuples based on line count
+    sorted_file_info = sorted(file_info, key=lambda x: x[1], reverse=True)
+
+    # Extract the sorted filenames from the sorted list
+    sorted_filenames = [entry[0] for entry in sorted_file_info]
+
+    return sorted_filenames
 
 def process_domain(domhash):
     try:
@@ -15,7 +33,9 @@ def process_domain(domhash):
         total_data = {}
         total_connection_nodes = []
         total_connection_links = []
-        for domain in domains:
+
+        sorted_domains = sort_filenames_by_line_count(domains)
+        for domain in sorted_domains:
             file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
             json_loc = 'hugo/static/connections/' + domain + ".json"
             if os.path.exists(file_loc):
@@ -42,7 +62,7 @@ def process_domain(domhash):
                         if link not in total_connection_links:
                             total_connection_links.append(link)
 
-        for domain in domains:
+        for domain in sorted_domains:
             file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
             output_loc = 'matched_output/' + domain.replace('.','') + ".md"
             if os.path.exists(file_loc):

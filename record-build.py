@@ -5,6 +5,7 @@ import csv
 import yaml
 import threading
 import time
+import frontmatter
 from pprint import pprint
 from pymongo import MongoClient
 from urllib.parse import urlparse
@@ -30,7 +31,7 @@ website_list = set()
 rootdir = "data_collection"
 WDLOOKUP = f"{rootdir}/wikidata/website_id_list.csv"
 wikidata_array = {}
-MBLOOKUP = f"{rootdir}/mbfc/website_bias.csv"
+MBLOOKUP = f"{rootdir}/mbfc/mbfc-index.json"
 mediabias_array = {}
 BCLOOKUP = f"{rootdir}/bcorp/website_stub_bcorp.csv"
 bcorp_array = {}
@@ -147,6 +148,13 @@ def query_for_wikidata(wikiid):
                             pprint(claim)
     return tmpdatapool
 
+def show_document(domain):
+    file_path = output_dir + domain.replace('.','') + ".md"
+    if os.path.exists(file_path):
+        with open(file_path, "r") as file:
+            yaml_data = frontmatter.load(file)
+            pprint(yaml_data.metadata)
+
 def write_output_file(domain, data):
     file_path = output_dir + domain.replace('.','') + ".md"
     line = "---\n"
@@ -197,12 +205,14 @@ def build_document(website):
             except:
                 pass
     try:
-        output["tosdr_id"] = tosdr_array[website]
+        if not "tosdr" in output.keys():
+            output["tosdr"] = [tosdr_array[website]]
     except:
         pass
     try:
-        output["mbfc"] = mediabias_array[website]
-        output["mbfc_source"] = website
+        mediabias_slug = mediabias_array[website]
+        with open(f"{rootdir}/mbfc/entries/{mediabias_slug}.json", "r") as file:
+            output["mbfc"] = json.load(file)
     except:
         pass
     try:
@@ -230,6 +240,7 @@ def build_document(website):
     write_output_file(website, output)
 
 def prepare():
+    global mediabias_array
     with open(WDLOOKUP, "r") as f:
         wikidata_file = csv.reader(f)
         for i in wikidata_file:
@@ -240,11 +251,7 @@ def prepare():
             except:
                 wikidata_array[domain] = [i[1]]
     with open(MBLOOKUP, "r") as f:
-        mediabias_file = csv.reader(f)
-        for i in mediabias_file:
-            domain = get_domain("http://"+i[0])
-            website_list.add(domain)
-            mediabias_array[domain] = i[1]
+        mediabias_array = json.load(f)
     with open(BCLOOKUP, "r") as f:
         bcorp_file = csv.reader(f)
         for i in bcorp_file:
@@ -290,8 +297,12 @@ def prepare():
         for i in opensecrets_file:
             osid = opensecrets_file[i]["osid"]
             osid_array[i] = osid
+
 prepare()
 build_pairings_and_datapool()
+# build_document("breitbart.com")
+# show_document("breitbart.com")
+# exit()
 pbar = tqdm(total=len(website_list))
 
 if __name__ == "__main__":

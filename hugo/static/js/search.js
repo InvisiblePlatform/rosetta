@@ -29,8 +29,49 @@ keyconversion = {
     'tosdr': "P",
     'wikidata_id': "w"
 }
+labelconversion = {
+    'bcorp_rating': "BCorp",
+    'connections': "Graph",
+    'glassdoor_rating': "Glassdoor",
+    'goodonyou': "GoodOnYou",
+    'isin': "WorldBenchmark",
+    'mbfc': "MediaBiasFactCheck",
+    'osid': "OpenSecrets",
+    'polalignment': "Political Alignment",
+    'polideology': "Political Ideology",
+    'ticker': "ESG Rating",
+    'tosdr': "ToS;DR",
+    'wikidata_id': "WikiData"
+}
 
-const filtered = true;
+var filtered = false;
+if (Url.get["f"] != null){
+    filtered = true
+}
+
+document.addEventListener('click', function(e){
+    // console.log(e.target);
+    if (e.target.id == "filter-button"){
+        filterbutton = document.getElementById('filter-button');
+        inputarray = document.getElementById('input-array')
+        searchInput = document.getElementById('search-input');
+        if (filterbutton.classList.contains("enabled")){
+            filterbutton.classList.remove("enabled");
+            inputarray.style.height = "0px";
+            inputarray.style.width = "0px";
+            inputarray.style.display = "none";
+            searchInput.style.display = "block";
+            filtered = true;
+        } else {
+            filterbutton.classList.add("enabled");
+            inputarray.style.height = "auto";
+            inputarray.style.width = "auto";
+            inputarray.style.display = "flex";
+            searchInput.style.display = "none";
+            filtered = false;
+        }
+    }
+})
 
 
 
@@ -47,8 +88,8 @@ fetch('/index.json')
                   newString.push({"k": keyconversion[item]});
               }
             };
-            console.log(newString)
-            // searchInput.setAttribute("value", newString)
+            // console.log(newString)
+            searchInput.setAttribute("value", newString)
             const query = {$and: newString};
             const result = fuse.search(query);
             const limitedResults = result;
@@ -84,7 +125,7 @@ fetch('/index.json')
         const searchResults = document.getElementById('search-results');
         const searchInput = document.getElementById('search-input');
         const filterArray = document.getElementById('input-array');
-        keys_for_options = (filtered) ? ['k'] : ['d'];
+        keys_for_options = ['k', 'd'];
         const options = {
           keys: keys_for_options, // Specify the keys to search against in the JSON objects
         };
@@ -97,15 +138,15 @@ fetch('/index.json')
         }
         var checkFilters = [];
         for (item in keyconversion){
-            checkFilters += `<div class="filter"><input class="filtercheck" type="checkbox" id="filter-input-${item}" /><label class="button fbutton" for="filter-input-${item}">${item}</label></div>`;
+            checkFilters += `<div class="filter"><input class="filtercheck" type="checkbox" id="filter-input-${item}" /><label class="button fbutton" for="filter-input-${item}">${labelconversion[item]}</label></div>`;
         }
         filterArray.innerHTML = checkFilters;
         for (item in keyconversion){
-            console.log(item);
+            //console.log(item);
             document.getElementById(`filter-input-${item}`).addEventListener("input", (event) => {
                 targetLabel = event.target.id.replace("filter-input-", "");
                 targetValue = event.target.checked;
-                console.log([targetLabel, targetValue]);
+                //console.log([targetLabel, targetValue]);
                 reloadFilters();
         });
         }

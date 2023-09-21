@@ -39,6 +39,14 @@
     display: none!important;
 }
 
+#bobbleDisable {
+    display:none;
+}
+
+.mobile #settings div.hideOnDesktop {
+    display: flex;
+}
+
 #Invisible-boycott {
     border-right: none;
     bottom: 0;
@@ -1379,8 +1387,7 @@ section.expanded {
     position: absolute;
 }
 .content.somethingIsOpen:not(.mobile)>section:not(.expanded):is(#Invisible-vote, #Invisible-boycott) {
-    transform: translateY(200%);
-    position: absolute;
+    position: fixed;
 }
 
 
@@ -1979,7 +1986,7 @@ section#titlebar > #backButton.show {
 section#titlebar > #backButton{
     border-radius: 8px;
     display: block;
-    transform: translate(-12px, -42px);
+    transform: translate(-42px, -42px);
     background-size: 16px 16px;
     position: absolute;
     min-width: 40px;

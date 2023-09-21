@@ -378,6 +378,7 @@ let closeSettings = function(x) {
 
 var IVKeepOnScreen = localStorage.IVKeepOnScreen;
 var IVDarkModeOverride = localStorage.IVDarkModeOverride;
+var IVBobbleOverride = localStorage.IVBobbleOverride;
 var IVLike = document.getElementById('Invisible-like')
 var IVDislike = document.getElementById('Invisible-dislike')
 
@@ -386,6 +387,11 @@ if (IVKeepOnScreen == "true"){
     send_message("IVKeepOnScreen", "true");
 }
     
+if (IVBobbleOverride == "true"){
+	document.getElementById('bobbleDisable').getElementsByTagName('label')[0].firstElementChild.checked = true;
+    send_message("IVBobbleDisable", "true");
+}
+
 if (IVDarkModeOverride == "true"){
 	document.getElementById('permaDark').getElementsByTagName('label')[0].firstElementChild.checked = true;
     document.lastChild.classList.toggle('dark-theme');
@@ -436,6 +442,19 @@ document.addEventListener('mouseup', function(event){
         }
         event.target.scrollIntoView();
     };
+    if (event.target.parentElement.parentElement) 
+        if (event.target.parentElement.parentElement.matches('#bobbleDisable')){
+		    if (IVBobbleOverride == "true") {
+		    	IVBobbleOverride = false;
+		    	localStorage.IVBobbleOverride = false;
+                send_message("IVBobbleDisable", "false");
+		    } else {
+		    	IVBobbleOverride = true;
+		    	localStorage.IVBobbleOverride = true;
+                send_message("IVBobbleDisable", "true");
+            }
+            console.log("bobble " + IVBobbleOverride);
+        }
     if (event.target.parentElement.parentElement) 
         if (event.target.parentElement.parentElement.matches('#permaDark')){
             if (debugModeCount < 4){

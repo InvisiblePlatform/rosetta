@@ -270,6 +270,7 @@
   "P10796": "http://dati.camera.it/ocd/governo.rdf/g$1",
   "P10799": "https://heiligen.net/heiligen/$1.php",
   "P10800": "https://championat.com/tags/$1",
+  "P10858": "https://truthsocial.com/@$1",
   "P10804": "https://twitter.com/i/lists/$1",
   "P1084": "http://srv3.eulc.edu.eg/eulc_v5/libraries/Start.aspx?fn=ApplySearch&BibID=$1",
   "P109": "https://commons.wikimedia.org/wiki/File:$1",
