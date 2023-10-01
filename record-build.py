@@ -133,7 +133,12 @@ def query_for_wikidata(wikiid):
                     except:
                         pass
                     tmpdatapool[claim]["data"] = startdata
-            if claim in ["P946", "P8525"]:
+            if claim in ["P8525"]:
+                try:
+                    tmpdatapool[claim]["data"] = i["mainsnak"]["datavalue"]["value"]
+                except:
+                    pass
+            if claim in ["P946"]:
                 try:
                     tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
                 except:
@@ -205,8 +210,7 @@ def build_document(website):
             except:
                 pass
     try:
-        if not "tosdr" in output.keys():
-            output["tosdr"] = [tosdr_array[website]]
+        output["tosdr"] = tosdr_array[website]
     except:
         pass
     try:
@@ -300,8 +304,8 @@ def prepare():
 
 prepare()
 build_pairings_and_datapool()
-# build_document("breitbart.com")
-# show_document("breitbart.com")
+# build_document("google.com")
+# show_document("google.com")
 # exit()
 pbar = tqdm(total=len(website_list))
 

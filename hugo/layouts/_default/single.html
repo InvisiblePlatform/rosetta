@@ -88,7 +88,7 @@
 </section>
 {{ end }}
 {{ end }}
-{{ if isset .Params "tosdr" }}{{ range .Params.tosdr }}{{ partialCached "tosdr.html" . .  }}{{ end }}{{ end }}
+{{ with .Params.tosdr }}{{ partialCached "tosdr.html" . .  }}{{ end }}
 {{ if isset .Params "polideology" }}{{ range .Params.polideology }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
 {{ if isset .Params "polalignment" }}{{ range .Params.polalignment }}{{ partial "wikidata.html" . . }}{{ end }}{{ end }}
 {{ if isset .Params "osid" }}{{ partial "opensecrets.html" .Params.osid .Params.osid }}{{ end }}
