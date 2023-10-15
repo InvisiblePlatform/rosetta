@@ -41,6 +41,8 @@ GDLOOKUP = f"{rootdir}/glassdoor/website_glassdoorneo.list"
 glassdoor_array = {}
 TSLOOKUP = f"{rootdir}/tosdr/site_id.list"
 tosdr_array = {}
+TSDATAARRAY = f"{rootdir}/tosdr/rated.json"
+tosdr_data_array = {}
 WPLOOKUP = f"{rootdir}/wikipedia/wikititle_webpage_id_filtered.csv"
 wikipedia_array = {}
 ISLOOKUP = f"{rootdir}/static/document_isin.list"
@@ -214,6 +216,12 @@ def build_document(website):
     except:
         pass
     try:
+        if tosdr_data_array[str(output["tosdr"])]["rated"]:
+            output["tosdr_rating"] = tosdr_data_array[str(output["tosdr"])]["rated"]
+    except:
+        pass
+
+    try:
         mediabias_slug = mediabias_array[website]
         with open(f"{rootdir}/mbfc/entries/{mediabias_slug}.json", "r") as file:
             output["mbfc"] = json.load(file)
@@ -245,6 +253,7 @@ def build_document(website):
 
 def prepare():
     global mediabias_array
+    global tosdr_data_array
     with open(WDLOOKUP, "r") as f:
         wikidata_file = csv.reader(f)
         for i in wikidata_file:
@@ -280,6 +289,9 @@ def prepare():
             domain = get_domain("http://"+i[0])
             website_list.add(domain)
             tosdr_array[domain] = i[1]
+    # TOSDR Data
+    with open(TSDATAARRAY, "r") as f:
+        tosdr_data_array = json.load(f)
     with open(WPLOOKUP, "r") as f:
         wiki_file = csv.reader(f)
         for i in wiki_file:
@@ -304,9 +316,9 @@ def prepare():
 
 prepare()
 build_pairings_and_datapool()
-# build_document("google.com")
-# show_document("google.com")
-# exit()
+#build_document("twitter.com")
+#show_document("twitter.com")
+#exit()
 pbar = tqdm(total=len(website_list))
 
 if __name__ == "__main__":

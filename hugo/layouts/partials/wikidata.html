@@ -1,14 +1,14 @@
-{{ $props := getJSON "data/wikidata/props.json" }}
+{{- $props := getJSON "data/wikidata/props.json" -}}
 <section id="small-wikidata" style="order:7;" class="contentSection">
-{{ $key := split . ";" }}
-<h2 class='sectionTitle'>{{ index $props (index $key 1) | title }}</h2> 
+{{- $key := split . ";" -}}
+<h2 class='sectionTitle'>{{- index $props (index $key 1) | title -}}</h2> 
 <div class="pie hideTilExpanded"></div>
-{{ $name := partialCached "wikidata-name.html" (index $key 0) (index $key 0) }}
-<score class="biaslink" >{{ $name }}</score>
+{{- $name := partialCached "wikidata-name.html" (index $key 0) (index $key 0) -}}
+<score class="biaslink" >{{- $name -}}</score>
 <div class="scoreText fullBleed">
     <div>
-    <h3>{{ $name }}</h3>
-    <a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/{{ index $key 2 }}#{{ index $key 1 }}">WIKIDATA</a>
+    <h3>{{- $name -}}</h3>
+    <a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/{{- index $key 2 -}}#{{- index $key 1 -}}">WIKIDATA</a>
     </div>
 </div>
 </section>

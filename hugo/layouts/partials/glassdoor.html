@@ -1,21 +1,21 @@
-{{ with $path := print "data/glassdoor/data_json/" . ".json"}}
-{{ if os.FileExists . }}
+{{- with $path := print "data/glassdoor/data_json/" . ".json" -}}
+{{- if os.FileExists . -}}
 <section id="glassdoor" class="contentSection">
-{{ $d := getJSON . }}
+{{- $d := getJSON . -}}
 <h2 data-i18n="glassdoor.title" class='sectionTitle'>Employee Rating</h2>
 <div class="pie hideTilExpanded"></div>
-<score class="ratingOutOfFive">{{ $d.glasroom_rating.ratingValue }}</score>
-<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:{{ mul (div (float $d.glasroom_rating.ratingValue) (float 5 )) 100 }};"></div>
+<score class="ratingOutOfFive">{{- $d.glasroom_rating.ratingValue -}}</score>
+<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:{{- mul (div (float $d.glasroom_rating.ratingValue) (float 5 )) 100 -}};"></div>
 <div class="scoreText fullBleed">
     <div>
-<div class="ratingCount">{{$d.glasroom_rating.ratingCount }} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></div>
+<div class="ratingCount">{{- $d.glasroom_rating.ratingCount -}} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></div>
 <table class="dataTable">
-<tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{ $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" }}">{{ $d.type }}</td></tr>
-<tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">{{ $d.headquarters }}</td></tr>
-<tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">{{ $d.founded }}</td></tr> 
-<tr><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">{{ $d.industry }}</td></tr> 
-<tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">{{ $d.revenue }}</td></tr>
-<tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">{{ $d.size }}</td></tr>
+<tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.{{- $d.type | lower | replaceRE " - " "_" | replaceRE " " "_" -}}">{{- $d.type -}}</td></tr>
+<tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">{{- $d.headquarters -}}</td></tr>
+<tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">{{- $d.founded -}}</td></tr> 
+<tr><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">{{- $d.industry -}}</td></tr> 
+<tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">{{- $d.revenue -}}</td></tr>
+<tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">{{- $d.size -}}</td></tr>
 </table>
 <a class="source hideInSmall" target="_blank" href="{{ $d.url }}">GLASSDOOR</a>
 </div>

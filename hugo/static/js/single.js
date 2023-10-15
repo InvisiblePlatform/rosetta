@@ -214,6 +214,56 @@ let loadProfileCard = function(x) {
     send_message("IVClicked", "wikipedia-infocard-frame");
     setBack('closeInfoCard()');
 }
+
+const keyconversion = {
+    "b": 'bcorp',
+    "c": 'connections',
+    "l": 'glassdoor',
+    "g": 'goodonyou',
+    "i": 'isin',
+    "m": 'mbfc',
+    "o": 'osid',
+    // "a": 'polalignment',
+    // "p": 'polideology',
+    "y": 'yahoo',
+    "P": 'tosdr-link'
+    // "w": 'wikidata_id'
+}
+const availableNotifications = "blP";
+let notificationsDraw = function(){
+    if (localStorage.IVNotifications == "true"){
+        tagsEnabled = localStorage.IVNotificationsTags || '';
+        for (const tag of availableNotifications){
+            if (document.getElementById(`${tag}-bell`) == null){
+                currEl = document.querySelector(`[data-id="${keyconversion[tag]}"]`);
+                notToggle = document.createElement("div");
+                notToggle.id = `${tag}-bell`;
+                notToggle.classList.add("notificationBell");
+                notToggle.innerHTML = '<label class="switch"><input type="checkbox"><span class="slider round"></span></label>';
+                notToggle.style.margin = "0px";
+                notToggle.style.top = "4px";
+                notToggle.style.right = "-40px";
+                notToggle.style.position = "relative";
+                if (tagsEnabled.includes(tag))
+                    notToggle.getElementsByTagName("input")[0].checked = true;
+                currEl.style.display = "flex";
+                currEl.style.justifyContent = "space-between";
+                currEl.appendChild(notToggle);
+            } else {
+                if (tagsEnabled.includes(tag)){
+                    document.getElementById(`${tag}-bell`).getElementsByTagName("input")[0].checked = true;
+                } else {
+                    document.getElementById(`${tag}-bell`).getElementsByTagName("input")[0].checked = false;
+                }
+            }
+        }
+        console.log(tagsEnabled);
+    } else {
+        // check for if toggles are there already, remove them if they are 
+        document.querySelectorAll(".notificationBell").forEach(x => x.remove());
+    }
+}
+
 let loadSettings = function(x) {
     body.classList.add("settingsOpen");
     if (settings.style.bottom == "0px"){
@@ -234,6 +284,23 @@ let loadSettings = function(x) {
     if (mode == 2){
         closeButton.style.display = "none";
     }
+
+    var notifications = document.createElement("div");
+    notifications.id = "notifications-shade";
+    notifications.classList.add("switchItem");
+    notifications.innerHTML = `<h2 data-i85n="settings.notifications">Notifications</h2>
+        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
+    settings.appendChild(notifications);
+    if (localStorage.IVNotifications == "true"){
+        notifications.getElementsByTagName("input")[0].checked = true;
+        send_message("IVNotifications", "true");
+        tagList = localStorage.IVNotificationsTags || "";
+        send_message("IVNotificationsTags", tagList);
+        notificationsDraw();
+    } else {
+        send_message("IVNotifications", "false");
+    }
+
     if (debug == true && (!document.getElementById("debug-banner"))){
         var banner = document.createElement("div");
         banner.id = "debug-banner";
@@ -443,6 +510,36 @@ document.addEventListener('mouseup', function(event){
         event.target.scrollIntoView();
     };
     if (event.target.parentElement.parentElement) 
+        if (event.target.parentElement.parentElement.matches('.notificationBell')){
+                tagList = "";
+                clickedBell = event.target.parentElement.parentElement.id;
+                document.querySelectorAll(".notificationBell").forEach(function(x){ 
+                    if (x.id == clickedBell){
+                    if (!x.getElementsByTagName("input")[0].checked)
+                        tagList += x.id.replace(/-bell/,"");
+                    }else{
+                    if (x.getElementsByTagName("input")[0].checked)
+                        tagList += x.id.replace(/-bell/,"");
+                    }
+                })
+                console.log(tagList);
+                send_message("IVNotificationsTags", tagList);
+                localStorage.IVNotificationsTags = tagList;
+        }
+    if (event.target.parentElement.parentElement) 
+        if (event.target.parentElement.parentElement.matches('#notifications-shade')){
+		    if (localStorage.IVNotifications == "true") {
+		    	localStorage.IVNotifications = false;
+                send_message("IVNotifications", "false");
+                notificationsDraw();
+		    } else {
+		    	localStorage.IVNotifications = true;
+                send_message("IVNotifications", "true");
+                notificationsDraw();
+            }
+            console.log("notifications " + localStorage.IVNotifications);
+        }
+    if (event.target.parentElement.parentElement) 
         if (event.target.parentElement.parentElement.matches('#bobbleDisable')){
 		    if (IVBobbleOverride == "true") {
 		    	IVBobbleOverride = false;
@@ -576,7 +673,6 @@ function recalculateList(){
         }
     }
     }
-
   };
   if (debug) console.log("sorted")
 }
@@ -606,6 +702,16 @@ function slist (target) {
 	    		var order = sortable.toArray();
 	    		localStorage.setItem("IVListOrder", order.join('|'));
                 recalculateList()
+                if (localStorage.IVNotifications == "true") {
+                  tagList = "";
+                  document.querySelectorAll(".notificationBell").forEach(function(x){ 
+                      if (x.getElementsByTagName("input")[0].checked)
+                          tagList += x.id.replace(/-bell/,"");
+                      console.log(tagList)
+                  })
+                  // localStorage.IVNotificationsTags = tagList;
+                  send_message("IVNotificationsTags", tagList);
+                }
 	    	}
 	    }
   });

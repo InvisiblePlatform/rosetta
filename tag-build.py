@@ -22,7 +22,7 @@ keyconversion = {
     'polalignment': "a",
     'polideology': "p",
     'ticker': "y",
-    'tosdr_id': "P",
+    'tosdr_rating': "P",
     'wikidata_id': "w"
 }
 

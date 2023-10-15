@@ -1,0 +1,12 @@
+{{- $tempDict := (dict "k" .Params.tags) -}}
+{{- with .Params.bcorp_rating -}}
+{{- $tempDict = merge $tempDict (dict "b" . ) -}}
+{{- end -}}
+{{- with .Params.glassdoor_rating -}}
+{{- $tempDict = merge $tempDict (dict "l" . ) -}}
+{{- end -}}
+{{- with .Params.tosdr_rating -}}
+{{- $tempDict = merge $tempDict (dict "P" . ) -}}
+{{- end -}}
+{{- $.Scratch.SetInMap "index" "data" $tempDict -}}
+{{- $.Scratch.Get "index" | jsonify -}}

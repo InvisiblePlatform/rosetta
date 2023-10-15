@@ -10,7 +10,7 @@ paginate = 5000
   unsafe = true
 [outputs]
   home = ["HTML", "json"]
-  page = ["HTML"]
+  page = ["HTML", "json"]
 [caches]
   [caches.assets]
     dir = ':resourceDir/_gen'
