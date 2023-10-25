@@ -229,6 +229,23 @@ const keyconversion = {
     "P": 'tosdr-link'
     // "w": 'wikidata_id'
 }
+
+let notificationDialog = function(id){
+    console.log(id.target.id)
+    floatDiag = document.createElement("div");
+    floatDiag.id = "floatDiag"
+    floatDiag.style.height = "400px";
+    floatDiag.style.width = "400px";
+    floatDiag.style.position = "fixed";
+    floatDiag.style.zIndex = "10";
+    floatDiag.style.top = "calc(50vh - 200px)";
+    floatDiag.style.left = "calc(50vw - 200px)";
+    floatDiag.style.backgroundColor = "var(--c-secondary-background)";
+    floatDiag.textContent = `${id.target.id}`
+    body.appendChild(floatDiag);
+    floatDiag.onclick = document.getElementById("floatDiag").remove;
+}
+
 const availableNotifications = "blP";
 let notificationsDraw = function(){
     if (localStorage.IVNotifications == "true"){
@@ -236,19 +253,34 @@ let notificationsDraw = function(){
         for (const tag of availableNotifications){
             if (document.getElementById(`${tag}-bell`) == null){
                 currEl = document.querySelector(`[data-id="${keyconversion[tag]}"]`);
+                toggleContainer = document.createElement("div");
+                toggleContainer.classList.add("tagToggleContainer");
                 notToggle = document.createElement("div");
                 notToggle.id = `${tag}-bell`;
                 notToggle.classList.add("notificationBell");
                 notToggle.innerHTML = '<label class="switch"><input type="checkbox"><span class="slider round"></span></label>';
+                toggleContainer.style.margin = "0px";
+                toggleContainer.style.top = "4px";
+                toggleContainer.style.right = "-40px";
+                toggleContainer.style.position = "relative";
+                toggleContainer.style.display = "flex";
                 notToggle.style.margin = "0px";
-                notToggle.style.top = "4px";
-                notToggle.style.right = "-40px";
                 notToggle.style.position = "relative";
                 if (tagsEnabled.includes(tag))
                     notToggle.getElementsByTagName("input")[0].checked = true;
                 currEl.style.display = "flex";
                 currEl.style.justifyContent = "space-between";
-                currEl.appendChild(notToggle);
+
+                toggleDialog = document.createElement("img");
+                toggleDialog.style.width = '20px';
+                toggleDialog.style.height = '20px';
+                toggleDialog.style.transform = 'translate(-20px,-6px)';
+                toggleDialog.id = `${tag}-dialog`;
+                toggleDialog.classList.add("notificationDialog");
+                toggleDialog.onclick = notificationDialog;
+                toggleContainer.appendChild(toggleDialog);
+                toggleContainer.appendChild(notToggle);
+                currEl.appendChild(toggleContainer);
             } else {
                 if (tagsEnabled.includes(tag)){
                     document.getElementById(`${tag}-bell`).getElementsByTagName("input")[0].checked = true;
@@ -261,6 +293,7 @@ let notificationsDraw = function(){
     } else {
         // check for if toggles are there already, remove them if they are 
         document.querySelectorAll(".notificationBell").forEach(x => x.remove());
+        document.querySelectorAll(".notificationDialog").forEach(x => x.remove());
     }
 }
 
@@ -289,10 +322,14 @@ let loadSettings = function(x) {
     notifications.id = "notifications-shade";
     notifications.classList.add("switchItem");
     notifications.innerHTML = `<h2 data-i85n="settings.notifications">Notifications</h2>
-        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
+        <div id="notificationsContainer" style="display:flex;">
+        <img id="notificationsCache" style="display:none;width:24px;height:24px;position:relative;transform:translate(-20px,13px);">
+        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div></div>`
     settings.appendChild(notifications);
     if (localStorage.IVNotifications == "true"){
         notifications.getElementsByTagName("input")[0].checked = true;
+        cacheButton = document.getElementById("notificationsCache");
+        cacheButton.style.display = "block";
         send_message("IVNotifications", "true");
         tagList = localStorage.IVNotificationsTags || "";
         send_message("IVNotificationsTags", tagList);
@@ -464,6 +501,9 @@ if (IVDarkModeOverride == "true"){
     document.lastChild.classList.toggle('dark-theme');
     document.getElementById('backButton').style.backgroundImage = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K')";
 }
+
+
+
 document.addEventListener("DOMContentLoaded", function(){
     if (Url.get["app"] == 'true'){
         closeButton.style.visibility = "hidden";
@@ -482,126 +522,110 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById(Url.get["expanded"]).classList.add("expanded")
         content.classList.add('somethingIsOpen');
     }
-var debugModeCount = 0
-document.addEventListener('mouseup', function(event){
-    if (event.target.matches("html")){
-        return;
-    }
-    if (event.target.matches('#Invisible-boycott')){
-        send_message("IVBoycott", "please");
-    };
-    // if (event.target.matches('#Invisible-like')){
-    //     send_message("IVLike", "please");
-    // };
-    // if (event.target.matches('#Invisible-dislike')){
-    //     send_message("IVDislike", "please");
-    // };
-    if (event.target.classList.contains('invisible-disclaimer-title')){
-        send_message("IVClicked", "disclaimer");
-    };
-    if (event.target.classList.contains('sectionTitle')|| event.target.classList.contains('iconclass')|| event.target.classList.contains('scoreText')){
-        send_message("IVClicked", event.target.parentElement.id);
-        if (event.target.parentElement.id == "wikipedia-first-frame"){
-            loadWikipediaPage();
-        }
-        if (event.target.parentElement.id == "wikipedia-infocard-frame"){
-            loadProfileCard();
-        }
-        event.target.scrollIntoView();
-    };
-    if (event.target.parentElement.parentElement) 
-        if (event.target.parentElement.parentElement.matches('.notificationBell')){
-                tagList = "";
-                clickedBell = event.target.parentElement.parentElement.id;
-                document.querySelectorAll(".notificationBell").forEach(function(x){ 
-                    if (x.id == clickedBell){
-                    if (!x.getElementsByTagName("input")[0].checked)
-                        tagList += x.id.replace(/-bell/,"");
-                    }else{
-                    if (x.getElementsByTagName("input")[0].checked)
-                        tagList += x.id.replace(/-bell/,"");
-                    }
-                })
-                console.log(tagList);
-                send_message("IVNotificationsTags", tagList);
-                localStorage.IVNotificationsTags = tagList;
-        }
-    if (event.target.parentElement.parentElement) 
-        if (event.target.parentElement.parentElement.matches('#notifications-shade')){
-		    if (localStorage.IVNotifications == "true") {
-		    	localStorage.IVNotifications = false;
-                send_message("IVNotifications", "false");
-                notificationsDraw();
-		    } else {
-		    	localStorage.IVNotifications = true;
-                send_message("IVNotifications", "true");
-                notificationsDraw();
-            }
-            console.log("notifications " + localStorage.IVNotifications);
-        }
-    if (event.target.parentElement.parentElement) 
-        if (event.target.parentElement.parentElement.matches('#bobbleDisable')){
-		    if (IVBobbleOverride == "true") {
-		    	IVBobbleOverride = false;
-		    	localStorage.IVBobbleOverride = false;
-                send_message("IVBobbleDisable", "false");
-		    } else {
-		    	IVBobbleOverride = true;
-		    	localStorage.IVBobbleOverride = true;
-                send_message("IVBobbleDisable", "true");
-            }
-            console.log("bobble " + IVBobbleOverride);
-        }
-    if (event.target.parentElement.parentElement) 
-        if (event.target.parentElement.parentElement.matches('#permaDark')){
-            if (debugModeCount < 4){
-                console.log("ping " + debugModeCount);
-                debugModeCount += 1;
-            }
-            if (debugModeCount == 4){
-                debug = true;
-                if (localStorage.debugMode == "true") {
-                    localStorage.debugMode = false;
-                    document.lastChild.classList.toggle("debugColors");
-                } else {
-                    localStorage.debugMode = true;
-                    document.lastChild.classList.toggle("debugColors");
-                }
-            }
+});
 
-            if (debug) console.log("IVDarkModeOverride");
-		    if (IVDarkModeOverride == "true") {
-		    	IVDarkModeOverride = false;
-		    	localStorage.IVDarkModeOverride = false;
-                document.lastChild.classList.toggle('dark-theme');
-		    } else {
-		    	IVDarkModeOverride = true;
-		    	localStorage.IVDarkModeOverride = true;
-                
-                document.lastChild.classList.toggle('dark-theme');
-		    }
-            send_message("IVDarkModeOverride", IVDarkModeOverride);
+function toggleNotifications(value) {
+  if (localStorage.IVNotifications === value) return;
+
+  localStorage.IVNotifications = value;
+  cacheButton = document.getElementById("notificationsCache");
+  cacheButton.style.display = value === "true" ? "block" : "none";
+  send_message("IVNotifications", value);
+  notificationsDraw();
+  console.log("notifications " + localStorage.IVNotifications);
+}
+
+function toggleDarkMode() {
+  debugModeCount = debugModeCount < 4 ? debugModeCount + 1 : debugModeCount;
+
+  if (debugModeCount === 4) {
+    debug = !debug;
+    localStorage.debugMode = debug;
+    document.lastChild.classList.toggle("debugColors");
+  }
+
+  console.log("IVDarkModeOverride");
+  IVDarkModeOverride = !IVDarkModeOverride;
+  localStorage.IVDarkModeOverride = IVDarkModeOverride;
+  document.lastChild.classList.toggle('dark-theme');
+  send_message("IVDarkModeOverride", IVDarkModeOverride);
+}
+
+function toggleBobbleOverride() {
+  IVBobbleOverride = !IVBobbleOverride;
+  localStorage.IVBobbleOverride = IVBobbleOverride;
+  send_message("IVBobbleDisable", IVBobbleOverride ? "true" : "false");
+  console.log("bobble " + IVBobbleOverride);
+}
+
+function toggleKeepOnScreen() {
+  IVKeepOnScreen = !IVKeepOnScreen;
+  localStorage.IVKeepOnScreen = IVKeepOnScreen;
+  if (debug) {
+    console.log(IVKeepOnScreen ? "keep on" : "keep off");
+  }
+}
+
+
+var debugModeCount = 0
+document.addEventListener('mouseup', function (event) {
+  if (event.target.matches("html")) return;
+
+  if (event.target.matches('#Invisible-boycott')) {
+    send_message("IVBoycott", "please");
+  } else if (event.target.classList.contains('invisible-disclaimer-title')) {
+    send_message("IVClicked", "disclaimer");
+  } else if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
+    send_message("IVClicked", event.target.parentElement.id);
+
+    if (event.target.parentElement.id == "wikipedia-first-frame") loadWikipediaPage();
+    if (event.target.parentElement.id == "wikipedia-infocard-frame") loadProfileCard();
+    event.target.scrollIntoView();
+
+  } else if (event.target.parentElement.parentElement) {
+    if (event.target.parentElement.parentElement.matches('.notificationBell')) {
+      tagList = "";
+      clickedBell = event.target.parentElement.parentElement.id;
+      document.querySelectorAll(".notificationBell").forEach(function (x) {
+        if (x.id == clickedBell) {
+          if (!x.getElementsByTagName("input")[0].checked) tagList += x.id.replace(/-bell/, "");
+        } else {
+          if (x.getElementsByTagName("input")[0].checked) tagList += x.id.replace(/-bell/, "");
         }
-    if (event.target.parentElement.parentElement) 
-    if (event.target.parentElement.parentElement.matches('#onScreen')){
-        if (debug) console.log("IVKeepOnScreen");
-        IVKeepOnScreen = localStorage.IVKeepOnScreen;
-		if (IVKeepOnScreen == "true") {
-			localStorage.IVKeepOnScreen = false;
-            if (debug) console.log("keep off")
-		} else {
-			localStorage.IVKeepOnScreen = true;
-            if (debug) console.log("keep on")
-		}
+      });
+      console.log(tagList);
+      send_message("IVNotificationsTags", tagList);
+      localStorage.IVNotificationsTags = tagList;
     }
-    if (event.target.matches('#backButton')){
-        send_message("IVClicked", event.target.parentElement.id);
+  }
+
+  if (event.target.parentElement.parentElement) {
+    if (event.target.parentElement.parentElement.parentElement.matches('#notifications-shade')) {
+        if (localStorage.IVNotifications === "true") {
+          toggleNotifications("false");
+        } else {
+          toggleNotifications("true");
+        }
+    } else if (event.target.parentElement.parentElement.matches('#bobbleDisable')) {
+        toggleBobbleOverride();
+    } else if (event.target.parentElement.parentElement.matches('#permaDark')) {
+        toggleDarkMode();
+    } else if (event.target.parentElement.parentElement.matches('#onScreen')) {
+        toggleKeepOnScreen();
     }
-    if (event.target.matches('#profile-card')){
-        send_message("biggen", "big");
-        if (debug) console.log("bigg");
+    
+    if (event.target.matches('#notificationsCache'))
+      send_message("IVNotificationsCacheClear", "please");
+
+    if (event.target.matches('#backButton')) {
+      send_message("IVClicked", event.target.parentElement.id);
+    } else if (event.target.matches('#profile-card')) {
+      send_message("biggen", "big");
+      if (debug) console.log("bigg");
     }
-})},false);
+  }
+}, false);
+
 // {value: items[it].value, label: items[it].innerHTML}
 var defaultOrder = [
     "wikipedia-first-frame",

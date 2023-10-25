@@ -47,9 +47,10 @@ def process_domain(domhash):
                             total_data[key] = value
                         if type(total_data[key]) is list:
                             if key != "wikidata_id":
-                                org = set(total_data[key])
-                                org = org.union(set(value))
-                                total_data[key] = list(org)
+                                if key != "mbfc_tags":
+                                    org = set(total_data[key])
+                                    org = org.union(set(value))
+                                    total_data[key] = list(org)
             if os.path.exists(json_loc):
                 with open(json_loc, "r") as jsonfile:
                     json_data = json.load(jsonfile)

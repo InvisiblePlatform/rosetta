@@ -7,10 +7,10 @@
 <section id="tosdr-link" class="contentSection">
 <h2 class='sectionTitle' data-i18n="tos.title">Privacy</h2>
 <div class="pie hideTilExpanded"></div>
-<score style="font-size: 64px;">{{- (index $data $id ).rated -}}</score>
+<score style="font-size: 64px;">{{ (index $data $id ).rated }}</score>
 <div class="scoreText fullBleed">
     <div>
-<h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> {{- $grade -}}</h3>
+<h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> {{ $grade }}</h3>
 {{- if eq $grade "E" -}}
 <p data-i18n="tos.e">The terms of service raise very serious concerns.</p>
 {{- else if eq $grade "D" -}}

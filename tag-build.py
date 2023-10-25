@@ -23,7 +23,8 @@ keyconversion = {
     'polideology': "p",
     'ticker': "y",
     'tosdr_rating': "P",
-    'wikidata_id': "w"
+    'wikidata_id': "w",
+    'tp_rating': "t"
 }
 
 def process_domain(domain):
