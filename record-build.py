@@ -3,11 +3,13 @@ import os
 import sys
 import csv
 import yaml
-import threading
-import time
-import frontmatter
+from threading import Thread
+from frontmatter import load as frontload
+from time import sleep
+from copy import deepcopy
 from pprint import pprint
 from pymongo import MongoClient
+from collections import defaultdict
 from urllib.parse import urlparse
 from multiprocessing import Pool
 from tqdm import tqdm
@@ -55,14 +57,15 @@ TRUSTSCORELOOKUP = f"{rootdir}/trustscore/ratings-index.json"
 trust_array = {}
 TRUSTPILOTLOOKUP = f"{rootdir}/trust-pilot/merged_output.json"
 trustp_array = {}
+bulk_array = defaultdict(dict)
 
 def progress():
-    time.sleep(3)  # Check progress after 3 seconds
+    sleep(3)  # Check progress after 3 seconds
     print(f'total: {pbar.total} finish:{pbar.n}')
 
 
 def process_domains_parrallel(domains):
-    thread = threading.Thread(target=progress)
+    thread = Thread(target=progress)
     thread.start()
     results = []
     with Pool() as pool:
@@ -109,8 +112,6 @@ def build_pairings_and_datapool():
 exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
 
 def query_for_wikidata(wikiid):
-    tmpdatapool = None
-    tmpdatapool = datapool.copy()
     tmpoutput = collection.find_one({'id': wikiid }, {
                 "claims": items,
                 "id": 1,
@@ -118,158 +119,84 @@ def query_for_wikidata(wikiid):
     })
     if not tmpoutput:
         return None
-    if len(tmpoutput["claims"]) == 0:
+    if not tmpoutput["claims"]:
         return {}
-    for claim in tmpdatapool:
-        if claim != "id":
-            tmpdatapool[claim]["data"] = []
-    for claim in tmpoutput["claims"]:
-        for i in tmpoutput["claims"][claim]:
-            if claim not in exceptions:
-                try:
-                    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"] + ";" + claim + ";" + tmpoutput["id"])
-                except:
-                    pass
-            elif claim == "P414":
-                if i["rank"] != 'deprecated':
-                    startdata = tmpdatapool[claim]["data"]
-                    try:
-                        for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
-                            startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
-                    except:
-                        pass
-                    tmpdatapool[claim]["data"] = startdata
-            elif claim in ["P8525"]:
-                try:
-                    tmpdatapool[claim]["data"] = i["mainsnak"]["datavalue"]["value"]
-                except:
-                    pass
-            elif claim in ["P946"]:
-                try:
-                    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
-                except:
-                    pass
-            elif claim in exceptions:
-                if claim not in ["P414", "P946", "P8525"]:
-                    if "datavalue" in i["mainsnak"]:
+
+    tmpdatapool = deepcopy(datapool)
+
+    for claim, claim_data in tmpoutput["claims"].items():
+        for i in claim_data:
+            try:
+                if claim not in exceptions:
+                    tmpdatapool[claim]['data'].append(f"{i['mainsnak']['datavalue']['value']};{claim};{tmpoutput['id']}")
+                elif claim == "P414":
+                    if i["rank"] != 'deprecated':
+                        startdata = tmpdatapool[claim]["data"]
                         try:
-                            tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"]["id"] + ";" + claim + ";" + tmpoutput["id"])
+                            for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
+                                startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
                         except:
-                            pprint(i)
-                            pprint(claim)
+                            pass
+                        tmpdatapool[claim]["data"] = startdata
+                elif claim == "P8525":
+                    tmpdatapool[claim]["data"] = i["mainsnak"]["datavalue"]["value"]
+                elif claim == "P946":
+                    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
+                elif "datavalue" in i["mainsnak"]:
+                    tmpdatapool[claim]["data"].append(f"{i['mainsnak']['datavalue']['value']['id']};{claim};{tmpoutput['id']}")
+            except:
+                pass
+                #pprint(i)
+                #pprint(claim)
     return tmpdatapool
-
-
-# def query_for_wikidata(wikiid):
-#     tmpdatapool = None
-#     tmpdatapool = datapool.copy()
-#     tmpoutput = collection.find_one({'id': wikiid}, {
-#         "claims": items,
-#         "id": 1,
-#         "_id": 0
-#     })
-# 
-#     if not tmpoutput:
-#         return None
-# 
-#     if len(tmpoutput["claims"]) == 0:
-#         return {}
-# 
-#     for claim, claim_data in tmpoutput["claims"].items():
-#         if claim not in exceptions:
-#             for i in claim_data:
-#                 mainsnak = i.get("mainsnak")
-#                 if mainsnak and "datavalue" in mainsnak:
-#                     value = mainsnak["datavalue"]["value"]
-#                     if claim == "P414" and i.get("rank") != 'deprecated':
-#                         startdata = tmpdatapool[claim]["data"]
-#                         qualifiers = i.get("qualifiers", {})
-#                         if "P249" in qualifiers:
-#                             startdata.extend(qualifiers["P249"][0]["datavalue"]["value"])
-#                         startdata.append(value + ";" + claim + ";" + tmpoutput["id"])
-#                         tmpdatapool[claim]["data"] = startdata
-#                     elif claim in ["P8525"]:
-#                         tmpdatapool[claim]["data"] = value
-#                     elif claim in ["P946"]:
-#                         tmpdatapool[claim]["data"].append(value)
-#                     elif claim not in ["P414", "P946", "P8525"]:
-#                         if isinstance(value, str):
-#                             tmpdatapool[claim]["data"].append(value + ";" + claim + ";" + tmpoutput["id"])
-# 
-#     return tmpdatapool
-
-
 
 def show_document(domain):
     file_path = output_dir + domain.replace('.','') + ".md"
     if os.path.exists(file_path):
         with open(file_path, "r") as file:
-            yaml_data = frontmatter.load(file)
+            yaml_data = frontload(file)
             pprint(yaml_data.metadata)
 
 def write_output_file(domain, data):
-    file_path = output_dir + domain.replace('.','') + ".md"
-    line = "---\n"
+    file_path = os.path.join(output_dir, domain.replace('.', '') + ".md")
+    separator_line = "---\n"
+
     with open(file_path, "w") as file:
-        file.write(line)
-    with open(file_path, "a") as file:
+        file.write(separator_line)
         yaml.dump(data, file, sort_keys=False)
-        file.write(line)
+        file.write(separator_line)
 
 
 def build_document(website):
     output = {}
+    output.update(bulk_array[website])
     output["title"] = website
-    wids = []
-    graphfileloc = f"hugo/static/connections/{website}.json"
-    graphfileloc_rel = f"/connections/{website}.json"
     output["published"] = True
-    if website in wikidata_array:
-        wids = list(set(wikidata_array[website]))
-        output["wikidata_id"] = wids
-        do_graph(main_node=wids, file_out=graphfileloc, collection=collection)
-        output["connections"] = graphfileloc_rel
+    try:
+        output["wikidata_id"]
+    except KeyError:
+        output["wikidata_id"] = False
+
+    if output["wikidata_id"]:
+        wids = output["wikidata_id"]
+        output["connections"] = f"/connections/{website}.json"
+        do_graph(main_node=wids, file_out=f"hugo/static/connections/{website}.json", collection=collection)
         for wid in wids:
             result = query_for_wikidata(wid)
             if result is None:
                 continue
+
             for claim in result:
-                if result[claim]["data"] != []:
+                if result[claim]["data"]:
                     output[result[claim]["label"]] = result[claim]["data"]
 
             isin_id_list = output.get("isin_id", [])
             if isin_id_list:
                 output["isin"] = list(set(f"{i}:{isin_id}" for isin_id in isin_id_list for i in isin_array.get(isin_id, [])))
-
-            #if "isin_id" in output:
-            #    for isin_id in output["isin_id"]:
-            #        try:
-            #            isin_array[isin_id]
-            #            tempset = None
-            #            try:
-            #                output["isin"]
-            #            except:
-            #                output["isin"] = []
-            #            tempset = set(output["isin"])
-            #            # String building
-            #            for i in isin_array[isin_id]:
-            #                tempset.add(f"{i}:{isin_id}")
-            #            output["isin"] = list(tempset)
-            #        except:
-            #            pass
             try:
                 output["osid"] = osid_array[wid]
             except:
                 pass
-    try:
-        output["tosdr"] = tosdr_array[website]
-    except:
-        pass
-
-    try:
-        output["tp_rating"] = trustp_array[website]
-    except:
-        pass
 
     try:
         if tosdr_data_array[str(output["tosdr"])]["rated"]:
@@ -278,44 +205,25 @@ def build_document(website):
         pass
 
     try:
-        output["mbfc"] = mediabias_array[website]
-        mbfc_tags = set([output["mbfc"]["bias"]])
-        for mbfc_tag in output["mbfc"]["questionable"]:
-            mbfc_tags.add(mbfc_tag)
-        output["mbfc_tags"] = list(mbfc_tags)
+        output["mbfc_tags"] = [output["mbfc"]["bias"]] + output["mbfc"].get("questionable", [])
     except:
         pass
+
     try:
-        output["goodonyou"] = goodonyou_array[website]
-    except:
-        pass
-    try:
-        output["trustscore"] = trust_array[website]
-    except:
-        pass
-    try:
-        glassid = glassdoor_array[website]
-        output["glassdoor"] = glassid
-        with open(f"{rootdir}/glassdoor/data_json/" + glassid + ".json", "r") as f:
+        glassid = output["glassdoor"]
+        with open(f"{rootdir}/glassdoor/data_json/{glassid}.json", "r") as f:
             glassdata = json.load(f)
             output["glassdoor_source"] = website
             output["glassdoor_rating"] = glassdata["glasroom_rating"]["ratingValue"]
     except:
         pass
-    try:
-        bcorpid = bcorp_array[website]["slug"]
-        output["bcorp"] = bcorpid
-        if bcorpid:
-            output["bcorp_source"] = bcorp_array[website]["name"]
-            output["bcorp_rating"] = bcorp_array[website]["latestVerifiedScore"]
-    except:
-        pass
+
     write_output_file(website, output)
 
 def prepare():
-    global mediabias_array, tosdr_data_array, trust_array, trustp_array, bcorp_array, osid_array
+    global mediabias_array, tosdr_data_array, trust_array, trustp_array, bcorp_array, osid_array, isin_array, bulk_array
 
-    def process_lookup_file(lookup_file, array, field_name):
+    def process_lookup_file(lookup_file, array, field):
         with open(lookup_file, "r") as f:
             csv_reader = csv.reader(f)
             next(csv_reader)  # Skip the header row, if present
@@ -323,6 +231,40 @@ def prepare():
                 domain = get_domain("http://" + row[0])
                 website_list.add(domain)
                 array[domain] = row[1]
+                bulk_array[domain][field] = row[1]
+
+    def process_lookup_file_json(lookup_file, array):
+        with open(lookup_file, "r") as f:
+            array.update(json.load(f))
+
+    def process_lookup_file_json_webaware(lookup_file, array, field):
+        with open(lookup_file, "r") as f:
+            for i, i_data in json.load(f).items():
+                bulk_array[i][field] = i_data
+
+    # Process GoodOnYou lookup file
+    process_lookup_file(GYLOOKUP, goodonyou_array, "goodonyou")
+
+    # Process TOSDR lookup file
+    process_lookup_file(TSLOOKUP, tosdr_array, "tosdr")
+
+    # Process Glassdoor lookup file
+    process_lookup_file(GDLOOKUP, glassdoor_array, "glassdoor")
+
+    # Process Wikipedia lookup file
+    process_lookup_file(WPLOOKUP, wikipedia_array, "wikipedia")
+
+    # Process MediaBias lookup file
+    process_lookup_file_json_webaware(MBLOOKUP, mediabias_array, "mbfc")
+
+    # TOSDR Data
+    process_lookup_file_json(TSDATAARRAY, tosdr_data_array)
+
+    # Trustscore Data
+    process_lookup_file_json_webaware(TRUSTSCORELOOKUP, trust_array, "trustscore")
+
+    # Trustpilot array
+    process_lookup_file_json_webaware(TRUSTPILOTLOOKUP, trustp_array, "tp_rating")
 
     # Process Wikidata lookup file
     with open(WDLOOKUP, "r") as f:
@@ -331,38 +273,18 @@ def prepare():
             domain = get_domain("http://" + i[0])
             website_list.add(domain)
             wikidata_array.setdefault(domain, []).append(i[1])
+            try:
+                if bulk_array[domain]["wikidata_id"]:
+                    bulk_array[domain]["wikidata_id"] = wikidata_array[domain]
+            except KeyError:
+                bulk_array[domain]["wikidata_id"]=[i[1]]
 
-    # Process MediaBias lookup file
-    with open(MBLOOKUP, "r") as f:
-        mediabias_array = json.load(f)
-
-    # Process Bcorp lookup file
     with open(BCLOOKUP, "r") as f:
-        bcorp_array = json.load(f)
+        for domain, i_data in json.load(f).items():
+            bulk_array[domain]["bcorp"] = i_data["slug"]
+            bulk_array[domain]["bcorp_source"] = i_data["name"]
+            bulk_array[domain]["bcorp_rating"] = i_data["latestVerifiedScore"]
 
-    # Process GoodOnYou lookup file
-    process_lookup_file(GYLOOKUP, goodonyou_array, "goodonyou_array")
-
-    # Process Glassdoor lookup file
-    process_lookup_file(GDLOOKUP, glassdoor_array, "glassdoor_array")
-
-    # Process TOSDR lookup file
-    process_lookup_file(TSLOOKUP, tosdr_array, "tosdr_array")
-
-    # Process Wikipedia lookup file
-    process_lookup_file(WPLOOKUP, wikipedia_array, "wikipedia_array")
-
-    # TOSDR Data
-    with open(TSDATAARRAY, "r") as f:
-        tosdr_data_array = json.load(f)
-
-    # Trustscore Data
-    with open(TRUSTSCORELOOKUP, "r") as f:
-        trust_array = json.load(f)
-
-    # Trustpilot array
-    with open(TRUSTPILOTLOOKUP, "r") as f:
-        trustp_array = json.load(f)
 
     # Process ISIN lookup file
     with open(ISLOOKUP, "r") as f:
@@ -379,15 +301,15 @@ def prepare():
 
 prepare()
 build_pairings_and_datapool()
-testdomain = "meta.com"
+#testdomain = "meta.com"
 #testdomain = "facebook.com"
-build_document(testdomain)
-show_document(testdomain)
-exit()
+#testdomain = "theguardian.com"
+#build_document(testdomain)
+#show_document(testdomain)
 pbar = tqdm(total=len(website_list))
 
 if __name__ == "__main__":
     #domains = ["opendemocracy.net","facebook.com", "meta.com", "twitter.com", "poundland.co.uk", "walleniuslines.com", "foxnews.com"]
     #processed_results = process_domains_parrallel(domains)
     processed_results = process_domains_parrallel(website_list)
-    #processed_results = process_domains_parrallel(list(website_list)[:200])
+    #processed_results = process_domains_parrallel(list(website_list)[:100000])

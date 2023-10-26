@@ -107,34 +107,36 @@ def set_client():
     collection = db['wikidata']
     return collection
 
-def do_graph(main_node, file_out=None, collection=None):
-    if collection is None:
-        collection = set_client()
-    node_depth = 4
+def do_graph(main_node=None, file_out=None, collection=None, node_depth=4):
     gnodes = []
     links = []
-    oldids = set(main_node)
+
     node_one = do_node(main_node, collection)
     gnodes.extend(node_one["nodes"])
     links.extend(node_one["links"])
+
+    oldids = set(main_node)
     ids = set(main_node)
-    for i in range(node_depth):
+    for _ in range(node_depth):
         oldids = set(node["id"] for node in gnodes)
         ids = set(link["target"] for link in links)
         newids = list(ids.difference(oldids))
         newnode = do_node(newids, collection)
         gnodes.extend(newnode["nodes"])
         links.extend(newnode["links"])
-    nodes = gnodes
+
     graph = {
-        "nodes": nodes,
+        "nodes": gnodes,
         "links": links
     }
+
     if file_out:
         with open(file_out, "w") as f:
             json.dump(graph, f, indent=4)
+        return True
     else:
         pprint(len(graph["links"]))
+
     return graph
 
 if __name__ == "__main__":

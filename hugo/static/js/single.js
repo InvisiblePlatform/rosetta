@@ -221,32 +221,152 @@ const keyconversion = {
     "l": 'glassdoor',
     "g": 'goodonyou',
     "i": 'isin',
-    "m": 'mbfc',
+    "m": 'mbfc-header',
     "o": 'osid',
     // "a": 'polalignment',
     // "p": 'polideology',
     "y": 'yahoo',
-    "P": 'tosdr-link'
+    "P": 'tosdr-link',
+    "s": 'trust-scam',
+    "t": 'trust-pilot',
     // "w": 'wikidata_id'
 }
 
+const availableNotifications = "blPtsm";
+const defaultUserPreferences = {
+   "l": { type: "range", min: 0, max: 10 },
+   "b": { type: "range", min: 0, max: 150 },
+   "P": { type: "range", min: 1, max: 6 },
+   "s": { type: "range", min: 0, max: 100 },
+   "t": { type: "range", min: 0, max: 100 },
+   "m": { type: "label", labels: [ "conspiracy-pseudoscience", "left",
+"left-center", "pro-science", "right", "right-center", "satire",
+"censorship", "conspiracy", "failed-fact-checks", "fake-news", "false-claims",
+"hate", "imposter", "misinformation", "plagiarism", "poor-sourcing", "propaganda", "pseudoscience"
+  ] },
+};
+let userPreferences = {}
+let buttonState = {}
+function toggleButton(buttonId) {
+  buttonState[buttonId] = !buttonState[buttonId];
+  document.getElementById(`label-${buttonId}`).classList.toggle("pushedButton");
+}
+
+
 let notificationDialog = function(id){
-    console.log(id.target.id)
+    const loadedPreferences = JSON.parse(localStorage.userPreferences) || {};
+    //const loadedPreferences = {};
+    const mergedPreferences = { ...defaultUserPreferences, ...loadedPreferences };
+    localStorage.setItem("userPreferences", JSON.stringify(mergedPreferences));
+    userPreferences = mergedPreferences;
+
+    notid = id.target.id.replace("-dialog","")
+    console.log(notid)
+    defaults = defaultUserPreferences[notid]
     floatDiag = document.createElement("div");
     floatDiag.id = "floatDiag"
     floatDiag.style.height = "400px";
-    floatDiag.style.width = "400px";
+    floatDiag.style.width = "80vw";
     floatDiag.style.position = "fixed";
     floatDiag.style.zIndex = "10";
     floatDiag.style.top = "calc(50vh - 200px)";
-    floatDiag.style.left = "calc(50vw - 200px)";
+    floatDiag.style.left = "10vw";
     floatDiag.style.backgroundColor = "var(--c-secondary-background)";
-    floatDiag.textContent = `${id.target.id}`
+    if (defaults.type == "range"){
+        floatDiag.textContent = `${id.target.id} min:${defaults.min} max:${defaults.max}`
+        floatDiag.innerHTML = `
+        <div id="diag_type">${defaults.type}</div><br/>
+        <div id="diag_tag">${notid}</div><br/>
+        <div class="rangeslider">
+            <input class="min" name="range_1" type="range" min="${defaults.min}" max="${defaults.max}" value="${userPreferences[notid].min}" />
+            <input class="max" name="range_1" type="range" min="${defaults.min}" max="${defaults.max}" value="${userPreferences[notid].max}" />
+            <span class="range_min light left">${userPreferences[notid].min}</span>
+            <span class="range_max light left">${userPreferences[notid].max}</span>
+        </div>`
+    } else {
+        let htmlString = "";
+        buttonState = {};
+        defaults.labels.forEach((str) => {
+          // Use backticks to create a template string with the button HTML
+          if (userPreferences[notid]["labels"].includes(str)){
+            htmlString += `<button id="label-${str}" onclick="toggleButton('${str}')" class="pushedButton">${str}</button>`;
+            buttonState[str] = true;
+          } else {
+            htmlString += `<button id="label-${str}" onclick="toggleButton('${str}')">${str}</button>`;
+            buttonState[str] = false;
+          }
+          
+        });
+
+        floatDiag.innerHTML = `
+        <div id="diag_type">${defaults.type}</div><br/>
+        <div id="diag_tag">${notid}</div><br/>
+        <div>${id.target.id}</div>
+        ${htmlString}
+        `
+    }
     body.appendChild(floatDiag);
-    floatDiag.onclick = document.getElementById("floatDiag").remove;
+    (function() {
+
+        function addSeparator(nStr) {
+            nStr += '';
+            var x = nStr.split('.');
+            var x1 = x[0];
+            var x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + '.' + '$2');
+            }
+            return x1 + x2;
+        }
+
+        function rangeInputChangeEventHandler(e){
+            var rangeGroup = $(this).attr('name'),
+                minBtn = $(this).parent().children('.min'),
+                maxBtn = $(this).parent().children('.max'),
+                range_min = $(this).parent().children('.range_min'),
+                range_max = $(this).parent().children('.range_max'),
+                minVal = parseInt($(minBtn).val()),
+                maxVal = parseInt($(maxBtn).val()),
+                origin = e.originalEvent.target.className;
+
+            if(origin === 'min' && minVal > maxVal-1){
+                $(minBtn).val(maxVal-1);
+            }
+            var minVal = parseInt($(minBtn).val());
+            $(range_min).html(addSeparator(minVal));
+
+
+            if(origin === 'max' && maxVal-1 < minVal){
+                $(maxBtn).val(1+ minVal);
+            }
+            var maxVal = parseInt($(maxBtn).val());
+            $(range_max).html(addSeparator(maxVal));
+        }
+
+     $('input[type="range"]').on( 'input', rangeInputChangeEventHandler);
+})();
+
 }
 
-const availableNotifications = "blP";
+let notificationCloseAndSave = function(){
+    floatDiag = document.getElementById("floatDiag");
+    diagType = document.getElementById("diag_type").textContent;
+    diagTag = document.getElementById("diag_tag").textContent;
+    if (diagType == "range"){
+        newMin = floatDiag.getElementsByClassName("range_min")[0].textContent;
+        newMax = floatDiag.getElementsByClassName("range_max")[0].textContent;
+        userPreferences[diagTag].min = parseInt(newMin);
+        userPreferences[diagTag].max = parseInt(newMax);
+    } else {
+        const activeButtons = defaultUserPreferences[diagTag].labels.filter((buttonId) => buttonState[buttonId]);
+        userPreferences[diagTag].labels = activeButtons;
+    }
+    localStorage.setItem("userPreferences", JSON.stringify(userPreferences));
+    send_message("IVNotificationsPreferences", userPreferences)
+    floatDiag.remove()
+}
+
 let notificationsDraw = function(){
     if (localStorage.IVNotifications == "true"){
         tagsEnabled = localStorage.IVNotificationsTags || '';
@@ -524,6 +644,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 });
 
+
 function toggleNotifications(value) {
   if (localStorage.IVNotifications === value) return;
 
@@ -570,6 +691,10 @@ function toggleKeepOnScreen() {
 var debugModeCount = 0
 document.addEventListener('mouseup', function (event) {
   if (event.target.matches("html")) return;
+  if (event.target.matches("#floatDiag")) {
+      notificationCloseAndSave()
+      return
+  };
 
   if (event.target.matches('#Invisible-boycott')) {
     send_message("IVBoycott", "please");
@@ -614,8 +739,10 @@ document.addEventListener('mouseup', function (event) {
         toggleKeepOnScreen();
     }
     
-    if (event.target.matches('#notificationsCache'))
+    if (event.target.matches('#notificationsCache')){
       send_message("IVNotificationsCacheClear", "please");
+      localStorage.setItem("userPreferences", JSON.stringify(defaultUserPreferences));
+    }
 
     if (event.target.matches('#backButton')) {
       send_message("IVClicked", event.target.parentElement.id);
@@ -648,6 +775,7 @@ var defaultOrder = [
     "glassdoor", 
     "similar-site-wrapper", 
     "social-wikidata", 
+    "trust-scam",
 ];
 var translate = {
 "wikipedia-first-frame": "w.wikipedia",
@@ -670,11 +798,19 @@ var translate = {
 "glassdoor":"glassdoor.title",
 "similar-site-wrapper": "similar.title",
 "social-wikidata": "w.socialmedia",
+"trust-scam": "trustsc.title",
 };
 function recalculateList(){
   var propertyOrder = localStorage.getItem("IVListOrder") ? localStorage.getItem("IVListOrder").split('|') : defaultOrder;
   let target = document.getElementById("sortlist")
   let items = target.getElementsByTagName("li"), current = null;
+  const missingItems = defaultOrder.filter(item => !propertyOrder.includes(item));
+
+  // Add missing items to IVListOrder
+  propertyOrder = propertyOrder.concat(missingItems);
+
+  // Update localStorage with the modified IVListOrder
+  localStorage.setItem("IVListOrder", propertyOrder.join('|'));
   for (let x = 0; x < propertyOrder.length; x++){
     let value = propertyOrder[x];
     if (items[x] !== undefined){

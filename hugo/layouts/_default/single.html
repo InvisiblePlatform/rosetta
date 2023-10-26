@@ -29,6 +29,7 @@
 <div id="wikidataid" style="display:none;">Q{{- index (sort $ids.Values "value" "asc") 0 -}}</div>
 {{- end -}}
 {{- if isset .Params "wikidata_id" -}}
+{{- if ne .Params.wikidata_id false }}
 {{- $ids := newScratch -}}
 {{- $ids.Add "count" 0 -}}
 {{- range .Params.wikidata_id -}}
@@ -39,6 +40,7 @@
 {{- $ids.Delete "count" -}}
 <div id="wikidataid" style="display:none;">Q{{- index (sort $ids.Values "value" "asc") 0 -}}</div>
  
+{{- end -}}
 {{- end -}}
 <section id="titlebar">
 <button id="roundelButton" type="button" onclick="spinRoundel()"></button>
@@ -92,6 +94,21 @@
 {{- if isset .Params "polideology" -}}{{- range .Params.polideology -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "polalignment" -}}{{- range .Params.polalignment -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "osid" -}}{{- partial "opensecrets.html" .Params.osid .Params.osid -}}{{- end -}}
+{{- if isset .Params "trustscore" -}}
+{{- $trust := .Params.trustscore -}}
+<section id="trust-scam" class="contentSection">
+    <h2 class="sectionTitle"><div data-i18n="trustsc.title">Trust Scam</div><div class="subname">({{- .Params.trustscore.domain -}})</div></h2>
+    <div class="pie hideTilExpanded"></div>
+    <score class="biaslink">{{- $trust.score -}}</score>
+    <div class="scoreText">
+        <div>
+            <h3>{{- $trust.score -}}</h3>
+            <p data-i18n="trustsc.{{- $trust.rating -}}">{{- $trust.rating -}}</p>
+            <a target="_blank" class="source blanksource" href="https://trustscam.com/{{- $trust.domain -}}">TRUSTSCAM</a>
+        </div>
+    </div>
+</section>
+{{- end -}}
 
 {{- $socialParams := slice "twittername" "subreddit" "facebookid" "facebookpage" "instagramid" "youtubechannelid" "truthsocial" "parleruser" "gabuser" "soundcloud" "tumblr" "medium" "telegram" "mastodon" "patreon" "reddituser" "twitch" "tiktok" "officialblog" "emailaddress" -}}
 {{- $paramsSlice := slice -}}
