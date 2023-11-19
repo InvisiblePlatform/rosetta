@@ -34,6 +34,7 @@ hugo/data/wikidata/wikidatacache/
 hugo/data/wikipedia/pages/
 hugo/data/wikipedia/wikicard/
 hugo/data/yahoo/
+hugo/static/ds/*/*
 hugo/public
 hugo/static/connections/
 hugo/sync.sh

@@ -24,7 +24,8 @@ keyconversion = {
     'ticker': "y",
     'tosdr_rating': "P",
     'wikidata_id': "w",
-    'tp_rating': "t"
+    'tp_rating': "t",
+    'trustscore': "s"
 }
 
 def process_domain(domain):

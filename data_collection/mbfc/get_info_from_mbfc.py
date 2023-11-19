@@ -39,6 +39,7 @@ for source in reversed(data["sources"]):
         source["description"] = ""
 
     source["stub"] = stub
+    source
 
     with open("./entries/" + stub + ".json", "w") as f:
         json.dump(source, f)

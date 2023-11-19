@@ -252,10 +252,13 @@ function toggleButton(buttonId) {
   document.getElementById(`label-${buttonId}`).classList.toggle("pushedButton");
 }
 
-
+let diagOpen = false;
 let notificationDialog = function(id){
-    const loadedPreferences = JSON.parse(localStorage.userPreferences) || {};
-    //const loadedPreferences = {};
+    if (diagOpen) return;
+    diagOpen = true;
+    var loadedPreferences = {};
+    if (localStorage.userPreferences)
+        loadedPreferences = JSON.parse(localStorage.userPreferences) || {};
     const mergedPreferences = { ...defaultUserPreferences, ...loadedPreferences };
     localStorage.setItem("userPreferences", JSON.stringify(mergedPreferences));
     userPreferences = mergedPreferences;
@@ -265,13 +268,6 @@ let notificationDialog = function(id){
     defaults = defaultUserPreferences[notid]
     floatDiag = document.createElement("div");
     floatDiag.id = "floatDiag"
-    floatDiag.style.height = "400px";
-    floatDiag.style.width = "80vw";
-    floatDiag.style.position = "fixed";
-    floatDiag.style.zIndex = "10";
-    floatDiag.style.top = "calc(50vh - 200px)";
-    floatDiag.style.left = "10vw";
-    floatDiag.style.backgroundColor = "var(--c-secondary-background)";
     if (defaults.type == "range"){
         floatDiag.textContent = `${id.target.id} min:${defaults.min} max:${defaults.max}`
         floatDiag.innerHTML = `
@@ -281,8 +277,9 @@ let notificationDialog = function(id){
             <input class="min" name="range_1" type="range" min="${defaults.min}" max="${defaults.max}" value="${userPreferences[notid].min}" />
             <input class="max" name="range_1" type="range" min="${defaults.min}" max="${defaults.max}" value="${userPreferences[notid].max}" />
             <span class="range_min light left">${userPreferences[notid].min}</span>
-            <span class="range_max light left">${userPreferences[notid].max}</span>
-        </div>`
+            <span class="range_max light right">${userPreferences[notid].max}</span>
+        </div>
+        <div id="floatDiagSave">Save and Close</div>`
     } else {
         let htmlString = "";
         buttonState = {};
@@ -303,6 +300,7 @@ let notificationDialog = function(id){
         <div id="diag_tag">${notid}</div><br/>
         <div>${id.target.id}</div>
         ${htmlString}
+        <div id="floatDiagSave">Save and Close</div>
         `
     }
     body.appendChild(floatDiag);
@@ -350,6 +348,7 @@ let notificationDialog = function(id){
 }
 
 let notificationCloseAndSave = function(){
+    diagOpen = false;
     floatDiag = document.getElementById("floatDiag");
     diagType = document.getElementById("diag_type").textContent;
     diagTag = document.getElementById("diag_tag").textContent;
@@ -691,7 +690,8 @@ function toggleKeepOnScreen() {
 var debugModeCount = 0
 document.addEventListener('mouseup', function (event) {
   if (event.target.matches("html")) return;
-  if (event.target.matches("#floatDiag")) {
+  if (event.target.matches("#floatDiag")) return;
+  if (event.target.matches("#floatDiagSave")) {
       notificationCloseAndSave()
       return
   };
@@ -737,6 +737,10 @@ document.addEventListener('mouseup', function (event) {
         toggleDarkMode();
     } else if (event.target.parentElement.parentElement.matches('#onScreen')) {
         toggleKeepOnScreen();
+    }
+
+    if (event.target.matches('#indexRefresh')){
+      send_message("IVIndexRefresh", "please");
     }
     
     if (event.target.matches('#notificationsCache')){
@@ -817,16 +821,19 @@ function recalculateList(){
     items[x].setAttribute("data-i18n", translate[value]);
     if (value == "networkgraph"){
         if (document.getElementById("graph-box")){
-            document.getElementById("graph-box").style.order = x + 5;
+            //document.getElementById("graph-box").style.order = x + 5;
+            [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#graph-box').style.order = x + 5;
         }
         if (document.getElementById("wikipedia-infocard-frame")){
-            document.getElementById("wikipedia-infocard-frame").style.order = x + 5;
+            // document.getElementById("wikipedia-infocard-frame").style.order = x + 5;
+            [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#wikipedia-infocard-frame').style.order = x + 5;
             document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("wikipedia-infocard-frame")`);
         }
     }
     if (document.getElementById(value)){
         thiselement = document.getElementById(value);
-        thiselement.style.order = x + 5;
+        // thiselement.style.order = x + 5;
+        [...document.styleSheets[3].cssRules].find(y=> y.selectorText==`#${value}`).style.order= x + 5;
         if (mode == 1){
             if (value != "carbon") thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
             // console.log("mode 1");
@@ -867,7 +874,6 @@ function slist (target) {
                   document.querySelectorAll(".notificationBell").forEach(function(x){ 
                       if (x.getElementsByTagName("input")[0].checked)
                           tagList += x.id.replace(/-bell/,"");
-                      console.log(tagList)
                   })
                   // localStorage.IVNotificationsTags = tagList;
                   send_message("IVNotificationsTags", tagList);

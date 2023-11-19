@@ -2516,3 +2516,51 @@ section#goodonyou.contentSection div.twoCharts {
     flex-direction: row;
     width: 100%;
 }
+
+#floatDiag {
+    height: 400px;
+    width: 80vw;
+    position: fixed;
+    z-index: 10;
+    top: calc(50vh - 200px);
+    left: 10vw;
+    padding: 16px;
+    border: 1px solid var(--c-text-light);
+    border-radius: 8px;
+    background-color: var(--c-secondary-background);
+    outline: #000000dd 100vh solid;
+}
+
+#floatDiagSave{
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    border: 1px solid;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+
+#wikipedia-first-frame{ order: unset; }
+#networkgraph{ order: unset; } 
+#small-wikidata{ order: unset; }
+#mbfc-header{ order: unset; } 
+#trust-pilot{ order: unset; }
+#yahoo{ order: unset; } 
+#opensec{ order: unset; } 
+#carbon{ order: unset; } 
+#isin-lct{ order: unset; } 
+#isin-fin{ order: unset; } 
+#isin-dig{ order: unset; }
+#isin-nat{ order: unset; } 
+#isin-fas{ order: unset; } 
+#isin-ssd{ order: unset; } 
+#goodonyou{ order: unset; } 
+#bcorp{ order: unset; } 
+#tosdr-link{ order: unset; } 
+#glassdoor{ order: unset; } 
+#similar-site-wrapper{ order: unset; } 
+#social-wikidata{ order: unset; } 
+#trust-scam{ order: unset; }
+#graph-box{ order: unset; }
+#wikipedia-infocard-frame{ order: unset; }

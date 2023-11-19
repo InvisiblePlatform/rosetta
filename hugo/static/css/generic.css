@@ -423,6 +423,8 @@ input[type='range']:nth-child(1)::-webkit-slider-thumb{
 }
 .rangeslider input{
     position: absolute;
+    width: 100%;
+
 }
 .rangeslider{
     position: absolute;
