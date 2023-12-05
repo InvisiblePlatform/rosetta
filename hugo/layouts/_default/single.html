@@ -59,14 +59,8 @@
 <span class="blankForSmall" style="order:0;"> </span>
 {{- partialCached "tools.html" .Params.title .Params.title -}}
 {{- if isset .Params "connections" -}}{{- partialCached "d3-graph.html" .Params.connections .Params.connections -}}{{- end -}}
-{{- if isset .Params "goodonyou" -}}{{- partialCached "goodonyou.html" .Params.goodonyou .Params.goodonyou -}}{{- end -}}
-{{- if isset .Params "glassdoor" -}}{{- partialCached "glassdoor.html" .Params.glassdoor .Params.glassdoor -}}{{- end -}}
-{{- if isset .Params "bcorp" -}}{{- partialCached "bcorp.html" .Params.bcorp .Params.bcorp -}}{{- end -}}
-{{- if isset .Params "ticker" -}}{{- range .Params.ticker -}}{{- partialCached "yahoo.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "isin" -}}{{- range .Params.isin -}}{{- partialCached "isin.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "isin_id" -}}{{- range .Params.isin_id -}}{{- partialCached "isin-id.html" . . -}}{{- end -}}{{- end -}}
-{{- partialCached "trustpilot.html" .Params.title .Params.title -}}
-{{- if isset .Params "mbfc" -}}
+{{- if isset .Params "tickera" -}}{{- range .Params.ticker -}}{{- partialCached "yahoo.html" . . -}}{{- end -}}{{- end -}}
+{{- if isset .Params "mbfca" -}}
 <!-- MediaBiasFactCheck -->
 {{- if isset .Params.mbfc "bias" -}}
 {{- $bias := .Params.mbfc.bias -}}
@@ -92,11 +86,9 @@
 </section>
 {{- end -}}
 {{- end -}}
-{{- with .Params.tosdr -}}{{- partialCached "tosdr.html" . .  -}}{{- end -}}
 {{- if isset .Params "polideology" -}}{{- range .Params.polideology -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "polalignment" -}}{{- range .Params.polalignment -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "osid" -}}{{- partial "opensecrets.html" .Params.osid .Params.osid -}}{{- end -}}
-{{- if isset .Params "trustscore" -}}
+{{- if isset .Params "trustscorea" -}}
 {{- $trust := .Params.trustscore -}}
 <section id="trust-scam" class="contentSection">
     <h2 class="sectionTitle"><div data-i18n="trustsc.title">Trust Scam</div><div class="subname">({{- .Params.trustscore.domain -}})</div></h2>
@@ -139,7 +131,6 @@
 {{- else -}}
 {{- end -}}
 
-{{- partialCached "similar.html" .Params.title .Params.title -}}
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 <section id="Invisible-vote" class="hideInSmall hide">

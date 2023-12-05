@@ -122,7 +122,7 @@
     "APA Corporation": {
         "Company Name": "APA Corporation",
         "ISIN": "US0374111054",
-        "WBA_ID": "UNK_004"
+        "WBA_ID": "PT_00121"
     },
     "APG Group (ABP and Bouwnijverheid (bpfBOUW))": {
         "Company Name": "APG Group (ABP and Bouwnijverheid (bpfBOUW))",
@@ -2807,7 +2807,7 @@
     "Coca-Cola Company": {
         "Company Name": "Coca-Cola Company",
         "ISIN": "",
-        "WBA_ID": "UNK_066"
+        "WBA_ID": "PT_00447"
     },
     "Codelco": {
         "Company Name": "Codelco",
@@ -4852,7 +4852,7 @@
     "HMM": {
         "Company Name": "HMM",
         "ISIN": "KR7011200003",
-        "WBA_ID": "UNK_120"
+        "WBA_ID": "PT_00879"
     },
     "HOK Group Inc": {
         "Company Name": "HOK Group Inc",
@@ -4862,7 +4862,7 @@
     "HP": {
         "Company Name": "HP",
         "ISIN": "",
-        "WBA_ID": "UNK_121"
+        "WBA_ID": "PT_02166"
     },
     "HPE": {
         "Company Name": "HPE",
@@ -5052,7 +5052,7 @@
     "Hewlett Packard Enterprise": {
         "Company Name": "Hewlett Packard Enterprise",
         "ISIN": "",
-        "WBA_ID": "UNK_121"
+        "WBA_ID": "PT_02166"
     },
     "High Liner Foods": {
         "Company Name": "High Liner Foods",
@@ -5702,7 +5702,7 @@
     "Jacobs Douwe Egberts": {
         "Company Name": "Jacobs Douwe Egberts",
         "ISIN": "",
-        "WBA_ID": "UNK_141"
+        "WBA_ID": "PT_00945"
     },
     "Jacobs Solutions": {
         "Company Name": "Jacobs Solutions",
@@ -7512,7 +7512,7 @@
     "Naver": {
         "Company Name": "Naver",
         "ISIN": "KR7035420009",
-        "WBA_ID": "UNK_194"
+        "WBA_ID": "PT_01239"
     },
     "Nedbank Group": {
         "Company Name": "Nedbank Group",
@@ -8017,7 +8017,7 @@
     "Ocean Network Express": {
         "Company Name": "Ocean Network Express",
         "ISIN": "",
-        "WBA_ID": "UNK_204"
+        "WBA_ID": "PT_02255"
     },
     "Ocean Spray Cranberries": {
         "Company Name": "Ocean Spray Cranberries",
@@ -9097,7 +9097,7 @@
     "Royal Dutch Shell": {
         "Company Name": "Royal Dutch Shell",
         "ISIN": "GB00B03MLX29",
-        "WBA_ID": "UNK_232"
+        "WBA_ID": "PT_01587"
     },
     "Royal Golden Eagle": {
         "Company Name": "Royal Golden Eagle",
@@ -10927,7 +10927,7 @@
     "Tokyo Electron": {
         "Company Name": "Tokyo Electron",
         "ISIN": "",
-        "WBA_ID": "UNK_274"
+        "WBA_ID": "PT_01793"
     },
     "Tokyo Seika": {
         "Company Name": "Tokyo Seika",
@@ -10997,7 +10997,7 @@
     "Total": {
         "Company Name": "Total",
         "ISIN": "FR0000120271",
-        "WBA_ID": "UNK_276"
+        "WBA_ID": "PT_01808"
     },
     "TotalEnergies": {
         "Company Name": "TotalEnergies",

@@ -2,10 +2,31 @@ import json
 from pymongo import MongoClient
 import sys
 from pprint import pprint
+from tld import get_tld
+import csv
+
+rootdir = "data_collection"
+WDLOOKUP = f"{rootdir}/wikidata/website_id_list.csv"
+wikidata_array = {}
+
+def get_domain(url):
+    parsed_url = get_tld(url, as_object=True)
+    domain = parsed_url.subdomain + parsed_url.fld
+    if parsed_url.subdomain in ["about", "shop", "m"]:
+        domain = parsed_url.fld
+    return domain
+
+# Process Wikidata lookup file
+with open(WDLOOKUP, "r") as f:
+    wikidata_file = csv.reader(f)
+    for i in wikidata_file:
+        domain = get_domain("http://" + i[0])
+        wikidata_array.setdefault(i[1], []).append(domain)
 
 graph_pairings = [
     {"id":"P1037","in":"Directed_By","out":"Director_of"},
     {"id":"P1040","in":"Film_Editor","out":"Film_Editor_of"},
+    {"id":"P169","in":"Chief_Executive_Officer","out":"Chief_Executive_Officer"},
     {"id":"P112","in":"Founded_by","out":"Founder_of"},
     {"id":"P123","in":"Published_by","out":"Publisher_of"},
     {"id":"P127","in":"Owned_by","out":"Owner_of" },
@@ -46,6 +67,7 @@ def do_node(ids, collection):
         "ar": {"value":1}, "fr": {"value":1}, "de": {"value":1}, "hi": {"value":1}
     },
     "claims": {
+        "P169": {"mainsnak.datavalue.value.id": 1},
         "P1037": {"mainsnak.datavalue.value.id": 1}, "P1040": {"mainsnak.datavalue.value.id": 1},
         "P112":  {"mainsnak.datavalue.value.id": 1}, "P123":  {"mainsnak.datavalue.value.id": 1},
         "P127":  {"mainsnak.datavalue.value.id": 1}, "P1431": {"mainsnak.datavalue.value.id": 1},
@@ -78,6 +100,7 @@ def do_node(ids, collection):
             node_groups = []
         nodelist.append(node["id"])
         nullname = node["labels"]["en"]["value"] if "en" in node["labels"] else "null"
+        defSite = wikidata_array.get(node["id"], [None])[0]
         outnodes.append({
                 "id": node["id"],
                 "label":   nullname,
@@ -96,6 +119,7 @@ def do_node(ids, collection):
                 "arwiki": node["sitelinks"]["arwiki"]["title"] if "arwiki" in node["sitelinks"] else "null", 
                 "frwiki": node["sitelinks"]["frwiki"]["title"] if "frwiki" in node["sitelinks"] else "null", 
                 "dewiki": node["sitelinks"]["dewiki"]["title"] if "dewiki" in node["sitelinks"] else "null", 
+                "defSite": defSite.replace(".","") if defSite else "null",
                 "groups": node_groups
         })
 
@@ -110,6 +134,12 @@ def set_client():
 def do_graph(main_node=None, file_out=None, collection=None, node_depth=4):
     gnodes = []
     links = []
+
+    if collection is None:
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client['rop']
+        collection = db['wikidata']
+        node_depth=1
 
     node_one = do_node(main_node, collection)
     gnodes.extend(node_one["nodes"])
@@ -135,10 +165,10 @@ def do_graph(main_node=None, file_out=None, collection=None, node_depth=4):
             json.dump(graph, f, indent=4)
         return True
     else:
-        pprint(len(graph["links"]))
+        pprint(graph)
 
     return graph
 
 if __name__ == "__main__":
-    do_graph(["Q118398"])
+    do_graph(main_node=["Q118398"])
     #do_graph(["Q355", "Q380"])

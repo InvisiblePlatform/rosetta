@@ -18,6 +18,9 @@ data_collection/opensecrets/output_cleaned/*.json
 data_collection/tosdr/*.json
 data_collection/tosdr/*.list
 data_collection/wikipedia/*.csv
+data_collection/yahoo/*.json
+data_collection/yahoo/*.csv
+data_collection/*/entities/*.json
 hugo/.*
 hugo/cache/
 hugo/content-backup/
