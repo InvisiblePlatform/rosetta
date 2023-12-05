@@ -18,7 +18,7 @@
 <script src="/js/module-loading.js" defer></script>
 <script src="/js/translations.js" defer></script>
 
-<div id="location-url" style="display:none;">/ds/core/{{ path.Base .RelPermalink }}.json</div>
+<div id="location-url" style="display:none;">/db/{{ path.Base .RelPermalink }}/index.json</div>
 {{- if isset .Params "wikidataid" -}}
 {{- $ids := newScratch -}}
 {{- $ids.Add "count" 0 -}}
@@ -60,50 +60,8 @@
 {{- partialCached "tools.html" .Params.title .Params.title -}}
 {{- if isset .Params "connections" -}}{{- partialCached "d3-graph.html" .Params.connections .Params.connections -}}{{- end -}}
 {{- if isset .Params "tickera" -}}{{- range .Params.ticker -}}{{- partialCached "yahoo.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "mbfca" -}}
-<!-- MediaBiasFactCheck -->
-{{- if isset .Params.mbfc "bias" -}}
-{{- $bias := .Params.mbfc.bias -}}
-<section id="mbfc-header" class="contentSection">
-    <h2 class="sectionTitle"><div data-i18n="mbfc.title">Media Bias</div><div class="subname">({{- .Params.mbfc.name -}})</div></h2>
-    <div class="pie hideTilExpanded"></div>
-    <score class="biaslink" data-i18n="bias.{{- $bias -}}">{{- $bias | title -}}</score>
-    <div class="scoreText">
-        <div>
-            <h3 data-i18n="bias.{{- $bias -}}">{{- $bias | title -}}</h3>
-            {{- if isset .Params.mbfc "description" -}}
-            <p>{{- .Params.mbfc.description -}}</p>
-            <br />{{- end -}}
-            <p><b data-i18n="bias.popularity">Popularity:</b> {{- .Params.mbfc.popularity -}}</p>
-            <p><b data-i18n="bias.credibility">Credibility:</b> {{- .Params.mbfc.credibility | title -}}</p>
-            <p><b data-i18n="bias.reporting">Reporting:</b> {{- .Params.mbfc.reporting | title -}}</p>
-            {{- if .Params.mbfc.questionable -}}
-            <p><b data-i18n="bias.questionable">Reasons for Questionable:</b> {{- delimit .Params.mbfc.questionable ", " | title -}}</p>
-            {{- end -}}
-            <a target="_blank" class="source blanksource" href="{{- .Params.mbfc.url -}}">MEDIA BIAS FACT CHECKER</a>
-        </div>
-    </div>
-</section>
-{{- end -}}
-{{- end -}}
 {{- if isset .Params "polideology" -}}{{- range .Params.polideology -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "polalignment" -}}{{- range .Params.polalignment -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "trustscorea" -}}
-{{- $trust := .Params.trustscore -}}
-<section id="trust-scam" class="contentSection">
-    <h2 class="sectionTitle"><div data-i18n="trustsc.title">Trust Scam</div><div class="subname">({{- .Params.trustscore.domain -}})</div></h2>
-    <div class="pie hideTilExpanded"></div>
-    <score class="biaslink">{{- $trust.score -}}</score>
-    <div class="scoreText">
-        <div>
-            <h3>{{- $trust.score -}}</h3>
-            <p data-i18n="trustsc.{{- $trust.rating -}}">{{- $trust.rating -}}</p>
-            <a target="_blank" class="source blanksource" href="https://trustscam.com/{{- $trust.domain -}}">TRUSTSCAM</a>
-        </div>
-    </div>
-</section>
-{{- end -}}
-
 {{- $socialParams := slice "twittername" "subreddit" "facebookid" "facebookpage" "instagramid" "youtubechannelid" "truthsocial" "parleruser" "gabuser" "soundcloud" "tumblr" "medium" "telegram" "mastodon" "patreon" "reddituser" "twitch" "tiktok" "officialblog" "emailaddress" -}}
 {{- $paramsSlice := slice -}}
 

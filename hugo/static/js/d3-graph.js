@@ -63,6 +63,25 @@ function removeSectionsWithMatchingId() {
   });
 }
 
+var currentDomain = window.location.protocol + "//" + window.location.host;
+function getDocumentIndex(document){
+    $.ajax({
+        url: `${currentDomain}/db/${document}/index.json`,
+        type: 'GET',
+    }).done(function(data) {
+        console.log(data)
+        if ('connections' in data){
+            $.ajax({
+                url: `${currentDomain}${data.connections}`,
+                type: 'GET',
+            }).done(function(connections_data) {
+                console.log(connections_data)
+            }
+            )
+        }
+    })
+}
+
 wikiframeclose.onclick = function() {
     wikiframe.style.display = "none";
     wikiframeclose.style.display = "none";
@@ -451,7 +470,9 @@ d3.json(graphLoc).then(function(graph) {
             console.log(i)
             if (wikidataWiki == "null") return
             if (wikidataWiki.includes("wikipedia.org")) wikidataWiki = wikidataWiki.split('/').slice(4).join("/");
-
+            if (i["defSite"] != "null"){
+                getDocumentIndex(i["defSite"])
+            }
             d.preventDefault();
             // console.log("clicking on", this, wikidataWiki);
             let requestURL = wikichoice + "/api/rest_v1/page/html/" + wikidataWiki + "?redirect=true"
