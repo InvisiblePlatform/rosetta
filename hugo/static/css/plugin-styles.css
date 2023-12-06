@@ -484,16 +484,29 @@ g>path {
     z-index: 5;
 }
 
+g>line {
+    z-index: 5;
+    stroke: var(--c-border-color);
+}
+
 .nodes rect {
     stroke-width: 1.5px;
     paint-order: stroke fill;
     z-index: 5;
 }
 
-.nodes text {
+g>text {
     paint-order: stroke fill;
     z-index: 5;
     font-family: "Roboto Mono";
+    opacity: 0.2;
+    stroke: solid 1px black;
+    fill: white;
+}
+g:hover > text {
+    opacity: 1;
+    z-index: 10;
+    font-size: 2em;
 }
 
 #key {

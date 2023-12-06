@@ -131,7 +131,7 @@ def set_client():
     collection = db['wikidata']
     return collection
 
-def do_graph(main_node=None, file_out=None, collection=None, node_depth=4):
+def do_graph(main_node=None, file_out=None, collection=None, node_depth=2):
     gnodes = []
     links = []
 

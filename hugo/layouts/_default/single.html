@@ -59,7 +59,6 @@
 <span class="blankForSmall" style="order:0;"> </span>
 {{- partialCached "tools.html" .Params.title .Params.title -}}
 {{- if isset .Params "connections" -}}{{- partialCached "d3-graph.html" .Params.connections .Params.connections -}}{{- end -}}
-{{- if isset .Params "tickera" -}}{{- range .Params.ticker -}}{{- partialCached "yahoo.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "polideology" -}}{{- range .Params.polideology -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- if isset .Params "polalignment" -}}{{- range .Params.polalignment -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
 {{- $socialParams := slice "twittername" "subreddit" "facebookid" "facebookpage" "instagramid" "youtubechannelid" "truthsocial" "parleruser" "gabuser" "soundcloud" "tumblr" "medium" "telegram" "mastodon" "patreon" "reddituser" "twitch" "tiktok" "officialblog" "emailaddress" -}}

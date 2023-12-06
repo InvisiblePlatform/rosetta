@@ -26,7 +26,7 @@ def process_json_file(json_filename):
         #    return
         sites = list(set([name.replace("www.","") for name in clean.get("name")["referring"]]))
         new_variables = {
-            "location": f"tosdr/{slug}",
+            "location": f"trustpilot/{slug}",
             "source": clean.get("displayName"),
             "domains": sites,
             "domain": clean.get("name")["identifying"],
