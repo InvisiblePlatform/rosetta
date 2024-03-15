@@ -15,21 +15,15 @@
 <script src="https://unpkg.com/@andreasremdt/simple-translator@latest/dist/umd/translator.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js" defer></script>
-<script src="/js/module-loading.js" defer></script>
-<script src="/js/translations.js" defer></script>
+<script>document.write('<script src="/js/single.js?dev=' + Date.now() + '" defer\><\/script>');</script>
+<script>
+      var url = window.location.href;
+      if (url.includes('index.html')) {
+        window.location.href = url.replace('index.html', '');
+      }
+</script>
 
 <div id="location-url" style="display:none;">/db/{{ path.Base .RelPermalink }}/index.json</div>
-{{- if isset .Params "wikidataid" -}}
-{{- $ids := newScratch -}}
-{{- $ids.Add "count" 0 -}}
-{{- range .Params.wikidataid -}}
-{{- $count := $ids.Get "count" -}}
-{{- $ids.Set (string $count) (int (replace . "Q" "" )) -}}
-{{- $ids.Add "count" 1 -}}
-{{- end -}}
-{{- $ids.Delete "count" -}}
-<div id="wikidataid" style="display:none;">Q{{- index (sort $ids.Values "value" "asc") 0 -}}</div>
-{{- end -}}
 {{- if isset .Params "wikidata_id" -}}
 {{- if ne .Params.wikidata_id false }}
 {{- $ids := newScratch -}}
@@ -41,9 +35,9 @@
 {{- end -}}
 {{- $ids.Delete "count" -}}
 <div id="wikidataid" style="display:none;">Q{{- index (sort $ids.Values "value" "asc") 0 -}}</div>
- 
 {{- end -}}
 {{- end -}}
+
 <section id="titlebar">
 <button id="roundelButton" type="button" onclick="spinRoundel()"></button>
 <button id="backButton" type="button" onclick="justSendBack()"></button>
@@ -53,40 +47,35 @@
 </section>
 <div id="settings">
 <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
-{{- partialCached "translation_picker.html" . -}}
 </div>
+{{- if isset .Params "connections" -}}
+<section id="wikipedia-infocard-frame" style="display: none" class="contentSection">
+        loading...
+</section>
+<section id="wikipedia-first-frame" style="display: none" class="contentSection">
+        loading...
+</section>
+<section id="graph-box" style="display: none" class="contentSection">loading...</section>
+<section id="graphLoc" style="display: none">{{ .Params.connections }}</section>
+<div id="graph-container" class="contentSection">
+    <h2 class="sectionTitle" data-i18n="graph.title" >Network Graph</h2>
+    <div id="wikipedia-frame" style="display: none" >
+        loading...
+    </div>
+    <div id="wikipedia-frame-close" style="display: none"></div>
+    <div id="graphButtons">
+        <button type="button" id="graphZoomIn"></button>
+        <button type="button" id="graphZoomOut"></button>
+        <button type="button" id="graphZoomReset"></button>
+    </div>
+    <div id="sigma-container"></div>
+</div>
+<script src="/js/graph-libs.js"></script>
+<script src="/js/d3-graph.js"></script>
+{{- end -}}
 <div class="content">
 <span class="blankForSmall" style="order:0;"> </span>
 {{- partialCached "tools.html" .Params.title .Params.title -}}
-{{- if isset .Params "connections" -}}{{- partialCached "d3-graph.html" .Params.connections .Params.connections -}}{{- end -}}
-{{- if isset .Params "polideology" -}}{{- range .Params.polideology -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
-{{- if isset .Params "polalignment" -}}{{- range .Params.polalignment -}}{{- partial "wikidata.html" . . -}}{{- end -}}{{- end -}}
-{{- $socialParams := slice "twittername" "subreddit" "facebookid" "facebookpage" "instagramid" "youtubechannelid" "truthsocial" "parleruser" "gabuser" "soundcloud" "tumblr" "medium" "telegram" "mastodon" "patreon" "reddituser" "twitch" "tiktok" "officialblog" "emailaddress" -}}
-{{- $paramsSlice := slice -}}
-
-{{- range $key, $value := .Params -}}
-  {{- $paramsSlice = $paramsSlice | append $key -}}
-{{- end -}}
-
-{{- $commonParams := intersect $paramsSlice $socialParams -}}
-{{- if gt (len $commonParams) 0 -}}
-<section id="social-wikidata" class="contentSection">
-<h2 class='sectionTitle' data-i18n="w.socialmedia">Social Media and Email</h2>
-<section id="social-links">
-<table>
-{{- range $param := $commonParams -}}
- {{- $value := index $.Params $param -}}
- {{- if or (eq $param "officialblog") (eq $param "emailaddress") -}}
-      {{- partialCached "wikidata-link.html" $value $value -}}
-    {{- else -}}
-      {{- partialCached "wikidata-social.html" $value $value -}}
-    {{- end -}}
-  {{- end -}}
-</table>
-</section>
-</section>
-{{- else -}}
-{{- end -}}
 
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 <span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
@@ -95,10 +84,7 @@
 <section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike</section>
 </section>
 <section id="Invisible-boycott" data-i18n="vote.boycott" class="hideInSmall hide">Boycott</section>
-  {{- .Content -}}
 </div>
 <section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title">Disclaimer</div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text">If you believe any of the information displayed is incorrect, you can contact the source of the information</p> <a class="hideInSmall" data-i18n="header.here" href="#">here.</a></section>
 </div>
-<!-- <script src="/js/single.js" defer></script> -->
-<script>document.write('<script src="/js/single.js?dev=' + Math.floor(Math.random() * 100) + '" defer\><\/script>');</script>
 </html>

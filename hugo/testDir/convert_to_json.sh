@@ -1,8 +1,10 @@
 #!/bin/bash
+#set -x
 temp=$(mktemp)
 temp2=$(mktemp)
 temp3=$(mktemp)
-languages=('eo' 'es' 'de' 'ar' 'zh' 'fr' 'hi' 'en')
+languages=('eo' 'es' 'de' 'ar' 'zh' 'fr' 'hi' 'en' 'ca')
+#languages=('en')
 for lang in ${languages[@]}; do
 while read line; do
     if [[ -s $temp3 ]]; then 
@@ -11,12 +13,13 @@ while read line; do
 
     top=$(echo $line | cut -d, -f1 | sed -e "s/\"//g" | cut -d. -f1)
     key=$(echo $line | cut -d, -f1 | sed -e "s/\"//g" | cut -d. -f2)
-    string=$(echo $line | cut -d, -f2- | sed -e "s/\"//g")
-    jq . > $temp <<EOF
-    {"$top": {
-        "$key": "$string"
-    }}
-EOF
+    string=$(printf '%s' "${line}" | cut -d, -f2- | sed -e "s/\"//g")
+
+    obj="{\"${top}\": {\"${key}\": \"${string}\"}}" 
+
+    echo "$obj" | jq . > $temp
+
+
     if [[ -s $temp2 ]]; then 
         jq -s 'map(to_entries)|flatten|group_by(.key)|map({(.[0].key):map(.value)|add})|add ' $temp $temp2 > $temp3
     else 

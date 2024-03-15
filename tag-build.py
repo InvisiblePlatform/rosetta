@@ -11,12 +11,10 @@ from multiprocessing import Pool
 
 keys_list = set()
 keyconversion = {
-    'bcorp_rating': "b",
+    'bcorp': "b",
     'connections': "c",
-    'glassdoor_rating': "l",
+    'glassdoor': "l",
     'goodonyou': "g",
-    'isin': "i",
-    'isin_id': "i",
     'mbfc': "m",
     'osid': "o",
     'polalignment': "a",
@@ -25,7 +23,8 @@ keyconversion = {
     'tosdr_rating': "P",
     'wikidata_id': "w",
     'tp_rating': "t",
-    'trustscore': "s"
+    'ts_rating': "s",
+    "lb_fte": "e",
 }
 
 def process_domain(domain):
@@ -38,7 +37,6 @@ def process_domain(domain):
                 if key in keyconversion.keys():
                     tags += keyconversion[key]
 
-            title = yaml_data["title"]
             yaml_data["tags"] = tags
             write_output_file(file_loc, yaml_data)
             #pprint(tags)
@@ -51,13 +49,8 @@ def process_domain(domain):
 
     return [True, keys_list]
 
-def progress():
-    time.sleep(3)  # Check progress after 3 seconds
-    print(f'total: {pbar.total} finish:{pbar.n}')
 
 def process_domains_parallel(domains):
-    thread = threading.Thread(target=progress)
-    thread.start()
     results = []
     with Pool() as pool:
         for result in pool.imap_unordered(process_domain, domains):

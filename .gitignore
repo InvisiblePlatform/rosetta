@@ -21,6 +21,17 @@ data_collection/wikipedia/*.csv
 data_collection/yahoo/*.json
 data_collection/yahoo/*.csv
 data_collection/*/entities/*.json
+data_collection/static/*.csv
+data_collection/bcorp/pages/
+data_collection/lobbyfacts/json_data/
+data_collection/mbfc/entries/
+data_collection/mbfc/html_cache/
+data_collection/static/SDG2000Rearranged/
+data_collection/static/WBMCleanCSVs/
+data_collection/static/WBMJSON/
+data_collection/trustscore/entries/
+data_collection/trustscore/html_cache/
+data_collection/yahoo/tickerinfo/
 hugo/.*
 hugo/cache/
 hugo/content-backup/
@@ -39,6 +50,8 @@ hugo/data/wikipedia/wikicard/
 hugo/data/yahoo/
 hugo/static/ds/*/*
 hugo/public
+hugo/justTest
+hugo/testDir/
 hugo/static/connections/
 hugo/sync.sh
 hugo/wikipedia/

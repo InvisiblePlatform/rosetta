@@ -146,13 +146,16 @@ for key, value in newest_lookup.items():
 with open(test_index, "w") as f:
     json.dump(newest_lookup, f, indent=4)
 
-all_data = {}
+all_data = {"EXAMPLE":{"modules":{},
+                       "websites": ["example.com"],
+                       "Company Name": ["Example"]}}
 
 def process_json_file(json_filename):
     # Define the new variables to add to the data
     file_id = os.path.basename(json_filename).split(".")[0]
     with open(json_filename, 'r') as json_file:
         data = json.load(json_file)
+        exampleData = False
         for key, value in data.items():
             for WBA_ID in newest_lookup[key]["WBA_ID"]:
                 if not all_data.get(WBA_ID):
@@ -161,7 +164,6 @@ def process_json_file(json_filename):
                     pprint(value)
                     pprint(file_id)
                     pprint(all_data[WBA_ID])
-                    exit()
                 else:
                     if " " in value:
                         del value[" "]
@@ -177,7 +179,10 @@ def process_json_file(json_filename):
                         del value["Website"]
                     if "SEDOL" in value:
                         del value["SEDOL"]
+                    value["file"] = file_id
                     all_data[WBA_ID]["modules"][file_id] = value
+                if not exampleData:
+                    all_data["EXAMPLE"]["modules"][file_id] = value
 
 for root, _, files in os.walk(json_dir):
     for file in files:

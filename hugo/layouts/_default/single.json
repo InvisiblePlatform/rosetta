@@ -21,7 +21,16 @@
 {{- with .Params.connections -}}
 {{- $.Scratch.SetInMap "index" "connections" . -}}
 {{- end -}}
+{{- with .Params.social -}}
+{{- $.Scratch.SetInMap "index" "social" . -}}
+{{- end -}}
+{{- with .Params.political -}}
+{{- $.Scratch.SetInMap "index" "political" . -}}
+{{- end -}}
 {{- with .Params.core -}}
 {{- $.Scratch.SetInMap "index" "core" . -}}
+{{- end -}}
+{{- with .Params.title -}}
+{{- $.Scratch.SetInMap "index" "title" . -}}
 {{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}

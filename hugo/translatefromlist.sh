@@ -3,8 +3,10 @@
 # rg -o 'data-i18n="[^"]*"' public/ | cut -d: -f2 | sort -u | cut -d'=' -f2 > translatables
 # 
 # exit 
+
 rm testDir/*.csv
-languages=('eo' 'es' 'de' 'ar' 'zh' 'fr' 'hi')
+languages=('eo' 'es' 'de' 'ar' 'zh' 'fr' 'hi' 'ca')
+#languages=('ca')
 while read line; do
     string=$(echo $line | cut -d, -f2-)
     id=$(echo $line | cut -d, -f1)

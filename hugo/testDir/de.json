@@ -18,16 +18,25 @@
     "left": "LINKS",
     "fake-news": "„fragwürdige Quellen“",
     "conspiracy": "VERSCHWÖRUNG",
-    "center": "CENTER"
+    "center": "CENTER",
+    "questionable": "„Gründe für fragwürdig“",
+    "reporting": "Berichterstattung",
+    "credibility": "Glaubwürdigkeit",
+    "popularity": "Popularität"
   },
   "carbon": {
-    "title": "„Kohlenstoff-Fußabdruck“"
+    "title": "„Externe Tasten“"
   },
   "common": {
     "elsewhere": "Irgendwo anders",
     "fullview": "VOLLANSICHT",
     "stopscrolling": "Hör auf so viel zu scrollen!!!",
-    "language": "Sprache"
+    "language": "Sprache",
+    "industry_average": "„Branchendurchschnittswert“",
+    "author": "Autor"
+  },
+  "cta": {
+    "title": "Aufruf zum Handeln"
   },
   "esg": {
     "SEVERE": "SCHWER",
@@ -206,7 +215,11 @@
     "not_assessed": "Nicht beurteilt",
     "not_good_enough": "Nicht gut genug",
     "very_poor": "Sehr arm",
-    "we_avoid": "Wir vermeiden"
+    "we_avoid": "Wir vermeiden",
+    "evr": "„Umweltbewertung“",
+    "ar": "„Tierbewertung“",
+    "lr": "„Arbeitsbewertung“",
+    "title": "„Ethische Bewertung“"
   },
   "graph": {
     "zoomout": "Rauszoomen",
@@ -250,6 +263,17 @@
     "tdig": "„Digitale Inklusion“",
     "tlct": "„Kohlenstoffarmer Übergang“"
   },
+  "lb": {
+    "passes_count": "„Lobbyisten-Pässe zählen“",
+    "meeting_count": "„Treffen mit der EU“",
+    "calculated_cost": "„Berechnete Gesamtkosten“",
+    "lobby_fte": "„Lobbyist VZÄ“",
+    "lobby_count": "„Lobbyistenzählung“",
+    "eu_country": "„EU-Büroland“",
+    "hq_countries": "„Hauptsitzland“",
+    "transparency_id": "„Transparenz-ID“",
+    "title": "„LobbyFacts.eu“"
+  },
   "mbfc": {
     "title": "Politische Voreingenommenheit",
     "left_bias": "Linke Vorspannung",
@@ -271,22 +295,30 @@
     "sourcestocandidates": "„Finanzierungsquellen für Kandidaten“",
     "sources": "Geldquellen",
     "recipients": "„Mittelempfänger“",
-    "title": "„OpenSecrets“"
+    "title": "„OpenSecrets“",
+    "lobbistnotingov": "„Lobbyisten, die nicht in der Regierung gearbeitet haben“",
+    "lobbistingov": "„Lobbyisten, die in der Regierung gearbeitet haben“",
+    "lobbying": "„Lobbyarbeit“"
   },
   "os": {
-    "title": "„OpenSecrets“"
+    "title": "„OpenSecrets“",
+    "disclaimer": "„HINWEIS: Organisationen selbst können keinen Beitrag zu Kandidaten und Parteiausschüssen leisten. Die Zahlen umfassen Beiträge und Ausgaben von Mitgliedsorganisationen.“"
   },
   "settings": {
     "title": "Einstellungen",
     "priorityTitle": "„Module priorisieren“",
     "priorityOrder": "Ziehen, um Module neu anzuordnen",
     "dashboard": "Dashboard auf dem Bildschirm behalten",
-    "darkMode": "Dunkler Modus"
+    "darkMode": "Dunkler Modus",
+    "bobbleDisabled": "„Bobble deaktivieren“"
   },
   "similar": {
     "title": "Ähnliche Website"
   },
   "similarity": "Ähnlichkeit:",
+  "social": {
+    "title": "Sozialen Medien"
+  },
   "source": "(ursache)",
   "tos": {
     "wordGrade": "Klasse",
@@ -297,6 +329,9 @@
     "b": "Die Nutzungsbedingungen sind dem Nutzer gegenüber fair, aber verbesserungswürdig.",
     "a": "Die besten Servicebedingungen: Sie behandeln Sie fair, respektieren Ihre Rechte und missbrauchen Ihre Daten nicht."
   },
+  "tosdr": {
+    "title": "„ToS;DR“"
+  },
   "trustpilot": {
     "five": "Fünf Sterne",
     "four": "Vier Stern",
@@ -306,6 +341,13 @@
     "total": "Gesamt",
     "title": "„Trustpilot“"
   },
+  "trustsc": {
+    "title": "„Vertrauensbetrug“",
+    "warning": "Warnung",
+    "success": "Erfolg",
+    "neutral": "Neutral",
+    "danger": "Gefahr"
+  },
   "vote": {
     "like": "Wie",
     "dislike": "Nicht gefallen",
@@ -314,6 +356,111 @@
   "w": {
     "socialmedia": "Soziale Medien und E-Mail",
     "wikipedia": "Wikipedia",
-    "companyinfo": "Firmeninfo"
+    "companyinfo": "Firmeninfo",
+    "political": "„Politische Ausrichtung“"
+  },
+  "wbm": {
+    "seafood-stewardship": "„Meeresfrüchte-Stewardship-Benchmark“",
+    "oil-gas-benchmark": "„Öl- und Gas-Benchmark“",
+    "nature-benchmark": "„Natur-Benchmark“",
+    "food-agriculture-benchmark": "„Benchmark für Ernährungslandwirtschaft“",
+    "electric-utilities": "„Benchmark für Stromversorger“",
+    "digital-inclusion": "„Benchmark für digitale Inklusion“",
+    "buildings-benchmark": "„Gebäude-Benchmark“",
+    "transport-benchmark": "„Transport-Benchmark“",
+    "social-transformation": "„Benchmark für soziale Transformation“",
+    "financial-system-benchmark": "„Finanzsystem-Benchmark“",
+    "seeds-index-wc-africa": "„Seeds Index Benchmark WC Africa“",
+    "seeds-index-ssea": "„Seeds Index Benchmark SSEA“",
+    "seeds-index-esa": "„Seeds Index Benchmark ESA“",
+    "just-transition-assessment-social": "„Just Transition Assessment Social Benchmark“",
+    "just-transition-assessment": "„Just Transition Assessment Benchmark“",
+    "gender-benchmark": "„Gender-Benchmark“",
+    "automotive-data": "„Automobildaten-Benchmark“",
+    "chumanrightsb": "„Menschenrechts-Benchmark“",
+    "title": "„Weltmaßstab“",
+    "workplace": "Arbeitsplatz",
+    "working-hours-fundamentals": "„Grundlagen der Arbeitszeit“",
+    "workforce-diversity-disclosure-fundamentals": "„Grundlagen der Offenlegung von Diversität in der Belegschaft“",
+    "use": "Verwenden",
+    "trend": "Trend",
+    "traceability": "„Rückverfolgbarkeit“",
+    "total-social-score": "„Gesamtsozialwert“",
+    "total-rank": "„Gesamtrang“",
+    "total-act-score": "„ACT-Gesamtpunktzahl“",
+    "supply-chain": "Lieferkette",
+    "social-score": "„Social Score“",
+    "social-responsibility": "Gesellschaftliche Verantwortung",
+    "social-ranking": "„Soziale Rangliste“",
+    "social-inclusion-and-community-impact": "„Soziale Eingliederung und Auswirkungen auf die Gemeinschaft“",
+    "social-inclusion": "Soziale Inklusion",
+    "skills": "Fähigkeiten",
+    "seed-production": "„Saatgutproduktion“",
+    "sector": "Sektor",
+    "responsible-tax-fundamentals": "„Grundlagen einer verantwortungsvollen Besteuerung“",
+    "responsible-lobbying-and-political-engagement-fundamentals": "„Grundlagen von verantwortungsvollem Lobbying und politischem Engagement“",
+    "respecting-planetary-boundaries": "„Planetengrenzen respektieren“",
+    "research-and-development": "Forschung und Entwicklung",
+    "remedies-and-grievance-mechanisms": "„Abhilfemaßnahmen und Beschwerdemechanismen“",
+    "region": "Region",
+    "rank-of-sector": "„Rang des Sektors“",
+    "rank-of-region": "„Rang der Region“",
+    "rank": "Rang",
+    "personal-data-protection-fundamentals": "„Grundlagen des Schutzes personenbezogener Daten“",
+    "performance-response-to-serious-allegations": "„Leistungsreaktion auf schwerwiegende Vorwürfe“",
+    "performance-company-human-rights-practices": "„Performance Company Menschenrechtspraktiken“",
+    "performance": "Leistung",
+    "nutrition": "Ernährung",
+    "narrative": "Erzählung",
+    "marketing-and-sales": "Marketing und Vertrieb",
+    "living-wage-fundamentals": "„Grundlagen des existenzsichernden Lohns“",
+    "just-transition-score": "„Just Transition Score“",
+    "integrating-and-acting-on-human-rights-risks-and-impacts": "„Menschenrechtsrisiken und -auswirkungen integrieren und darauf reagieren“",
+    "innovation": "Innovation",
+    "identifying-human-rights-risks-and-impacts": "„Erkennung menschenrechtlicher Risiken und Auswirkungen“",
+    "human-rights": "Menschenrechte",
+    "health-and-safety-fundamentals": "„Grundlagen von Gesundheit und Sicherheit“",
+    "grievance-mechanisms-for-workers": "„Beschwerdemechanismen für Arbeitnehmer“",
+    "grievance-mechanisms-for-external-individuals-and-communities": "„Beschwerdemechanismen für externe Einzelpersonen und Gemeinschaften“",
+    "governance-and-strategy": "„Governance und Strategie“",
+    "governance-and-policy-commitments": "„Governance und politische Verpflichtungen“",
+    "genetic-resources-and-intellectual-property-management": "„Genetische Ressourcen und geistiges Eigentumsmanagement“",
+    "fundamentals-of-social-protection-and-social-impact-management-for-a-just-transition": "„Grundlagen des Sozialschutzes und Social Impact Management für einen gerechten Übergang“",
+    "fundamentals-of-social-dialogue-and-stakeholder-engagement-in-a-just-transition": "„Grundlagen des sozialen Dialogs und des Stakeholder-Engagements in einem gerechten Übergang“",
+    "fundamentals-of-just-transition-planning": "„Grundlagen einer gerechten Übergangsplanung“",
+    "fundamentals-of-creating-and-providing-or-supporting-access-to-green-and-decent-jobs-for-an-inclusive-and-balanced-workforce": "„Grundlagen der Schaffung und Bereitstellung bzw. Unterstützung des Zugangs zu grünen und menschenwürdigen Arbeitsplätzen für eine integrative und ausgewogene Belegschaft“",
+    "filing-name": "„Einreichungsname“",
+    "ethical-conduct": "Ethische Grundsätze",
+    "environment": "Umfeld",
+    "engaging-with-affected-and-potentially-affected-stakeholders": "„Einbindung betroffener und potenziell betroffener Stakeholder“",
+    "embedding-respect-and-human-rights-due-diligence": "„Einbettung von Respekt und menschenrechtlicher Sorgfalt“",
+    "ecosystems-and-biodiversity": "„Ökosysteme und Biodiversität“",
+    "ecosystems": "„Ökosysteme“",
+    "dib-score": "„DIB-Score“",
+    "dib-rank": "„DIB-Rang“",
+    "decent-work": "Ein anständiger Job",
+    "csi": "„CSI“",
+    "corporate": "„Unternehmen“",
+    "core-social-score": "„Kern-Social-Score“",
+    "company-sector": "„Unternehmenssektor“",
+    "commitment-to-respect-the-human-rights-of-workers": "„Verpflichtung zur Achtung der Menschenrechte der Arbeitnehmer“",
+    "commitment-to-respect-human-rights": "„Verpflichtung zur Achtung der Menschenrechte“",
+    "collective-bargaining-fundamentals": "„Grundlagen der Tarifverhandlungen“",
+    "capacity-building": "„Kapazitätsaufbau“",
+    "benchmark-year": "„Benchmark-Jahr“",
+    "benchmark-ranking": "„Benchmark-Ranking“",
+    "band": "Band",
+    "assessing-human-rights-risks-and-impacts": "„Bewertung menschenrechtlicher Risiken und Auswirkungen“",
+    "anti-bribery-and-anti-corruption-fundamentals": "„Grundlagen zur Bekämpfung von Bestechung und Korruption“",
+    "adhering-to-societal-conventions": "„Einhaltung gesellschaftlicher Konventionen“",
+    "act-ranking": "„ACT-Ranking“",
+    "access": "Zugang",
+    "gender-equality-and-womens-empowerment-fundamentals": "„Grundlagen der Geschlechtergleichstellung und der Stärkung der Rolle der Frau“",
+    "fundamentals-of-retaining-and-re-andor-up-skilling-workers-for-an-inclusive-balanced-workforce": "„Grundlagen der Bindung und Umschulung bzw. Weiterqualifizierung von Arbeitskräften für eine integrative, ausgewogene Belegschaft“",
+    "fundamentals-of-advocacy-for-policies-and-regulation-on-green-and-decent-job-creation-employee-retention-education-and-reskilling-and-social-protection-supporting-a-just-transition": "„Grundlagen des Eintretens für Richtlinien und Vorschriften zur Schaffung umweltfreundlicher und menschenwürdiger Arbeitsplätze; Mitarbeiterbindung, Bildung und Umschulung sowie sozialer Schutz zur Unterstützung eines gerechten Übergangs“"
+  },
+  "wikidata": {
+    "polideology": "Politische Ideologie",
+    "polalignment": "„Politische Ausrichtung“"
   }
 }

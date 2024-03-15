@@ -18,16 +18,25 @@
     "left": "LEFT",
     "fake-news": "QUESTIONABLE SOURCES",
     "conspiracy": "CONSPIRACY",
-    "center": "CENTER"
+    "center": "CENTER",
+    "questionable": "Reasons for Questionable",
+    "reporting": "Reporting",
+    "credibility": "Credibility",
+    "popularity": "Popularity"
   },
   "carbon": {
-    "title": "Carbon Footprint"
+    "title": "External Buttons"
   },
   "common": {
     "elsewhere": "Somewhere else",
     "fullview": "FULL-VIEW",
     "stopscrolling": "Stop scrolling so much!!!",
-    "language": "Language"
+    "language": "Language",
+    "industry_average": "Industry Average Score",
+    "author": "Author"
+  },
+  "cta": {
+    "title": "Call to Action"
   },
   "esg": {
     "SEVERE": "SEVERE",
@@ -206,7 +215,11 @@
     "not_assessed": "Not Assessed",
     "not_good_enough": "Not good enough",
     "very_poor": "Very poor",
-    "we_avoid": "We Avoid"
+    "we_avoid": "We Avoid",
+    "evr": "Environmental Rating",
+    "ar": "Animal Rating",
+    "lr": "Labour Rating",
+    "title": "Ethical Rating"
   },
   "graph": {
     "zoomout": "Zoom Out",
@@ -250,6 +263,17 @@
     "tdig": "Digital Inclusion",
     "tlct": "Low Carbon Transition"
   },
+  "lb": {
+    "passes_count": "Lobbyist Passes Count",
+    "meeting_count": "Meetings with the EU",
+    "calculated_cost": "Calculated Total Cost",
+    "lobby_fte": "Lobbyist FTE",
+    "lobby_count": "Lobbyist Count",
+    "eu_country": "EU Office Country",
+    "hq_countries": "HQ Country",
+    "transparency_id": "Transparency ID",
+    "title": "LobbyFacts.eu"
+  },
   "mbfc": {
     "title": "Political Bias",
     "left_bias": "Left Bias",
@@ -271,22 +295,30 @@
     "sourcestocandidates": "Sources of Funds to Candidates",
     "sources": "Sources of Funds",
     "recipients": "Recipients of Funds",
-    "title": "OpenSecrets"
+    "title": "OpenSecrets",
+    "lobbistnotingov": "Lobbyists who haven't worked in government",
+    "lobbistingov": "Lobbyists who worked in government",
+    "lobbying": "Lobbying"
   },
   "os": {
-    "title": "OpenSecrets"
+    "title": "OpenSecrets",
+    "disclaimer": "NOTE: Organizations themselves cannot contribute to candidates and party committees. Figures include contributions and spending by affiliates."
   },
   "settings": {
     "title": "Settings",
     "priorityTitle": "Prioritise Modules",
     "priorityOrder": "Drag to re-order modules",
     "dashboard": "Keep dashboard on screen",
-    "darkMode": "Dark Mode"
+    "darkMode": "Dark Mode",
+    "bobbleDisabled": "Disable Bobble"
   },
   "similar": {
     "title": "Similar Website"
   },
   "similarity": "Similarity:",
+  "social": {
+    "title": "Social Media"
+  },
   "source": "(source)",
   "tos": {
     "wordGrade": "Grade",
@@ -297,6 +329,9 @@
     "b": "The terms of service are fair towards the user but they could be improved.",
     "a": "The best terms of services: they treat you fairly, respect your rights and will not abuse your data."
   },
+  "tosdr": {
+    "title": "ToS;DR"
+  },
   "trustpilot": {
     "five": "Five Star",
     "four": "Four Star",
@@ -306,6 +341,13 @@
     "total": "Total",
     "title": "Trust Pilot"
   },
+  "trustsc": {
+    "title": "Trust Scam",
+    "warning": "Warning",
+    "success": "Success",
+    "neutral": "Neutral",
+    "danger": "Danger"
+  },
   "vote": {
     "like": "Like",
     "dislike": "Dislike",
@@ -314,6 +356,111 @@
   "w": {
     "socialmedia": "Social Media and Email",
     "wikipedia": "Wikipedia",
-    "companyinfo": "Company Info"
+    "companyinfo": "Company Info",
+    "political": "Political Alignment"
+  },
+  "wbm": {
+    "seafood-stewardship": "Seafood Stewardship Benchmark",
+    "oil-gas-benchmark": "Oil & Gas Benchmark",
+    "nature-benchmark": "Nature Benchmark",
+    "food-agriculture-benchmark": "Food Agriculture Benchmark",
+    "electric-utilities": "Electric Utilities Benchmark",
+    "digital-inclusion": "Digital Inclusion Benchmark",
+    "buildings-benchmark": "Buildings Benchmark",
+    "transport-benchmark": "Transport Benchmark",
+    "social-transformation": "Social Transformation Benchmark",
+    "financial-system-benchmark": "Financial System Benchmark",
+    "seeds-index-wc-africa": "Seeds Index Benchmark WC Africa",
+    "seeds-index-ssea": "Seeds Index Benchmark SSEA",
+    "seeds-index-esa": "Seeds Index Benchmark ESA",
+    "just-transition-assessment-social": "Just Transistion Assessment Social Benchmark",
+    "just-transition-assessment": "Just Transistion Assessment Benchmark",
+    "gender-benchmark": "Gender Benchmark",
+    "automotive-data": "Automotive Data Benchmark",
+    "chumanrightsb": "Human Rights Benchmark",
+    "title": "World Benchmark",
+    "workplace": "Workplace",
+    "working-hours-fundamentals": "Working Hours Fundamentals",
+    "workforce-diversity-disclosure-fundamentals": "Workforce Diversity Disclosure Fundamentals",
+    "use": "Use",
+    "trend": "Trend",
+    "traceability": "Traceability",
+    "total-social-score": "Total Social Score",
+    "total-rank": "Total Rank",
+    "total-act-score": "Total ACT Score",
+    "supply-chain": "Supply Chain",
+    "social-score": "Social Score",
+    "social-responsibility": "Social Responsibility",
+    "social-ranking": "Social Ranking",
+    "social-inclusion-and-community-impact": "Social Inclusion and Community Impact",
+    "social-inclusion": "Social Inclusion",
+    "skills": "Skills",
+    "seed-production": "Seed Production",
+    "sector": "Sector",
+    "responsible-tax-fundamentals": "Responsible Tax Fundamentals",
+    "responsible-lobbying-and-political-engagement-fundamentals": "Responsible Lobbying and Political Engagement Fundamentals",
+    "respecting-planetary-boundaries": "Respecting Planetary Boundaries",
+    "research-and-development": "Research and Development",
+    "remedies-and-grievance-mechanisms": "Remedies and Grievance Mechanisms",
+    "region": "Region",
+    "rank-of-sector": "Rank of Sector",
+    "rank-of-region": "Rank of Region",
+    "rank": "Rank",
+    "personal-data-protection-fundamentals": "Personal Data Protection Fundamentals",
+    "performance-response-to-serious-allegations": "Performance Response to Serious Allegations",
+    "performance-company-human-rights-practices": "Performance Company Human Rights Practices",
+    "performance": "Performance",
+    "nutrition": "Nutrition",
+    "narrative": "Narrative",
+    "marketing-and-sales": "Marketing and Sales",
+    "living-wage-fundamentals": "Living Wage Fundamentals",
+    "just-transition-score": "Just Transition Score",
+    "integrating-and-acting-on-human-rights-risks-and-impacts": "Integrating and Acting on Human Rights Risks and Impacts",
+    "innovation": "Innovation",
+    "identifying-human-rights-risks-and-impacts": "Identifying Human Rights Risks and Impacts",
+    "human-rights": "Human Rights",
+    "health-and-safety-fundamentals": "Health and Safety Fundamentals",
+    "grievance-mechanisms-for-workers": "Grievance Mechanisms for Workers",
+    "grievance-mechanisms-for-external-individuals-and-communities": "Grievance Mechanisms for External Individuals and Communities",
+    "governance-and-strategy": "Governance and Strategy",
+    "governance-and-policy-commitments": "Governance and Policy Commitments",
+    "genetic-resources-and-intellectual-property-management": "Genetic Resources and Intellectual Property Management",
+    "fundamentals-of-social-protection-and-social-impact-management-for-a-just-transition": "Fundamentals of Social Protection and Social Impact Management for a Just Transition",
+    "fundamentals-of-social-dialogue-and-stakeholder-engagement-in-a-just-transition": "Fundamentals of Social Dialogue and Stakeholder Engagement in a Just Transition",
+    "fundamentals-of-just-transition-planning": "Fundamentals of Just Transition Planning",
+    "fundamentals-of-creating-and-providing-or-supporting-access-to-green-and-decent-jobs-for-an-inclusive-and-balanced-workforce": "Fundamentals of Creating and Providing or Supporting Access to Green and Decent Jobs for an Inclusive and Balanced Workforce",
+    "filing-name": "Filing Name",
+    "ethical-conduct": "Ethical Conduct",
+    "environment": "Environment",
+    "engaging-with-affected-and-potentially-affected-stakeholders": "Engaging with Affected and Potentially Affected Stakeholders",
+    "embedding-respect-and-human-rights-due-diligence": "Embedding Respect and Human Rights Due Diligence",
+    "ecosystems-and-biodiversity": "Ecosystems and Biodiversity",
+    "ecosystems": "Ecosystems",
+    "dib-score": "DIB Score",
+    "dib-rank": "DIB Rank",
+    "decent-work": "Decent Work",
+    "csi": "CSI",
+    "corporate": "Corporate",
+    "core-social-score": "Core Social Score",
+    "company-sector": "Company Sector",
+    "commitment-to-respect-the-human-rights-of-workers": "Commitment to Respect The Human Rights of Workers",
+    "commitment-to-respect-human-rights": "Commitment to Respect Human Rights",
+    "collective-bargaining-fundamentals": "Collective Bargaining Fundamentals",
+    "capacity-building": "Capacity Building",
+    "benchmark-year": "Benchmark Year",
+    "benchmark-ranking": "Benchmark Ranking",
+    "band": "Band",
+    "assessing-human-rights-risks-and-impacts": "Assessing Human Rights Risks and Impacts",
+    "anti-bribery-and-anti-corruption-fundamentals": "Anti Bribery and Anti Corruption Fundamentals",
+    "adhering-to-societal-conventions": "Adhering to Societal Conventions",
+    "act-ranking": "ACT Ranking",
+    "access": "Access",
+    "gender-equality-and-womens-empowerment-fundamentals": "Gender equality and women’s empowerment fundamentals",
+    "fundamentals-of-retaining-and-re-andor-up-skilling-workers-for-an-inclusive-balanced-workforce": "Fundamentals of retaining and re- and/or up-skilling workers for an inclusive, balanced workforce",
+    "fundamentals-of-advocacy-for-policies-and-regulation-on-green-and-decent-job-creation-employee-retention-education-and-reskilling-and-social-protection-supporting-a-just-transition": "Fundamentals of advocacy for policies and regulation on green and decent job creation; employee retention, education and reskilling, and social protection supporting a just transition"
+  },
+  "wikidata": {
+    "polideology": "Political Ideology",
+    "polalignment": "Political Alignment"
   }
 }

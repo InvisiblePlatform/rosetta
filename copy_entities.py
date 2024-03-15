@@ -82,6 +82,9 @@ for url in core_data_set:
         'trustpilot': "trust-pilot",
         'trustscore': 'trustscore',
         'wbm': "static",
+        'yahoo': "yahoo",
+        'cta': 'cta',
+        'lobbyfacts':'lobbyfacts',
     }
     if not os.path.isfile(f"data_collection/{locationmap[path[0]]}/entities/{path[1]}"):
         pprint(url)

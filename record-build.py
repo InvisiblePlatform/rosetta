@@ -19,6 +19,7 @@ from tld import get_tld
 output_dir="hugo/content/db/"
 rootdir = "data_collection"
 
+
 def get_domain(url):
     parsed_url = get_tld(url, as_object=True)
     domain = parsed_url.subdomain + parsed_url.fld
@@ -34,6 +35,7 @@ query = {}
 datapool ={}
 exceptions=[]
 failures = []
+missingLabels = set()
 
 website_list = set()
 
@@ -61,23 +63,35 @@ TRUSTPILOTLOOKUP = f"{rootdir}/trust-pilot/site_slug.json"
 trustp_array = {}
 WBMLOOKUP = f"{rootdir}/static/site_wbaid.json"
 wbm_array = {}
-YAHOOLOOKUP = f"{rootdir}/yahoo/site_ticker.json"
+YAHOOLOOKUP = f"{rootdir}/yahoo/site_index_temp.json"
 yahoo_array = {}
+LOBBYLOOKUP = f"{rootdir}/lobbyfacts/site_id.json"
+lobby_array = {}
 bulk_array = defaultdict(dict)
 
-def progress():
-    sleep(3)  # Check progress after 3 seconds
-    print(f'total: {pbar.total} finish:{pbar.n}')
+PROPSFORM = f"tools/propsformatter.json"
+propsFormatting = {}
+PROPSNAME = f"tools/props.json"
+propsNaming = {}
+PROPSLABEL = f"tools/mongoscripts/labelindex.json"
+propsLabels = {}
 
+#def progress():
+#    sleep(3)  # Check progress after 3 seconds
+#    print(f'total: {pbar.total} finish:{pbar.n}')
 
+missingLabelArray = set()
 def process_domains_parrallel(domains):
-    thread = Thread(target=progress)
-    thread.start()
+    global missingLabelArray
+#    thread = Thread(target=progress)
+#    thread.start()
     results = []
     with Pool() as pool:
         for result in pool.imap_unordered(build_document, domains):
                 results.append(result)
                 pbar.update(1)
+                for item in result:
+                    missingLabelArray.add(item)
     return results
 
 def build_pairings_and_datapool():
@@ -108,16 +122,11 @@ def build_pairings_and_datapool():
         datapool[pair["id"]] = {"label": pair["label"], "data": []}
     datapool["P1387"] = {"label": "polalignment", "data": []}
     datapool["P1142"] = {"label": "polideology", "data": []}
-    # datapool["P8525"] = {"label": "tosdr", "data": []}
-    # datapool["P414"] = {"label": "ticker", "data": []}
-    # datapool["P946"] = {"label": "isin_id", "data": []}
-
-    # items["P8525.mainsnak.datavalue.value"] = items["P414"] = 1
-    # items["P946"] = {"mainsnak.datavalue.value": 1}
-    items["P1142"] = items["P1387"] = {"mainsnak.datavalue.value.id": 1}
+    datapool["P452"] = {"label": "industry_wd", "data": []}
+    items["P452"] = items["P1142"] = items["P1387"] = {"mainsnak.datavalue.value.id": 1}
 
 #exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
-exceptions = ["P1142", "P1387"]
+exceptions = ["P1142", "P1387", "P452"]
 
 def query_for_wikidata(wikiid):
     tmpoutput = collection.find_one({'id': wikiid }, {
@@ -137,25 +146,10 @@ def query_for_wikidata(wikiid):
             try:
                 if claim not in exceptions:
                     tmpdatapool[claim]['data'].append(f"{i['mainsnak']['datavalue']['value']};{claim};{tmpoutput['id']}")
-                # elif claim == "P414":
-                #     if i["rank"] != 'deprecated':
-                #         startdata = tmpdatapool[claim]["data"]
-                #         try:
-                #             for qualifier in [qualifier for qualifier in i["qualifiers"] if qualifier in "P249"]:
-                #                 startdata.append(i["qualifiers"][qualifier][0]["datavalue"]["value"])
-                #         except:
-                #             pass
-                #         tmpdatapool[claim]["data"] = startdata
-                #elif claim == "P8525":
-                #    tmpdatapool[claim]["data"] = i["mainsnak"]["datavalue"]["value"]
-                #elif claim == "P946":
-                #    tmpdatapool[claim]["data"].append(i["mainsnak"]["datavalue"]["value"])
                 elif "datavalue" in i["mainsnak"]:
                     tmpdatapool[claim]["data"].append(f"{i['mainsnak']['datavalue']['value']['id']};{claim};{tmpoutput['id']}")
             except:
                 pass
-                #pprint(i)
-                #pprint(claim)
     return tmpdatapool
 
 def show_document(domain):
@@ -175,8 +169,14 @@ def write_output_file(domain, data):
         file.write(separator_line)
 
 
+social_claims = [ "twittername", "officialblog", "subreddit", "facebookid",
+        "facebookpage", "instagramid", "youtubechannelid", "emailaddress",
+        "truthsocial", "parleruser", "gabuser", "soundcloud", "tumblr",
+        "medium", "telegram", "mastodon", "patreon", "reddituser", "twitch",
+        "tiktok" ]
+
 def build_document(website):
-    global failures
+    global failures, missingLabels
     output = {}
     output.update(bulk_array[website])
     output["title"] = website
@@ -198,9 +198,58 @@ def build_document(website):
             if result is None:
                 continue
 
+            #pprint(result)
             for claim in result:
                 if result[claim]["data"]:
-                    output[result[claim]["label"]] = result[claim]["data"]
+                    label = result[claim]["label"]
+                    if label in social_claims:
+                        if not output.get("social"):
+                            output["social"] = {}
+                        resolvedResult = []
+                        propName = ''
+                        for item in result[claim]["data"]:
+                            dataBreakdown = item.split(";")
+                            urlForm = propsFormatting[dataBreakdown[1]].replace("$1",dataBreakdown[0])
+                            propName = propsNaming[dataBreakdown[1]]
+                            resolvedResult.append({"url": f"{urlForm}", "source": website })
+
+                        if not output.get("social").get(propName):
+                            output["social"][propName] = []
+                        output["social"][propName].extend(resolvedResult)
+                    else:
+                        resolvedResult = []
+                        propName = ''
+                        for item in result[claim]["data"]:
+                            dataBreakdown = item.split(";")
+                            try:
+                                dataName = propsLabels[dataBreakdown[0]]
+                            except KeyError:
+                                missingLabels.add(dataBreakdown[0])
+                                continue
+                            try:
+                                sourceLabels = propsLabels[dataBreakdown[2]]
+                            except KeyError:
+                                missingLabels.add(dataBreakdown[2])
+                                continue
+                            try:
+                                propName = propsNaming[dataBreakdown[1]]
+                            except KeyError:
+                                missingLabels.add(dataBreakdown[1])
+                                continue
+                            resolvedResult.append({"data": dataName, "dataId": dataBreakdown[0], "source": website, "sourceLabels": sourceLabels })
+
+                        if claim == "P452":
+                            if not output.get("industry"):
+                                output["industry"] = {}
+                            if not output["industry"].get(result[claim]["label"]):
+                                output["industry"][result[claim]["label"]] = []
+                            output["industry"][result[claim]["label"]].extend(resolvedResult)
+                        else:
+                            if not output.get("political"):
+                                output["political"] = {}
+                            if not output["political"].get(result[claim]["label"]):
+                                output["political"][result[claim]["label"]] = []
+                            output["political"][result[claim]["label"]].extend(resolvedResult)
 
             #isin_id_list = output.get("isin_id", [])
             #if isin_id_list:
@@ -279,6 +328,14 @@ def build_document(website):
     if "wba_id" in output:
         core.append({"type": "wbm", "url": f"wbm/{output['wba_id']}.json"})
 
+    if "ticker" in output:
+        ticker = output.get("ticker")
+        core.append({"type": "yahoo", "url": f"yahoo/{ticker}.json"})
+        with open(f"{rootdir}/yahoo/entities/{ticker}.json", "r") as f:
+            yahoo_data = json.load(f)
+            output["esg_rating"] = yahoo_data["totalEsg"]
+            output["esg_source"] = yahoo_data["source"]
+
     if "tp_slug" in output:
         tpslug = output.get("tp_slug")
         core.append({"type": "trustpilot", "url": f"trustpilot/{tpslug}.json"})
@@ -286,6 +343,14 @@ def build_document(website):
             tpdata = json.load(f)
             output["tp_rating"] = tpdata["score"]
             output["tp_source"] = tpdata["source"]
+
+    if "lobbyeu" in output:
+        lobby = output.get("lobbyeu")
+        core.append({"type": "lobbyeu", "url": f"lobbyfacts/{lobby}.json"})
+        with open(f"{rootdir}/lobbyfacts/entities/{lobby}.json", "r") as f:
+            lbdata = json.load(f)
+            output["lb_fte"] = lbdata["lobbyist_fte"]
+            output["lb_source"] = lbdata["source"]
 
     if "ts_slug" in output:
         tsslug = output.get("ts_slug")
@@ -304,9 +369,10 @@ def build_document(website):
 
     output["core"] = core
     write_output_file(website, output)
+    return missingLabels
 
 def prepare():
-    global mediabias_array, tosdr_data_array, trust_array, trustp_array, bcorp_array, osid_array, isin_array, bulk_array
+    global mediabias_array, tosdr_data_array, trust_array, trustp_array, bcorp_array, osid_array, isin_array, bulk_array, propsFormatting, propsNaming, propsLabels
 
     def process_lookup_file(lookup_file, array, field):
         with open(lookup_file, "r") as f:
@@ -356,6 +422,9 @@ def prepare():
     # Process Yahoo lookup_file
     process_lookup_file_json_webaware(YAHOOLOOKUP, yahoo_array, "ticker")
 
+    # Process Lobby lookup_file
+    process_lookup_file_json_webaware(LOBBYLOOKUP, lobby_array, "lobbyeu")
+
     # TOSDR Data
     process_lookup_file_json(TSDATAARRAY, tosdr_data_array)
 
@@ -381,17 +450,26 @@ def prepare():
     #    for i in isin_file:
     #        entry = i[0].split(':')
     #        isin_array.setdefault(entry[1], []).append(entry[0])
+    with open(PROPSFORM, "r") as f:
+        propsFormatting = json.load(f)
+    with open(PROPSNAME, "r") as f:
+        propsNaming = json.load(f)
+    with open(PROPSLABEL, "r") as f:
+        propsLabels = json.load(f)
 
 def testRun():
     #testdomain = "meta.com"
+    testdomain = "reddit.com"
     #testdomain = "facebook.com"
     #testdomain = "theguardian.com"
     #testdomain = "breitbart.com"
     #testdomain = "nespresso.com"
-    testdomain = "nike.com"
+    #testdomain = "nike.com"
     build_document(testdomain)
     show_document(testdomain)
     pprint(len(bulk_array))
+    #with open("missingLabels.json", "w") as missingLabelFile:
+    #    json.dump(list(missingLabels),missingLabelFile, indent=4)
     exit()
 
 
@@ -402,3 +480,6 @@ pbar = tqdm(total=len(website_list))
 if __name__ == "__main__":
     processed_results = process_domains_parrallel(website_list)
     pprint(failures)
+    pprint(len(missingLabelArray))
+    with open("missingLabels.json", "w") as missingLabelFile:
+        json.dump(list(missingLabelArray),missingLabelFile, indent=4)

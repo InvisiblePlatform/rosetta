@@ -18,16 +18,25 @@
     "left": "Maldekstre",
     "fake-news": "DEDUBINDAJ FONTOJ",
     "conspiracy": "Konspiro",
-    "center": "CENTRO"
+    "center": "CENTRO",
+    "questionable": "Kialoj de Demandinda",
+    "reporting": "Raportado",
+    "credibility": "Kredebleco",
+    "popularity": "Populareco"
   },
   "carbon": {
-    "title": "Karbona piedsigno"
+    "title": "Eksteraj Butonoj"
   },
   "common": {
     "elsewhere": "Aliloke",
     "fullview": "PLENA VIDON",
     "stopscrolling": "Ĉesu rulumi tiom multe!!!",
-    "language": "Lingvo"
+    "language": "Lingvo",
+    "industry_average": "Industria Meza Poentaro",
+    "author": "Aŭtoro"
+  },
+  "cta": {
+    "title": "Voko al Agado"
   },
   "esg": {
     "SEVERE": "Severa",
@@ -206,7 +215,11 @@
     "not_assessed": "Ne taksita",
     "not_good_enough": "Ne sufiĉe bona",
     "very_poor": "Tre malriĉa",
-    "we_avoid": "Ni evitas"
+    "we_avoid": "Ni evitas",
+    "evr": "Media Takso",
+    "ar": "Besta Taksado",
+    "lr": "Labora Takso",
+    "title": "Etika Taksado"
   },
   "graph": {
     "zoomout": "Malzomi",
@@ -250,6 +263,17 @@
     "tdig": "Cifereca Inkludo",
     "tlct": "Malalta Karbona Transiro"
   },
+  "lb": {
+    "passes_count": "Lobiisto Pasas Kalkulon",
+    "meeting_count": "Renkontiĝoj kun EU",
+    "calculated_cost": "Kalkulita Totala Kosto",
+    "lobby_fte": "Lobiisto FTE",
+    "lobby_count": "Lobiisto-kalkulo",
+    "eu_country": "EU-Oficeja Lando",
+    "hq_countries": "HQ Lando",
+    "transparency_id": "Travidebleco ID",
+    "title": "LobbyFacts.eu"
+  },
   "mbfc": {
     "title": "Politika Biaso",
     "left_bias": "Maldekstra Biaso",
@@ -271,22 +295,30 @@
     "sourcestocandidates": "Fontoj de Financo al Kandidatoj",
     "sources": "Fontoj de Financo",
     "recipients": " Ricevantoj de Financoj ",
-    "title": "OpenSecrets"
+    "title": "OpenSecrets",
+    "lobbistnotingov": "Lobiistoj kiuj ne laboris en registaro",
+    "lobbistingov": "Lobiistoj kiuj laboris en registaro",
+    "lobbying": "Lobiado"
   },
   "os": {
-    "title": "OpenSecrets"
+    "title": "OpenSecrets",
+    "disclaimer": "NOTU: Organizoj mem ne povas kontribui al kandidatoj kaj partiaj komitatoj. Ciferoj inkluzivas kontribuojn kaj elspezojn de filioj."
   },
   "settings": {
     "title": "Agordoj",
     "priorityTitle": "Prioritigi Modulojn",
     "priorityOrder": "Trenu por reordigi modulojn",
     "dashboard": "Konservu instrumentpanelon sur ekrano",
-    "darkMode": "Malhela Reĝimo"
+    "darkMode": "Malhela Reĝimo",
+    "bobbleDisabled": "Malŝalti Bobble"
   },
   "similar": {
     "title": "Simila retejo"
   },
   "similarity": "Simileco:",
+  "social": {
+    "title": "Socia amaskomunikilaro"
+  },
   "source": "(fonto)",
   "tos": {
     "wordGrade": "Grado",
@@ -297,6 +329,9 @@
     "b": "La servokondiĉoj estas justaj al la uzanto sed ili povus esti plibonigitaj.",
     "a": "La plej bonaj kondiĉoj de servoj: ili traktas vin juste, respektas viajn rajtojn kaj ne misuzos viajn datumojn."
   },
+  "tosdr": {
+    "title": "ToS;DR"
+  },
   "trustpilot": {
     "five": "Kvin Steloj",
     "four": "Kvar Steloj",
@@ -306,6 +341,13 @@
     "total": "Entute",
     "title": "Fidpiloto"
   },
+  "trustsc": {
+    "title": "Fido-Fraŭdo",
+    "warning": "Averto",
+    "success": "Sukceso",
+    "neutral": "Neŭtrala",
+    "danger": "Danĝero"
+  },
   "vote": {
     "like": "Ŝati",
     "dislike": "Malŝatas",
@@ -314,6 +356,111 @@
   "w": {
     "socialmedia": "Socia Amaskomunikilaro kaj Retpoŝto",
     "wikipedia": "Vikipedio",
-    "companyinfo": "Informoj pri Kompanio"
+    "companyinfo": "Informoj pri Kompanio",
+    "political": "Politika Paraleligo"
+  },
+  "wbm": {
+    "seafood-stewardship": "Marmanĝa Intendanta Referenco",
+    "oil-gas-benchmark": "Nafto kaj Gaso-Komnormo",
+    "nature-benchmark": "Natura Referenco",
+    "food-agriculture-benchmark": "Referenco de Manĝa Agrikulturo",
+    "electric-utilities": "Komparnormo de Elektraj Utilaĵoj",
+    "digital-inclusion": "Cifereca Inkluziva Referenco",
+    "buildings-benchmark": "Konstrua Konferenco",
+    "transport-benchmark": "Transporta Referenco",
+    "social-transformation": "Referenco de Socia Transformado",
+    "financial-system-benchmark": "Financa Sistemo-Referenco",
+    "seeds-index-wc-africa": "Semoj Indekso Benchmark WC Afriko",
+    "seeds-index-ssea": "Semoj Indeksa Referenco SSEA",
+    "seeds-index-esa": "Semoj Indekso Benchmark ESA",
+    "just-transition-assessment-social": "Socia Referenco de Justa Transira Takso",
+    "just-transition-assessment": "Referenco de Justa Transira Takso",
+    "gender-benchmark": "Seksa Referenco",
+    "automotive-data": "Aŭtomobilaj Datumoj Komparnormo",
+    "chumanrightsb": "Homaj Rajtoj-Referenco",
+    "title": "Monda Referenco",
+    "workplace": "Laborejo",
+    "working-hours-fundamentals": "Fundamentoj pri Laborhoroj",
+    "workforce-diversity-disclosure-fundamentals": "Fundamentoj pri Diverseco de Laborforto",
+    "use": "Uzu",
+    "trend": "Tendenco",
+    "traceability": "Spurebleco",
+    "total-social-score": "Tota Socia Poentaro",
+    "total-rank": "Tota Rango",
+    "total-act-score": "Tota ACT-Poentaro",
+    "supply-chain": "Provizoĉeno",
+    "social-score": "Socia Poentaro",
+    "social-responsibility": "Socia Respondeco",
+    "social-ranking": "Socia Rangotabelo",
+    "social-inclusion-and-community-impact": "Socia Inkludo kaj Komunuma Efiko",
+    "social-inclusion": "Socia inkludo",
+    "skills": "Kapabloj",
+    "seed-production": "Produktado de Semoj",
+    "sector": "Sektoro",
+    "responsible-tax-fundamentals": "Respondecaj Impostaj Fundamentoj",
+    "responsible-lobbying-and-political-engagement-fundamentals": "Respondeca Lobiado kaj Politika Engaĝiĝo Fundamentoj",
+    "respecting-planetary-boundaries": "Respektante Planedajn Limojn",
+    "research-and-development": "Esplorado kaj disvolvado",
+    "remedies-and-grievance-mechanisms": "Kuracioj kaj Plendaj Mekanismoj",
+    "region": "Regiono",
+    "rank-of-sector": "Rango de Sektoro",
+    "rank-of-region": "Rango de Regiono",
+    "rank": "Rango",
+    "personal-data-protection-fundamentals": "Fundamentoj pri Persona Protekto de Datumoj",
+    "performance-response-to-serious-allegations": "Efikeca Respondo al Gravaj Akuzoj",
+    "performance-company-human-rights-practices": "Efikeca Firmao Homaj Rajtaj Praktikoj",
+    "performance": "Efikeco",
+    "nutrition": "Nutrado",
+    "narrative": "Rakonto",
+    "marketing-and-sales": "Merkatado kaj Vendo",
+    "living-wage-fundamentals": "Fundamentoj de Vivsalajro",
+    "just-transition-score": "Justa Transira Poentaro",
+    "integrating-and-acting-on-human-rights-risks-and-impacts": "Integri kaj Agado pri Homaj Rajtaj Riskoj kaj Efikoj",
+    "innovation": "Novigado",
+    "identifying-human-rights-risks-and-impacts": "Identigante Homajn Rajtajn Riskojn kaj Efikojn",
+    "human-rights": "Homaj rajtoj",
+    "health-and-safety-fundamentals": "Fundamentoj pri Sano kaj Sekureco",
+    "grievance-mechanisms-for-workers": "Plendaj Mekanismoj por Laboristoj",
+    "grievance-mechanisms-for-external-individuals-and-communities": "Plendaj Mekanismoj por Eksteraj Individuoj kaj Komunumoj",
+    "governance-and-strategy": "Regado kaj Strategio",
+    "governance-and-policy-commitments": "Regado kaj Politikengaĝiĝoj",
+    "genetic-resources-and-intellectual-property-management": "Genetikaj Rimedoj kaj Administrado de Intelekta Propraĵo",
+    "fundamentals-of-social-protection-and-social-impact-management-for-a-just-transition": "Fundamentoj de Socia Protekto kaj Socia Efiko-Administrado por Justa Transiro",
+    "fundamentals-of-social-dialogue-and-stakeholder-engagement-in-a-just-transition": "Fundamentoj de Socia Dialogo kaj Stakeholder Engagement en Justa Transiro",
+    "fundamentals-of-just-transition-planning": "Fundamentoj de Justa Transira Planado",
+    "fundamentals-of-creating-and-providing-or-supporting-access-to-green-and-decent-jobs-for-an-inclusive-and-balanced-workforce": "Fundamentoj de Kreado kaj Provizo aŭ Subtenado de Aliro al Verdaj kaj Decaj Laborpostenoj por Inkluziva kaj Ekvilibrata Laboristaro",
+    "filing-name": "Dosiera Nomo",
+    "ethical-conduct": "Etika Konduto",
+    "environment": "Medio",
+    "engaging-with-affected-and-potentially-affected-stakeholders": "Engaĝiĝi kun Afektaj kaj Eble Trafitaj Koncernatoj",
+    "embedding-respect-and-human-rights-due-diligence": "Enkonstruado de Respekto kaj Homaj Rajtoj Devota Diligento",
+    "ecosystems-and-biodiversity": "Ekosistemoj kaj Biodiverseco",
+    "ecosystems": "Ekosistemoj",
+    "dib-score": "DIB-Poentaro",
+    "dib-rank": "DIB Rango",
+    "decent-work": "Deca Laboro",
+    "csi": "CSI",
+    "corporate": "Korporacia",
+    "core-social-score": "Kerna Socia Poentaro",
+    "company-sector": "Firma Sektoro",
+    "commitment-to-respect-the-human-rights-of-workers": "Devontigo Respekti La Homajn Rajtojn de Laboristoj",
+    "commitment-to-respect-human-rights": "Devontigo Respekti Homajn Rajtojn",
+    "collective-bargaining-fundamentals": "Fundamentoj pri Kolektiva Negocado",
+    "capacity-building": "Konstruado de Kapacito",
+    "benchmark-year": "Referenca Jaro",
+    "benchmark-ranking": "Komercanrangotabelo",
+    "band": "Grupo",
+    "assessing-human-rights-risks-and-impacts": "Taksante Homajn Rajtajn Riskojn kaj Efikojn",
+    "anti-bribery-and-anti-corruption-fundamentals": "Kontraŭsubaĉeto kaj Kontraŭkorupto-Fundamentoj",
+    "adhering-to-societal-conventions": "Adherante al Sociaj Konvencioj",
+    "act-ranking": "ACT Rangotabelo",
+    "access": "Aliro",
+    "gender-equality-and-womens-empowerment-fundamentals": "Fundamentoj pri seksegaleco kaj povigo de virinoj",
+    "fundamentals-of-retaining-and-re-andor-up-skilling-workers-for-an-inclusive-balanced-workforce": "Fundamentoj de reteni kaj re- kaj/aŭ altnivelaj laboristoj por inkluziva, ekvilibra laborantaro",
+    "fundamentals-of-advocacy-for-policies-and-regulation-on-green-and-decent-job-creation-employee-retention-education-and-reskilling-and-social-protection-supporting-a-just-transition": "Fundamentoj de pledado por politikoj kaj reguligo pri verda kaj deca laborkreado; reteno de dungitoj, edukado kaj rekapablo, kaj socia protekto apogante justan transiron"
+  },
+  "wikidata": {
+    "polideology": "Politika Ideologio",
+    "polalignment": "Politika Paraleligo"
   }
 }

@@ -8,6 +8,7 @@ import json
 from pprint import pprint
 from multiprocessing import Pool
 
+dicts = ['core', 'mbfc', 'goodonyou', 'social', 'political']
 def sort_filenames_by_line_count(domains):
     # Create a list of tuples with filename and line count
     file_info = []
@@ -45,12 +46,30 @@ def process_domain(domhash):
                         value = yaml_data[key]
                         if not key in total_data.keys():
                             total_data[key] = value
-                        if type(total_data[key]) is list:
-                            if key != "wikidata_id":
-                                if key != "mbfc_tags":
-                                    org = set(total_data[key])
-                                    org = org.union(set(value))
-                                    total_data[key] = list(org)
+                        else:
+                            if type(total_data[key]) is list and key not in dicts:
+                                if key != "wikidata_id":
+                                    if key != "mbfc_tags":
+                                        org = set(total_data[key])
+                                        org = org.union(set(value))
+                                        total_data[key] = list(org)
+                            elif type(total_data[key]) is list and key in dicts:
+                                if key == "core":
+                                    seen = ["trustpilot", "trustscore", "similar"]
+                                    for item in total_data["core"]:
+                                        seen.append(item["type"])
+                                    for item in value:
+                                        if item["type"] not in seen:
+                                            total_data["core"].append(item)
+                            elif key == "social":
+                                seen = []
+                                for key, item in total_data["social"].items():
+                                    seen.append(key)
+                                for key, item in value.items():
+                                    if key not in seen:
+                                        total_data["social"][key] = item
+
+
             if os.path.exists(json_loc):
                 with open(json_loc, "r") as jsonfile:
                     json_data = json.load(jsonfile)
@@ -73,9 +92,26 @@ def process_domain(domhash):
                         value = total_data[key]
                         if not key in yaml_data.keys():
                             yaml_data[key] = value
-                        if type(total_data[key]) is list:
-                            if key != 'wikidata_id':
-                                yaml_data[key] = value
+                        else:
+                            if type(total_data[key]) is list and key not in dicts:
+                                if key != 'wikidata_id':
+                                    if key != "mbfc_tags":
+                                        yaml_data[key] = value
+                            elif type(total_data[key]) is list and key in dicts:
+                                if key == "core":
+                                    seen = []
+                                    for item in yaml_data["core"]:
+                                        seen.append(item["type"])
+                                    for item in value:
+                                        if item["type"] not in seen:
+                                            yaml_data["core"].append(item)
+                            elif key == "social":
+                                seen = []
+                                for key, item in yaml_data["social"].items():
+                                    seen.append(key)
+                                for key, item in value.items():
+                                    if key not in seen:
+                                        yaml_data["social"][key] = item
                     yaml_data['domhash'] = domhash
                     yaml_data['connections'] = f'/connections/{domhash}.json'
                     with open(output_loc, "w") as output:
@@ -86,18 +122,14 @@ def process_domain(domhash):
         json_output_file = f'hugo/static/connections/{domhash}.json'
         with open(json_output_file, 'w') as output:
             json.dump(connections_out, output)
-    except:
-        pass
+    except Exception as e:
+        pprint(e)
+        # exit()
+
         #return [e, domhash]
     return [True, domhash]
 
-def progress():
-    time.sleep(3)  # Check progress after 3 seconds
-    print(f'total: {pbar.total} finish:{pbar.n}')
-
 def process_domains_parallel(domains):
-    thread = threading.Thread(target=progress)
-    thread.start()
     results = []
     with Pool() as pool:
         for result in pool.imap_unordered(process_domain, domains):
@@ -143,6 +175,6 @@ if __name__ == "__main__":
             # exit()
 
 
-    pbar = tqdm(total=len(data))
+    pbar = tqdm(total=len(hash_list))
     processed_results = process_domains_parallel(hash_list)
 

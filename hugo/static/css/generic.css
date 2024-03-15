@@ -132,6 +132,7 @@ time, mark, audio, video {
 html {
     --c-main: #08D735;
     --c-background: #FFFFFF;
+    --c-backgroundo: #FFFFFFAA;
     --c-background-units: #FFF;
     --c-light-text: #343434;
     --c-heavy-text: #1A1A1A;
@@ -158,6 +159,7 @@ html {
 html.dark-theme {
     --c-main: #08D735;
     --c-background: #1A1A1A;
+    --c-backgroundo: #1A1A1AAA;
     --c-background-units: #FFF;
     --c-light-text: #FFF;
 	--c-heavy-text: #1A1A1A;
@@ -173,6 +175,7 @@ html.dark-theme {
 html.debugColors {
     --c-main: #08D735;
     --c-background: #1A1A1A;
+    --c-backgroundo: #1A1A1AAA;
     --c-background-units: #FFF;
     --c-light-text: #ff4500;
 	--c-heavy-text: #1A1A1A;
@@ -194,6 +197,7 @@ html.debugColors {
     html {
         --c-main: #08D735;
         --c-background: #1A1A1A;
+        --c-backgroundo: #1A1A1AAA;
         --c-background-units: #FFF;
         --c-light-text: #FFF;
     	--c-heavy-text: #1A1A1A;
@@ -210,6 +214,7 @@ html.debugColors {
     html.light-theme {
         --c-main: #08D735;
         --c-background: #FFFFFF;
+        --c-backgroundo: #FFFFFFAA;
         --c-background-units: #FFF;
         --c-light-text: #343434;
         --c-heavy-text: #1A1A1A;

@@ -3,6 +3,7 @@
 rm -rf hugo/content/db
 mkdir hugo/content/db
 python ./record-build.py
+python ./copy_entities.py
 cp hugo/examplecom.md hugo/content/db/
 rm matched_output/*
 python ./rosetta-build.py

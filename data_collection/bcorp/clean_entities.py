@@ -10,6 +10,10 @@ input_file = "combined_data.json"  # Replace with your input file path
 with open(input_file, "r") as json_file:
     array = json.load(json_file)
 
+average_input_file = "average_ratings_latest_verified_score.json"  # Replace with your input file path
+with open(average_input_file, "r") as json_file:
+    av_array = json.load(json_file)
+
 # Define the output directory
 output_dir = "entities"
 available_ratings = {}
@@ -35,6 +39,8 @@ for data in array:
             "slug": slug,
             "source": data.get("name"),
             "score": data.get("latestVerifiedScore"),
+            "score_industryAverage": av_array.get(data.get("industry")),
+            "industry": data.get("industry"),
             "ratingDate": data.get("assessments")[0]["ratingDate"],
             "location": f"bcorp/{slug}",
             "website": website

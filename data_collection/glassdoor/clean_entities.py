@@ -6,6 +6,11 @@ from urllib.parse import urlparse
 index_filename = "site_id.json"
 available_ratings = {}
 
+industry_average_file = "average_ratings.json"
+
+with open(industry_average_file, "r") as iaf:
+    av_array= json.load(iaf)
+
 # Function to process a single JSON file
 def process_json_file(json_filename):
     try:
@@ -17,6 +22,7 @@ def process_json_file(json_filename):
             entity_filename = f"entities/{value}.json"
 
             new_variables = {
+                "score_industryAverage": av_array.get(data.get("industry")),
                 "location": f"glassdoor/{value}",
                 "source": data.get("website").replace("http://","").replace("https://","")
             }

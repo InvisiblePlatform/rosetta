@@ -60,11 +60,11 @@ def do_node(ids, collection):
     "sitelinks": {
         "eswiki": {"title": 1}, "enwiki": {"title": 1}, "zhwiki": {"title": 1},
         "eowiki": {"title": 1}, "arwiki": {"title": 1}, "frwiki": {"title": 1},
-        "dewiki": {"title": 1}, "hiwiki": {"title": 1}
+        "dewiki": {"title": 1}, "hiwiki": {"title": 1}, "cawiki": {"title": 1}
     },
     "labels": {
         "es": {"value":1}, "en": {"value":1}, "zh": {"value":1}, "eo": {"value":1},
-        "ar": {"value":1}, "fr": {"value":1}, "de": {"value":1}, "hi": {"value":1}
+        "ar": {"value":1}, "fr": {"value":1}, "de": {"value":1}, "hi": {"value":1}, "ca": {"value": 1}
     },
     "claims": {
         "P169": {"mainsnak.datavalue.value.id": 1},
@@ -111,6 +111,7 @@ def do_node(ids, collection):
                 "arlabel": node["labels"]["ar"]["value"] if "ar" in node["labels"] else nullname,
                 "frlabel": node["labels"]["fr"]["value"] if "fr" in node["labels"] else nullname,
                 "delabel": node["labels"]["de"]["value"] if "de" in node["labels"] else nullname,
+                "calabel": node["labels"]["ca"]["value"] if "ca" in node["labels"] else nullname,
                 "enwiki": node["sitelinks"]["enwiki"]["title"] if "enwiki" in node["sitelinks"] else "null", 
                 "eswiki": node["sitelinks"]["eswiki"]["title"] if "eswiki" in node["sitelinks"] else "null", 
                 "zhwiki": node["sitelinks"]["zhwiki"]["title"] if "zhwiki" in node["sitelinks"] else "null", 
@@ -119,6 +120,7 @@ def do_node(ids, collection):
                 "arwiki": node["sitelinks"]["arwiki"]["title"] if "arwiki" in node["sitelinks"] else "null", 
                 "frwiki": node["sitelinks"]["frwiki"]["title"] if "frwiki" in node["sitelinks"] else "null", 
                 "dewiki": node["sitelinks"]["dewiki"]["title"] if "dewiki" in node["sitelinks"] else "null", 
+                "cawiki": node["sitelinks"]["cawiki"]["title"] if "cawiki" in node["sitelinks"] else "null", 
                 "defSite": defSite.replace(".","") if defSite else "null",
                 "groups": node_groups
         })

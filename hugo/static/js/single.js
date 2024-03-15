@@ -1,3 +1,764 @@
+const pageHost = `${window.location.protocol}//${window.location.host}`
+const pageCoreLocation = `${pageHost}${document.getElementById('location-url').textContent}`;
+const assetsURL = `https://assets.reveb.la`
+
+// Translator
+var translator = new Translator({
+    persist: true,
+    // debug: true,
+    filesLocation: `${pageHost}/i18n`
+});
+const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
+translator.fetch(languages).then(() => {
+    translator.translatePageTo();
+    registerLanguageToggle();
+});
+
+function registerLanguageToggle() {
+    var select = document.getElementById("langselect");
+    for (var i = 0, len = select.childElementCount; i<len; ++i ){
+        if (select.children[i].value == localStorage.preferred_language) {
+            select.selectedIndex = i;
+        };
+    }
+
+    // console.log(select);
+    select.addEventListener("change", evt => {
+      var language = evt.target.value;
+      if (language == "-" ){ return; };
+      translator.translatePageTo(language);
+    });
+}
+
+const loadPageCore = async () =>{
+    try {
+        const dataf = await fetch(pageCoreLocation)
+        const response = await dataf.json()
+        for (module of response.core){
+            if (module.url == 'local'){
+                console.log(module);
+            } else {
+                addModule(type=module.type, url=`${pageHost}/ds/${module.url}`);
+            }
+        }
+        if ("political" in response) addLocalModule(type="political", data=response.political)
+        if ("social" in response) addLocalModule(type="social", data=response.social)
+    } catch (e) {
+        console.log(e)
+    }
+}
+const loadPageExternal = async () =>{
+    try {
+        postLocation = `${document.getElementById('location-url').textContent.replace("/index.json","").replace('/db','db')}`
+        postURL = `${assetsURL}/get-post`
+
+		data = {
+			"location": postLocation,
+		}
+        headers = new Headers({
+                "content-type": 'application/json'
+        });
+
+		const dataf = await fetch(postURL, {
+			method: "POST",
+            headers: headers,
+			body: JSON.stringify(data)
+		})
+        const response = await dataf.json()
+        console.log(postLocation)
+        console.log(response.content)
+        if (response.hasOwnProperty('author')){
+            console.log(response)
+            addLocalModule(type="post", data=response)
+        }
+    } catch (e) {
+        if (debug == true) console.log(e)
+    }
+}
+
+const loginCheck = async () => {
+        try{
+        postURL = `${assetsURL}/auth/am-i-logged-in`
+        postLocation = `${document.getElementById('location-url').textContent.replace("/index.json","").replace('/db','db')}`
+        headers = new Headers({
+                "content-type": 'application/json'
+        });
+
+		const dataf = await fetch(postURL, {
+			method: "GET",
+            headers: headers,
+            credentials: 'include',
+		})
+        const response = await dataf.json()
+        if (response.hasOwnProperty("message")){
+            console.log(response)
+            element = document.createElement("div")
+            element.innerHTML = `<p>You are logged in as ${response.message}, <a href="${assetsURL}/posttest?location=${postLocation}"> on this page</a></p>`
+            carbon_el = document.getElementById("carbon")
+            carbon_el.appendChild(element)
+
+        }
+        } catch (e){
+            console.log(e)
+        }
+        
+}
+// load modules for matching data
+
+const types = {
+    "trustscore": { "id": "trust-scam", "label": "Trust Scam", "translate": "trustsc.title" },
+    "mbfc": { "id": "mbfc", "label": "Media Bias", "translate": "mbfc.title" },
+    "glassdoor": { "id": "glassdoor", "label": "Employee Rating", "translate": "glassdoor.title" },
+    "similar": { "id": "similar-site-wrapper", "label": "Similar Sites", "translate": "similar.title" },
+    "tosdr": { "id": "tosdr-link", "label": "Privacy", "translate": "tosdr.title" },
+    "trustpilot": { "id": "trust-pilot", "label": "Trust Pilot", "translate": "trustpilot.title" },
+    "yahoo": { "id": "yahoo", "label": "Esg Rating", "translate": "esg.title" },
+    "post": { "id": "post", "label": "User Added", "translate": "user.moduletitle" },
+    "bcorp": { "id": "bcorp", "label": "Bcorp Rating", "translate": "bcorp.title" },
+    "goodonyou": { "id": "goodonyou", "label": "Goodonyou Rating", "translate": "goy.title" },
+    "wbm": { "id": "wbm", "label": "WBM", "translate": "wbm.title" },
+    "cta": { "id": "cta", "label": "Call to Action", "translate": "cta.title" },
+    "opensecrets": { "id": "opensec", "label": "OpenSecrets", "translate": "os.title" },
+    "lobbyeu": { "id": "lobbyeu", "label": "LobbyFacts.eu", "translate": "lb.title" },
+    "social": { "id": "social-wikidata", "label": "Social Media", "translate": "social.title" },
+    "political": { "id": "political-wikidata", "label": "Political Leanings", "translate": "political.title" },
+}
+
+const contentContainer = document.getElementsByClassName("content")[0]
+
+// TODO:
+// GOY missing slug
+async function addLocalModule(type=undefined,data=undefined){
+    if (type == undefined || data == undefined) return; 
+    if (type in types) {} else {return;}
+    stopDefaultContainer = false;
+    let sectionContainer = document.createElement('section');
+    sectionContainer.className = "contentSection";
+    sectionContainer.id = types[type].id;
+
+    // Genericising needed
+    // console.log(data)
+    if (type == "social"){
+    htmlString = `
+        <h2 class="sectionTitle"><div data-i18n="${types[type].translate}">${types[type].label}</div><div class="subname"></div></h2>
+
+    `
+        //<button class="collapsible">Show/Hide</button>
+        htmlString += `<section id="social-wikidata-links" class="collapsible-content"><table>`
+        for (label in data){
+            for (item in data[label]){
+                htmlString += `<tr><th></th>
+                    <td><a class="spacelinks" href="${data[label][item]['url']}">${data[label][item]['url']}</a><a class="minisource" target="_blank" href="https://wikidata.org/"></a></td>
+                </tr>`
+            }
+        }
+        htmlString += `
+            </table></section>
+        `
+        sectionContainer.innerHTML = htmlString
+    }
+    if (type == "political"){
+        lang = "enlabel"
+        stopDefaultContainer = true;
+        for (label in data){
+            let sectionContainer = document.createElement('section');
+            sectionContainer.className = "contentSection";
+            sectionContainer.id = types[type].id;
+            actLabel = (label == "polalignment") ? "Political Alignments" : "Political Ideologies";
+            htmlString = `
+                <h2 class="sectionTitle"><div data-i18n="wikidata.${label}">${actLabel}</div></h2>
+<div class="pie hideTilExpanded"></div>
+<score class="biaslink" ></score>
+<div class="scoreText fullBleed">`
+            for (item in data[label]){
+                htmlString += `<tr><th></th>
+                    <h3>${data[label][item]["sourceLabels"][lang]} <a class="spacelinks" href="https://wikidata.org/wiki/${data[label][item]['dataId']}">${data[label][item]['data'][lang]}</a><a class="minisource" target="_blank" href="https://wikidata.org/wiki/${data[label][item]['dataId']}"></a></h3>`
+            }
+            htmlString += `
+     <a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/${data[label][item]['dataId']}">WIKIDATA</a>
+                </div>
+                </div>
+            `
+            sectionContainer.innerHTML = htmlString
+            contentContainer.appendChild(sectionContainer);
+        }
+    }
+    if (type == 'post'){
+
+        postContent = $('<div/>').html(data.content).text()
+        htmlString = `
+        <h2 class="sectionTitle"><div data-i18n="user.moduletitle">User Content</div><div class="subname">(${data.location})</div></h2>
+         <div class="scoreText fullBleed userText">
+             <div>`
+        htmlString +=postContent
+        htmlString +=`<a class="source" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a>
+            </div>
+         </div>
+        `
+        sectionContainer.innerHTML = htmlString;
+    }
+    if (!stopDefaultContainer)
+        contentContainer.appendChild(sectionContainer);
+    // if (type == "social"){
+    //     var coll = document.getElementsByClassName('collapsible');
+    //     var i;
+
+    //     for (i = 0; i < coll.length; i++) {
+    //         coll[i].addEventListener('click', function() {
+    //             this.classList.toggle('active');
+    //             var content = this.nextElementSibling;
+    //             if (content.style.display === "none") {
+    //                 content.style.display = "flex";
+    //             } else {
+    //                 content.style.display = "none";
+    //             }
+    //         });
+    //     }
+    // }
+    translator.translatePageTo();
+}
+
+async function addModule(type=undefined,url=undefined){
+    if (type == undefined || url == undefined) return; 
+    // needs some mechanic for caching when we switch to graph mode
+    const moduleData = await fetch(url);
+    const moduleResponse = await moduleData.json()
+    //console.log(moduleResponse)
+    if (type in types) {} else {return;}
+    let stopDefaultContainer = false
+    let sectionContainer = document.createElement('section');
+    sectionContainer.className = "contentSection";
+    sectionContainer.id = types[type].id;
+    // Genericising needed
+    htmlString = `
+        <h2 class="sectionTitle"><div data-i18n="${types[type].translate}">${types[type].label}</div><div class="subname">(${moduleResponse.source})</div></h2>
+    `
+
+    if (type == "opensecrets"){
+        //console.log(moduleResponse)
+        htmlString += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">`
+        if ("bill_most_heading" in moduleResponse){
+            htmlString += `<p class="flavourText"><b>${moduleResponse.bill_most_heading}</b></p>
+            <p class="flavourText"><a href='${moduleResponse.bill_most_url}'>${moduleResponse.bill_most_title} (${moduleResponse.bill_most_code})</a></p>`
+        }
+        htmlString += '<div class="scoreText fullBleed"><div>'
+        if ("cycle_year" in moduleResponse){
+            htmlString += `<p>Data is true of the ${moduleResponse.cycle_year} cycle</p>`
+            if ("contributions_rank" in moduleResponse) htmlString+= `<p><b>Contributions Rank:</b> ${moduleResponse.contributions_rank}</p>`
+            if ("contributions_amount" in moduleResponse) htmlString+= `<p><b>Contributions Amount:</b> ${moduleResponse.contributions_amount}</p>`
+            if ("lobbying_rank" in moduleResponse) htmlString+= `<p><b>Lobbying Rank:</b> ${moduleResponse.lobbying_rank}</p>`
+
+            htmlString+= '<div class="charts">'
+            if ("bars" in moduleResponse){
+                bars = moduleResponse.bars;
+                if ("recipients_of_funds" in bars){
+                    htmlString+=`
+                        <h3 data-i18n="opensec.recipients">Recipients of Funds</h3>
+                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
+                    for (recipient in bars.recipients_of_funds){
+                        let r = bars.recipients_of_funds[recipient]
+                        htmlString+=`
+                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
+                            <span class="data">${r.entity}</span>
+                            <span class="tooltip">${r.entity}<br>
+                                (${r.amount})</span>
+                            </td>
+                        `
+                    }
+                    htmlString += "</tr></body></table>"
+                }
+                if ("sources_of_funds" in bars){
+                    htmlString+=`
+                        <h3 data-i18n="opensec.sources">Sources of Funds</h3>
+                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
+                    for (source in bars.sources_of_funds){
+                        let r = bars.sources_of_funds[source]
+                        htmlString+=`
+                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
+                            <span class="data">${r.entity}</span>
+                            <span class="tooltip">${r.entity}<br>
+                                (${r.amount})</span>
+                            </td>
+                        `
+                    }
+                    htmlString += "</tr></body></table>"
+                }
+                if ("sources_of_funds_to_candidates" in bars){
+                    htmlString+=`
+                        <h3 data-i18n="opensec.sourcestocandidates">Sources of Funds to Candidates</h3>
+                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
+                    for (source in bars.sources_of_funds_to_candidates){
+                        let r = bars.sources_of_funds_to_candidates[source]
+                        htmlString+=`
+                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
+                            <span class="data">${r.entity}</span>
+                            <span class="tooltip">${r.entity}<br>
+                                (${r.amount})</span>
+                            </td>
+                        `
+                    }
+                    htmlString += "</tr></body></table>"
+                }
+            }// End of Bars
+            if ("charts" in moduleResponse){
+                charts = moduleResponse.charts;
+                if ("House" in charts){
+                    house = charts["House"]
+                    year_range = house.latest_year - house.earliest_year;
+                    earlyYear = house.earliest_year
+                    valueYear = house.Dems.all_years.length
+                    houseDems = house.Dems.all_years
+                    houseRepubs = house.Repubs.all_years
+                    heightThou = [].concat(houseDems,houseRepubs).sort(function(a,b) { return a - b }).reverse()[0] / 1000
+                    if (heightThou > 0){
+                        htmlString+=`
+                            <h3 data-i18n="opensec.house">House</h3>
+                            <h4 style="color:red !important;" data-i18n="opensec.republicans">Republicans</h4>
+                            <h4 style="color:blue !important;" data-i18n="opensec.democrats">Democrats</h4>
+                            <table class="charts-css line multiple hide-data show-labels show-primary-axis show-data-on-hover" style="--color-1: blue;--color-2:red;">
+                            <thead>
+                                <tr>
+                                <th data-i18n="opensec.year"        scope="col">Year</th>
+                                <th data-i18n="opensec.democrats"   scope="col">Democrats</th>
+                                <th data-i18n="opensec.republicans" scope="col">Republicans</th>
+                                </tr>
+                            </thead>
+                            <tbody>`
+                        lastD = 0
+                        lastR = 0
+                        for (year in house["all_data"]){
+                            dataD = house["all_data"][year]["Dems"];
+                            dataR = house["all_data"][year]["Repubs"];
+                            tD = dataD / (heightThou * 1000)
+                            tR = dataR / (heightThou * 1000)
+                            htmlString+=`
+                                <tr><th scope="row">${year}</th>
+                                    <td style="--start:${ lastD }; --size:${ tD };"><span class="data">${ dataD }</span></td>
+                                    <td style="--start:${ lastR }; --size:${ tR };"><span class="data">${ dataR }</span></td>
+                                </tr>
+                            `
+                            lastD = tD;
+                            lastR = tR;
+                             
+                        }
+                        htmlString += "</tbody></table>"
+                    }
+
+                }
+                if ("Senate" in charts){
+                    house = charts["Senate"]
+                    year_range = house.latest_year - house.earliest_year;
+                    earlyYear = house.earliest_year
+                    valueYear = house.Dems.all_years.length
+                    houseDems = house.Dems.all_years
+                    houseRepubs = house.Repubs.all_years
+                    heightThou = [].concat(houseDems,houseRepubs).sort(function(a,b) { return a - b }).reverse()[0] / 1000
+                    if (heightThou > 0){
+                        htmlString+=`
+                            <h3 data-i18n="opensec.senate">Senate</h3>
+                            <h4 style="color:red !important;" data-i18n="opensec.republicans">Republicans</h4>
+                            <h4 style="color:blue !important;" data-i18n="opensec.democrats">Democrats</h4>
+                            <table class="charts-css line multiple hide-data show-labels show-primary-axis show-data-on-hover" style="--color-1: blue;--color-2:red;">
+                            <thead>
+                                <tr>
+                                <th data-i18n="opensec.year"        scope="col">Year</th>
+                                <th data-i18n="opensec.democrats"   scope="col">Democrats</th>
+                                <th data-i18n="opensec.republicans" scope="col">Republicans</th>
+                                </tr>
+                            </thead>
+                            <tbody>`
+                        lastD = 0
+                        lastR = 0
+                        for (year in house["all_data"]){
+                            dataD = house["all_data"][year]["Dems"];
+                            dataR = house["all_data"][year]["Repubs"];
+                            tD = dataD / (heightThou * 1000)
+                            tR = dataR / (heightThou * 1000)
+                            htmlString+=`
+                                <tr><th scope="row">${year}</th>
+                                    <td style="--start:${ lastD }; --size:${ tD };"><span class="data">${ dataD }</span></td>
+                                    <td style="--start:${ lastR }; --size:${ tR };"><span class="data">${ dataR }</span></td>
+                                </tr>
+                            `
+                            lastD = tD;
+                            lastR = tR;
+                             
+                        }
+                        htmlString += "</tbody></table>"
+                    }
+
+                }
+
+            }
+
+            if ("lobbycards" in moduleResponse){
+                htmlString += "<h3 data-i18n='opensec.lobbying'> Lobbying </h3>"
+                for (card of moduleResponse.lobbycards){
+                    htmlString += `
+                            <div class="openSecLobbyCardContainer"><h4>${card.year}</h4><h5>${card.dollars}</h5>
+                            <p><b data-i18n='opensec.lobbistingov'>Lobbyists who worked in government</b>${card.held.count} (${card.held.percent})</p>
+                            <p><b data-i18n='opensec.lobbistnotingov'>Lobbyists who haven't worked in government</b>${card.notheld.count} (${card.notheld.percent})</p>
+                            </div>
+                    `
+                }
+                htmlString += "</div>"
+            }
+
+        }
+        htmlString += `</div>
+                <a class="source hideInSmall" target="_blank" href="https://www.opensecrets.org/orgs/name/summary?id=${moduleResponse.osid}">OPENSECRETS</a>
+                </div>
+                </div>
+                `
+        sectionContainer.innerHTML = htmlString
+    }
+
+    if (type == "wbm"){
+        for (module in moduleResponse.modules){
+            let ssectionContainer = document.createElement('section');
+            ssectionContainer.className = "contentSection";
+            file = moduleResponse.modules[module].file;
+            trans = file.split("_").slice(1).join("-").toLowerCase()
+            fileName = file.split("_").slice(1).join(" ")
+            ssectionContainer.id = `wbm-${trans}`;
+            htmlString = `
+            <h2 class="sectionTitle"><div data-i18n="wbm.${trans}">${fileName}</div><div class="subname">(${moduleResponse.source})</div></h2>
+            <div class="pie hideTilExpanded"></div>
+            `
+            additionalString = ''
+            for (item of Object.keys(moduleResponse.modules[module])){
+                if (!item.includes("Total Score")){
+                    if (item != "file" && item != "Company Scorecard"){
+                        if (item.includes("(")){
+                            outOf = item.split("(")[1].replace(")","")
+                            itemLabel = item.split("(")[0]
+                            additionalString += `<tr><th data-i18n='wbm.${itemLabel.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")}'>${itemLabel}</th>
+                            <td style="--outOf:'/ ${outOf}';" class="ratingOutOf" >${moduleResponse.modules[module][item]}</td></tr>`
+                        } else {
+                        additionalString += `<tr><th data-i18n='wbm.${item.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")}'>${item}</th>
+                            <td style="--outOf:'';" >${moduleResponse.modules[module][item]}</td></tr>`
+                        }
+                    }
+                } else {
+                  if (!item.includes("Raw")){
+                  outOf = Number(item.split("(")[1].replace(")",""))
+                  itemLabel = item.split("(")[0]
+                  score = Number(moduleResponse.modules[module][item])
+                  percent = (score / outOf) * 100
+                  
+                htmlString += `
+<score class="ratingOutOf" style="--outOf:'/ ${outOf}';">${score}</score>
+<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${percent};"></div>
+         <div class="scoreText fullBleed">
+             <div>
+         <table>
+
+                    `
+                  }
+                }
+            }
+            htmlString += additionalString
+            ssectionContainer.innerHTML = `${htmlString} </table> <a target="_blank" class="source" href='{{- $source.Get "source" -}}'>WORLDBENCHMARK</a></div> </div>`
+            contentContainer.appendChild(ssectionContainer);
+            stopDefaultContainer = true;
+        }
+    }
+    if (type == "cta"){
+        htmlString += `
+        <score class="biaslink"> </score>
+        <div class="scoreText">
+        <div>
+        <h3>${moduleResponse.author}<span class="author" data-i18n="common.author"> - Author</span></h3>
+        <p>${moduleResponse.description}</p>
+        </div>
+        <div>`
+        positiveString = ''
+        negativeString = ''
+        for (link in moduleResponse.links){
+            if (moduleResponse.links[link].type == "positive"){
+            positiveString += `<div><a href='${moduleResponse.links[link].url}'>${moduleResponse.links[link].label}</a></div>`
+            } else {
+            negativeString += `<div><a href='${moduleResponse.links[link].url}'>${moduleResponse.links[link].label}</a></div>`
+            }
+        }
+        htmlString += "<div><h4> Positive </h4>"
+        htmlString += positiveString
+        htmlString += "</div><div><h4> Negative </h4>"
+        htmlString += negativeString
+
+        sectionContainer.innerHTML = `${htmlString}</div></div></div>`
+    }
+    if (type == "lobbyeu"){
+        rating = moduleResponse
+        //console.log(moduleResponse)
+        htmlString += `
+<div class="scoreText fullBleed">
+    <div>
+    <table>
+    <tr><th data-i18n="lb.transparency_id">Transparency ID:</th><td>${moduleResponse.eu_transparency_id}</td></tr>
+    <tr><th data-i18n="lb.hq_countries">HQ Country:</th><td>${moduleResponse.head_country}</td></tr>
+    <tr><th data-i18n="lb.eu_country">EU Office Country:</th><td>${moduleResponse.be_country}</td></tr>
+    <tr><th data-i18n="lb.lobby_count">Lobbyist Count:</th><td>${moduleResponse.lobbyist_count}</td></tr>
+    <tr><th data-i18n="lb.lobby_fte">Lobbyist FTE:</th><td>${moduleResponse.lobbyist_fte}</td></tr>
+    <tr><th data-i18n="lb.calculated_cost">Calculated Total Cost:</th><td>${moduleResponse.calculated_cost}</td></tr>
+    <tr><th data-i18n="lb.meeting_count">Meetings with the EU:</th><td>${moduleResponse.meeting_count}</td></tr>
+    <tr><th data-i18n="lb.passes_count">Lobbyist Passes Count:</th><td>${moduleResponse.passes_count}</td></tr>
+    </table>
+<a class="source" target="_blank" href="https://lobbyfacts.eu/datacard/org?rid=${moduleResponse.eu_transparency_id}">EU Transparency register via LobbyFacts.eu</a>
+</div>
+</div>
+
+        `
+        sectionContainer.innerHTML = htmlString
+    }
+    if (type == "goodonyou"){
+        rating = (moduleResponse.rating / 5) * 100
+        lrating = Math.floor(moduleResponse.labourRating / 4)
+        arating = Math.floor(moduleResponse.animalRating / 4)
+        erating = Math.floor(moduleResponse.environmentRating / 4)
+        htmlString += `
+<div class="pie hideTilExpanded"></div>
+<score class="ratingOutOfFive">${moduleResponse.rating}</score>
+<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${rating};"></div>
+<div class="scoreText fullBleed">
+    <div>
+<table class="dataTable">
+<tr><th data-i18n="goy.lr">Labour Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">${lrating}</td></tr>
+<tr><th data-i18n="goy.ar">Animal Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">${arating}</td></tr>
+<tr><th data-i18n="goy.evr">Environment Rating</th><td class="hideInSmall ratingOutOf" style="--outOf:'/5';">${erating}</td></tr>
+<tr><th data-i18n="goy.p">Price</th><td class="hideInSmall ratingOutOf" style="--outOf:'/4';">${ moduleResponse.price }</td></tr>
+</table>
+<a class="source" target="_blank" href="https://directory.goodonyou.eco/brand/na">GOODONYOU.ECO</a>
+</div>
+</div>
+
+        `
+        sectionContainer.innerHTML = htmlString
+    }
+
+    if (type == "bcorp"){
+
+    htmlString += `<img class="iconclass" src="${pageHost}/icon/bcorp.svg"/>
+    <score class="ratingOutOf hideTilExpanded" style='--outOf:"/140+";'>${moduleResponse.score}</score>
+    <div class="scoreText fullBleed"><div>
+    <table class="dataTable hideInSmall">
+    <tr><th data-i18n="common.industry_average">Industry Average Score</th><td class="ratingOutOf" style="--outOf:'/140+'">${ moduleResponse.score_industryAverage }</td></tr>
+    <tr><th data-i18n="bcorp.governance"></th><td class="ratingOutOf">${moduleResponse.Governance}</td></tr>
+    <tr><th data-i18n="bcorp.workers"></th><td class="ratingOutOf">${moduleResponse.Workers}</td></tr>
+    <tr><th data-i18n="bcorp.community"></th><td class="ratingOutOf">${moduleResponse.Community}</td></tr>
+    <tr><th data-i18n="bcorp.environment"></th><td class="ratingOutOf">${moduleResponse.Environment}</td></tr>
+    <tr><th data-i18n="bcorp.customers"></th><td class="ratingOutOf">${moduleResponse.Customers}</td></tr>
+    </table>
+    <a class="source hideInSmall" target="_blank" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/${moduleResponse.slug}">BCORP</a>
+    </div>
+    </div>`
+        sectionContainer.innerHTML = htmlString
+    }
+
+
+    if (type == 'yahoo'){
+        formatting = ["Negligible", "Low", "Medium", "High", "Severe"]
+        // 0-10, 10-20, 20-30, 40+
+
+        htmlString += `
+<div class="pie hideTilExpanded"></div>
+<score class="biaslink">${moduleResponse.totalEsg}</score>
+<div class="scoreText fullBleed"> 
+<div class="ratingOutOf hideTilExpanded" style="--outOf:'/40+';text-align: center;" >${moduleResponse.totalEsg}</div>
+<table class="leftBorder">
+<tr>
+    <th data-i18n='esg.environmental' >Environmental Risk Score</th> 
+    <td class="" style="--outOf:'/ 40+';">${moduleResponse.environmentScore}</td>
+</tr>
+<tr>
+    <th data-i18n='esg.social' >Social Risk Score</th>
+    <td class="" style="--outOf:'/ 40+';">${moduleResponse.socialScore}</td>
+</tr>
+<tr>
+    <th data-i18n='esg.governance' >Governance Risk Score</th>
+    <td class="" style="--outOf:'/ 40+';">${moduleResponse.governanceScore}</td>
+</tr>
+<tr>
+    <th data-i18n='esg.total'>Total ESG</th>
+    <td class="" style="--outOf:'/ 40+';">${moduleResponse.totalEsg}</td>
+</tr>
+</table>
+</div>
+<div class="scoreText">
+<div class="esgKey"><h3 data-i18n="esg.gradingscale">Grading Scale</h3>
+<table class="esgKey">
+    <tr>
+        <th><div data-i18n="esg.negligible" class="biaslink">Negligible</div></th>
+        <td>0 - 9.9  </td>
+    </tr>
+    <tr>
+        <th><div data-i18n="esg.low" class="biaslink">Low</div></th>
+        <td>10 - 19.9</td>
+    </tr>
+    <tr>
+        <th><div data-i18n="esg.medium" class="biaslink">Medium</div></th>
+        <td>20 - 29.9</td>
+    </tr>
+    <tr>
+        <th><div data-i18n="esg.high" class="biaslink">High</div></th>
+        <td>30 - 39.9</td>
+    </tr>
+    <tr>
+        <th><div data-i18n="esg.severe" class="biaslink">Severe</div></th>
+        <td>40+      </td>
+    </tr>
+</table>
+</div>
+<a target="_blank" class="source hideInSmall" href="https://finance.yahoo.com/quote/${moduleResponse.ticker}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a>
+</div>
+`
+        sectionContainer.innerHTML = htmlString
+    }
+    if (type == 'trustscore'){
+        sectionContainer.innerHTML = `
+        ${htmlString}
+        <div class="pie hideTilExpanded"></div>
+        <score class="biaslink">${moduleResponse.score}</score>
+        <div class="scoreText">
+            <div>
+                <h3>${moduleResponse.score}</h3>
+                <p data-i18n="trustsc.${moduleResponse.rating}">${moduleResponse.rating}</p>
+                <a target="_blank" class="source blanksource" href="https://trustscam.com/${moduleResponse.source}">TRUSTSCAM</a>
+            </div>
+        </div>
+        `;
+
+    }
+
+    if (type == 'mbfc'){
+        sectionContainer.innerHTML = `
+        ${htmlString}
+        <div class="pie hideTilExpanded"></div>
+        <score class="biaslink" data-i18n="bias.${ moduleResponse.bias }">${ moduleResponse.bias }</score>
+        <div class="scoreText">
+            <div>
+                <h3 data-i18n="bias.${ moduleResponse.bias }"></h3>
+                <p>${ moduleResponse.description }</p>
+                <br />
+                <p><b data-i18n="bias.popularity">Popularity:</b> ${ moduleResponse.popularity }</p>
+                <p><b data-i18n="bias.credibility">Credibility:</b> ${ moduleResponse.credibility}</p>
+                <p><b data-i18n="bias.reporting">Reporting:</b> ${ moduleResponse.reporting}</p>
+                <p><b data-i18n="bias.questionable">Reasons for Questionable:</b> ${ moduleResponse.questionable }</p>
+                <a target="_blank" class="source blanksource" href="${ moduleResponse.url }">MEDIA BIAS FACT CHECKER</a>
+            </div>
+        </div>
+        `;
+    }
+
+    if (type == 'glassdoor'){
+        sectionContainer.innerHTML = `
+            ${htmlString}
+            <div class="pie hideTilExpanded"></div>
+            <score class="ratingOutOfFive">${ moduleResponse.glasroom_rating.ratingValue }</score>
+            <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${ (parseFloat(moduleResponse.glasroom_rating.ratingValue) / 5) * 100 };"></div>
+            <div class="scoreText fullBleed">
+                <div>
+            <div class="ratingCount">${ moduleResponse.glasroom_rating.ratingCount } <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></div>
+            <table class="dataTable">
+            <tr><th data-i18n="common.industry_average">Industry Average Score</th><td class="ratingOutOf glass" style="--outOf:'/5'">${ moduleResponse.score_industryAverage }</td></tr>
+            <tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.${ moduleResponse.type.toLowerCase().replace(" - ","_").replace(" ","_")}">${ moduleResponse.type }</td></tr>
+            <tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">${ moduleResponse.headquarters }</td></tr>
+            <tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">${ moduleResponse.founded }</td></tr> 
+            <tr><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">${ moduleResponse.industry }</td></tr> 
+            <tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">${ moduleResponse.revenue }</td></tr>
+            <tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">${ moduleResponse.size }</td></tr>
+            </table>
+            <a class="source hideInSmall" target="_blank" href="${ moduleResponse.url }">GLASSDOOR</a>
+            </div>
+            </div>
+        `
+    }
+
+    if (type == 'tosdr'){
+        rated = moduleResponse.rated;
+        sectionContainer.innerHTML = `
+            ${htmlString}
+            <div class="pie hideTilExpanded"></div>
+            <score style="font-size: 64px;">${rated}</score>
+            <div class="scoreText fullBleed">
+                <div>
+            <h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> ${rated}</h3>
+            <p data-i18n="tos.${rated.toLowerCase()}"></p>
+            <a target="_blank" class="source" href="https://tosdr.org/en/service/${moduleResponse.id}">TOS;DR</a>
+            </div>
+            </div>
+        `
+    }
+
+    if (type == 'similar'){
+        htmlString += `
+        <div class="scoreText fullBleed"><div>
+        <section id="similar-sites" class="hideInSmall">`
+
+        for (site in moduleResponse.similar){
+            ssite = moduleResponse.similar[site].s
+            p = Math.floor(moduleResponse.similar[site].p * 100)
+            htmlString += `
+        <section class="similar-site">
+            <a target="_blank" alt="${ssite}" href="https://${ssite}">
+                ${ssite}</a><div class="percent">${p}</div>
+        </section>
+    `;
+
+        }
+        sectionContainer.innerHTML = `${htmlString}
+        </section>
+        <a target="_blank" class="source" href="https://similarsites.com/site/${ moduleResponse.domain }" style="order:101;">SIMILARSITES.COM</a>
+            </div></div>
+        `;
+    }
+    if (type == 'trustpilot'){
+        htmlString += `
+         <score class="ratingOutOf" style="--outOf:'/5';">${moduleResponse.score}</score>
+         <div class="scoreText fullBleed">
+             <div>
+         <div class="ratingCount">${ moduleResponse.reviews.total } <span data-i18n="glassdoor.reviews"></span></div>
+         <div class="stars">
+        `
+        numberOfStars = Math.floor(moduleResponse.score);
+        remainingStar = moduleResponse.score - numberOfStars;
+        for (let i = 0; i < 5; i++){
+            division = (numberOfStars > i) ? 1 : 0;
+            division = (numberOfStars == i) ? remainingStar : division;
+            htmlString += `<span class="coolStar" style="--division:${division};"></span>`
+
+
+        }
+        sectionContainer.innerHTML = `${htmlString}
+         </div>
+         <table id="trustChart" class="hideTilExpanded">
+             <tr><th data-i18n="trustpilot.total">Total Reviews</th><td>${ moduleResponse.reviews.total }</td></tr>
+             <tr><th data-i18n="trustpilot.one">One Star</th><td>${ moduleResponse.reviews.oneStar }</td></tr>
+             <tr><th data-i18n="trustpilot.two">Two Star</th><td>${ moduleResponse.reviews.twoStars }</td></tr>
+             <tr><th data-i18n="trustpilot.three">Three Star</th><td>${ moduleResponse.reviews.threeStars }</td></tr>
+             <tr><th data-i18n="trustpilot.four">Four Star</th><td>${ moduleResponse.reviews.fourStars }</td></tr>
+             <tr><th data-i18n="trustpilot.five">Five Star</th><td>${ moduleResponse.reviews.fiveStars }</td></tr>
+         </table>
+         <a class="source" target="_blank" href="https://trustpilot.com/review/${ moduleResponse.domain }" >TRUST PILOT</a>
+         </div>
+         </div>
+        `
+    }
+    //console.log(sectionContainer)
+    if (!stopDefaultContainer)
+        contentContainer.appendChild(sectionContainer);
+    translator.translatePageTo();
+}
+// <section id="similar-site-wrapper" class="contentSection">
+// </section>
+
+loadPageCore()
+if (localStorage.experimentalFeatures == "true") {
+    loginCheck()
+    //loginButton()
+    loadPageExternal()
+}
+
 function send_message(type, data){
     var msg = {
         type: type,
@@ -62,37 +823,41 @@ let closeIV = function(){
 let settings = document.getElementById('settings');
 let graphButtons = document.getElementById('graphButtons');
 let networkGraph = document.getElementById('graph-container');
+let sigmacontainer = document.getElementById('sigma-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
-if (document.getElementById('graph-box') != null){
-    document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
-}
 
 // For voting 
 async function voteAsync(site, direction){
-   var voteHeaders;
-    try {
-        uuid = localStorage.uuid;
-    } catch(e) {
-        uuid = null
-    }
-    if (uuid == null){
+   // var voteHeaders;
+   //  try {
+   //      uuid = localStorage.uuid;
+   //  } catch(e) {
+   //      uuid = null
+   //  }
+   //  if (uuid == null){
    voteHeaders = new Headers({
-   	'site': site,
-   	'direction': direction
+       'Content-Type': "application/json"
    });
-    } else {
-   voteHeaders = new Headers({
-   	'site': site,
-   	'direction': direction,
-    'user': uuid
-   });
+   //  } else {
+   // voteHeaders = new Headers({
+   // 	'site': site,
+   // 	'direction': direction,
+   //  'user': uuid
+   // });
+   //  }
+    var data = {
+        type: "domainhash",
+        location: site,
+        direction: direction,
     }
    var voteVars = {
        method: 'POST',
        headers: voteHeaders,
-       mode: 'cors',
+       credentials: 'include',
+       body: JSON.stringify(data)
+
    };
    console.log(site, direction);
    var data = await fetch(
@@ -112,7 +877,6 @@ async function getTotalAsync(site){
    var voteVars = {
        method: 'GET',
        headers: voteHeaders,
-       mode: 'cors',
    };
    var data = await fetch(
        new Request(voteUrl + "/get-data", voteVars)
@@ -221,7 +985,7 @@ const keyconversion = {
     "l": 'glassdoor',
     "g": 'goodonyou',
     "i": 'isin',
-    "m": 'mbfc-header',
+    "m": 'mbfc',
     "o": 'osid',
     // "a": 'polalignment',
     // "p": 'polideology',
@@ -416,6 +1180,131 @@ let notificationsDraw = function(){
     }
 }
 
+function settingTemplate(el, id, i18n, title, state="skip"){
+    el.id = id
+    el.classList.add("switchItem")
+    el.innerHTML = `
+        <h2 data-i18n="${i18n}">${title}</h2>
+            <label class="switch">
+                <input type="checkbox">
+            <span class="slider round"></span>
+        </label> `
+    if (state != "skip"){
+        el.getElementsByTagName("input")[0].checked = state;
+    }
+    settings.appendChild(el)
+}
+
+
+function addSettings(){
+    // Language Picker
+    var languagePicker = document.createElement("label");
+    languagePicker.classList.add("languageSelect")
+    let languagePickerOptions = `<option value="-">-</option>`
+    for (lang in languages){
+        languagePickerOptions += `<option value="${languages[lang]}">${languages[lang].toUpperCase()}</option>`
+    }
+    languagePicker.innerHTML = `
+     <h2 data-i18n="common.language">Language</h2>
+     <select id="langselect" title="Language Picker">
+     ${languagePickerOptions}
+     </select>
+     `
+    settings.appendChild(languagePicker)
+    // Keep Dash on screen
+    var onScreenItem = document.createElement("div")
+    settingTemplate(onScreenItem, "onScreen", "settings.dashboard", "Keep dashboard on screen")
+    // Dark Mode
+    var darkmodeItem = document.createElement("div")
+    settingTemplate(darkmodeItem, "permaDark", "settings.darkMode", "Dark Mode")
+    // Bobble disable
+    var bobbleItem = document.createElement("div")
+    settingTemplate(bobbleItem, "bobbleDisable", "settings.bobbleDisabled", "Disable Bobble")
+    // Notifications
+    var notifications = document.createElement("div");
+    notifications.id = "notifications-shade";
+    notifications.classList.add("switchItem");
+    notifications.innerHTML = `<h2 data-i85n="settings.notifications">Notifications</h2>
+        <div id="notificationsContainer" style="display:flex;">
+        <img id="notificationsCache" style="display:none;width:24px;height:24px;position:relative;transform:translate(-20px,13px);">
+        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div></div>`
+    settings.appendChild(notifications);
+
+    if (localStorage.IVNotifications == "true"){
+        let notifications = document.getElementById("notifications-shade")
+        notifications.getElementsByTagName("input")[0].checked = true;
+        cacheButton = document.getElementById("notificationsCache");
+        cacheButton.style.display = "block";
+        send_message("IVNotifications", "true");
+        tagList = localStorage.IVNotificationsTags || "";
+        send_message("IVNotificationsTags", tagList);
+    } else {
+        send_message("IVNotifications", "false");
+    }
+    
+    // External Posts 
+    var postbanner = document.createElement("div");
+    settingTemplate(postbanner, "externalPosts-banner", "settings.externalPosts", "Experimental Features", localStorage.experimentalFeatures)
+
+    if (debug == true && (!document.getElementById("debug-banner"))){
+        var banner = document.createElement("div");
+        banner.id = "debug-banner";
+        banner.classList.add("switchItem");
+        banner.innerHTML = `<h2 data-i85n="settings.debugBanner">Debug Mode</h2>
+            <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
+        settings.appendChild(banner);
+    }
+    let priorityList = document.createElement("div");
+    priorityList.id ="priority-list";
+    priorityList.innerHTML = `
+     <h2 data-i18n="settings.priorityTitle">Prioritise Modules</h2>
+     <div data-i18n="settings.priorityOrder">Drag to re-order modules</div>
+       <ul id="sortlist" class="slist">
+
+   	    <li style="list-style: none;" data-id="wikipedia-first-frame">Wikipedia</li>
+   	    <li style="list-style: none;" data-id="networkgraph">Network Graph and Company Info </li>
+   	    <li style="list-style: none;" data-id="political-wikidata">Political Alignment</li>
+   	    <li style="list-style: none;" data-id="mbfc">Media Bias</li>
+   	    <li style="list-style: none;" data-id="cta">Call To Action</li>
+   	    <li style="list-style: none;" data-id="trust-pilot">Trust Pilot</li>
+   	    <li style="list-style: none;" data-id="yahoo">ESG Risk</li>
+   	    <li style="list-style: none;" data-id="opensec">Open Secrets</li>
+   	    <li style="list-style: none;" data-id="carbon">Carbon Footprint</li>
+   	    <li style="list-style: none;" data-id="lobbyeu">LobbyFacts.eu</li>
+
+   	    <li style="list-style: none;" data-id="wbm">World Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-automotive-data"> Automotive Data </li>
+        <li style="list-style: none;" data-id="wbm-gender-benchmark"> Gender Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-just-transition-assessment"> Just Transition Assessment</li>
+        <li style="list-style: none;" data-id="wbm-just-transition-assessment-social"> Just Transition Assessment Social</li>
+        <li style="list-style: none;" data-id="wbm-seeds-index-esa"> Seeds Index ESA</li>
+        <li style="list-style: none;" data-id="wbm-seeds-index-ssea"> Seeds Index SSEA</li>
+        <li style="list-style: none;" data-id="wbm-seeds-index-wc-africa"> Seeds Index WC Africa</li>
+        <li style="list-style: none;" data-id="wbm-chumanrightsb"> Human Rights Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-financial-system-benchmark"> Financial System Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-social-transformation"> Social Transformation</li>
+        <li style="list-style: none;" data-id="wbm-transport-benchmark"> Transport Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-buildings-benchmark"> Buildings Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-digital-inclusion"> Digital Inclusion</li>
+        <li style="list-style: none;" data-id="wbm-electric-utilities"> Electric Utilities</li>
+        <li style="list-style: none;" data-id="wbm-food-agriculture-benchmark"> Food Agriculture Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-nature-benchmark"> Nature Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-oil-gas-benchmark"> Oil Gas Benchmark</li>
+        <li style="list-style: none;" data-id="wbm-seafood-stewardship"> Seafood Stewardship</li>
+
+   	    <li style="list-style: none;" data-id="goodonyou">Ethical Sourcing</li>
+   	    <li style="list-style: none;" data-id="bcorp">B corp</li>
+   	    <li style="list-style: none;" data-id="tosdr-link">Privacy</li>
+   	    <li style="list-style: none;" data-id="glassdoor">Employee Rating</li>
+   	    <li style="list-style: none;" data-id="similar-site-wrapper">Similar Websites</li>
+   	    <li style="list-style: none;" data-id="social-wikidata">Social Media</li>
+   	    <li style="list-style: none;" data-id="trust-scam">Trust Scam</li>
+       </ul>
+   `
+    settings.appendChild(priorityList)
+}
+
+addSettings()
 let loadSettings = function(x) {
     body.classList.add("settingsOpen");
     if (settings.style.bottom == "0px"){
@@ -436,35 +1325,7 @@ let loadSettings = function(x) {
     if (mode == 2){
         closeButton.style.display = "none";
     }
-
-    var notifications = document.createElement("div");
-    notifications.id = "notifications-shade";
-    notifications.classList.add("switchItem");
-    notifications.innerHTML = `<h2 data-i85n="settings.notifications">Notifications</h2>
-        <div id="notificationsContainer" style="display:flex;">
-        <img id="notificationsCache" style="display:none;width:24px;height:24px;position:relative;transform:translate(-20px,13px);">
-        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div></div>`
-    settings.appendChild(notifications);
-    if (localStorage.IVNotifications == "true"){
-        notifications.getElementsByTagName("input")[0].checked = true;
-        cacheButton = document.getElementById("notificationsCache");
-        cacheButton.style.display = "block";
-        send_message("IVNotifications", "true");
-        tagList = localStorage.IVNotificationsTags || "";
-        send_message("IVNotificationsTags", tagList);
-        notificationsDraw();
-    } else {
-        send_message("IVNotifications", "false");
-    }
-
-    if (debug == true && (!document.getElementById("debug-banner"))){
-        var banner = document.createElement("div");
-        banner.id = "debug-banner";
-        banner.classList.add("switchItem");
-        banner.innerHTML = `<h2 data-i85n="settings.debugBanner">Debug Mode</h2>
-            <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
-        settings.appendChild(banner);
-    }
+    notificationsDraw();
     settings.firstElementChild.style.top = "0";
     backButton.style.backgroundColor = 'var(--c-secondary-background)';
     backButton.style.borderColor = 'var(--c-light-text)';
@@ -479,9 +1340,11 @@ let loadNetworkGraph = function(x) {
     backButton.style.borderColor = 'var(--c-border-color)';
     backButton.style.backgroundColor = 'var(--c-background)';
     networkGraph.style.visibility = 'visible';
+    sigmacontainer.style.width = "100vw";
+    sigmacontainer.style.height = "100vh";
+    sigmacontainer.style.position = "fixed";
+    sigmacontainer.style.zIndex = "4";
     networkGraph.classList.add("expanded");
-    content.classList.add('somethingIsOpen');
-    body.classList.add('somethingIsOpen');
     if (mode == 1){
         noOpen = true;
     }
@@ -516,9 +1379,9 @@ let closeNetworkGraph = function(x){
     if (mode == 1){
         noOpen = false;
     }
+    sigmacontainer.style.width = "1px";
+    sigmacontainer.style.height = "1px";
     networkGraph.classList.remove("expanded");
-    content.classList.remove('somethingIsOpen');
-    body.classList.remove('somethingIsOpen');
     graphButtons.style.top = "";
     send_message("IVClicked", "back");
     resetBack();
@@ -601,6 +1464,7 @@ let closeSettings = function(x) {
 
 var IVKeepOnScreen = localStorage.IVKeepOnScreen;
 var IVDarkModeOverride = localStorage.IVDarkModeOverride;
+var ExperimentalFeatures = localStorage.experimentalFeatures;
 var IVBobbleOverride = localStorage.IVBobbleOverride;
 var IVLike = document.getElementById('Invisible-like')
 var IVDislike = document.getElementById('Invisible-dislike')
@@ -670,6 +1534,12 @@ function toggleDarkMode() {
   document.lastChild.classList.toggle('dark-theme');
   send_message("IVDarkModeOverride", IVDarkModeOverride);
 }
+function toggleExperimentalFeatures() {
+  ExperimentalFeatures = !ExperimentalFeatures;
+  localStorage.experimentalFeatures = ExperimentalFeatures;
+  send_message("ExperimentalFeatures", ExperimentalFeatures ? "true" : "false");
+  console.log("experimentalFeatures " + ExperimentalFeatures);
+}
 
 function toggleBobbleOverride() {
   IVBobbleOverride = !IVBobbleOverride;
@@ -724,7 +1594,7 @@ document.addEventListener('mouseup', function (event) {
     }
   }
 
-  if (event.target.parentElement.parentElement) {
+  if (event.target.parentElement.parentElement.parentElement) {
     if (event.target.parentElement.parentElement.parentElement.matches('#notifications-shade')) {
         if (localStorage.IVNotifications === "true") {
           toggleNotifications("false");
@@ -733,6 +1603,8 @@ document.addEventListener('mouseup', function (event) {
         }
     } else if (event.target.parentElement.parentElement.matches('#bobbleDisable')) {
         toggleBobbleOverride();
+    } else if (event.target.parentElement.parentElement.matches('#externalPosts-banner')) {
+        toggleExperimentalFeatures();
     } else if (event.target.parentElement.parentElement.matches('#permaDark')) {
         toggleDarkMode();
     } else if (event.target.parentElement.parentElement.matches('#onScreen')) {
@@ -759,20 +1631,36 @@ document.addEventListener('mouseup', function (event) {
 
 // {value: items[it].value, label: items[it].innerHTML}
 var defaultOrder = [
+    "cta",
+    "political-wikidata",
     "wikipedia-first-frame",
     "networkgraph", 
     "small-wikidata",
-    "mbfc-header", 
+    "mbfc", 
     "trust-pilot",
     "yahoo", 
     "opensec", 
     "carbon", 
-    "isin lct", 
-    "isin fin", 
-    "isin dig",
-    "isin nat", 
-    "isin fas", 
-    "isin ssd", 
+    "lobbyeu",
+    "wbm",
+    "wbm-automotive-data",
+    "wbm-gender-benchmark",
+    "wbm-just-transition-assessment",
+    "wbm-just-transition-assessment-social",
+    "wbm-seeds-index-esa",
+    "wbm-seeds-index-ssea",
+    "wbm-seeds-index-wc-africa",
+    "wbm-chumanrightsb",
+    "wbm-financial-system-benchmark",
+    "wbm-social-transformation",
+    "wbm-transport-benchmark",
+    "wbm-buildings-benchmark",
+    "wbm-digital-inclusion",
+    "wbm-electric-utilities",
+    "wbm-food-agriculture-benchmark",
+    "wbm-nature-benchmark",
+    "wbm-oil-gas-benchmark",
+    "wbm-seafood-stewardship",
     "goodonyou", 
     "bcorp", 
     "tosdr-link", 
@@ -785,17 +1673,33 @@ var translate = {
 "wikipedia-first-frame": "w.wikipedia",
 "networkgraph": "graph.title" ,
 "small-wikidata": "w.companyinfo",
-"mbfc-header": "mbfc.title",
+"mbfc": "mbfc.title",
 "trust-pilot": "trustpilot.title",
 "yahoo": "esg.title",
 "opensec": "os.title",
 "carbon": "carbon.title",
-"isin fin": "isin.tfin",
-"isin lct": "isin.tlct",
-"isin fas": "isin.tfas",
-"isin ssd": "isin.tssd",
-"isin nat": "isin.tnat",
-"isin dig": "isin.tdig",
+"lobbyeu": "lb.title",
+"cta": "cta.title",
+"wbm": "wbm.title",
+"wbm-automotive-data": "wbm.automotive-data",
+"wbm-gender-benchmark": "wbm.gender-benchmark",
+"wbm-just-transition-assessment": "wbm.just-transition-assessment",
+"wbm-just-transition-assessment-social": "wbm.just-transition-assessment-social",
+"wbm-seeds-index-esa": "wbm.seeds-index-esa",
+"wbm-seeds-index-ssea": "wbm.seeds-index-ssea",
+"wbm-seeds-index-wc-africa": "wbm.seeds-index-wc-africa",
+"wbm-chumanrightsb": "wbm.chumanrightsb",
+"wbm-financial-system-benchmark": "wbm.financial-system-benchmark",
+"wbm-social-transformation": "wbm.social-transformation",
+"wbm-transport-benchmark": "wbm.transport-benchmark",
+"wbm-buildings-benchmark": "wbm.buildings-benchmark",
+"wbm-digital-inclusion": "wbm.digital-inclusion",
+"wbm-electric-utilities": "wbm.electric-utilities",
+"wbm-food-agriculture-benchmark": "wbm.food-agriculture-benchmark",
+"wbm-nature-benchmark": "wbm.nature-benchmark",
+"wbm-oil-gas-benchmark": "wbm.oil-gas-benchmark",
+"wbm-seafood-stewardship": "wbm.seafood-stewardship",
+"political-wikidata": "w.political",
 "goodonyou": "goy.section-title",
 "bcorp": "bcorp.title",
 "tosdr-link": "tos.title",
@@ -808,7 +1712,7 @@ function recalculateList(){
   var propertyOrder = localStorage.getItem("IVListOrder") ? localStorage.getItem("IVListOrder").split('|') : defaultOrder;
   let target = document.getElementById("sortlist")
   let items = target.getElementsByTagName("li"), current = null;
-  const missingItems = defaultOrder.filter(item => !propertyOrder.includes(item));
+  let missingItems = defaultOrder.filter(item => !propertyOrder.includes(item));
 
   // Add missing items to IVListOrder
   propertyOrder = propertyOrder.concat(missingItems);
@@ -842,6 +1746,9 @@ function recalculateList(){
     }
   };
   if (debug) console.log("sorted")
+  if (document.getElementById('graph-box') != null){
+      document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+  }
 }
 function slist (target) {
   // (A) SET CSS + GET ALL LIST ITEMS
@@ -920,12 +1827,19 @@ var invert = null;
 var uuid = null;
 async function voteLoad(){
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
-    hash = md5(site);
-    data = await voteAsync(hash, "none").then(data => {
+    hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json','');
+    // data = await voteAsync(hash, "none").then(data => {
+    //     if (debug) console.log(data);
+    //     voteNumbers = [Number(data["up_total"]),Number(data["down_total"])];
+    //     uuid = data["user"];
+    //     localStorage.setItem("uuid", uuid);
+    //     voteUpdate();
+    // });
+    data = await getTotalAsync(hash).then(data => {
         if (debug) console.log(data);
         voteNumbers = [Number(data["up_total"]),Number(data["down_total"])];
-        uuid = data["user"];
-        localStorage.setItem("uuid", uuid);
+        //uuid = data["user"];
+        //localStorage.setItem("uuid", uuid);
         voteUpdate();
     });
 }
@@ -937,7 +1851,7 @@ function vote(direction){
     }
     // First look for hash
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
-    hash = md5(site);
+    hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json','');
     invert = false;
     console.log(uuid);
     olddirection = tempVoteDirection
@@ -1067,3 +1981,6 @@ function md5(inputString) {
     return rh(a)+rh(b)+rh(c)+rh(d);
 }
 window.onload = slist(document.getElementById("sortlist"));
+content.addEventListener("DOMNodeInserted", function(event){
+    recalculateList()
+});

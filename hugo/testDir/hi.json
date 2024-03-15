@@ -18,16 +18,25 @@
     "left": "बाएं",
     "fake-news": "संदिग्ध स्रोत",
     "conspiracy": "षड़यंत्र",
-    "center": "केंद्र"
+    "center": "केंद्र",
+    "questionable": "संदिग्धता के कारण",
+    "reporting": "रिपोर्टिंग",
+    "credibility": "विश्वसनीयता",
+    "popularity": "लोकप्रियता"
   },
   "carbon": {
-    "title": "कार्बन पदचिह्न"
+    "title": "बाहरी बटन"
   },
   "common": {
     "elsewhere": "कहीं और",
     "fullview": "पूर्ण दृश्य",
     "stopscrolling": "इतना स्क्रॉल करना बंद करो!!!",
-    "language": "भाषा"
+    "language": "भाषा",
+    "industry_average": "उद्योग औसत स्कोर",
+    "author": "लेखक"
+  },
+  "cta": {
+    "title": "कार्यवाई के लिए बुलावा"
   },
   "esg": {
     "SEVERE": "गंभीर",
@@ -206,7 +215,11 @@
     "not_assessed": "आंकलित नहीं किया गया",
     "not_good_enough": "काफी अच्छा नहीं",
     "very_poor": "बहुत गरीब",
-    "we_avoid": "हम टालते हैं"
+    "we_avoid": "हम टालते हैं",
+    "evr": "पर्यावरण रेटिंग",
+    "ar": "पशु रेटिंग",
+    "lr": "श्रम रेटिंग",
+    "title": "नैतिक रेटिंग"
   },
   "graph": {
     "zoomout": "ज़ूम आउट",
@@ -250,6 +263,17 @@
     "tdig": "डिजिटल समावेशन",
     "tlct": "निम्न कार्बन संक्रमण"
   },
+  "lb": {
+    "passes_count": "लॉबिस्ट पास गिनती",
+    "meeting_count": "यूरोपीय संघ के साथ बैठकें",
+    "calculated_cost": "गणना की गई कुल लागत",
+    "lobby_fte": "लॉबिस्ट एफटीई",
+    "lobby_count": "लॉबिस्ट काउंट",
+    "eu_country": "ईयू कार्यालय देश",
+    "hq_countries": "मुख्यालय देश",
+    "transparency_id": "पारदर्शिता आईडी",
+    "title": "लॉबीफैक्ट्स.ईयू"
+  },
   "mbfc": {
     "title": "राजनीतिक पूर्वाग्रह",
     "left_bias": "वाम पूर्वाग्रह",
@@ -271,22 +295,30 @@
     "sourcestocandidates": "उम्मीदवारों के लिए धन के स्रोत",
     "sources": "निधियों का स्रोत",
     "recipients": "निधि के प्राप्तकर्ता",
-    "title": "खुला रहस्य"
+    "title": "खुला रहस्य",
+    "lobbistnotingov": "लॉबिस्ट जिन्होंने सरकार में काम नहीं किया है",
+    "lobbistingov": "सरकार में काम करने वाले पैरवीकार",
+    "lobbying": "पक्ष जुटाव"
   },
   "os": {
-    "title": "खुला रहस्य"
+    "title": "खुला रहस्य",
+    "disclaimer": "नोट: संगठन स्वयं उम्मीदवारों और पार्टी समितियों में योगदान नहीं कर सकते। आंकड़ों में सहयोगियों द्वारा योगदान और खर्च शामिल हैं।"
   },
   "settings": {
     "title": "समायोजन",
     "priorityTitle": "प्राथमिकता मॉड्यूल",
     "priorityOrder": "मॉड्यूल को फिर से ऑर्डर करने के लिए खींचें",
     "dashboard": "डैशबोर्ड को स्क्रीन पर रखें",
-    "darkMode": "डार्क मोड"
+    "darkMode": "डार्क मोड",
+    "bobbleDisabled": "बॉबल अक्षम करें"
   },
   "similar": {
     "title": "समान वेबसाइट"
   },
   "similarity": "समानता:",
+  "social": {
+    "title": "सामाजिक मीडिया"
+  },
   "source": "(स्रोत)",
   "tos": {
     "wordGrade": "श्रेणी",
@@ -297,6 +329,9 @@
     "b": "सेवा की शर्तें उपयोगकर्ता के प्रति उचित हैं लेकिन उनमें सुधार किया जा सकता है।",
     "a": "सेवाओं की सर्वोत्तम शर्तें: वे आपके साथ उचित व्यवहार करती हैं, आपके अधिकारों का सम्मान करती हैं और आपके डेटा का दुरुपयोग नहीं करेंगी।"
   },
+  "tosdr": {
+    "title": "टीओएस;डीआर"
+  },
   "trustpilot": {
     "five": "पाँच सितारा",
     "four": "चार सितारा",
@@ -306,6 +341,13 @@
     "total": "कुल",
     "title": "ट्रस्टपायलट"
   },
+  "trustsc": {
+    "title": "विश्वास घोटाला",
+    "warning": "चेतावनी",
+    "success": "सफलता",
+    "neutral": "तटस्थ",
+    "danger": "खतरा"
+  },
   "vote": {
     "like": "पसंद करना",
     "dislike": "नापसन्द",
@@ -314,6 +356,111 @@
   "w": {
     "socialmedia": "सोशल मीडिया और ईमेल",
     "wikipedia": "विकिपीडिया",
-    "companyinfo": "कंपनी की जानकारी"
+    "companyinfo": "कंपनी की जानकारी",
+    "political": "राजनीतिक संरेखण"
+  },
+  "wbm": {
+    "seafood-stewardship": "समुद्री भोजन प्रबंधन बेंचमार्क",
+    "oil-gas-benchmark": "तेल एवं गैस बेंचमार्क",
+    "nature-benchmark": "प्रकृति बेंचमार्क",
+    "food-agriculture-benchmark": "खाद्य कृषि बेंचमार्क",
+    "electric-utilities": "इलेक्ट्रिक यूटिलिटीज़ बेंचमार्क",
+    "digital-inclusion": "डिजिटल समावेशन बेंचमार्क",
+    "buildings-benchmark": "इमारतें बेंचमार्क",
+    "transport-benchmark": "परिवहन बेंचमार्क",
+    "social-transformation": "सामाजिक परिवर्तन बेंचमार्क",
+    "financial-system-benchmark": "वित्तीय प्रणाली बेंचमार्क",
+    "seeds-index-wc-africa": "बीज सूचकांक बेंचमार्क WC अफ्रीका",
+    "seeds-index-ssea": "बीज सूचकांक बेंचमार्क एसएसईए",
+    "seeds-index-esa": "बीज सूचकांक बेंचमार्क ईएसए",
+    "just-transition-assessment-social": "जस्ट ट्रांज़िशन असेसमेंट सोशल बेंचमार्क",
+    "just-transition-assessment": "जस्ट ट्रांज़िशन असेसमेंट बेंचमार्क",
+    "gender-benchmark": "लिंग बेंचमार्क",
+    "automotive-data": "ऑटोमोटिव डेटा बेंचमार्क",
+    "chumanrightsb": "मानवाधिकार बेंचमार्क",
+    "title": "विश्व बेंचमार्क",
+    "workplace": "कार्यस्थल",
+    "working-hours-fundamentals": "काम के घंटे की बुनियादी बातें",
+    "workforce-diversity-disclosure-fundamentals": "कार्यबल विविधता प्रकटीकरण बुनियादी बातें",
+    "use": "उपयोग",
+    "trend": "रुझान",
+    "traceability": "ट्रेसेबिलिटी",
+    "total-social-score": "कुल सामाजिक स्कोर",
+    "total-rank": "कुल रैंक",
+    "total-act-score": "कुल ACT स्कोर",
+    "supply-chain": "आपूर्ति श्रृंखला",
+    "social-score": "सामाजिक स्कोर",
+    "social-responsibility": "सामाजिक जिम्मेदारी",
+    "social-ranking": "सामाजिक रैंकिंग",
+    "social-inclusion-and-community-impact": "सामाजिक समावेशन और सामुदायिक प्रभाव",
+    "social-inclusion": "सामाजिक समावेश",
+    "skills": "कौशल",
+    "seed-production": "बीज उत्पादन",
+    "sector": "क्षेत्र",
+    "responsible-tax-fundamentals": "जिम्मेदार कर मूल बातें",
+    "responsible-lobbying-and-political-engagement-fundamentals": "जिम्मेदार पैरवी और राजनीतिक भागीदारी के बुनियादी सिद्धांत",
+    "respecting-planetary-boundaries": "ग्रहों की सीमाओं का सम्मान करना",
+    "research-and-development": "अनुसंधान और विकास",
+    "remedies-and-grievance-mechanisms": "उपचार और शिकायत तंत्र",
+    "region": "क्षेत्र",
+    "rank-of-sector": "सेक्टर की रैंक",
+    "rank-of-region": "क्षेत्र की रैंक",
+    "rank": "पद",
+    "personal-data-protection-fundamentals": "व्यक्तिगत डेटा सुरक्षा बुनियादी बातें",
+    "performance-response-to-serious-allegations": "गंभीर आरोपों पर प्रदर्शन प्रतिक्रिया",
+    "performance-company-human-rights-practices": "प्रदर्शन कंपनी मानवाधिकार प्रथाएँ",
+    "performance": "प्रदर्शन",
+    "nutrition": "पोषण",
+    "narrative": "आख्यान",
+    "marketing-and-sales": "विपणन और बिक्री",
+    "living-wage-fundamentals": "जीवित वेतन की बुनियादी बातें",
+    "just-transition-score": "जस्ट ट्रांज़िशन स्कोर",
+    "integrating-and-acting-on-human-rights-risks-and-impacts": "मानवाधिकार जोखिमों और प्रभावों को एकीकृत करना और उन पर कार्रवाई करना",
+    "innovation": "नवाचार",
+    "identifying-human-rights-risks-and-impacts": "मानवाधिकार जोखिमों और प्रभावों की पहचान करना",
+    "human-rights": "मानव अधिकार",
+    "health-and-safety-fundamentals": "स्वास्थ्य और सुरक्षा के बुनियादी सिद्धांत",
+    "grievance-mechanisms-for-workers": "श्रमिकों के लिए शिकायत तंत्र",
+    "grievance-mechanisms-for-external-individuals-and-communities": "बाहरी व्यक्तियों और समुदायों के लिए शिकायत तंत्र",
+    "governance-and-strategy": "शासन और रणनीति",
+    "governance-and-policy-commitments": "शासन और नीति प्रतिबद्धताएँ",
+    "genetic-resources-and-intellectual-property-management": "आनुवंशिक संसाधन और बौद्धिक संपदा प्रबंधन",
+    "fundamentals-of-social-protection-and-social-impact-management-for-a-just-transition": "न्यायसंगत परिवर्तन के लिए सामाजिक सुरक्षा और सामाजिक प्रभाव प्रबंधन के मूल सिद्धांत",
+    "fundamentals-of-social-dialogue-and-stakeholder-engagement-in-a-just-transition": "न्यायसंगत परिवर्तन में सामाजिक संवाद और हितधारक जुड़ाव के मूल सिद्धांत",
+    "fundamentals-of-just-transition-planning": "न्यायसंगत परिवर्तन योजना के मूल सिद्धांत",
+    "fundamentals-of-creating-and-providing-or-supporting-access-to-green-and-decent-jobs-for-an-inclusive-and-balanced-workforce": "समावेशी और संतुलित कार्यबल के लिए हरित और सभ्य नौकरियों तक पहुंच बनाने और प्रदान करने या समर्थन करने की बुनियादी बातें",
+    "filing-name": "फ़ाइल नाम",
+    "ethical-conduct": "नैतिक आचरण",
+    "environment": "पर्यावरण",
+    "engaging-with-affected-and-potentially-affected-stakeholders": "प्रभावित और संभावित रूप से प्रभावित हितधारकों के साथ जुड़ाव",
+    "embedding-respect-and-human-rights-due-diligence": "सम्मान और मानवाधिकारों का समुचित परिश्रम सुनिश्चित करना",
+    "ecosystems-and-biodiversity": "पारिस्थितिकी तंत्र और जैव विविधता",
+    "ecosystems": "पारिस्थितिकी तंत्र",
+    "dib-score": "डीआईबी स्कोर",
+    "dib-rank": "डीआईबी रैंक",
+    "decent-work": "सभ्य काम",
+    "csi": "सीएसआई",
+    "corporate": "निगमित",
+    "core-social-score": "मुख्य सामाजिक स्कोर",
+    "company-sector": "कंपनी क्षेत्र",
+    "commitment-to-respect-the-human-rights-of-workers": "श्रमिकों के मानवाधिकारों का सम्मान करने की प्रतिबद्धता",
+    "commitment-to-respect-human-rights": "मानवाधिकारों का सम्मान करने की प्रतिबद्धता",
+    "collective-bargaining-fundamentals": "सामूहिक सौदेबाजी के मूल सिद्धांत",
+    "capacity-building": "क्षमता निर्माण",
+    "benchmark-year": "बेंचमार्क वर्ष",
+    "benchmark-ranking": "बेंचमार्क रैंकिंग",
+    "band": "बैंड",
+    "assessing-human-rights-risks-and-impacts": "मानवाधिकार जोखिमों और प्रभावों का आकलन",
+    "anti-bribery-and-anti-corruption-fundamentals": "रिश्वत विरोधी और भ्रष्टाचार विरोधी बुनियादी बातें",
+    "adhering-to-societal-conventions": "सामाजिक परंपराओं का पालन",
+    "act-ranking": "एसीटी रैंकिंग",
+    "access": "पहुँच",
+    "gender-equality-and-womens-empowerment-fundamentals": "लैंगिक समानता और महिला सशक्तिकरण के मूल सिद्धांत",
+    "fundamentals-of-retaining-and-re-andor-up-skilling-workers-for-an-inclusive-balanced-workforce": "एक समावेशी, संतुलित कार्यबल के लिए श्रमिकों को बनाए रखने और पुनः और/या कौशल बढ़ाने की बुनियादी बातें",
+    "fundamentals-of-advocacy-for-policies-and-regulation-on-green-and-decent-job-creation-employee-retention-education-and-reskilling-and-social-protection-supporting-a-just-transition": "हरित और सभ्य रोजगार सृजन पर नीतियों और विनियमन के लिए वकालत के बुनियादी सिद्धांत; कर्मचारी प्रतिधारण, शिक्षा और पुन: कौशल, और एक उचित परिवर्तन का समर्थन करने वाली सामाजिक सुरक्षा"
+  },
+  "wikidata": {
+    "polideology": "राजनीतिक विचारधारा",
+    "polalignment": "राजनीतिक संरेखण"
   }
 }

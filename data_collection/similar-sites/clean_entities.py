@@ -19,7 +19,7 @@ def process_json_file(json_filename):
             for site in clean["SimilarSites"]:
                 site_obj = {
                     "s": site.get("Site"),
-                    #"grade": site.get("Grade"),
+                    "p": float(str(site.get("Grade"))[0:4]),
                     "r": site.get("SimilarityRank")
                 }
                 sites.append(site_obj)

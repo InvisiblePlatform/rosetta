@@ -18,16 +18,25 @@
     "left": "剩下",
     "fake-news": "可疑来源",
     "conspiracy": "阴谋",
-    "center": "中央"
+    "center": "中央",
+    "questionable": "《质疑的理由》",
+    "reporting": "「报告」",
+    "credibility": "“信誉”",
+    "popularity": "“人气”"
   },
   "carbon": {
-    "title": "《碳足迹》"
+    "title": "“外部按钮”"
   },
   "common": {
     "elsewhere": "别的地方",
     "fullview": "全视图",
     "stopscrolling": "停止滚动这么多！！！",
-    "language": "语"
+    "language": "语",
+    "industry_average": "“行业平均分”",
+    "author": "“作者”"
+  },
+  "cta": {
+    "title": "“呼吁采取行动”"
   },
   "esg": {
     "SEVERE": "严重的",
@@ -206,7 +215,11 @@
     "not_assessed": "未评估",
     "not_good_enough": "欠佳",
     "very_poor": "很穷",
-    "we_avoid": "我们避免"
+    "we_avoid": "我们避免",
+    "evr": "《环境评价》",
+    "ar": "《动物等级》",
+    "lr": "《劳动评级》",
+    "title": "《道德评价》"
   },
   "graph": {
     "zoomout": "缩小",
@@ -250,6 +263,17 @@
     "tdig": "“数字包容”",
     "tlct": "“低碳转型”"
   },
+  "lb": {
+    "passes_count": "“游说者通行证计数”",
+    "meeting_count": "“与欧盟的会议”",
+    "calculated_cost": "“计算的总成本”",
+    "lobby_fte": "“说客 FTE”",
+    "lobby_count": "《游说者计数》",
+    "eu_country": "“欧盟办事处所在国”",
+    "hq_countries": "《总部国家》",
+    "transparency_id": "“透明ID”",
+    "title": "“LobbyFacts.eu”"
+  },
   "mbfc": {
     "title": "政治偏见",
     "left_bias": "左偏",
@@ -271,22 +295,30 @@
     "sourcestocandidates": "候选人的资金来源",
     "sources": "资金的来源",
     "recipients": "资金接收者",
-    "title": "《公开的秘密》"
+    "title": "《公开的秘密》",
+    "lobbistnotingov": "“没有在政府工作过的游说者”",
+    "lobbistingov": "“在政府工作的游说者”",
+    "lobbying": "“游说”"
   },
   "os": {
-    "title": "《公开的秘密》"
+    "title": "《公开的秘密》",
+    "disclaimer": "“注意：组织本身不能向候选人和政党委员会捐款。数字包括附属机构的捐款和支出。”"
   },
   "settings": {
     "title": "设置",
     "priorityTitle": "优先模块",
     "priorityOrder": "拖动以重新排序模块",
     "dashboard": "保持仪表板在屏幕上",
-    "darkMode": "黑暗模式"
+    "darkMode": "黑暗模式",
+    "bobbleDisabled": "“禁用泡泡”"
   },
   "similar": {
     "title": "类似网站"
   },
   "similarity": "相似:",
+  "social": {
+    "title": "“社交媒体”"
+  },
   "source": "(资源)",
   "tos": {
     "wordGrade": "年级",
@@ -297,6 +329,9 @@
     "b": "服务条款对用户公平，但可以改进。",
     "a": "最好的服务条款：他们公平对待你，尊重你的权利，不会滥用你的数据。"
   },
+  "tosdr": {
+    "title": "“服务条款；DR”"
+  },
   "trustpilot": {
     "five": "五星",
     "four": "四星",
@@ -306,6 +341,13 @@
     "total": "全部的",
     "title": "信任飞行员"
   },
+  "trustsc": {
+    "title": "“信任骗局”",
+    "warning": "“警告”",
+    "success": "“成功”",
+    "neutral": "“中性的”",
+    "danger": "“危险”"
+  },
   "vote": {
     "like": "喜欢",
     "dislike": "不喜欢",
@@ -314,6 +356,111 @@
   "w": {
     "socialmedia": "社交媒体和电子邮件",
     "wikipedia": "维基百科",
-    "companyinfo": "公司信息"
+    "companyinfo": "公司信息",
+    "political": "“政治联盟”"
+  },
+  "wbm": {
+    "seafood-stewardship": "“海鲜管理基准”",
+    "oil-gas-benchmark": "“石油和天然气基准”",
+    "nature-benchmark": "“自然基准”",
+    "food-agriculture-benchmark": "“食品农业标杆”",
+    "electric-utilities": "《电力公用事业基准》",
+    "digital-inclusion": "“数字包容性基准”",
+    "buildings-benchmark": "《建筑标杆》",
+    "transport-benchmark": "《交通基准》",
+    "social-transformation": "《社会转型基准》",
+    "financial-system-benchmark": "《金融体系基准》",
+    "seeds-index-wc-africa": "“种子指数基准 WC 非洲”",
+    "seeds-index-ssea": "“种子指数基准 SSEA”",
+    "seeds-index-esa": "“种子指数基准 ESA”",
+    "just-transition-assessment-social": "《公正转型评估社会基准》",
+    "just-transition-assessment": "《公正转型评估基准》",
+    "gender-benchmark": "《性别基准》",
+    "automotive-data": "《汽车数据基准》",
+    "chumanrightsb": "“人权基准”",
+    "title": "“世界基准”",
+    "workplace": "《工作场所》",
+    "working-hours-fundamentals": "《工作时间基本原则》",
+    "workforce-diversity-disclosure-fundamentals": "“劳动力多元化披露基础知识”",
+    "use": "“使用”",
+    "trend": "“趋势”",
+    "traceability": "“可追溯性”",
+    "total-social-score": "“社会总分”",
+    "total-rank": "「总排名」",
+    "total-act-score": "“ACT 总分”",
+    "supply-chain": "“供应链”",
+    "social-score": "《社会分数》",
+    "social-responsibility": "“社会责任感”",
+    "social-ranking": "《社会排名》",
+    "social-inclusion-and-community-impact": "“社会包容和社区影响”",
+    "social-inclusion": "“社会包容”",
+    "skills": "「技能」",
+    "seed-production": "《种子生产》",
+    "sector": "“部门”",
+    "responsible-tax-fundamentals": "《负责任的税收基础》",
+    "responsible-lobbying-and-political-engagement-fundamentals": "“负责任的游说和政治参与基础”",
+    "respecting-planetary-boundaries": "“尊重行星边界”",
+    "research-and-development": "“研究与开发”",
+    "remedies-and-grievance-mechanisms": "“补救措施和申诉机制”",
+    "region": "“地区”",
+    "rank-of-sector": "「部门排名」",
+    "rank-of-region": "「地区排名」",
+    "rank": "“秩”",
+    "personal-data-protection-fundamentals": "《个人数据保护基础》",
+    "performance-response-to-serious-allegations": "“对严重指控的绩效回应”",
+    "performance-company-human-rights-practices": "《演出公司人权实践》",
+    "performance": "“表现”",
+    "nutrition": "“营养”",
+    "narrative": "“叙述”",
+    "marketing-and-sales": "“市场营销与销售”",
+    "living-wage-fundamentals": "《生活工资基本面》",
+    "just-transition-score": "“只是过渡分数”",
+    "integrating-and-acting-on-human-rights-risks-and-impacts": "“整合人权风险和影响并采取行动”",
+    "innovation": "“创新”",
+    "identifying-human-rights-risks-and-impacts": "“识别人权风险和影响”",
+    "human-rights": "“人权”",
+    "health-and-safety-fundamentals": "《健康与安全基础》",
+    "grievance-mechanisms-for-workers": "“工人申诉机制”",
+    "grievance-mechanisms-for-external-individuals-and-communities": "“外部个人和社区的申诉机制”",
+    "governance-and-strategy": "“治理与战略”",
+    "governance-and-policy-commitments": "“治理和政策承诺”",
+    "genetic-resources-and-intellectual-property-management": "《遗传资源与知识产权管理》",
+    "fundamentals-of-social-protection-and-social-impact-management-for-a-just-transition": "“公正过渡的社会保护和社会影响管理的基础知识”",
+    "fundamentals-of-social-dialogue-and-stakeholder-engagement-in-a-just-transition": "“公正转型中社会对话和利益相关者参与的基础”",
+    "fundamentals-of-just-transition-planning": "“公正过渡计划的基础知识”",
+    "fundamentals-of-creating-and-providing-or-supporting-access-to-green-and-decent-jobs-for-an-inclusive-and-balanced-workforce": "“为包容和平衡的劳动力创造和提供或支持获得绿色和体面工作的基础”",
+    "filing-name": "「备案名称」",
+    "ethical-conduct": "“道德准则”",
+    "environment": "“环境”",
+    "engaging-with-affected-and-potentially-affected-stakeholders": "“与受影响和潜在受影响的利益相关者进行接触”",
+    "embedding-respect-and-human-rights-due-diligence": "“嵌入尊重和人权尽职调查”",
+    "ecosystems-and-biodiversity": "“生态系统和生物多样性”",
+    "ecosystems": "“生态系统”",
+    "dib-score": "「DIB 分数」",
+    "dib-rank": "“DIB排名”",
+    "decent-work": "《体面的工作》",
+    "csi": "《犯罪现场调查》",
+    "corporate": "“公司的”",
+    "core-social-score": "“核心社会得分”",
+    "company-sector": "「公司部门」",
+    "commitment-to-respect-the-human-rights-of-workers": "“尊重工人人权的承诺”",
+    "commitment-to-respect-human-rights": "“尊重人权的承诺”",
+    "collective-bargaining-fundamentals": "《集体谈判的基本原则》",
+    "capacity-building": "《能力建设》",
+    "benchmark-year": "“基准年”",
+    "benchmark-ranking": "《基准排名》",
+    "band": "“乐队”",
+    "assessing-human-rights-risks-and-impacts": "“评估人权风险和影响”",
+    "anti-bribery-and-anti-corruption-fundamentals": "《反贿赂和反腐败的基本原则》",
+    "adhering-to-societal-conventions": "“遵守社会习俗”",
+    "act-ranking": "《ACT排名》",
+    "access": "“使用权”",
+    "gender-equality-and-womens-empowerment-fundamentals": "“性别平等和妇女赋权的基本原则”",
+    "fundamentals-of-retaining-and-re-andor-up-skilling-workers-for-an-inclusive-balanced-workforce": "“留住和重新培训和/或提高工人技能以打造包容、平衡的劳动力队伍的基础知识”",
+    "fundamentals-of-advocacy-for-policies-and-regulation-on-green-and-decent-job-creation-employee-retention-education-and-reskilling-and-social-protection-supporting-a-just-transition": "“倡导创造绿色和体面就业的政策和法规的基础；员工保留、教育和再培训以及支持公正转型的社会保护”"
+  },
+  "wikidata": {
+    "polideology": "《政治意识形态》",
+    "polalignment": "“政治联盟”"
   }
 }
