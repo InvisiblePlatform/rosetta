@@ -246,6 +246,7 @@ option {
 
 #backButton,
 #closeButton,
+#loginButton,
 #roundelButton,
 #settingsButton {
     background-color: transparent;
@@ -267,7 +268,9 @@ option {
 }
 
 
+#loginButton>div,
 #settingsButton>div,
+.commentClose>div,
 #closeButton>div {
     filter: brightness(var(--brightness));
     background-size: 24px 24px;
@@ -284,6 +287,9 @@ option {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'%3e%3cpath stroke='%23343434' stroke-linecap='square' d='M19 15.889h-7.778m-6.222 0h1.556M19 8.111h-2.333M5 8.111h7M8.89 13.556a2.333 2.333 0 1 0 0 4.666 2.333 2.333 0 0 0 0-4.667ZM14.334 5.778a2.333 2.333 0 1 0 0 4.666 2.333 2.333 0 0 0 0-4.666Z'/%3e%3c/svg%3e");
 }
 
+#loginButton>div {
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PScwIDAgMjAgMjAnIHZlcnNpb249JzEuMScgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyBmaWxsPSdub25lJz48Y2lyY2xlIHN0eWxlPSdzdHJva2U6IzM0MzQzNDtzdHJva2Utd2lkdGg6LjU7JyBjeD0nMTAnIGN5PSc2JyByPScyLjMnIC8+PHBhdGggc3R5bGU9J3N0cm9rZTojMzQzNDM0O3N0cm9rZS13aWR0aDouNTsnIGQ9J00gOS45MTc3NDA3LDguNzY3NDg3NSBDIDEzLjU3OTk3OCw4Ljg0ODM1MDEgMTMuNDg5MTAyLDExLjAyNTUwNiAxMy40Mzc5OCwxMC45NDAxODggViAxNi43OTM3IEggNi41NjIwMjAzIHYgLTUuODAyMzg5IGMgMCwwIDAuMTEyODQzLC0yLjIyMzgyMzUgMy4zNTU3MjA0LC0yLjIyMzgyMzUgeicvPjwvc3ZnPg==");
+}
 #settingsButton {
     order: 2;
     border-left: var(--c-light-text) solid 1px;
@@ -418,7 +424,7 @@ th {
     right: -24px;
 }
 
-:is(#similar-site-wrapper, #opensec, #lobbyeu) > div > div > a {
+:is(#political-wikidata, #politicali-wikidata, #similar-site-wrapper, #opensec, #lobbyeu) > div > div > a {
     right: 24px;
 }
 
@@ -821,6 +827,7 @@ figure {
     box-sizing: border-box;
     border-collapse: collapse;
     min-width: 50%;
+    position: static;
     width: 50%;
     flex-grow: 2;
     overflow: hidden;
@@ -828,6 +835,8 @@ figure {
 }
 
 #social-wikidata-links>table tbody tr {
+    background-color: var(--c-background);
+    width: 100%; 
     border-bottom: solid 1px;
     border-top: solid 1px;
     border-color: var(--c-border-color);
@@ -1344,7 +1353,7 @@ section.expanded:not(#bcorp) img.iconclass {
 }
 
 :is(#Invisible-boycott, #Invisible-dislike, #Invisible-like, #backButton, 
-#closeButton, #settingsButton, .fullView, #graph-box:not(.expanded), #wikipedia-infocard-frame:not(.expanded)):hover,
+#closeButton, #loginButton,#settingsButton, .fullView, #graph-box:not(.expanded), #wikipedia-infocard-frame:not(.expanded)):hover,
 .similar-site>a:hover {
     background-color: var(--c-hover);
 }
@@ -1417,6 +1426,9 @@ body.somethingIsOpen section#titlebar > .co-name {
 }
 body.mobile section#titlebar > .co-name {
     padding: 16px 0;
+}
+body.mobile.topBar section#titlebar > #loginButton {
+    transform: translateY(76px);
 }
 body.mobile.topBar section#titlebar > #settingsButton {
     transform: translateY(36px);
@@ -1509,6 +1521,7 @@ td.biaslink {
     #backButton { width: 50%; }
     #closeButton{ display: block; }
     #settingsButton { display: none; }
+    #loginButton { display: none; }
     #backButton, #closeButton {
         background-color: var(--c-background);
         box-shadow: #00000099 0px 4px 4px -5px;
@@ -1719,6 +1732,14 @@ td.biaslink {
         margin-left: calc(50% - 16px);
         right: 0;
     }
+    section#political-wikidata .scoreText {
+        width: 100%;
+        margin-left: 1em;
+    }
+    section#politicali-wikidata .scoreText {
+        width: 100%;
+        margin-left: 1em;
+    }
     section#cta .scoreText {
         width: 100%;
         margin-left: 1em;
@@ -1875,6 +1896,9 @@ td.biaslink {
         display: none;
     }
 
+    #titlebar:has(.closeExtention) #loginButton {
+        right: 112px;
+    }
     #titlebar:has(.closeExtention) #settingsButton {
         right: 64px;
     }
@@ -1982,16 +2006,23 @@ section#titlebar {
     position: inherit;
     border: none;
 }
-section#titlebar > #settingsButton {
+section#titlebar > :is(#settingsButton, #loginButton) {
     border: solid var(--c-interior-border) 1px;
     border-radius: 8px;
     min-width: 40px;
     height: 40px;
+}
+section#titlebar > #settingsButton {
     top: 12px;
     right: 16px;
     position: absolute;
 }
-section#titlebar > #settingsButton> div {
+section#titlebar > #loginButton {
+    top: 12px;
+    right: 32px;
+    position: absolute;
+}
+section#titlebar > :is(#settingsButton, #loginButton ) > div {
     background-size: 22px 22px;
     background-position-y: 7px;
     height: 40px;
@@ -2502,6 +2533,9 @@ section:not(.expanded) .flavourText b {
 .charts-css.bar.stacked tbody tr {
     min-height: 3em;
 }
+table.charts-css th {
+    font-size: 0.7em;
+}
 .charts-css.bar:not(.reverse) tbody tr td {
     -webkit-box-pack: center!important;
     -ms-flex-pack: center!important;
@@ -2510,7 +2544,6 @@ section:not(.expanded) .flavourText b {
 
 .charts-css.line {
     height: 200px;
-    max-width: 400px;
     margin: 0 auto;
     word-break: keep-all;
     white-space: nowrap;
@@ -2554,7 +2587,9 @@ section#goodonyou.contentSection div.twoCharts {
     border: 1px solid var(--c-text-light);
     border-radius: 8px;
     background-color: var(--c-secondary-background);
-    outline: #000000dd 100vh solid;
+    outline-width: 100vh;
+    outline-style: solid;
+    outline-color: #000000dd;
 }
 
 #floatDiagSave{
@@ -2566,6 +2601,109 @@ section#goodonyou.contentSection div.twoCharts {
     border-radius: 4px;
 }
 
+div.openSecLobbyCardContainer > div {
+    display: inline-flex;
+}
+div.openSecLobbyCardContainer > div > b {
+    color: red;
+
+}
+div.openSecLobbyCardContainer > div > div {
+    color: blue;
+}
+
+.smallCommentBox {
+    transition: height 0.5s, padding 0.5s;
+    font-size: 0.625em;
+    font-family: 'Roboto Mono';
+    font-weight: 400;
+    line-height: 13px;
+    width: 100%;
+    padding: 16px;
+    background-color: var(--c-secondary-background);
+    border-color: var(--c-interior-border);
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 9px;
+}
+
+.smallVoteBox {
+    width: 50%;
+    display: flex;    
+    margin-bottom: 10px;
+    justify-content: space-around;
+    li {
+        display: block;
+    }
+    li > *{
+        display: inline;
+    }
+}
+
+button.loadInfoButton {
+    color: var(--c-main);
+    background-color: var(--c-background);
+    border-style: solid;
+    border-color: var(--c-border-color);
+    border-width: 1px;
+    border-radius: 4px;
+    font-size: 0.625em;
+    padding: 0px 4px;
+}
+
+.bottomLeftOfModule {
+    color: var(--c-main)!important;
+    position: absolute;
+    font-size: 0.625em;
+    font-family: 'Roboto Mono';
+    font-weight: 400;
+    line-height: 13px;
+    white-space: nowrap;
+    order: 1001;
+    z-index: 2;
+    bottom: 8px;
+    left: 8px;
+}
+
+#commentBoxInput {
+    width: -webkit-fill-available;
+    height: calc(400px / 1.625);
+    background: var(--c-secondary-background);
+    border-color: var(--c-border-color);
+    border-style: solid;
+    border-radius: 4px;
+    display:flex;
+    grid-area: message_form;
+    word-wrap: break-word;
+    justify-content: center;
+    align-items: center;
+    color: var(--c-text-light);
+    padding: 8px;;
+}
+
+.commentButton {
+    border-color: var(--c-border-color);
+    position: absolute;
+    right: 16px;
+    background-color: transparent;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+}
+
+.commentPost {
+    bottom: 12px;
+    padding: 8px 16px;
+}
+
+.commentClose {
+    top: 12px;
+    width: 40px;
+    height: 40px;
+    div {
+        background-image: url(/icon/close.svg);
+    }
+}
 
 #wikipedia-first-frame{ order: unset; }
 #networkgraph{ order: unset; } 
@@ -2601,6 +2739,7 @@ section#goodonyou.contentSection div.twoCharts {
 #wbm-oil-gas-benchmark{ order: unset; }
 #wbm-seafood-stewardship{ order: unset; }
 #political-wikidata{order: unset;}
+#politicali-wikidata{order: unset;}
 #goodonyou{ order: unset; } 
 #bcorp{ order: unset; } 
 #tosdr-link{ order: unset; } 
@@ -2612,4 +2751,5 @@ section#goodonyou.contentSection div.twoCharts {
 #wikipedia-infocard-frame{ order: unset; }
 #wbm{ order: unset; }
 #cta{ order: unset; }
+#post{ order: unset; }
 

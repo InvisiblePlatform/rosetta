@@ -355,6 +355,42 @@ hr {
   from{--p:0}
 }
 
+.recolorOutlineOnOpen {
+    --startc: #00000000;
+    --endc: #000000dd;
+    --start: 0px;
+    --end: 128px;
+    animation: recolorOutline var(--animation-delay);
+    animation-fill-mode: forwards;
+}
+@keyframes recolorOutline{
+    from {
+        outline-color: var(--startc);
+        height: var(--start);
+        padding: 0px;
+    }
+    to {
+        outline-color: var(--endc);
+        height: var(--end);
+    }
+}
+
+.resizeHeightOnOpen {
+    --start: 0px;
+    --end: 128px;
+    animation: resizeHeight var(--animation-delay);
+    animation-fill-mode: forwards;
+}
+@keyframes resizeHeight{
+    from {
+        height: var(--start);
+        padding: 0px;
+    }
+    to {
+        height: var(--end);
+    }
+}
+
 .iv-tooltip {
 .charts-css .tooltip {
     position: absolute;

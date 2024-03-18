@@ -24,7 +24,7 @@ wikidata_id:
 - Q380
 title: example.com
 published: true
-connections: /connections/facebook.com.json
+connections: /connections/b1e620b575faa516fd243b5700539b4e.json
 social:
   Twitter username:
   - url: https://twitter.com/facebook
@@ -60,7 +60,40 @@ tp_source: Facebook
 ts_slug: facebookcom
 ts_rating: '96.2'
 ts_source: facebook.com
+industry:
+  industry_wd:
+  - data:
+      arlabel: "\u062A\u0642\u0627\u0646\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\
+        \u0645\u0627\u062A"
+      calabel: "tecnologia de la informaci\xF3"
+      delabel: Informationstechnik
+      enlabel: information technology
+      eolabel: informa teknologio
+      eslabel: "tecnolog\xEDas de la informaci\xF3n y la comunicaci\xF3n"
+      frlabel: technologie de l'information
+      hilabel: "\u0938\u0942\u091A\u0928\u093E \u092A\u094D\u0930\u094C\u0926\u094D\
+        \u092F\u094B\u0917\u093F\u0915\u0940"
+      zhlabel: "\u4FE1\u606F\u6280\u672F"
+    dataId: Q11661
+    source: facebook.com
+    sourceLabels:
+      arlabel: "\u0645\u064A\u062A\u0627 \u0628\u0644\u0627\u062A\u0641\u0648\u0631\
+        \u0645\u0632"
+      calabel: Meta Platforms
+      delabel: Meta Platforms
+      enlabel: Meta Platforms
+      eolabel: Meta Platforms
+      eslabel: Meta Platforms
+      frlabel: Meta
+      hilabel: "\u092E\u0947\u091F\u093E \u092A\u094D\u0932\u0947\u091F\u092B\u0949\
+        \u0930\u094D\u092E\u094D\u0938"
+      zhlabel: Meta Platforms
+lb_fte: 17.05
+lb_source: Meta Platforms Ireland Limited and its various subsidiaries
+lobbyeu: 28666427835-74
 core:
+- type: lobbyeu
+  url: lobbyfacts/28666427835-74.json
 - type: cta
   url: cta/examplecom.json
 - type: tosdr
