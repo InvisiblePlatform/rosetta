@@ -1,9 +1,17 @@
 const pageHost = `${window.location.protocol}//${window.location.host}`
 const pageCoreLocation = `${pageHost}${document.getElementById('location-url').textContent}`;
 const assetsURL = `https://assets.reveb.la`
-var loggedIn = false;
-var username;
 
+const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
+var translator = new Translator({
+    persist: true,
+    // debug: true,
+    filesLocation: `${pageHost}/i18n`
+});
+
+var loggedIn = false;
+
+var settingsState;
 var defaultSettingsState = {
 	"preferred_language": "en",
 	"loggedIn": false,
@@ -18,44 +26,74 @@ var defaultSettingsState = {
 	"experimentalFeatures": false,
 }
 
-var settingsState;
+var debug = false;
+Url = {
+    get get(){
+        var vars= {};
+        if(window.location.search.length!==0)
+            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
+                key=decodeURIComponent(key);
+                if(typeof vars[key]==="undefined") {vars[key]= decodeURIComponent(value);}
+                else {vars[key]= [].concat(vars[key], decodeURIComponent(value));}
+            });
+        return vars;
+    }
+};
+
+Hash = {
+    get hash(){
+        var value=''
+        if(window.location.hash.length!==0)
+            window.location.hash.replace(/#+([^\?]+)/gi, function(hash){
+               value = hash.replace('#',''); 
+            })
+        return value
+    }
+}
+
+function pageSetup(){
+    settingsStateLoad()
+    loadPageCore()
+    addSettings()
+    if (settingsState["experimentalFeatures"] == true) {
+        loginCheck()
+        loadPageExternal()
+    }
+    scrollIntoPlace()
+}
+
 
 function settingsStateLoad(){
-	if (typeof(localStorage.tempSettingsStore) == 'undefined'){
-		settingsState = defaultSettingsState;
-	} else {
-		settingsState = JSON.parse(localStorage.tempSettingsStore)
-	}
+    settingsState = (typeof(localStorage.tempSettingsStore) == 'undefined') ? defaultSettingsState : JSON.parse(localStorage.tempSettingsStore)
+    console.log(settingsState)
+	settingsStateApply(settingsState)
 }
 
 function resetSettings(){
 	settingsState = defaultSettingsState;
 	settingsStateChange()
-
 }
-
-settingsStateLoad()
-var ExperimentalFeatures = settingsState["experimentalFeatures"];
 
 function settingsStateApply(newSettingsState=defaultSettingsState){
 	settingsState = newSettingsState;
 	translator.translatePageTo(settingsState["preferred_language"]);
+	if (settingsState["debugMode"] == true) {
+	    document.lastChild.classList.toggle("debugColors");
+	    debug = true;
+	}
+    if (settingsState["darkMode"] == "true"){
+        document.lastChild.classList.toggle('dark-theme');
+        document.getElementById('backButton').style.backgroundImage = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K')";
+    }
 }
 
 function settingsStateChange(){
 	send_message("IVSettingsChange", settingsState);
 	localStorage.tempSettingsStore = JSON.stringify(settingsState)
-	console.log("Settings state changed")
-	console.log(settingsState);
+	if (debug) console.log("Settings state changed")
+	if (debug) console.log(settingsState);
 }
 
-// Translator
-var translator = new Translator({
-    persist: true,
-    // debug: true,
-    filesLocation: `${pageHost}/i18n`
-});
-const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
 translator.fetch(languages).then(() => {
     translator.translatePageTo();
     registerLanguageToggle();
@@ -77,36 +115,54 @@ function registerLanguageToggle() {
     });
 }
 
+const scrollIntoPlace = async () => {
+    if (Hash.hash.length!==0){
+        var scrollPlace = document.getElementById(Hash.hash)
+        if (scrollPlace){
+        scrollPlace.scrollIntoView()
+        console.log("Scroll To Place")
+        }
+    }
+}
+
 var moduleData;
 const loadPageCore = async () =>{
     try {
         const dataf = await fetch(pageCoreLocation)
         const response = await dataf.json()
+        localString = ''
         moduleData = await response;
         for (module of response.core){
             if (module.url != 'local'){
-                addModule(type=module.type, url=`${pageHost}/ds/${module.url}`);
+				await addModule(type=module.type, url=`${pageHost}/ds/${module.url}`)
+					.then((string) => localString += string);
             }
         }
-        if ("political" in response) addLocalModule(type="political", data=response.political)
-        if ("social" in response) addLocalModule(type="social", data=response.social)
+        if ("political" in response)
+            localString += await addLocalModule(type="political", data=response.political)
+        if ("social" in response) 
+            localString += await addLocalModule(type="social", data=response.social)
+
+        content.innerHTML += localString
+		translator.translatePageTo()
     } catch (e) {
         console.log(e)
     }
-    recalculateList()
 }
 
 function postUpdate(data, topLevel=false){
-	console.log(`topLevel ${topLevel}`)
+	if (data["comment"]){
+		moduleUpdate(data, true)
+		return
+	}
+	if (debug) console.log(`topLevel ${topLevel}`)
 	if (topLevel == true){
 		if (!document.getElementById("post")){
 			addLocalModule(type="post", data=data)
 		}
 	} else {
-	console.log(`module comment stub`)
-		console.log(data)
+		if (debug) console.log(data)
 	}
-	recalculateList()
 }
 
 const loadPageExternal = async () =>{
@@ -114,11 +170,21 @@ const loadPageExternal = async () =>{
 	send_message("IVGetPost", postLocation)
 }
 
+var loginButtonEl;
 function loginCheck() {
-    if (Url.get["loggedInAs"]){
+    loginButtonEl = document.createElement("button"); 
+    loginButtonEl.innerHTML = "<div></div>"
+    loginButtonEl.id = "loginButton";
+    loginButtonEl.style.right = '128px';
+    loginButtonEl.setAttribute("type", "button");
+    loginButtonEl.setAttribute("onclick", "loginButtonAction()");
+    settingsButton.parentNode.insertBefore(loginButtonEl,settingsButton);
+
+	console.log(Url.get["username"])
+    if (Url.get["username"]){
         loggedIn = true;
-        username = Url.get["loggedInAs"];
-    }
+		settingsState["loggedIn"] = true;
+    } 
 }
 // load modules for matching data
 
@@ -152,25 +218,19 @@ function sourceStringClose(href, text){
 
 const contentContainer = document.getElementsByClassName("content")[0]
 
-// TODO:
-// GOY missing slug
+var localString = ''
+
 async function addLocalModule(type=undefined,data=undefined){
     if (type == undefined || data == undefined) return; 
     if (type in types) {} else {return;}
-    stopDefaultContainer = false;
-    let sectionContainer = document.createElement('section');
-    sectionContainer.className = "contentSection";
-    sectionContainer.id = types[type].id;
+
 
     // Genericising needed
     // console.log(data)
     if (type == "social"){
-    htmlString = `
+        htmlString = `<section class="contentSection" id="${types[type].id}">
         <h2 class="sectionTitle"><div data-i18n="${types[type].translate}">${types[type].label}</div><div class="subname"></div></h2>
-
-    `
-        //<button class="collapsible">Show/Hide</button>
-        htmlString += `<section id="social-wikidata-links" class="collapsible-content"><table>`
+        <section id="social-wikidata-links" class="collapsible-content"><table>`
         for (label in data){
             for (item in data[label]){
                 htmlString += `<tr><th>${label.replaceAll(" id","").replaceAll(" username","")}</th>
@@ -178,20 +238,14 @@ async function addLocalModule(type=undefined,data=undefined){
                 </tr>`
             }
         }
-        htmlString += `
-            </table></section>
-        `
-        sectionContainer.innerHTML = htmlString
+        htmlString += `</table></section></section>`
     }
     if (type == "political"){
         lang = "enlabel"
-        stopDefaultContainer = true;
         for (label in data){
-            let sectionContainer = document.createElement('section');
-            sectionContainer.className = "contentSection";
-            sectionContainer.id = (label == "polalignment") ? "political-wikidata" : "politicali-wikidata";
+            labelId = (label == "polalignment") ? "political-wikidata" : "politicali-wikidata";
             actLabel = (label == "polalignment") ? "Political Alignments" : "Political Ideologies";
-            htmlString = `
+            htmlString = `<section class="contentSection" id="${labelId}">
                 <h2 class="sectionTitle"><div data-i18n="wikidata.${label}">${actLabel}</div></h2>
 <div class="scoreText fullBleed"><div>`
             for (item in data[label]){
@@ -200,38 +254,37 @@ async function addLocalModule(type=undefined,data=undefined){
             }
             htmlString += `
      <a target="_blank" class="hideInSmall source" href="https://wikidata.org/wiki/${data[label][item]['dataId']}">WIKIDATA</a>
-            </div></div>
+            </div></div></section>
             `
-            sectionContainer.innerHTML = htmlString
-            contentContainer.appendChild(sectionContainer);
         }
     }
     if (type == 'post'){
-
         postContent = $('<div/>').html(data.content).text()
-        htmlString = `
+		dataLocationString = data.uid.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+        htmlString = `<section class="contentSection" id="${types[type].id}" data-location="${dataLocationString}"
         <h2 class="sectionTitle"><div data-i18n="user.moduletitle">User Content</div><div class="subname">(${data.location})</div></h2>
          <div class="scoreText fullBleed userText">
-             <div>`
-        htmlString +=postContent
-        htmlString +=`<a class="source" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a>
+             <div>${postContent}<a class="source" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a>
             </div>
          </div>
-        `
-        sectionContainer.innerHTML = htmlString;
-		sectionContainer.innerHTML += `<ul class="smallVoteBox bottomLeftOfModule">
+		<ul class="smallVoteBox bottomLeftOfModule hideInSmall">
 			<li><a target="_blank" onclick="postalVote('up','${data.uid}', '${data.status}')" >Up</a><div>(${data.up_total})</div></li>
 			<li><a target="_blank" onclick="postalVote('down','${data.uid}', '${data.status}')" >Down</a><div>(${data.down_total})</div></li>
 			<li><a target="_blank" onclick="postalVote('comment','${data.uid}', '${data.status}')" ><div>Comment </a>(${data.comment_total})</div></li>
-            </ul>`
+            </ul>
+        </section>`
 
-        sectionContainer.setAttribute("data-location", data.uid)
     }
-    if (!stopDefaultContainer)
-        contentContainer.appendChild(sectionContainer);
-    translator.translatePageTo();
+    return htmlString
 }
 
+function opsTd(r){
+    return `<td style="--size: calc(${r.percent.replace("%", "")}}/100);">
+            <span class="data">${r.entity}</span>
+            <span class="tooltip">${r.entity}<br>
+                (${r.amount})</span>
+            </td>`
+}
 
 async function addModule(type=undefined,url=undefined){
     if (type == undefined || url == undefined) return; 
@@ -239,13 +292,10 @@ async function addModule(type=undefined,url=undefined){
     const moduleData = await fetch(url);
     const moduleResponse = await moduleData.json()
     //console.log(moduleResponse)
+	dataLocationString = url.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
     if (type in types) {} else {return;}
-    let stopDefaultContainer = false
-    let sectionContainer = document.createElement('section');
-    sectionContainer.className = "contentSection";
-    sectionContainer.id = types[type].id;
     // Genericising needed
-    htmlString = `
+    htmlString = `<section id="${types[type].id}" class="contentSection" data-location="${dataLocationString}">
         <h2 class="sectionTitle"><div data-i18n="${types[type].translate}">${types[type].label}</div><div class="subname">(${moduleResponse.source})</div></h2>
     `
 
@@ -253,7 +303,8 @@ async function addModule(type=undefined,url=undefined){
         //console.log(moduleResponse)
         htmlString += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">`
         if ("bill_most_heading" in moduleResponse){
-            htmlString += `<p class="flavourText"><b>${moduleResponse.bill_most_heading}</b></p>
+            htmlString += `
+            <p class="flavourText"><b>${moduleResponse.bill_most_heading}</b></p>
             <p class="flavourText"><a href='${moduleResponse.bill_most_url}'>${moduleResponse.bill_most_title} (${moduleResponse.bill_most_code})</a></p>`
         }
         htmlString += '<div class="scoreText fullBleed"><div><p data-i18n="os.disclaimer"></p><br>'
@@ -264,71 +315,30 @@ async function addModule(type=undefined,url=undefined){
             if ("lobbying_rank" in moduleResponse) htmlString+= `<p><b>Lobbying Rank:</b> ${moduleResponse.lobbying_rank}</p>`
 
             htmlString+= '<br> <div class="charts">'
-            if ("bars" in moduleResponse){
-                bars = moduleResponse.bars;
-                if ("recipients_of_funds" in bars){
-                    htmlString+=`
-                        <h3 data-i18n="opensec.recipients">Recipients of Funds</h3>
-                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
-                    for (recipient in bars.recipients_of_funds){
-                        let r = bars.recipients_of_funds[recipient]
-                        htmlString+=`
-                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
-                            <span class="data">${r.entity}</span>
-                            <span class="tooltip">${r.entity}<br>
-                                (${r.amount})</span>
-                            </td>
-                        `
+            if ("bars" in moduleResponse) {
+                  bars = moduleResponse.bars;
+                  const charts = {
+                    "recipients_of_funds": "Recipients of Funds",
+                    "sources_of_funds": "Sources of Funds",
+                    "sources_of_funds_to_candidates": "Sources of Funds to Candidates"
+                  };
+                
+                  for (const chartType in charts) {
+                    if (chartType in bars) {
+                      htmlString += `
+                        <h3 data-i18n="opensec.${chartType}">${charts[chartType]}</h3>
+                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`;
+
+                      for (const item in bars[chartType]) {
+                        htmlString += opsTd(bars[chartType][item]);
+                      }
+                      htmlString += "</tr></tbody></table>";
                     }
-                    htmlString += "</tr></body></table>"
+                  }
                 }
-                if ("sources_of_funds" in bars){
-                    htmlString+=`
-                        <h3 data-i18n="opensec.sources">Sources of Funds</h3>
-                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
-                    for (source in bars.sources_of_funds){
-                        let r = bars.sources_of_funds[source]
-                        htmlString+=`
-                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
-                            <span class="data">${r.entity}</span>
-                            <span class="tooltip">${r.entity}<br>
-                                (${r.amount})</span>
-                            </td>
-                        `
-                    }
-                    htmlString += "</tr></body></table>"
-                }
-                if ("sources_of_funds_to_candidates" in bars){
-                    htmlString+=`
-                        <h3 data-i18n="opensec.sourcestocandidates">Sources of Funds to Candidates</h3>
-                        <table class="charts-css multiple stacked bar show-heading"><tbody><tr>`
-                    for (source in bars.sources_of_funds_to_candidates){
-                        let r = bars.sources_of_funds_to_candidates[source]
-                        htmlString+=`
-                            <td style="--size: calc(${r.percent.replace("%", "")}}/100);">
-                            <span class="data">${r.entity}</span>
-                            <span class="tooltip">${r.entity}<br>
-                                (${r.amount})</span>
-                            </td>
-                        `
-                    }
-                    htmlString += "</tr></body></table>"
-                }
-            }// End of Bars
             if ("charts" in moduleResponse){
                 charts = moduleResponse.charts;
-                if ("House" in charts){
-                    house = charts["House"]
-                    year_range = house.latest_year - house.earliest_year;
-                    earlyYear = house.earliest_year
-                    valueYear = house.Dems.all_years.length
-                    houseDems = house.Dems.all_years
-                    houseRepubs = house.Repubs.all_years
-                    heightThou = [].concat(houseDems,houseRepubs).sort(function(a,b) { return a - b }).reverse()[0] / 1000
-                    if (heightThou > 0){
-                        htmlString+=`
-                            <h3 data-i18n="opensec.house">House</h3>
-                            <h4 style="color:red !important;" data-i18n="opensec.republicans">Republicans</h4>
+                commonString = `<h4 style="color:red !important;" data-i18n="opensec.republicans">Republicans</h4>
                             <h4 style="color:blue !important;" data-i18n="opensec.democrats">Democrats</h4>
                             <table class="charts-css line multiple hide-data show-labels show-primary-axis show-data-on-hover" style="--color-1: blue;--color-2:red;">
                             <thead>
@@ -337,51 +347,14 @@ async function addModule(type=undefined,url=undefined){
                                 <th data-i18n="opensec.democrats"   scope="col">Democrats</th>
                                 <th data-i18n="opensec.republicans" scope="col">Republicans</th>
                                 </tr>
-                            </thead>
-                            <tbody>`
-                        lastD = 0
-                        lastR = 0
-                        for (year in house["all_data"]){
-                            dataD = house["all_data"][year]["Dems"];
-                            dataR = house["all_data"][year]["Repubs"];
-                            tD = dataD / (heightThou * 1000)
-                            tR = dataR / (heightThou * 1000)
-                            htmlString+=`
-                                <tr><th scope="row">${year}</th>
-                                    <td style="--start:${ lastD }; --size:${ tD };"><span class="data">${ dataD }</span></td>
-                                    <td style="--start:${ lastR }; --size:${ tR };"><span class="data">${ dataR }</span></td>
-                                </tr>
-                            `
-                            lastD = tD;
-                            lastR = tR;
-                             
-                        }
-                        htmlString += "</tbody></table>"
-                    }
-
-                }
-                if ("Senate" in charts){
-                    house = charts["Senate"]
-                    year_range = house.latest_year - house.earliest_year;
-                    earlyYear = house.earliest_year
-                    valueYear = house.Dems.all_years.length
+                            </thead><tbody>`
+                for (chartType in charts){
+                    house = charts[chartType]
                     houseDems = house.Dems.all_years
                     houseRepubs = house.Repubs.all_years
                     heightThou = [].concat(houseDems,houseRepubs).sort(function(a,b) { return a - b }).reverse()[0] / 1000
                     if (heightThou > 0){
-                        htmlString+=`
-                            <h3 data-i18n="opensec.senate">Senate</h3>
-                            <h4 style="color:red !important;" data-i18n="opensec.republicans">Republicans</h4>
-                            <h4 style="color:blue !important;" data-i18n="opensec.democrats">Democrats</h4>
-                            <table class="charts-css line multiple hide-data show-labels show-primary-axis show-data-on-hover" style="--color-1: blue;--color-2:red;">
-                            <thead>
-                                <tr>
-                                <th data-i18n="opensec.year"        scope="col">Year</th>
-                                <th data-i18n="opensec.democrats"   scope="col">Democrats</th>
-                                <th data-i18n="opensec.republicans" scope="col">Republicans</th>
-                                </tr>
-                            </thead>
-                            <tbody>`
+                        htmlString+=`<h3 data-i18n="opensec.${chartType.toLowerCase()}">${chartType}</h3>${commonString}`
                         lastD = 0
                         lastR = 0
                         for (year in house["all_data"]){
@@ -426,18 +399,15 @@ async function addModule(type=undefined,url=undefined){
                 </div>
                 </div>
                 `
-        sectionContainer.innerHTML = htmlString
     }
 
     if (type == "wbm"){
+		wbmstring = ''
         for (module in moduleResponse.modules){
-            let ssectionContainer = document.createElement('section');
-            ssectionContainer.className = "contentSection";
             file = moduleResponse.modules[module].file;
             trans = file.split("_").slice(1).join("-").toLowerCase()
             fileName = file.split("_").slice(1).join(" ")
-            ssectionContainer.id = `wbm-${trans}`;
-            htmlString = `
+			wbmstring += `<section id="wbm-${trans}" class="contentSection">
             <h2 class="sectionTitle"><div data-i18n="wbm.${trans}">${fileName}</div><div class="subname">(${moduleResponse.source})</div></h2>
             <div class="pie hideTilExpanded"></div>
             `
@@ -445,49 +415,34 @@ async function addModule(type=undefined,url=undefined){
             for (item of Object.keys(moduleResponse.modules[module])){
                 if (!item.includes("Total Score")){
                     if (item != "file" && item != "Company Scorecard"){
+                        itemLabel = item.split("(")[0]
+						itemTrans = itemLabel.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")
                         if (item.includes("(")){
                             outOf = item.split("(")[1].replace(")","")
-                            itemLabel = item.split("(")[0]
-                            additionalString += `<tr><th data-i18n='wbm.${itemLabel.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")}'>${itemLabel}</th>
-                            <td style="--outOf:'/ ${outOf}';" class="ratingOutOf" >${moduleResponse.modules[module][item]}</td></tr>`
+                            additionalString += `<tr><th data-i18n='wbm.${itemTrans}'>${itemLabel}</th>
+								<td style="--outOf:'/ ${outOf}';" class="ratingOutOf" >${moduleResponse.modules[module][item]}</td></tr>`
                         } else {
-                        additionalString += `<tr><th data-i18n='wbm.${item.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")}'>${item}</th>
-                            <td style="--outOf:'';" >${moduleResponse.modules[module][item]}</td></tr>`
+							additionalString += `<tr><th data-i18n='${itemTrans}'>${item}</th> 
+								<td style="--outOf:'';" >${moduleResponse.modules[module][item]}</td></tr>`
                         }
                     }
                 } else {
                   if (!item.includes("Raw")){
-                  outOf = Number(item.split("(")[1].replace(")",""))
-                  itemLabel = item.split("(")[0]
-                  score = Number(moduleResponse.modules[module][item])
-                  percent = (score / outOf) * 100
-                  
-                htmlString += `
-<score class="ratingOutOf" style="--outOf:'/ ${outOf}';">${score}</score>
-<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${percent};"></div>
-         <div class="scoreText fullBleed">
-             <div>
-         <table>
-
-                    `
+					  outOf = Number(item.split("(")[1].replace(")",""))
+                	  itemLabel = item.split("(")[0]
+                	  score = Number(moduleResponse.modules[module][item])
+                	  percent = (score / outOf) * 100
+	            	  wbmstring += `<score class="ratingOutOf" style="--outOf:'/ ${outOf}';">${score}</score>
+							<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${percent};"></div>
+							<div class="scoreText fullBleed"><div><table>`
                   }
                 }
             }
-            htmlString += additionalString
-            ssectionContainer.innerHTML = `${htmlString} </table> <a target="_blank" class="source" href='{{- $source.Get "source" -}}'>WORLDBENCHMARK</a></div> </div>`
-            contentContainer.appendChild(ssectionContainer);
-            stopDefaultContainer = true;
+            wbmstring += `${additionalString}</table> <a target="_blank" class="source" href='{{- $source.Get "source" -}}'>WORLDBENCHMARK</a></div> </div></section>`
         }
+		htmlString = wbmstring
     }
     if (type == "cta"){
-        htmlString += `
-        <score class="biaslink"> </score>
-        <div class="scoreText">
-        <div>
-        <h3>${moduleResponse.author}<span class="author" data-i18n="common.author"> - Author</span></h3>
-        <p>${moduleResponse.description}</p>
-        </div>
-        <div>`
         positiveString = ''
         negativeString = ''
         for (link in moduleResponse.links){
@@ -497,12 +452,14 @@ async function addModule(type=undefined,url=undefined){
             negativeString += `<div><a href='${moduleResponse.links[link].url}'>${moduleResponse.links[link].label}</a></div>`
             }
         }
-        htmlString += "<div><h4> Positive </h4>"
-        htmlString += positiveString
-        htmlString += "</div><div><h4> Negative </h4>"
-        htmlString += negativeString
-
-        sectionContainer.innerHTML = `${htmlString}</div></div></div>`
+        htmlString += `
+        <score class="biaslink"> </score>
+        <div class="scoreText">
+        <div>
+        <h3>${moduleResponse.author}<span class="author" data-i18n="common.author"> - Author</span></h3>
+        <p>${moduleResponse.description}</p>
+        </div>
+        <div><div><h4> Positive </h4>${positiveString}</div><div><h4> Negative </h4> ${negativeString}</div></div></div>`
     }
     if (type == "lobbyeu"){
         rating = moduleResponse
@@ -521,7 +478,6 @@ async function addModule(type=undefined,url=undefined){
 		htmlString += `</table>
 			<a class="source" target="_blank" href="https://lobbyfacts.eu/datacard/org?rid=${moduleResponse.eu_transparency_id}">EU Transparency register via LobbyFacts.eu</a>
 		</div></div>`
-        sectionContainer.innerHTML = htmlString
     }
     if (type == "goodonyou"){
         rating = (moduleResponse.rating / 5) * 100
@@ -545,7 +501,6 @@ async function addModule(type=undefined,url=undefined){
 </div>
 
         `
-        sectionContainer.innerHTML = htmlString
     }
 
     if (type == "bcorp"){
@@ -564,14 +519,16 @@ async function addModule(type=undefined,url=undefined){
     <a class="source hideInSmall" target="_blank" href="https://www.bcorporation.net/en-us/find-a-b-corp/company/${moduleResponse.slug}">BCORP</a>
     </div>
     </div>`
-        sectionContainer.innerHTML = htmlString
     }
 
 
     if (type == 'yahoo'){
         formatting = [ ["Negligible","0 - 9.9 "], ["Low","10 - 19.9"], ["Medium","20 - 29.9"], ["High", "30 - 39.9"], ["Severe","40+      "]]
         // 0-10, 10-20, 20-30, 40+
-
+        biasString =''
+		for (item in formatting){
+			biasString +=`<tr><th><div data-i18n="esg.${item[0].toLowerCase()}" class="biaslink">${item[0]}</div></th><td>${item[1]}</td></tr>`
+		}
         htmlString += `
 <div class="pie hideTilExpanded"></div>
 <score class="biaslink">${moduleResponse.totalEsg}</score>
@@ -599,21 +556,15 @@ async function addModule(type=undefined,url=undefined){
 <div class="scoreText">
 <div class="esgKey"><h3 data-i18n="esg.gradingscale">Grading Scale</h3>
 <table class="esgKey">
-`
-		for (item in formatting){
-			htmlString +=`<tr><th><div data-i18n="esg.${item[0].toLowerCase()}" class="biaslink">${item[0]}</div></th><td>${item[1]}</td></tr>`
-		}
-		`
+${biasString}
 </table>
 </div>
 <a target="_blank" class="source hideInSmall" href="https://finance.yahoo.com/quote/${moduleResponse.ticker}/sustainability">SUSTAINALYTICS, INC VIA YAHOO! FINANCE</a>
 </div>
 `
-        sectionContainer.innerHTML = htmlString
     }
     if (type == 'trustscore'){
-        sectionContainer.innerHTML = `
-        ${htmlString}
+        htmlString += `
         <div class="pie hideTilExpanded"></div>
         <score class="biaslink">${moduleResponse.score}</score>
         <div class="scoreText">
@@ -628,8 +579,7 @@ async function addModule(type=undefined,url=undefined){
     }
 
     if (type == 'mbfc'){
-        sectionContainer.innerHTML = `
-        ${htmlString}
+        htmlString +=`
         <div class="pie hideTilExpanded"></div>
         <score class="biaslink" data-i18n="bias.${ moduleResponse.bias }">${ moduleResponse.bias }</score>
         <div class="scoreText">
@@ -648,8 +598,7 @@ async function addModule(type=undefined,url=undefined){
     }
 
     if (type == 'glassdoor'){
-        sectionContainer.innerHTML = `
-            ${htmlString}
+        htmlString += `
             <div class="pie hideTilExpanded"></div>
             <score class="ratingOutOfFive">${ moduleResponse.glasroom_rating.ratingValue }</score>
             <div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${ (parseFloat(moduleResponse.glasroom_rating.ratingValue) / 5) * 100 };"></div>
@@ -673,8 +622,7 @@ async function addModule(type=undefined,url=undefined){
 
     if (type == 'tosdr'){
         rated = moduleResponse.rated;
-        sectionContainer.innerHTML = `
-            ${htmlString}
+        htmlString += `
             <div class="pie hideTilExpanded"></div>
             <score style="font-size: 64px;">${rated}</score>
             <div class="scoreText fullBleed">
@@ -687,46 +635,22 @@ async function addModule(type=undefined,url=undefined){
         `
     }
 
-    if (type == 'similar'){
-        htmlString += `
-        <div class="scoreText fullBleed"><div>
-        <section id="similar-sites" class="hideInSmall">`
-
-        for (site in moduleResponse.similar){
-            ssite = moduleResponse.similar[site].s
-            p = Math.floor(moduleResponse.similar[site].p * 100)
-            htmlString += `
-        <section class="similar-site">
-            <a target="_blank" alt="${ssite}" href="https://${ssite}">
-                ${ssite}</a><div class="percent">${p}</div>
-        </section>
-    `;
-
-        }
-        sectionContainer.innerHTML = `${htmlString}
-        </section>
-        <a target="_blank" class="source" href="https://similarsites.com/site/${ moduleResponse.domain }" style="order:101;">SIMILARSITES.COM</a>
-            </div></div>
-        `;
-    }
     if (type == 'trustpilot'){
+        starString = ''
+        numberOfStars = Math.floor(moduleResponse.score);
+        remainingStar = moduleResponse.score - numberOfStars;
+        for (let i = 0; i < 5; i++){
+            division = (numberOfStars > i) ? 1 : 0;
+            division = (numberOfStars == i) ? remainingStar : division;
+            starString += `<span class="coolStar" style="--division:${division};"></span>`
+        }
         htmlString += `
          <score class="ratingOutOf" style="--outOf:'/5';">${moduleResponse.score}</score>
          <div class="scoreText fullBleed">
              <div>
          <div class="ratingCount">${ moduleResponse.reviews.total } <span data-i18n="glassdoor.reviews"></span></div>
          <div class="stars">
-        `
-        numberOfStars = Math.floor(moduleResponse.score);
-        remainingStar = moduleResponse.score - numberOfStars;
-        for (let i = 0; i < 5; i++){
-            division = (numberOfStars > i) ? 1 : 0;
-            division = (numberOfStars == i) ? remainingStar : division;
-            htmlString += `<span class="coolStar" style="--division:${division};"></span>`
-
-
-        }
-        sectionContainer.innerHTML = `${htmlString}
+         ${starString}
          </div>
          <table id="trustChart" class="hideTilExpanded">
              <tr><th data-i18n="trustpilot.total">Total Reviews</th><td>${ moduleResponse.reviews.total }</td></tr>
@@ -741,43 +665,44 @@ async function addModule(type=undefined,url=undefined){
          </div>
         `
     }
-    if (ExperimentalFeatures){
-        var infoButton = document.createElement("button")
-        infoButton.type = "button"
-        infoButton.classList.add("loadInfoButton")
-        infoButton.classList.add("hideInSmall")
-        infoButton.classList.add("bottomLeftOfModule")
-        infoButton.setAttribute("onclick", "postLoad(this)")
-        infoButton.innerText = "Load info"
-        sectionContainer.appendChild(infoButton)
-        sectionContainer.setAttribute("data-location", url)
+    if (type == 'similar'){
+        similarString = ''
+        for (site in moduleResponse.similar){
+            ssite = moduleResponse.similar[site].s
+            p = Math.floor(moduleResponse.similar[site].p * 100)
+            similarString += `<section class="similar-site">
+            <a target="_blank" alt="${ssite}" href="https://${ssite}">
+                ${ssite}</a><div class="percent">${p}</div></section>`;
+        }
+
+        htmlString += `
+        <div class="scoreText fullBleed"><div>
+        <section id="similar-sites" class="hideInSmall">
+        ${similarString}
+        </section>
+        <a target="_blank" class="source" href="https://similarsites.com/site/${ moduleResponse.domain }" style="order:101;">SIMILARSITES.COM</a>
+            </div></div>
+        `;
+
     }
-    //console.log(sectionContainer)
-    if (!stopDefaultContainer)
-        contentContainer.appendChild(sectionContainer);
-    translator.translatePageTo();
+	if (type != 'wbm'){
+    if (settingsState["experimentalFeatures"]){
+        htmlString += `<button type='button' class='loadInfoButton hideInSmall bottomLeftOfModule' onclick="postLoad(this)"> Load info</button>`
+    }
+    htmlString += "</section>"
+	}
+    return htmlString
 }
 
-var loginButtonEl;
-function loginButton(){
-    loginButtonEl = document.createElement("button"); 
-    loginButtonEl.innerHTML = "<div></div>"
-    loginButtonEl.id = "loginButton";
-    loginButtonEl.style.right = '128px';
-    loginButtonEl.setAttribute("type", "button");
-    loginButtonEl.setAttribute("onclick", "loginButtonAction()");
-    settingsButton.parentNode.insertBefore(loginButtonEl,settingsButton);
-}
 
 function commentDiagOpen(location=hash){
     // Location, post_type, content
     if (diagOpen) return;
     diagOpen = true;
-    var leader = `${username} is posting on `
     if (location == hash){
-       leader += document.getElementsByClassName("co-name")[0].innerText; 
+        var leader = `${Url.get['username']} is posting on ${document.getElementsByClassName("co-name")[0].innerText}`; 
     } else {
-       leader += location;
+        var leader = `${Url.get['username']} is posting on ${location}`; 
     }
     floatDiag = document.createElement("div");
     floatDiag.id = "floatDiag"
@@ -825,7 +750,7 @@ let commentClose = function(post=false){
 }
 
 function loginButtonAction(){
-    if (Url.get["loggedInAs"]){
+    if (Url.get["username"]){
         console.log("Logged in")
         commentDiagOpen();
     } else {
@@ -835,12 +760,9 @@ function loginButtonAction(){
 
 
 function send_message(type, data){
-    var msg = {
-        type: type,
-        data: data
-    };
+    var msg = { type: type, data: data };
     if (parent){
-	    try{
+	    try {
             parent.postMessage(msg, "*");
 	    } catch(e){
 	    	console.log(e);
@@ -857,33 +779,9 @@ allLinks.forEach(el => {
     el.setAttribute("target", "_blank");
 });
 
-var debug = false;
-Url = {
-    get get(){
-        var vars= {};
-        if(window.location.search.length!==0)
-            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value){
-                key=decodeURIComponent(key);
-                if(typeof vars[key]==="undefined") {vars[key]= decodeURIComponent(value);}
-                else {vars[key]= [].concat(vars[key], decodeURIComponent(value));}
-            });
-        return vars;
-    }
-};
-if (Url.get["debug"]){
-    debug = Url.get["debug"];
-	settingsState["debugMode"] = debug;
-	settingsStateChange();
-}
-if (settingsState["debugMode"] == "true") {
-    document.lastChild.classList.toggle("debugColors");
-    debug = true;
-}
-let wW = window.innerWidth;
 let backButton = document.getElementById('backButton');
 let closeButton = document.getElementById('closeButton');
 let voteButtons = document.getElementById('Invisible-vote');
-var voteNumbers = [2, 4];
 let boyButton = document.getElementById('Invisible-boycott');
 let roundelButton = document.getElementById('roundelButton');
 let settingsButton = document.getElementById('settingsButton');
@@ -893,10 +791,6 @@ let blank = document.getElementsByClassName('blankForSmall')[0];
 let fullPage = document.documentElement;
 let content = document.getElementsByClassName('content')[0];
 let body = document.body;
-closeButton.setAttribute('onclick', 'closeIV()');
-let closeIV = function(){
-    send_message("IVClose", "closeButton");
-};
 let settings = document.getElementById('settings');
 let graphButtons = document.getElementById('graphButtons');
 let networkGraph = document.getElementById('graph-container');
@@ -904,6 +798,10 @@ let sigmacontainer = document.getElementById('sigma-container');
 let infoCard = document.getElementById('wikipedia-infocard-frame');
 let wikipediaPage = document.getElementById('wikipedia-first-frame');
 
+closeButton.setAttribute('onclick', 'closeIV()');
+let closeIV = function(){ send_message("IVClose", "closeButton"); };
+
+var voteNumbers = [2, 4];
 var mode = 0                                                                    
 const phoneRegex = /Mobile/i;                                                   
                                                                                 
@@ -932,18 +830,11 @@ if ( mode == 2 ){
 }
 
 if (debug) console.log("[ IV ] Page load")
-const spinRoundelFrames = [
- { transform: "rotate(0)" },
- { transform: "rotate(360deg)" },
-];
-
-const spinRoundelTiming = {
-    duration: 500,
-    iterations: 1,
-}
 
 let spinRoundel = function(){
-    roundelButton.animate(spinRoundelFrames, spinRoundelTiming);
+    roundelButton.animate(
+        [ { transform: "rotate(0)" }, { transform: "rotate(360deg)" } ],
+        { duration: 500, iterations: 1 })
 }
 
 
@@ -958,7 +849,7 @@ let resetBack = function(){
     backButton.style.backgroundColor = '';
     if ( mode == 1 ) backButton.classList.remove("show");
     settingsButton.style.display = 'block';
-    if (ExperimentalFeatures) loginButtonEl.style.display = 'block';
+    if (settingsState["experimentalFeatures"]) loginButtonEl.style.display = 'block';
     closeButton.style.display = "";
     titleBar.style.backgroundColor = "";
     titleBar.style.position = "";
@@ -967,15 +858,15 @@ let resetBack = function(){
     roundelButton.style.opacity = '';
     window.scrollTo(0,0);
 }
+
 let setBack = function(x){
     backButton.setAttribute("onclick", x);
     backButton.classList.add("show");
     settingsButton.style.display = 'none';
-    if (ExperimentalFeatures) loginButtonEl.style.display = 'none';
+    if (settingsState["experimentalFeatures"]) loginButtonEl.style.display = 'none';
     roundelButton.style.opacity = '0';
     window.scrollTo(0,0);
 }
-
 
 let loadWikipediaPage = function(x) {
     wikipediaPage.classList.add('expanded');
@@ -1162,22 +1053,10 @@ let notificationsDraw = function(){
                 notToggle.id = `${tag}-bell`;
                 notToggle.classList.add("notificationBell");
                 notToggle.innerHTML = '<label class="switch"><input type="checkbox"><span class="slider round"></span></label>';
-                toggleContainer.style.margin = "0px";
-                toggleContainer.style.top = "4px";
-                toggleContainer.style.right = "-40px";
-                toggleContainer.style.position = "relative";
-                toggleContainer.style.display = "flex";
-                notToggle.style.margin = "0px";
-                notToggle.style.position = "relative";
                 if (tagsEnabled.includes(tag))
                     notToggle.getElementsByTagName("input")[0].checked = true;
-                currEl.style.display = "flex";
-                currEl.style.justifyContent = "space-between";
 
                 toggleDialog = document.createElement("img");
-                toggleDialog.style.width = '20px';
-                toggleDialog.style.height = '20px';
-                toggleDialog.style.transform = 'translate(-20px,-6px)';
                 toggleDialog.id = `${tag}-dialog`;
                 toggleDialog.classList.add("notificationDialog");
                 toggleDialog.onclick = notificationDialog;
@@ -1199,8 +1078,90 @@ let notificationsDraw = function(){
         document.querySelectorAll(".notificationDialog").forEach(x => x.remove());
     }
 }
+var defaultOrder = [
+    "cta",
+    "political-wikidata",
+    "politicali-wikidata",
+    "wikipedia-first-frame",
+    "networkgraph", 
+    "mbfc", 
+    "trust-pilot",
+    "yahoo", 
+    "opensec", 
+    "carbon", 
+    "lobbyeu",
+	"post",
+    "wbm",
+    "wbm-automotive-data",
+    "wbm-gender-benchmark",
+    "wbm-just-transition-assessment",
+    "wbm-just-transition-assessment-social",
+    "wbm-seeds-index-esa",
+    "wbm-seeds-index-ssea",
+    "wbm-seeds-index-wc-africa",
+    "wbm-chumanrightsb",
+    "wbm-financial-system-benchmark",
+    "wbm-social-transformation",
+    "wbm-transport-benchmark",
+    "wbm-buildings-benchmark",
+    "wbm-digital-inclusion",
+    "wbm-electric-utilities",
+    "wbm-food-agriculture-benchmark",
+    "wbm-nature-benchmark",
+    "wbm-oil-gas-benchmark",
+    "wbm-seafood-stewardship",
+    "goodonyou", 
+    "bcorp", 
+    "tosdr-link", 
+    "glassdoor", 
+    "similar-site-wrapper", 
+    "social-wikidata", 
+    "trust-scam",
+];
+var translate = {
+    "wikipedia-first-frame": "w.wikipedia",
+    "networkgraph": "graph.title" ,
+    "small-wikidata": "w.companyinfo",
+    "mbfc": "mbfc.title",
+    "trust-pilot": "trustpilot.title",
+    "yahoo": "esg.title",
+    "opensec": "os.title",
+    "carbon": "carbon.title",
+    "lobbyeu": "lb.title",
+    "post": "user.moduletitle",
+    "cta": "cta.title",
+    "wbm": "wbm.title",
+    "wbm-automotive-data": "wbm.automotive-data",
+    "wbm-gender-benchmark": "wbm.gender-benchmark",
+    "wbm-just-transition-assessment": "wbm.just-transition-assessment",
+    "wbm-just-transition-assessment-social": "wbm.just-transition-assessment-social",
+    "wbm-seeds-index-esa": "wbm.seeds-index-esa",
+    "wbm-seeds-index-ssea": "wbm.seeds-index-ssea",
+    "wbm-seeds-index-wc-africa": "wbm.seeds-index-wc-africa",
+    "wbm-chumanrightsb": "wbm.chumanrightsb",
+    "wbm-financial-system-benchmark": "wbm.financial-system-benchmark",
+    "wbm-social-transformation": "wbm.social-transformation",
+    "wbm-transport-benchmark": "wbm.transport-benchmark",
+    "wbm-buildings-benchmark": "wbm.buildings-benchmark",
+    "wbm-digital-inclusion": "wbm.digital-inclusion",
+    "wbm-electric-utilities": "wbm.electric-utilities",
+    "wbm-food-agriculture-benchmark": "wbm.food-agriculture-benchmark",
+    "wbm-nature-benchmark": "wbm.nature-benchmark",
+    "wbm-oil-gas-benchmark": "wbm.oil-gas-benchmark",
+    "wbm-seafood-stewardship": "wbm.seafood-stewardship",
+    "political-wikidata": "w.political",
+    "politicali-wikidata": "wikidata.polideology",
+    "goodonyou": "goy.section-title",
+    "bcorp": "bcorp.title",
+    "tosdr-link": "tos.title",
+    "glassdoor":"glassdoor.title",
+    "similar-site-wrapper": "similar.title",
+    "social-wikidata": "w.socialmedia",
+    "trust-scam": "trustsc.title",
+};
 
-function settingTemplate(el, id, i18n, title, state="skip"){
+function settingTemplate(id, i18n, title, state="skip"){
+    var el = document.createElement("div")
     el.id = id
     el.classList.add("switchItem")
     el.innerHTML = `
@@ -1224,22 +1185,17 @@ function addSettings(){
     for (lang in languages){
         languagePickerOptions += `<option value="${languages[lang]}">${languages[lang].toUpperCase()}</option>`
     }
-    languagePicker.innerHTML = `
-     <h2 data-i18n="common.language">Language</h2>
-     <select id="langselect" title="Language Picker">
-     ${languagePickerOptions}
-     </select>
-     `
+    languagePicker.innerHTML = `<h2 data-i18n="common.language">Language</h2>
+                                <select id="langselect" title="Language Picker">${languagePickerOptions}</select>`
+
     settings.appendChild(languagePicker)
-    // Keep Dash on screen
-    var onScreenItem = document.createElement("div")
-    settingTemplate(onScreenItem, "onScreen", "settings.dashboard", "Keep dashboard on screen", settingsState["keepOnScreen"])
-    // Dark Mode
-    var darkmodeItem = document.createElement("div")
-    settingTemplate(darkmodeItem, "permaDark", "settings.darkMode", "Dark Mode", settingsState["darkMode"])
-    // Bobble disable
-    var bobbleItem = document.createElement("div")
-    settingTemplate(bobbleItem, "bobbleDisable", "settings.bobbleDisabled", "Disable Bobble", settingsState["bobbleOverride"])
+
+    settingTemplate("onScreen", "settings.dashboard", "Keep dashboard on screen", settingsState["keepOnScreen"])
+    settingTemplate("permaDark", "settings.darkMode", "Dark Mode", settingsState["darkMode"])
+    settingTemplate("bobbleDisable", "settings.bobbleDisabled", "Disable Bobble", settingsState["bobbleOverride"])
+    settingTemplate("debug-banner", "settings.debugBanner", "Debug Mode", settingsState["debugMode"])
+    settingTemplate("externalPosts-banner", "settings.externalPosts", "Experimental Features", settingsState["experimentalFeatures"])
+
     // Notifications
     var notifications = document.createElement("div");
     notifications.id = "notifications-shade";
@@ -1262,71 +1218,21 @@ function addSettings(){
         send_message("IVNotifications", "false");
     }
     
-    // External Posts 
-    var postbanner = document.createElement("div");
-    settingTemplate(postbanner, "externalPosts-banner", "settings.externalPosts", "Experimental Features", settingsState["experimentalFeatures"])
 
-    if (debug == true && (!document.getElementById("debug-banner"))){
-        var banner = document.createElement("div");
-        banner.id = "debug-banner";
-        banner.classList.add("switchItem");
-        banner.innerHTML = `<h2 data-i85n="settings.debugBanner">Debug Mode</h2>
-            <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div>`
-        settings.appendChild(banner);
-    }
+
     let priorityList = document.createElement("div");
     priorityList.id ="priority-list";
+    listString = ''
+    for (item in translate){
+        listString += `<li data-id="${item}">${translate[item]}</li>`
+    }
     priorityList.innerHTML = `
      <h2 data-i18n="settings.priorityTitle">Prioritise Modules</h2>
      <div data-i18n="settings.priorityOrder">Drag to re-order modules</div>
-       <ul id="sortlist" class="slist">
-
-   	    <li style="list-style: none;" data-id="wikipedia-first-frame">Wikipedia</li>
-   	    <li style="list-style: none;" data-id="networkgraph">Network Graph and Company Info </li>
-   	    <li style="list-style: none;" data-id="political-wikidata">Political Alignment</li>
-   	    <li style="list-style: none;" data-id="politicali-wikidata">Political Ideology</li>
-   	    <li style="list-style: none;" data-id="mbfc">Media Bias</li>
-   	    <li style="list-style: none;" data-id="cta">Call To Action</li>
-   	    <li style="list-style: none;" data-id="trust-pilot">Trust Pilot</li>
-   	    <li style="list-style: none;" data-id="yahoo">ESG Risk</li>
-   	    <li style="list-style: none;" data-id="opensec">Open Secrets</li>
-   	    <li style="list-style: none;" data-id="carbon">Carbon Footprint</li>
-   	    <li style="list-style: none;" data-id="lobbyeu">LobbyFacts.eu</li>
-   	    <li style="list-style: none;" data-id="post">Submitted Posts</li>
-
-   	    <li style="list-style: none;" data-id="wbm">World Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-automotive-data"> Automotive Data </li>
-        <li style="list-style: none;" data-id="wbm-gender-benchmark"> Gender Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-just-transition-assessment"> Just Transition Assessment</li>
-        <li style="list-style: none;" data-id="wbm-just-transition-assessment-social"> Just Transition Assessment Social</li>
-        <li style="list-style: none;" data-id="wbm-seeds-index-esa"> Seeds Index ESA</li>
-        <li style="list-style: none;" data-id="wbm-seeds-index-ssea"> Seeds Index SSEA</li>
-        <li style="list-style: none;" data-id="wbm-seeds-index-wc-africa"> Seeds Index WC Africa</li>
-        <li style="list-style: none;" data-id="wbm-chumanrightsb"> Human Rights Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-financial-system-benchmark"> Financial System Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-social-transformation"> Social Transformation</li>
-        <li style="list-style: none;" data-id="wbm-transport-benchmark"> Transport Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-buildings-benchmark"> Buildings Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-digital-inclusion"> Digital Inclusion</li>
-        <li style="list-style: none;" data-id="wbm-electric-utilities"> Electric Utilities</li>
-        <li style="list-style: none;" data-id="wbm-food-agriculture-benchmark"> Food Agriculture Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-nature-benchmark"> Nature Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-oil-gas-benchmark"> Oil Gas Benchmark</li>
-        <li style="list-style: none;" data-id="wbm-seafood-stewardship"> Seafood Stewardship</li>
-
-   	    <li style="list-style: none;" data-id="goodonyou">Ethical Sourcing</li>
-   	    <li style="list-style: none;" data-id="bcorp">B corp</li>
-   	    <li style="list-style: none;" data-id="tosdr-link">Privacy</li>
-   	    <li style="list-style: none;" data-id="glassdoor">Employee Rating</li>
-   	    <li style="list-style: none;" data-id="similar-site-wrapper">Similar Websites</li>
-   	    <li style="list-style: none;" data-id="social-wikidata">Social Media</li>
-   	    <li style="list-style: none;" data-id="trust-scam">Trust Scam</li>
-       </ul>
-   `
+       <ul id="sortlist" class="slist">${listString}</ul>`
     settings.appendChild(priorityList)
 }
 
-addSettings()
 let loadSettings = function(x) {
     body.classList.add("settingsOpen");
     if (settings.style.bottom == "0px"){
@@ -1410,13 +1316,8 @@ let closeNetworkGraph = function(x){
 }
 
 let justSendBack = function(x) {
-    if (Url.get["vote"] != "true"){
-        window.location.href = "https://test.reveb.la/" ;
-    }
     bw = backButton.getBoundingClientRect()['width'];
-    // if ( bw == 40 || bw == 78 || mode == 1) {
     send_message("IVClicked", "back");
-    // }
 }
 
 let openGenericPage = function(x){
@@ -1428,7 +1329,6 @@ let openGenericPage = function(x){
     var bb = element.getBoundingClientRect()
     var startW = bb['width'];
     var startH = bb['height'];
-    // element.style.height = startH + "px";
     element.style.width = startW + "px";
     element.style.transform = "translate( -" + bb['x'] + "px, -" + bb['y'] + "px)";
     element.style.top = bb['y'] + "px";
@@ -1469,66 +1369,14 @@ let closeSettings = function(x) {
     }
     coName.style.opacity = "100%";
     fullPage.style.overflow = "";
-    if (infoCard != null) {
-    if (infoCard.classList.contains("expanded")) {
-        settings.style.visibility = 'hidden';
-        setBack('closeInfoCard()');
-    } else if (wikipediaPage.classList.contains("expanded")) {
-        settings.style.visibility = 'hidden';
-        setBack('closeWikipediaPage()');
-    } else {
-       resetBack();
-    }
-    } else {
-       resetBack();
-    }
-}
-
-var IVLike = document.getElementById('Invisible-like')
-var IVDislike = document.getElementById('Invisible-dislike')
-
-if (settingsState["keepOnScreen"] == "true"){
-	document.getElementById('onScreen').getElementsByTagName('label')[0].firstElementChild.checked = true;
-    send_message("IVKeepOnScreen", "true");
-}
-    
-if (settingsState["bobbleOverride"] == "true"){
-	document.getElementById('bobbleDisable').getElementsByTagName('label')[0].firstElementChild.checked = true;
-    send_message("IVBobbleDisable", "true");
-}
-
-if (settingsState["darkMode"] == "true"){
-	document.getElementById('permaDark').getElementsByTagName('label')[0].firstElementChild.checked = true;
-    document.lastChild.classList.toggle('dark-theme');
-    document.getElementById('backButton').style.backgroundImage = "url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTciIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNyAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTExLjgzMzMgMTMuMzMzNEw2LjUgOC4wMDAwNEwxMS44MzMzIDIuNjY2NzEiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLWxpbmVjYXA9InNxdWFyZSIvPgo8L3N2Zz4K')";
+    resetBack();
 }
 
 
-
-document.addEventListener("DOMContentLoaded", function(){
-    if (Url.get["app"] == 'true'){
-        closeButton.style.visibility = "hidden";
-    }
-    if (Url.get["vote"] == 'true'){
-        body.classList.add("topBar");
-        boyButton.classList.toggle("hide");
-        voteButtons.classList.toggle("hide");
-        if (mode == 2) content.classList.add("padOnSmall");
-        voteLoad();
-    } else {
-        boyButton.style.visibility = "hidden";
-        voteButtons.style.visibility = "hidden";
-    }
-    if (Url.get["expanded"] && mode == 1){
-        document.getElementById(Url.get["expanded"]).classList.add("expanded")
-        content.classList.add('somethingIsOpen');
-    }
-});
 
 
 function toggleNotifications(value) {
   if (settingsState["notifications"] === value) return;
-
   settingsState["notifications"] = value;
   cacheButton = document.getElementById("notificationsCache");
   cacheButton.style.display = value === "true" ? "block" : "none";
@@ -1538,214 +1386,24 @@ function toggleNotifications(value) {
   console.log("notifications " + settingsState["notifications"]);
 }
 
-var debugModeCount = 0
-function toggleToggle(type){
-	if (type == "darkMode"){
-		debugModeCount = debugModeCount < 4 ? debugModeCount + 1 : debugModeCount;
-  		if (debugModeCount === 4) {
-  		  debug = !debug;
-  		  settingsState["debugMode"] = debug;
-  		  document.lastChild.classList.toggle("debugColors");
-  		}
-		document.lastChild.classList.toggle('dark-theme');
-	}
-	settingsState[type] = !settingsState[type];
-	console.log(`setting ${type} ${settingsState[type]}`)
-	settingsStateChange()
+function notificationBell(ppId){
+    if (ppId == "cacheClear"){
+        send_message("IVNotificationsCacheClear", "please");
+        settingsState["userPreferences"] = JSON.stringify(defaultUserPreferences);
+        return
+    }
+    tagList = "";
+    document.querySelectorAll(".notificationBell").forEach(function (x) {
+        state = x.getElementsByTagName("input")[0].checked;
+        if ((x.id === ppId && !state) || (x.id !== ppId && state))
+          tagList += x.id.replace(/-bell/, "");
+    });
+    console.log(tagList);
+    send_message("IVNotificationsTags", tagList);
+    settingsState["notificationsTags"] = tagList;
+    settingsStateChange()
 }
 
-
-
-document.addEventListener('mouseup', function (event) {
-  if (event.target.matches("html")) return;
-  if (event.target.matches("#floatDiag")) return;
-  if (event.target.matches("#floatDiagSave")) {
-      notificationCloseAndSave()
-      return
-  };
-
-  if (event.target.matches('#Invisible-boycott')) {
-    send_message("IVBoycott", "please");
-  } else if (event.target.classList.contains('invisible-disclaimer-title')) {
-    send_message("IVClicked", "disclaimer");
-  } else if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
-    send_message("IVClicked", event.target.parentElement.id);
-
-    if (event.target.parentElement.id == "wikipedia-first-frame") loadWikipediaPage();
-    if (event.target.parentElement.id == "wikipedia-infocard-frame") loadProfileCard();
-    event.target.scrollIntoView();
-
-  } else if (event.target.parentElement.parentElement) {
-    if (event.target.parentElement.parentElement.matches('.notificationBell')) {
-      tagList = "";
-      clickedBell = event.target.parentElement.parentElement.id;
-      document.querySelectorAll(".notificationBell").forEach(function (x) {
-        if (x.id == clickedBell) {
-          if (!x.getElementsByTagName("input")[0].checked) tagList += x.id.replace(/-bell/, "");
-        } else {
-          if (x.getElementsByTagName("input")[0].checked) tagList += x.id.replace(/-bell/, "");
-        }
-      });
-      console.log(tagList);
-      send_message("IVNotificationsTags", tagList);
-      settingsState["notificationsTags"]= tagList;
-    }
-  }
-  if (event.target.parentElement.parentElement == null) return;
-  if (event.target.parentElement.parentElement.parentElement) {
-    if (event.target.parentElement.parentElement.parentElement.matches('#notifications-shade')) {
-        if (settingsState["notifications"]=== "true") {
-          toggleNotifications("false");
-        } else {
-          toggleNotifications("true");
-        }
-    } else if (event.target.parentElement.parentElement.matches('#bobbleDisable')) {
-		toggleToggle("bobbleOverride")
-    } else if (event.target.parentElement.parentElement.matches('#externalPosts-banner')) {
-		toggleToggle("experimentalFeatures");
-    } else if (event.target.parentElement.parentElement.matches('#permaDark')) {
-		toggleToggle("darkMode");
-    } else if (event.target.parentElement.parentElement.matches('#onScreen')) {
-		toggleToggle("keepOnScreen");
-    }
-
-    if (event.target.matches('#indexRefresh')){
-      send_message("IVIndexRefresh", "please");
-    }
-    
-    if (event.target.matches('#notificationsCache')){
-      send_message("IVNotificationsCacheClear", "please");
-	  settingsState["userPreferences"] = JSON.stringify(defaultUserPreferences);
-    }
-
-    if (event.target.matches('#backButton')) {
-      send_message("IVClicked", event.target.parentElement.id);
-    } else if (event.target.matches('#profile-card')) {
-      send_message("biggen", "big");
-      if (debug) console.log("bigg");
-    }
-  }
-}, false);
-
-// {value: items[it].value, label: items[it].innerHTML}
-var defaultOrder = [
-    "cta",
-    "political-wikidata",
-    "politicali-wikidata",
-    "wikipedia-first-frame",
-    "networkgraph", 
-    "mbfc", 
-    "trust-pilot",
-    "yahoo", 
-    "opensec", 
-    "carbon", 
-    "lobbyeu",
-	"post",
-    "wbm",
-    "wbm-automotive-data",
-    "wbm-gender-benchmark",
-    "wbm-just-transition-assessment",
-    "wbm-just-transition-assessment-social",
-    "wbm-seeds-index-esa",
-    "wbm-seeds-index-ssea",
-    "wbm-seeds-index-wc-africa",
-    "wbm-chumanrightsb",
-    "wbm-financial-system-benchmark",
-    "wbm-social-transformation",
-    "wbm-transport-benchmark",
-    "wbm-buildings-benchmark",
-    "wbm-digital-inclusion",
-    "wbm-electric-utilities",
-    "wbm-food-agriculture-benchmark",
-    "wbm-nature-benchmark",
-    "wbm-oil-gas-benchmark",
-    "wbm-seafood-stewardship",
-    "goodonyou", 
-    "bcorp", 
-    "tosdr-link", 
-    "glassdoor", 
-    "similar-site-wrapper", 
-    "social-wikidata", 
-    "trust-scam",
-];
-var translate = {
-"wikipedia-first-frame": "w.wikipedia",
-"networkgraph": "graph.title" ,
-"small-wikidata": "w.companyinfo",
-"mbfc": "mbfc.title",
-"trust-pilot": "trustpilot.title",
-"yahoo": "esg.title",
-"opensec": "os.title",
-"carbon": "carbon.title",
-"lobbyeu": "lb.title",
-"post": "user.moduletitle",
-"cta": "cta.title",
-"wbm": "wbm.title",
-"wbm-automotive-data": "wbm.automotive-data",
-"wbm-gender-benchmark": "wbm.gender-benchmark",
-"wbm-just-transition-assessment": "wbm.just-transition-assessment",
-"wbm-just-transition-assessment-social": "wbm.just-transition-assessment-social",
-"wbm-seeds-index-esa": "wbm.seeds-index-esa",
-"wbm-seeds-index-ssea": "wbm.seeds-index-ssea",
-"wbm-seeds-index-wc-africa": "wbm.seeds-index-wc-africa",
-"wbm-chumanrightsb": "wbm.chumanrightsb",
-"wbm-financial-system-benchmark": "wbm.financial-system-benchmark",
-"wbm-social-transformation": "wbm.social-transformation",
-"wbm-transport-benchmark": "wbm.transport-benchmark",
-"wbm-buildings-benchmark": "wbm.buildings-benchmark",
-"wbm-digital-inclusion": "wbm.digital-inclusion",
-"wbm-electric-utilities": "wbm.electric-utilities",
-"wbm-food-agriculture-benchmark": "wbm.food-agriculture-benchmark",
-"wbm-nature-benchmark": "wbm.nature-benchmark",
-"wbm-oil-gas-benchmark": "wbm.oil-gas-benchmark",
-"wbm-seafood-stewardship": "wbm.seafood-stewardship",
-"political-wikidata": "w.political",
-"politicali-wikidata": "wikidata.polideology",
-"goodonyou": "goy.section-title",
-"bcorp": "bcorp.title",
-"tosdr-link": "tos.title",
-"glassdoor":"glassdoor.title",
-"similar-site-wrapper": "similar.title",
-"social-wikidata": "w.socialmedia",
-"trust-scam": "trustsc.title",
-};
-function recalculateList(){
-  var propertyOrder = (settingsState["listOrder"] != "") ? settingsState["listOrder"].split('|') : defaultOrder;
-  let target = document.getElementById("sortlist")
-  //$("#sortlist").sortable("sort", propertyOrder, true);
-  let items = target.getElementsByTagName("li"), current = null;
-  for (let x = 0; x < propertyOrder.length; x++){
-    let value = propertyOrder[x];
-    if (items[x] !== undefined){
-    items[x].setAttribute("data-i18n", translate[value]);
-    if (value == "networkgraph"){
-        if (document.getElementById("graph-box")){
-            //document.getElementById("graph-box").style.order = x + 5;
-            [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#graph-box').style.order = x + 5;
-        }
-        if (document.getElementById("wikipedia-infocard-frame")){
-            // document.getElementById("wikipedia-infocard-frame").style.order = x + 5;
-            [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#wikipedia-infocard-frame').style.order = x + 5;
-            document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("wikipedia-infocard-frame")`);
-        }
-    }
-    if (document.getElementById(value)){
-        thiselement = document.getElementById(value);
-        // thiselement.style.order = x + 5;
-        [...document.styleSheets[3].cssRules].find(y=> y.selectorText==`#${value}`).style.order= x + 5;
-        if (mode == 1){
-            if (value != "carbon") thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
-            // console.log("mode 1");
-        }
-    }
-    }
-  };
-  if (debug) console.log("sorted")
-  if (document.getElementById('graph-box') != null){
-      document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
-  }
-  
-}
 function slist (target) {
   // (A) SET CSS + GET ALL LIST ITEMS
   target.classList.add("slist");
@@ -1792,6 +1450,124 @@ function slist (target) {
 
 }
 
+function toggleToggle(type){
+	if (type == "darkMode") document.lastChild.classList.toggle('dark-theme');
+    if (type == "notificationsContainer"){
+        toggleNotification(settingsState["notifications"])    
+        return
+    }
+	settingsState[type] = !settingsState[type];
+	console.log(`setting ${type} ${settingsState[type]}`)
+    if (type == "debugMode") document.lastChild.classList.toggle("debugColors");
+	settingsStateChange()
+}
+
+// {value: items[it].value, label: items[it].innerHTML}
+function recalculateList(){
+  var propertyOrder = (settingsState["listOrder"] != "") ? settingsState["listOrder"].split('|') : defaultOrder;
+  let target = document.getElementById("sortlist")
+  let items = target.getElementsByTagName("li"), current = null;
+
+  for (let x = 0; x < propertyOrder.length; x++){
+    let value = propertyOrder[x];
+    if (items[x] !== undefined){
+        items[x].setAttribute("data-i18n", translate[value]);
+        if (value == "networkgraph"){
+            if (document.getElementById("graph-box")){
+                [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#graph-box').style.order = x + 5;
+            }
+            if (document.getElementById("wikipedia-infocard-frame")){
+                [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#wikipedia-infocard-frame').style.order = x + 5;
+            }
+        }
+        if (document.getElementById(value)){
+            thiselement = document.getElementById(value);
+            [...document.styleSheets[3].cssRules].find(y=> y.selectorText==`#${value}`).style.order= x + 5;
+            if (mode == 1 && value != "carbon"){
+                thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+            }
+        }
+    }
+  };
+  
+  if (debug) console.log("sorted")
+  if (document.getElementById('graph-box') != null){
+      document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
+  }
+  if (document.getElementById("wikipedia-infocard-frame")){
+      document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("wikipedia-infocard-frame")`);
+  }
+  
+}
+
+
+const toggles = {
+    "bobbleDisable": "bobbleOverride",
+    "externalPosts-banner": "experimentalFeatures",
+    "permaDark": "darkMode",
+    "onScreen": "keepOnScreen",
+    "debug-banner": "debugMode",
+    "notificationsContainer": "notificationsContainer",
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    if (Url.get["app"] == 'true'){
+        closeButton.style.visibility = "hidden";
+    }
+    if (Url.get["vote"] == 'true'){
+        body.classList.add("topBar");
+        boyButton.classList.toggle("hide");
+        voteButtons.classList.toggle("hide");
+        if (mode == 2) content.classList.add("padOnSmall");
+        voteLoad();
+    } else {
+        boyButton.style.visibility = "hidden";
+        voteButtons.style.visibility = "hidden";
+    }
+    if (Url.get["expanded"] && mode == 1){
+        document.getElementById(Url.get["expanded"]).classList.add("expanded")
+        content.classList.add('somethingIsOpen');
+    }
+});
+
+document.addEventListener('mouseup', function (event) {
+  if (event.target.matches("html")) return;
+  if (event.target.matches("#floatDiag")) return;
+  if (event.target.matches("#floatDiagSave")) {
+      notificationCloseAndSave()
+      return
+  };
+
+  var tid = event.target.id;
+  
+  if (tid == '#indexRefresh') send_message("IVIndexRefresh", "please");
+  if (tid == '#notificationsCache') notificationBell("cacheClear")
+  if (tid == '#backButton') send_message("IVClicked", event.target.parentElement.id);
+  if (tid == '#Invisible-boycott') send_message("IVBoycott", "please");
+
+  if (event.target.classList.contains('invisible-disclaimer-title'))send_message("IVClicked", "disclaimer");
+  if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
+    send_message("IVClicked", event.target.parentElement.id);
+    if (event.target.parentElement.id == "wikipedia-first-frame") loadWikipediaPage();
+    if (event.target.parentElement.id == "wikipedia-infocard-frame") loadProfileCard();
+    event.target.scrollIntoView();
+  } 
+
+  if (event.target.matches('#profile-card')) {
+    send_message("biggen", "big");
+    if (debug) console.log("bigg");
+  }
+
+  if (event.target.parentElement.parentElement == null) return;
+  var ppId = event.target.parentElement.parentElement.id;
+
+  if (event.target.parentElement.parentElement.matches('.notificationBell'))
+      notificationBell(ppId)
+
+  if (ppId in toggles) toggleToggle(toggles[ppId])
+
+}, false);
+
 window.addEventListener('message', function(e){
     if (e.data.message === undefined) return
     if (debug) console.log(e);
@@ -1800,18 +1576,7 @@ window.addEventListener('message', function(e){
     var likeC = '';
 
     if (decoded.message == "VoteUpdate"){
-        if ( decoded.voteStatus == "up"){
-            likeC = "var(--c-main)";
-            dlikeC = "var(--c-light-text)";
-        } else if (decoded.voteStatus == "down") {
-            likeC = "var(--c-light-text)";
-            dlikeC = "var(--c-main)";
-        } else if (decoded.voteStatus == "none") {
-            likeC = "var(--c-light-text)";
-            dlikeC = "var(--c-light-text)";
-        }
-        IVDislike.setAttribute("style", "--count:'" + decoded.dtotal + "';color:" + dlikeC + ";");
-        IVLike.setAttribute("style", "--count:'" + decoded.utotal + "';color:"+ likeC + ";");
+		voteUpdate(decoded)
     }
     if (decoded.message == "ModuleUpdate"){
         moduleUpdate(decoded);
@@ -1823,6 +1588,7 @@ window.addEventListener('message', function(e){
         postUpdate(decoded, true);
     }
 });
+
 function postalVote(direction, location, status){
     if (status == direction){
            send_message("IVPostVoteUnvote", location) 
@@ -1837,49 +1603,75 @@ function postalVote(direction, location, status){
     }
 }
 
-function moduleUpdate(mesg){
+const moduleExceptions = {
+	"trustpilot": "trust-pilot",
+	"opensecrets": "opensec",
+	"tosdr": "tosdr-link",
+	"similar": "similar-site-wrapper",
+	"trustscore": "trust-scam",
+}
+function moduleUpdate(mesg, comment=false){
     location_str = mesg["location"];
-    const coreItem = moduleData.core.filter(function(item){
-        return item.url.includes(location_str);
-    })[0]
-    var elmt = document.getElementById(coreItem.type) ;
+	var elmt = $(`[data-location='${location_str}']`)[0];
+	if (typeof(elmt) == 'undefined'){
+		console.log(mesg)
+		return
+	}
+	if (comment){
+		data = mesg
+		sVB = elmt.getElementsByClassName("smallVoteBox")[0]
+		contentText = $('<div/>').html(data.content).text()   
+		commentBox = document.createElement("div")
+		commentBox.classList.add("smallCommentBox")
+		commentBox.setAttribute("data-location", mesg["uid"])
+		commentBox.innerHTML = `
+		<div>${contentText}<a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
+		
+		<ul class="smallerVoteBox hideInSmall">
+			<li><a target="_blank" onclick="postalVote('up','${data.uid}', '${data.status}')" >Up</a><div>(${data.up_total})</div></li>
+			<li><a target="_blank" onclick="postalVote('down','${data.uid}', '${data.status}')" >Down</a><div>(${data.down_total})</div></li>
+			<li><a target="_blank" onclick="postalVote('comment','${data.uid}', '${data.status}')" ><div>Comment </a>(${data.comment_total})</div></li>
+            </ul>`
+		sVB.parentNode.insertBefore(commentBox, sVB)
+
+		return
+	}
+
+	if (location_str.includes("-")){
+		className = "smallerVoteBox"	
+		console.log(mesg)
+		console.log(elmt)
+	} else {
+		className = "smallVoteBox bottomLeftOfModule"
+	}
     if (elmt.getElementsByClassName("loadInfoButton").length > 0){
         elmt.getElementsByClassName("loadInfoButton")[0].remove();
     } else {
-        console.log(elmt.getElementsByClassName("smallVoteBox"))
-        elmt.getElementsByClassName("smallVoteBox")[0].remove();
+        elmt.getElementsByClassName(className.split(" ")[0])[0].remove();
     }
-    mesg["comment_total"]=0;
-    elmt.innerHTML += `<ul class="smallVoteBox bottomLeftOfModule">
+
+	elmt.innerHTML += `<ul class="${className} hideInSmall">
 		<li><a target="_blank" onclick="postalVote('up','${location_str}', '${mesg.status}')" >Up</a><div>(${mesg.up_total})</div></li>
 		<li><a target="_blank" onclick="postalVote('down','${location_str}', '${mesg.status}')" >Down</a><div>(${mesg.down_total})</div></li>
-		<li><a target="_blank" onclick="postalVote('comment','${location_str}', '${mesg.status}')" ><div>Comment </a>(${mesg.comment_total})</div></li>
-        </ul>`
+		<li><a target="_blank" onclick="postalVote('comment','${location_str}', '${mesg.status}')" ><div>Comment </a>(${mesg.comment_total})</div></li></ul>`
+
 	if (mesg.comment_total > 0){
-		console.log("Show comment stub")
-		if (elmt.getElementsByClassName("smallCommentBox").length > 0){
-			elmt.getElementsByClassName("smallCommentBox")[0].remove()
-		}
-		var smallComment = document.createElement("div")
-		smallComment.classList.add("smallCommentBox")
-		smallComment.classList.add("resizeHeightOnOpen")
-		smallComment.innerHTML=`<h3> Author </h3> <div> TEST </div>`
-		var sourceEl = elmt.getElementsByClassName("source")[0]
-		sourceEl.parentNode.insertBefore(smallComment, sourceEl);
+		send_message("IVGetPost", mesg.top_comment)
 	}
 }
+
+
 
 // Voting
 let voteUrl = "https://assets.reveb.la";
 var tempVoteDirection = "";
 var tempInvert = false;
 var invert = null;
-var uuid = null;
+var hash;
 async function voteLoad(){
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
     hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json','');
     send_message("IVVoteStuff", hash);
-    voteUpdate();
 }
 function vote(direction){
     // First look for hash
@@ -1904,7 +1696,6 @@ function vote(direction){
     // Update totals
     tempVoteDirection = direction;
     tempInvert = invert;
-    voteUpdate();
 }
 async function voteRequest(hash, direction, invert){
     if (debug) console.log("vote request: " + hash + " " + direction + " " + invert);
@@ -1914,35 +1705,25 @@ async function voteRequest(hash, direction, invert){
     }
 
     send_message("IVVoteStuff", direction)
-    voteUpdate();
 }
-function voteUpdate(){
-    direction = tempVoteDirection;
-    // if (direction == "up"){
-    //     if (invert) voteNumbers[0] -= 1;
-    //     if (!invert) voteNumbers[0] += 1;
-    // } else if (direction == "down") {
-    //     if (invert) voteNumbers[1] -= 1;
-    //     if (!invert) voteNumbers[1] += 1;
-    // } else {
-    //    voteNumbers[0] = oldNumbers[0];
-    //    voteNumbers[1] = oldNumbers[1];
-    //}
-    IVLike.setAttribute("style", "--count:'" + voteNumbers[0] + "';");
-    IVDislike.setAttribute("style", "--count:'" + voteNumbers[1] + "';");
-    if (!invert) {
-        if (direction == "up") {
-            IVLike.style.color = "green";
-            IVDislike.style.color = "";
-        } else {
-            IVLike.style.color = "";
-            IVDislike.style.color = "green";
-        }
-    } else {
-        tempVoteDirection = "";
-        IVDislike.style.color = "";
-        IVLike.style.color = "";
-    }
+var decodedTest;
+function voteUpdate(decoded=false){
+	if (!decoded){ return }
+	var IVLike = document.getElementById('Invisible-like')
+	var IVDislike = document.getElementById('Invisible-dislike')
+
+
+	decodedTest = decoded;
+    direction = decoded.voteStatus;
+	console.log(decoded.dtotal)
+    dc = lc = "";
+
+    if (!invert && direction == "up") lc = "green";
+    if (!invert && direction == "down") dc = "green";
+
+    if (invert) tempVoteDirection = "";
+	IVLike.setAttribute("style", `--count:'${decoded.utotal.toString()}';color:${lc};`);
+	IVDislike.setAttribute("style", `--count:'${decoded.dtotal.toString()}';color:${dc};`);
 }
 function postLoad(el){
     elementId = el.parentElement.getAttribute("data-location").replace(pageHost, "").replace("/ds/", "").replace(".json", "");
@@ -1967,15 +1748,10 @@ const sort_by = (field, reverse, primer) => {
 }
 
 
-loadPageCore()
-if (settingsState["experimentalFeatures"] == true) {
-    loginCheck()
-    loginButton()
-    if  (!Url.get["local"]){
-    loadPageExternal()
-    }
-}
+
+pageSetup();
 content.addEventListener("DOMNodeInserted", function(event){
     slist(document.getElementById("sortlist"));
-    //recalculateList()
+    recalculateList()
+	scrollIntoPlace()
 });

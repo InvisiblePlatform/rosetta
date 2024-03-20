@@ -1146,7 +1146,9 @@ input:checked+.slider:before {
 
 #priority-list ul>li {
     position: relative;
-    display: list-item;
+    list-style: none;
+    justify-content: space-between;
+    display: flex;
     border: var(--c-light-text) solid 1px;
     background: var(--c-secondary-background);
     font-family: 'Roboto Mono', monospace;
@@ -2618,6 +2620,7 @@ div.openSecLobbyCardContainer > div > div {
     font-family: 'Roboto Mono';
     font-weight: 400;
     line-height: 13px;
+    margin: 16px;
     width: 100%;
     padding: 16px;
     background-color: var(--c-secondary-background);
@@ -2627,6 +2630,18 @@ div.openSecLobbyCardContainer > div > div {
     border-radius: 9px;
 }
 
+.smallerVoteBox {
+    width: 50%;
+    display: flex;    
+    margin-bottom: 10px;
+    justify-content: space-around;
+    li {
+        display: block;
+    }
+    li > *{
+        display: inline;
+    }
+}
 .smallVoteBox {
     width: 50%;
     display: flex;    
@@ -2703,6 +2718,23 @@ button.loadInfoButton {
     div {
         background-image: url(/icon/close.svg);
     }
+}
+
+.notificationBell {
+    margin: 0px!important;
+    position: relative;
+}
+.notificationDialog {
+    width: 20px;
+    height: 20px;
+    transform: translate(-20px, -6px);
+}
+.tagToggleContainer {
+    margin: 0px!important;
+    top: 4px;
+    right: -40px;
+    position: relative;
+    display: flex;
 }
 
 #wikipedia-first-frame{ order: unset; }
