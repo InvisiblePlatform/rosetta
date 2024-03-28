@@ -533,9 +533,9 @@ async function addLocalModule(type=undefined,data=undefined){
 function voteBox(location_str, dataObj, styles=false){
     classString = styles ? `class="${styles}"`: '';
     return `<ul ${classString}>
-				<li><a target="_blank" data-i18n="vote.like" onclick="postalVote('up','${location_str}', '${dataObj.status}')" >Up</a><div>(${dataObj.up_total})</div></li>
-				<li><a target="_blank" data-i18n="vote.dislike" onclick="postalVote('down','${location_str}', '${dataObj.status}')" >Down</a><div>(${dataObj.down_total})</div></li>
-            	<li><a target="_blank" data-i18n="vote.comment" onclick="postalVote('comment','${location_str}', '${dataObj.status}')" >Comment</a><div>(${dataObj.comment_total})</div></li>
+				<li><a target="_blank" data-i18n="vote.like" onclick="postalVote('up','${location_str}', '${dataObj.voteStatus}')" >Up</a><div>(${dataObj.up_total})</div></li>
+				<li><a target="_blank" data-i18n="vote.dislike" onclick="postalVote('down','${location_str}', '${dataObj.voteStatus}')" >Down</a><div>(${dataObj.down_total})</div></li>
+            	<li><a target="_blank" data-i18n="vote.comment" onclick="postalVote('comment','${location_str}', '${dataObj.voteStatus}')" >Comment</a><div>(${dataObj.comment_total})</div></li>
             </ul>`
 }
 
@@ -1698,16 +1698,17 @@ window.addEventListener('message', function(e){
 });
 
 function postalVote(direction, location, status){
-    directionType = (direction == "up") ? "IVPostVoteUp" : "IVPostVoteDown";
-    if (status == direction){
-           send_message("IVPostVoteUnvote", location) 
+    if (direction == status) direction = "un";
+    console.log(direction)
+    if (direction == "up") directionType = "IVPostVoteUp"
+    if (direction == "down") directionType = "IVPostVoteDown"
+    if (direction == "un") directionType = "IVPostVoteUnvote"
+    if (direction == "comment"){
+        commentDiagOpen(location)
     } else {
-        if (direction == "comment"){
-            commentDiagOpen(location)
-        } else {
-           send_message(directionType, location) 
-        }
+       send_message(directionType, location) 
     }
+   
 }
 
 const moduleExceptions = {
@@ -1781,10 +1782,11 @@ var tempInvert = false;
 var invert = null;
 var hash;
 
-function vote(direction){
+function vote(direction, thisOne=false){
     // First look for hash
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
     hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json','');
+
     voteRequest(hash, direction)
 }
 
@@ -1799,6 +1801,7 @@ async function voteRequest(hash, direction){
 }
 function voteUpdate(decoded=false){
 	if (!decoded){ return }
+    console.log(decoded)
 	var IVLike = document.getElementById('Invisible-like')
 	var IVDislike = document.getElementById('Invisible-dislike')
 
@@ -1811,6 +1814,10 @@ function voteUpdate(decoded=false){
 
 	IVLike.setAttribute("style", `--count:'${decoded.utotal.toString()}';color:${lc};`);
 	IVDislike.setAttribute("style", `--count:'${decoded.dtotal.toString()}';color:${dc};`);
+    lF = (decoded.voteStatus == "up" ) ? "vote('un')" : "vote('up')";
+    dF = (decoded.voteStatus == "down" ) ? "vote('un')" : "vote('down')";
+    IVLike.setAttribute("onclick", lF )
+    IVDislike.setAttribute("onclick", dF)
 }
 
 function boycott(){
