@@ -38,6 +38,46 @@
   "cta": {
     "title": "Appel à l'action"
   },
+  "desc": {
+    "yahoo": "Une notation utilisée pour déterminer le degré de durabilité d'une entreprise dans les domaines de l'impact environnemental, de l'impact social et de la gouvernance.",
+    "wikipedia-first-frame": "Une encyclopédie générée et évaluée par les utilisateurs, utilisée dans le monde entier",
+    "wbm-urban": "Une vingtaine d'entreprises les plus influentes pour leurs efforts visant à créer des villes résilientes et durables où chacun peut s'épanouir.",
+    "wbm-transport-benchmark": "Une note pour les entreprises de transport sur leurs progrès vers la décarbonation et une transition juste",
+    "wbm-social-transformation": "Benchmarking pour évaluer le bilan social et de développement durable d'une entreprise.",
+    "wbm-seeds-index": "L'Indice d'accès aux semences mesure et compare les efforts des principales sociétés semencières du monde pour améliorer la productivité des petits exploitants agricoles.",
+    "wbm-seafood-stewardship": "« Une mesure de la manière dont les principales entreprises mondiales de produits de la mer contribuent à la gestion durable de nos océans et de nos écosystèmes côtiers et garantissent la mise en œuvre de pratiques sociales responsables. »",
+    "wbm-oil-gas-benchmark": "Un score pour les 100 sociétés pétrolières et gazières les plus influentes sur leur alignement sur un monde à faibles émissions de carbone.",
+    "wbm-nature-benchmark": "Évaluez les impacts des entreprises sur les écosystèmes stables, permettant la coexistence dans les limites planétaires, notamment la biodiversité, le climat, les terres, les océans et l'eau.",
+    "wbm-just-transition-assessment": "Ces évaluations examinent les éléments sociaux de la transition des entreprises vers un avenir à faibles émissions de carbone.",
+    "wbm-gender-benchmark": "Un score pour déterminer la mixité dans l'entreprise.",
+    "wbm-food-agriculture-benchmark": "Un score pour déterminer le degré de durabilité des pratiques commerciales de l'entreprise tout au long de ses opérations.",
+    "wbm-financial-system-benchmark": "Un score basé sur la contribution de l'entreprise à une allocation durable des ressources et à une évaluation précise des risques dans le cadre des limites planétaires et des normes sociétales.",
+    "wbm-electric-utilities": "Mesurer les 68 services publics d'électricité les plus influents et 11 entreprises de biens d'équipement sur leur progression vers 1,5°C.",
+    "wbm-digital-inclusion": "« Accès si un accès équitable, significatif et sûr à l'utilisation, au leadership et à la conception des technologies numériques est en place. »",
+    "wbm-climate-benchmark": "Un score parmi les 2000 entreprises les plus émettrices de carbone.",
+    "wbm-chumanrightsb": "Un score pour déterminer les droits humains dans l'entreprise",
+    "wbm-buildings-benchmark": "Notation des 50 entreprises de construction les plus influentes au monde sur leur transition juste et équitable à faible émission de carbone.",
+    "wbm-automotive-data": "Une note pour les constructeurs automobiles sur leur transition vers la décarbonation et une transition juste",
+    "trust-scam": "Si un site Web est sûr, ambigu ou dangereux.",
+    "trust-pilot": "Avis des clients sur l'entreprise auprès de laquelle ils ont acheté un produit ou un service ou contacté le service client.",
+    "tosdr-link": "Chaque aspect des conditions d'utilisation ou de la politique de confidentialité est évalué comme positif, négatif ou neutre. Les services sont notés de A (meilleur) à E (pire)",
+    "social-wikidata": "Les différents identifiants de réseaux sociaux et adresses e-mail de l'entreprise.",
+    "small-wikidata": "Les détails de l'entreprise tels que les revenus, les actifs, le statut juridique, le personnel clé, le nombre d'employés, le fondateur et le siège social varient considérablement.",
+    "similar-site-wrapper": "Sites Web similaires au site Web sur lequel vous vous trouvez actuellement. Ceci est basé sur la similitude de l'offre et non sur l'éthique.",
+    "post": "Module soumis par l'utilisateur et voté par les utilisateurs pour être affiché",
+    "politicali-wikidata": "La tendance politique d'une agence de presse.",
+    "political-wikidata": "L'alignement politique d'une organisation.",
+    "opensec": "Suit le flux d'argent des entreprises privées mondiales dans la politique américaine.",
+    "networkgraph": "Les propriétaires, la société mère et les sociétés affiliées derrière le site Web que vous parcourez, ainsi que leurs liens les uns avec les autres.",
+    "mbfc": "Un groupe de vérification des faits se concentrant sur le journalisme en ligne à l'échelle des sites plutôt que sur des histoires individuelles",
+    "markup": "Comment le site Web vous suit et quelles informations sont regroupées.",
+    "lobbyeu": "Une base de données qui répertorie les organisations qui tentent d'influencer le processus législatif et de mise en œuvre des politiques des institutions européennes.",
+    "goodonyou": "Dossiers des entreprises sur les droits des travailleurs, les tests sur les animaux, l'impact environnemental, ainsi que la fabrication et l'approvisionnement en matériaux.",
+    "glassdoor": "Avis des employés actuels et anciens sur l'entreprise.",
+    "cta": "Une liste organisée de liens vers des sites Web externes pertinents pour la vision actuelle de l'entreprise",
+    "carbon": "Accédez à la quantité de carbone produite en visitant la page Web sur laquelle vous vous trouvez",
+    "bcorp": "Il garantit des normes élevées en matière de performance, de responsabilité et de transparence, couvrant les avantages sociaux des employés, les dons caritatifs et les pratiques de la chaîne d'approvisionnement."
+  },
   "esg": {
     "SEVERE": "SÉVÈRE",
     "NEGLIGIBLE": "NÉGLIGEABLE",
@@ -310,7 +350,8 @@
     "priorityOrder": "Faites glisser pour réorganiser les modules",
     "dashboard": "Gardez le tableau de bord à l'écran",
     "darkMode": "Mode sombre",
-    "bobbleDisabled": "Désactiver Bobble"
+    "bobbleDisabled": "Désactiver Bobble",
+    "externalPosts": "Caractéristiques expérimentales"
   },
   "similar": {
     "title": "Site similaire"
@@ -320,6 +361,46 @@
     "title": "Réseaux sociaux"
   },
   "source": "(La source)",
+  "title": {
+    "yahoo": "Risque ESG",
+    "wikipedia-first-frame": "Wikipédia",
+    "wbm-urban": "Référentiel Urbain",
+    "wbm-transport-benchmark": "Référentiel des Transports",
+    "wbm-social-transformation": "Développement Social Et Durable",
+    "wbm-seeds-index": "Index d'accès aux semences",
+    "wbm-seafood-stewardship": "Indice de gestion des fruits de mer",
+    "wbm-oil-gas-benchmark": "Référence pétrolière et gazière",
+    "wbm-nature-benchmark": "Référence Nature",
+    "wbm-just-transition-assessment": "« Transition bas carbone »",
+    "wbm-gender-benchmark": "« Repère de genre »",
+    "wbm-food-agriculture-benchmark": "Durabilité alimentaire et agricole",
+    "wbm-financial-system-benchmark": "Référence du système financier",
+    "wbm-electric-utilities": "Référence des services publics d'électricité",
+    "wbm-digital-inclusion": "Inclusion numérique",
+    "wbm-climate-benchmark": "« Benchmark Climat et Energie »",
+    "wbm-chumanrightsb": "Référentiel des Droits de l'Homme des Entreprises",
+    "wbm-buildings-benchmark": "Référence des bâtiments",
+    "wbm-automotive-data": "Référence automobile",
+    "trust-scam": "« arnaque à la confiance »",
+    "trust-pilot": "« Pilote de confiance »",
+    "tosdr-link": "Confidentialité",
+    "social-wikidata": "Réseaux sociaux et courrier électronique",
+    "small-wikidata": "Information d'entreprise",
+    "similar-site-wrapper": "Sites Web similaires",
+    "post": "Contenu utilisateur",
+    "politicali-wikidata": "Idéologie politique",
+    "political-wikidata": "Alignement politique",
+    "opensec": "Dons politiques",
+    "networkgraph": "Graphique de réseau",
+    "mbfc": "« MediaBiasFactCheck »",
+    "markup": "Inspecteur de la confidentialité du site Web",
+    "lobbyeu": "Transparence de l'UE",
+    "goodonyou": "« Évaluation éthique »",
+    "glassdoor": "« Évaluation des employés »",
+    "cta": "Appel à l'action",
+    "carbon": "Sites Web de calcul de carbone",
+    "bcorp": "Score de certification B Corp"
+  },
   "tos": {
     "wordGrade": "Noter",
     "title": "Intimité",
@@ -348,10 +429,16 @@
     "neutral": "Neutre",
     "danger": "Danger"
   },
+  "user": {
+    "moduletitle": "Contenu soumis par l'utilisateur"
+  },
   "vote": {
-    "like": "Comme",
-    "dislike": "Ne pas aimer",
-    "boycott": "Boycotter"
+    "like": "Approuver",
+    "dislike": "Désapprouver",
+    "boycott": "Boycotter",
+    "important": "Important pour moi",
+    "loadinfo": "Charger les informations",
+    "comment": "Commentaire"
   },
   "w": {
     "socialmedia": "Réseaux sociaux et e-mail",

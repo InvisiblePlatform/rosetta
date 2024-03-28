@@ -32,6 +32,13 @@ def process_md_file(file_path):
                     url = url.replace('.json', '')
                     # pprint(url)
                     result_dict[url] = item.get('type', '')
+                    if item.get("type",'') == 'wbm':
+                        idNo = url.replace("wbm/",'')
+                        with open(f'../data_collection/static/entities/{idNo}.json', 'r') as f:
+                            data = json.load(f)
+                            for index, item in data["modules"].items():
+                                submodule = "-".join(item["file"].split("_")[1:]).lower()
+                                result_dict[f'{url}-{submodule}'] = "wbm"
 
 # Function to process all Markdown files in a directory in parallel
 def process_md_directory_parallel(directory_path):

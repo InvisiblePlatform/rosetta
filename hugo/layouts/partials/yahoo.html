@@ -1,7 +1,0 @@
-{{- $path := print "data/yahoo/" . ".json" -}}
-{{- if os.FileExists $path -}}
-{{- $grade := newScratch -}}
-<section id="yahoo" class="contentSection">
-{{- $d := (getJSON $path).quoteSummary.result -}}
-</section>
-{{- end -}}

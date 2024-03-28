@@ -1,9 +1,0 @@
-{{- $newId := . -}}
-{{- with $data := getJSON (print "http://localhost:8080/rop/wikidata?filter=" "{\"id\":\"" $newId "\"}&pagesize=1" ) -}}
-{{- range first 1 $data -}}
-{{- $label := default "" .labels.en.value -}}
-{{- $label | title -}}
-{{- end -}}
-{{- else -}}
-{{- end -}}
-

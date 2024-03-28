@@ -38,6 +38,46 @@
   "cta": {
     "title": "“呼吁采取行动”"
   },
+  "desc": {
+    "yahoo": "“用于确定公司在环境影响、社会影响和治理领域的可持续发展程度的评级。”",
+    "wikipedia-first-frame": "“由用户生成并由用户审阅的百科全书在全球范围内使用”",
+    "wbm-urban": "“许多最具影响力的公司努力创建有弹性和可持续发展的城市，让每个人都能蓬勃发展。”",
+    "wbm-transport-benchmark": "“运输公司在脱碳和公正转型方面取得的进展得分”",
+    "wbm-social-transformation": "“评估公司的社会和可持续发展记录的基准。”",
+    "wbm-seeds-index": "“种子获取指数衡量并比较了世界领先的种子公司为提高小农生产力所做的努力。”",
+    "wbm-seafood-stewardship": "“衡量世界领先的海鲜公司如何为我们的海洋和沿海生态系统的可持续管理做出贡献，并确保实施负责任的社会实践。”",
+    "wbm-oil-gas-benchmark": "“针对 100 家最具影响力的石油和天然气公司与低碳世界保持一致的得分。”",
+    "wbm-nature-benchmark": "“评估商业对稳定生态系统的影响，实现地球范围内的共存，包括生物多样性、气候、土地、海洋和水。”",
+    "wbm-just-transition-assessment": "“这些评估着眼于公司向低碳未来转型的社会因素。”",
+    "wbm-gender-benchmark": "“确定公司性别平衡的分数。”",
+    "wbm-food-agriculture-benchmark": "“确定公司在整个运营过程中的业务实践的可持续性程度的分数。”",
+    "wbm-financial-system-benchmark": "“该分数基于公司对可持续资源分配的贡献以及在地球边界和社会规范内准确的风险评估。”",
+    "wbm-electric-utilities": "“衡量 68 家最具影响力的电力公司和 11 家资本货物公司在 1.5°C 目标上的进展情况。”",
+    "wbm-digital-inclusion": "“是否可以公平、有意义且安全地使用、领导和设计数字技术。”",
+    "wbm-climate-benchmark": "“碳排放量最高的 2000 家企业的得分。”",
+    "wbm-chumanrightsb": "“决定公司人权的分数”",
+    "wbm-buildings-benchmark": "“对全球 50 家最具影响力的建筑公司公正、公平的低碳转型进行评分。”",
+    "wbm-automotive-data": "“汽车公司向脱碳转型和公正转型的得分”",
+    "trust-scam": "“网站是否安全、不明确或不安全。”",
+    "trust-pilot": "“客户对他们购买产品或服务或联系客户服务的企业的评论。”",
+    "tosdr-link": "“服务条款或隐私政策的每个方面都被评估为积极、消极或中立。服务的评级从 A（最佳）到 E（最差）”",
+    "social-wikidata": "“公司的各种社交媒体账号和电子邮件地址。”",
+    "small-wikidata": "“收入、收入、资产、法律地位、关键人员、员工人数、创始人和总部等公司详细信息差异很大。”",
+    "similar-site-wrapper": "“与您当前访问的网站相似的网站。这是基于产品的相似性，而不是道德。”",
+    "post": "“用户提交的模块，经用户投票决定显示”",
+    "politicali-wikidata": "“新闻机构的政治倾向。”",
+    "political-wikidata": "“组织的政治联盟。”",
+    "opensec": "“追踪全球私营公司在美国政治中的资金流动。”",
+    "networkgraph": "“您正在浏览的网站背后的所有者、母公司和关联公司，以及他们之间的链接。”",
+    "mbfc": "“一个事实核查小组，专注于网站规模的在线新闻，而不是单个故事”",
+    "markup": "“网站如何跟踪您，以及正在汇总哪些信息。”",
+    "lobbyeu": "“一个数据库列出了试图影响欧盟机构的立法和政策实施过程的组织。”",
+    "goodonyou": "“公司有关工人权利、动物测试、环境影响以及材料制造和采购的记录。”",
+    "glassdoor": "“现任和前任员工对公司的评价。”",
+    "cta": "“与当前公司观点相关的外部网站链接的精选列表”",
+    "carbon": "“通过访问您所在的网页了解产生了多少碳”",
+    "bcorp": "“它确保了绩效、责任和透明度的高标准，涵盖员工福利、慈善捐赠和供应链实践。”"
+  },
   "esg": {
     "SEVERE": "严重的",
     "NEGLIGIBLE": "微不足道",
@@ -310,7 +350,8 @@
     "priorityOrder": "拖动以重新排序模块",
     "dashboard": "保持仪表板在屏幕上",
     "darkMode": "黑暗模式",
-    "bobbleDisabled": "“禁用泡泡”"
+    "bobbleDisabled": "“禁用泡泡”",
+    "externalPosts": "《实验特点》"
   },
   "similar": {
     "title": "类似网站"
@@ -320,6 +361,46 @@
     "title": "“社交媒体”"
   },
   "source": "(资源)",
+  "title": {
+    "yahoo": "“ESG风险”",
+    "wikipedia-first-frame": "“维基百科”",
+    "wbm-urban": "“城市标杆”",
+    "wbm-transport-benchmark": "《交通基准》",
+    "wbm-social-transformation": "“社会和可持续发展”",
+    "wbm-seeds-index": "“获取种子索引”",
+    "wbm-seafood-stewardship": "《海鲜管理指数》",
+    "wbm-oil-gas-benchmark": "《石油和天然气基准》",
+    "wbm-nature-benchmark": "“自然基准”",
+    "wbm-just-transition-assessment": "“低碳转型”",
+    "wbm-gender-benchmark": "《性别基准》",
+    "wbm-food-agriculture-benchmark": "“粮食和农业可持续发展”",
+    "wbm-financial-system-benchmark": "《金融体系基准》",
+    "wbm-electric-utilities": "《电力公用事业基准》",
+    "wbm-digital-inclusion": "“数字包容”",
+    "wbm-climate-benchmark": "“气候与能源基准”",
+    "wbm-chumanrightsb": "《企业人权基准》",
+    "wbm-buildings-benchmark": "《建筑标杆》",
+    "wbm-automotive-data": "《汽车标杆》",
+    "trust-scam": "“信任骗局”",
+    "trust-pilot": "“信任飞行员”",
+    "tosdr-link": "“隐私”",
+    "social-wikidata": "“社交媒体和电子邮件”",
+    "small-wikidata": "「公司信息」",
+    "similar-site-wrapper": "“类似网站”",
+    "post": "“用户内容”",
+    "politicali-wikidata": "《政治意识形态》",
+    "political-wikidata": "“政治联盟”",
+    "opensec": "《政治献金》",
+    "networkgraph": "《网络图》",
+    "mbfc": "“媒体偏见事实检查”",
+    "markup": "“网站隐私检查员”",
+    "lobbyeu": "“欧盟透明度”",
+    "goodonyou": "《道德评价》",
+    "glassdoor": "《员工评价》",
+    "cta": "“呼吁采取行动”",
+    "carbon": "“碳计算器网站”",
+    "bcorp": "“共益企业认证分数”"
+  },
   "tos": {
     "wordGrade": "年级",
     "title": "隐私",
@@ -348,10 +429,16 @@
     "neutral": "“中性的”",
     "danger": "“危险”"
   },
+  "user": {
+    "moduletitle": "“用户提交的内容”"
+  },
   "vote": {
-    "like": "喜欢",
-    "dislike": "不喜欢",
-    "boycott": "联合抵制"
+    "like": "“批准”",
+    "dislike": "“不赞成”",
+    "boycott": "联合抵制",
+    "important": "“对我很重要”",
+    "loadinfo": "“加载信息”",
+    "comment": "“评论”"
   },
   "w": {
     "socialmedia": "社交媒体和电子邮件",

@@ -38,6 +38,46 @@
   "cta": {
     "title": "Llamada a la acción"
   },
+  "desc": {
+    "yahoo": "Una calificación que se utiliza para determinar qué tan sostenible es una empresa en las áreas de impacto ambiental, impacto social y gobernanza.",
+    "wikipedia-first-frame": "Una enciclopedia generada y revisada por usuarios utilizada en todo el mundo",
+    "wbm-urban": "Una veintena de las empresas más influyentes en sus esfuerzos por crear ciudades resilientes y sostenibles donde todos puedan prosperar.",
+    "wbm-transport-benchmark": "Una puntuación para las empresas de transporte por sus avances hacia la descarbonización y la transición justa",
+    "wbm-social-transformation": "Benchmarking para evaluar el historial de desarrollo social y sostenible de una empresa.",
+    "wbm-seeds-index": "El Índice de Acceso a Semillas mide y compara los esfuerzos de las principales empresas de semillas del mundo para mejorar la productividad de los pequeños agricultores.",
+    "wbm-seafood-stewardship": "Una medición de cómo las principales empresas pesqueras del mundo contribuyen a la gestión sostenible de nuestros océanos y ecosistemas costeros y garantizan que se implementen prácticas sociales responsables.",
+    "wbm-oil-gas-benchmark": "Una puntuación para las 100 empresas de petróleo y gas más influyentes en su alineación con un mundo con bajas emisiones de carbono.",
+    "wbm-nature-benchmark": "Evaluar los impactos empresariales en ecosistemas estables, permitiendo la coexistencia dentro de los límites planetarios, incluida la biodiversidad, el clima, la tierra, los océanos y el agua.",
+    "wbm-just-transition-assessment": "Estas evaluaciones analizan los elementos sociales de la transición de las empresas hacia un futuro con bajas emisiones de carbono.",
+    "wbm-gender-benchmark": "Una puntuación para determinar el equilibrio de género en la empresa.",
+    "wbm-food-agriculture-benchmark": "Un puntaje para determinar qué tan sustentables son las prácticas comerciales de la empresa a lo largo de sus operaciones.",
+    "wbm-financial-system-benchmark": "Una puntuación basada en la contribución de la empresa a la asignación sostenible de recursos y a una evaluación precisa de los riesgos dentro de los límites planetarios y las normas sociales.",
+    "wbm-electric-utilities": "Midiendo las 68 compañías eléctricas más influyentes y 11 compañías de bienes de capital en su progreso hacia 1,5°C.",
+    "wbm-digital-inclusion": "Acceso si existe un acceso equitativo, significativo y seguro al uso, liderazgo y diseño de tecnologías digitales.",
+    "wbm-climate-benchmark": "Una puntuación de las 2000 empresas con mayores emisiones de carbono.",
+    "wbm-chumanrightsb": "Una puntuación para determinar los derechos humanos en la empresa",
+    "wbm-buildings-benchmark": "Calificación de las 50 empresas de construcción más influyentes del mundo en su transición justa y equitativa hacia una economía baja en carbono.",
+    "wbm-automotive-data": "Un puntaje para las empresas de automoción en su transición hacia la descarbonización y la transición justa",
+    "trust-scam": "Si un sitio web es seguro, ambiguo o inseguro.",
+    "trust-pilot": "Reseñas de los clientes sobre la empresa en la que compraron un producto o servicio o se pusieron en contacto con el servicio de atención al cliente.",
+    "tosdr-link": "Cada aspecto de los Términos de servicio o la política de privacidad se evalúa como positivo, negativo o neutral. Los servicios se califican de A (mejor) a E (peor)",
+    "social-wikidata": "Las distintas redes sociales y direcciones de correo electrónico de la empresa.",
+    "small-wikidata": "Los detalles de la empresa, como ingresos, activos, estatus legal, personal clave, número de empleados, fundador y sede, varían ampliamente.",
+    "similar-site-wrapper": "Sitios web similares al sitio web en el que se encuentra actualmente. Esto se basa en la similitud de oferta, no en la ética.",
+    "post": "Se mostrará el módulo enviado por el usuario y votado por los usuarios",
+    "politicali-wikidata": "La inclinación política de una organización de noticias.",
+    "political-wikidata": "El alineamiento político de una organización.",
+    "opensec": "Sigue el flujo de dinero de empresas privadas globales en la política estadounidense.",
+    "networkgraph": "Los propietarios, la empresa matriz y los afiliados detrás del sitio web por el que navega y sus enlaces entre sí.",
+    "mbfc": "Un grupo de verificación de hechos que se centra en el periodismo online a escala de sitios en lugar de historias individuales",
+    "markup": "Cómo lo rastrea el sitio web y qué información se agrega.",
+    "lobbyeu": "Una base de datos que enumera organizaciones que intentan influir en el proceso de elaboración de leyes y de implementación de políticas de las instituciones de la UE.",
+    "goodonyou": "Registros de las empresas sobre derechos de los trabajadores, pruebas con animales, impacto ambiental y fabricación y abastecimiento de materiales.",
+    "glassdoor": "Revisiones de la empresa por parte de empleados actuales y anteriores.",
+    "cta": "Una lista seleccionada de enlaces a sitios web externos que son relevantes para la visión actual de la empresa",
+    "carbon": "Accede a cuánto carbono se produce visitando la página web en la que te encuentras",
+    "bcorp": "Asegura altos estándares de desempeño, responsabilidad y transparencia, cubriendo beneficios para empleados, donaciones caritativas y prácticas de la cadena de suministro."
+  },
   "esg": {
     "SEVERE": "SEVERO",
     "NEGLIGIBLE": "DESPRECIABLE",
@@ -310,7 +350,8 @@
     "priorityOrder": "Arrastrar para reordenar módulos",
     "dashboard": "Mantener el tablero en la pantalla",
     "darkMode": "Modo oscuro",
-    "bobbleDisabled": "Desactivar Bobble"
+    "bobbleDisabled": "Desactivar Bobble",
+    "externalPosts": "Características experimentales"
   },
   "similar": {
     "title": "Sitio web similar"
@@ -320,6 +361,46 @@
     "title": "Medios de comunicación social"
   },
   "source": "(origen)",
+  "title": {
+    "yahoo": "Riesgo ESG",
+    "wikipedia-first-frame": "Wikipedia",
+    "wbm-urban": "Referente Urbano",
+    "wbm-transport-benchmark": "Referencia de transporte",
+    "wbm-social-transformation": "Desarrollo Social y Sostenible",
+    "wbm-seeds-index": "Índice de Acceso a Semillas",
+    "wbm-seafood-stewardship": "Índice de Gestión de Productos del Mar",
+    "wbm-oil-gas-benchmark": "Parámetro de referencia del petróleo y el gas",
+    "wbm-nature-benchmark": "Referente de la naturaleza",
+    "wbm-just-transition-assessment": "Transición baja en carbono",
+    "wbm-gender-benchmark": "Parámetro de Género",
+    "wbm-food-agriculture-benchmark": "Sostenibilidad alimentaria y agrícola",
+    "wbm-financial-system-benchmark": "Referencia del Sistema Financiero",
+    "wbm-electric-utilities": "Referencia de Servicios Eléctricos",
+    "wbm-digital-inclusion": "Inclusión Digital",
+    "wbm-climate-benchmark": "Benchmark Clima y Energía",
+    "wbm-chumanrightsb": "“Referente Corporativo de Derechos Humanos”",
+    "wbm-buildings-benchmark": "Edificios de referencia",
+    "wbm-automotive-data": "Referencia automotriz",
+    "trust-scam": "Estafa de confianza",
+    "trust-pilot": "Piloto de confianza",
+    "tosdr-link": "Privacidad",
+    "social-wikidata": "Redes sociales y correo electrónico",
+    "small-wikidata": "Información de la compañía",
+    "similar-site-wrapper": "Sitios web similares",
+    "post": "Contenido de usuario",
+    "politicali-wikidata": "Ideología política",
+    "political-wikidata": "Alineación política",
+    "opensec": "Donaciones políticas",
+    "networkgraph": "Gráfico de red",
+    "mbfc": "MediaBiasFactCheck",
+    "markup": "Inspector de privacidad del sitio web",
+    "lobbyeu": "Transparencia de la UE",
+    "goodonyou": "Calificación ética",
+    "glassdoor": "Calificación de los empleados",
+    "cta": "Llamada a la acción",
+    "carbon": "Sitios web de calculadoras de carbono",
+    "bcorp": "Puntuación de certificación de empresa B"
+  },
   "tos": {
     "wordGrade": "Calificación",
     "title": "Privacidad",
@@ -348,10 +429,16 @@
     "neutral": "Neutral",
     "danger": "Peligro"
   },
+  "user": {
+    "moduletitle": "Contenido enviado por el usuario"
+  },
   "vote": {
-    "like": "Me gusta",
-    "dislike": "Disgusto",
-    "boycott": "Boicotear"
+    "like": "Aprobar",
+    "dislike": "Desaprobar",
+    "boycott": "Boicotear",
+    "important": "Importante para mí",
+    "loadinfo": "Cargar información",
+    "comment": "Comentario"
   },
   "w": {
     "socialmedia": "Redes sociales y correo electrónico",

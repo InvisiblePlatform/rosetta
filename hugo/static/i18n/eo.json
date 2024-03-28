@@ -38,6 +38,46 @@
   "cta": {
     "title": "Voko al Agado"
   },
+  "desc": {
+    "yahoo": "Taksado, kiu estas uzata por determini kiom daŭrigebla kompanio estas en la areoj de media efiko, socia efiko kaj regado.",
+    "wikipedia-first-frame": "Uzanto generita kaj uzanto recenzita enciklopedio uzata tutmonde",
+    "wbm-urban": "Poentaro de la plej influaj kompanioj pri siaj klopodoj krei fortikajn kaj daŭrigeblajn urbojn, kie ĉiuj povas prosperi.",
+    "wbm-transport-benchmark": "Poentaro por la transportkompanioj pri ilia progreso al senkarbonigo kaj justa transiro",
+    "wbm-social-transformation": "Benchmarking por taksi la socian kaj daŭripovan evoluan rekordon de kompanio.",
+    "wbm-seeds-index": "La Indekso de Aliro al Semoj mezuras kaj komparas la klopodojn de la ĉefaj semaj kompanioj de la mondo por plibonigi la produktivecon de etbienuloj.",
+    "wbm-seafood-stewardship": "Mezurado de kiel la ĉefaj mariskaj kompanioj de la mondo kontribuas al la daŭrigebla administrado de niaj oceanoj kaj marbordaj ekosistemoj kaj certigas ke respondecaj sociaj praktikoj estas efektivigitaj.",
+    "wbm-oil-gas-benchmark": "Poentaro por la 100 plej influaj petrol- kaj gas-kompanioj pri ilia vicigo al malaltkarbona mondo.",
+    "wbm-nature-benchmark": "Taksi komercajn efikojn al stabilaj ekosistemoj, ebligante kunvivadon ene de planedaj limoj, inkluzive de biodiverseco, klimato, tero, oceanoj kaj akvo.",
+    "wbm-just-transition-assessment": "Ĉi tiuj taksoj rigardas la sociajn elementojn de la transiro de la kompanioj al malalta karbona estonteco.",
+    "wbm-gender-benchmark": "Poentaro por determini la seksan ekvilibron ĉe la kompanio.",
+    "wbm-food-agriculture-benchmark": "Poentaro por determini kiom daŭrigeblaj estas la komercaj praktikoj de la kompanio dum siaj operacioj.",
+    "wbm-financial-system-benchmark": "Poentaro bazita sur la kontribuo de la kompanio al daŭrigebla resursa asignado kaj preciza riska taksado ene de planedaj limoj kaj sociaj normoj.",
+    "wbm-electric-utilities": "Mezurante la 68 plej influajn elektrajn servaĵojn kaj 11 kapitalajn kompaniojn pri ilia progreso al 1,5 °C.",
+    "wbm-digital-inclusion": "Aliro ĉu justa, signifa kaj sekura aliro al uzo, gvidado kaj dezajno de ciferecaj teknologioj estas en loko.",
+    "wbm-climate-benchmark": "Poentaro de la supraj 2000 plej altaj korporaciaj karbon-elsendantoj.",
+    "wbm-chumanrightsb": "Poentaro por determini la homajn rajtojn ĉe la firmao",
+    "wbm-buildings-benchmark": "Poentado de la 50 plej influaj konstruaĵfirmaoj de la mondo en ilia justa kaj justa malaltkarbona transiro.",
+    "wbm-automotive-data": "Poentaro por aŭtomobilaj kompanioj pri ilia transiro al senkarbonigo kaj justa transiro",
+    "trust-scam": "Ĉu retejo estas sekura, ambigua aŭ nesekura.",
+    "trust-pilot": "Recenzoj de klientoj pri la komerco de kiu ili aĉetis produkton aŭ servon aŭ kontaktis klientservon.",
+    "tosdr-link": "Ĉiu aspekto de Servokondiĉoj aŭ privateca politiko estas taksata kiel pozitiva, negativa aŭ neŭtrala. Servoj estas gradigitaj de A (plej bona) ĝis E (plej malbona)",
+    "social-wikidata": "La diversaj sociaj amaskomunikiloj teniloj kaj retadresoj de la kompanio.",
+    "small-wikidata": "Detaloj de kompanio kiel enspezoj, enspezoj, aktivoj, jura statuso, ŝlosila dungitaro, dungitaro, fondinto kaj ĉefsidejo varias vaste.",
+    "similar-site-wrapper": "Similaj retejoj al la retejo, en kiu vi estas nuntempe. Ĉi tio baziĝas sur simileco de oferto, ne sur etiko.",
+    "post": "Uzanto sendis modulon kiu estas voĉdonita de uzantoj por esti montrata",
+    "politicali-wikidata": "La politika tendenco de novaĵorganizo.",
+    "political-wikidata": "La politika paraleligo de organizo.",
+    "opensec": "Spuras la fluon de mono de tutmondaj privataj kompanioj en usona politiko.",
+    "networkgraph": "La Posedantoj, Gepatra Kompanio kaj Filioj malantaŭ la retejo, kiun vi foliumas, kaj iliaj ligiloj unu al la alia.",
+    "mbfc": "Faktkontrola grupo temiganta reta ĵurnalismo je la skalo de ejoj prefere ol individuaj rakontoj",
+    "markup": "Kiel la retejo spuras vin, kaj kiaj informoj estas aldonitaj.",
+    "lobbyeu": "Datumbazo kiu listigas organizojn kiuj provas influi la leĝfaradon kaj politikan efektivigprocezon de la EU-institucioj.",
+    "goodonyou": "Registroj de kompanioj pri rajtoj de laboristoj, testado de bestoj, media efiko kaj fabrikado kaj alportado de materialoj.",
+    "glassdoor": "Recenzoj de nunaj kaj iamaj dungitoj pri la kompanio.",
+    "cta": "Prezita listo de ligiloj al eksteraj retejoj, kiuj rilatas al la nuna rigardo de la kompanio",
+    "carbon": "Aliru kiom da karbono estas produktita vizitante la retpaĝon sur kiu vi estas",
+    "bcorp": "Ĝi certigas altajn normojn en rendimento, respondeco kaj travidebleco, kovrante dungitajn avantaĝojn, bonfarajn donacojn kaj provizoĉenajn praktikojn."
+  },
   "esg": {
     "SEVERE": "Severa",
     "NEGLIGIBLE": "NEGLEĜebla",
@@ -310,7 +350,8 @@
     "priorityOrder": "Trenu por reordigi modulojn",
     "dashboard": "Konservu instrumentpanelon sur ekrano",
     "darkMode": "Malhela Reĝimo",
-    "bobbleDisabled": "Malŝalti Bobble"
+    "bobbleDisabled": "Malŝalti Bobble",
+    "externalPosts": "Eksperimentaj Trajtoj"
   },
   "similar": {
     "title": "Simila retejo"
@@ -320,6 +361,46 @@
     "title": "Socia amaskomunikilaro"
   },
   "source": "(fonto)",
+  "title": {
+    "yahoo": "ESG-Risko",
+    "wikipedia-first-frame": "Vikipedio",
+    "wbm-urban": "Urba Komparnormo",
+    "wbm-transport-benchmark": "Transporta Referenco",
+    "wbm-social-transformation": "Socia kaj Daŭrigebla Evoluo",
+    "wbm-seeds-index": "Aliro al Semoj-Indekso",
+    "wbm-seafood-stewardship": "Marmanĝa Intendantado-Indekso",
+    "wbm-oil-gas-benchmark": "Nafto kaj Gaso-Komnormo",
+    "wbm-nature-benchmark": "Natura Referenco",
+    "wbm-just-transition-assessment": "Malalta Karbona Transiro",
+    "wbm-gender-benchmark": "Seksa Referenco",
+    "wbm-food-agriculture-benchmark": "Manĝaĵo kaj Agrikultura Daŭripovo",
+    "wbm-financial-system-benchmark": "Financa Sistemo-Referenco",
+    "wbm-electric-utilities": "Komparnormo de Elektraj Utilaĵoj",
+    "wbm-digital-inclusion": "Cifereca Inkludo",
+    "wbm-climate-benchmark": "Klimato kaj Energia Referenco",
+    "wbm-chumanrightsb": "Kompania Homaj Rajtoj-Komparnormo",
+    "wbm-buildings-benchmark": "Konstrua Konferenco",
+    "wbm-automotive-data": "Aŭtokomparnormo",
+    "trust-scam": "Fido-Fraŭdo",
+    "trust-pilot": "Fidpiloto",
+    "tosdr-link": "Privateco",
+    "social-wikidata": "Socia Amaskomunikilaro Kaj Retpoŝto",
+    "small-wikidata": "Informoj pri Kompanio",
+    "similar-site-wrapper": "Similaj Retejoj",
+    "post": "Uzantenhavo",
+    "politicali-wikidata": "Politika Ideologio",
+    "political-wikidata": "Politika Paraleligo",
+    "opensec": "Politikaj Donacoj",
+    "networkgraph": "Reta Grafiko",
+    "mbfc": "MediaBiasFactCheck",
+    "markup": "Reteja Privateca Inspektisto",
+    "lobbyeu": "EU Travidebleco",
+    "goodonyou": "Etika Taksado",
+    "glassdoor": "Taksado de dungitoj",
+    "cta": "Voko al Agado",
+    "carbon": "Retejoj pri Karbona Kalkulilo",
+    "bcorp": "B Corp Atestada Poentaro"
+  },
   "tos": {
     "wordGrade": "Grado",
     "title": "Privateco",
@@ -348,10 +429,16 @@
     "neutral": "Neŭtrala",
     "danger": "Danĝero"
   },
+  "user": {
+    "moduletitle": "Enhavo sendita de la uzanto"
+  },
   "vote": {
-    "like": "Ŝati",
-    "dislike": "Malŝatas",
-    "boycott": "Bojkoto"
+    "like": "Aprobas",
+    "dislike": "Malaprobi",
+    "boycott": "Bojkoto",
+    "important": "Grava por mi",
+    "loadinfo": "Ŝargi informojn",
+    "comment": "Komento"
   },
   "w": {
     "socialmedia": "Socia Amaskomunikilaro kaj Retpoŝto",

@@ -38,6 +38,46 @@
   "cta": {
     "title": "Aufruf zum Handeln"
   },
+  "desc": {
+    "yahoo": "„Eine Bewertung, anhand derer ermittelt wird, wie nachhaltig ein Unternehmen in den Bereichen Umweltauswirkungen, soziale Auswirkungen und Governance ist.“",
+    "wikipedia-first-frame": "„Eine von Benutzern erstellte und überprüfte Enzyklopädie, die weltweit verwendet wird.“",
+    "wbm-urban": "„Eine Reihe der einflussreichsten Unternehmen über ihre Bemühungen, widerstandsfähige und nachhaltige Städte zu schaffen, in denen sich alle entfalten können.“",
+    "wbm-transport-benchmark": "„Eine Bewertung für die Transportunternehmen hinsichtlich ihrer Fortschritte bei der Dekarbonisierung und einem gerechten Übergang“",
+    "wbm-social-transformation": "„Benchmarking zur Bewertung der sozialen und nachhaltigen Entwicklungsbilanz eines Unternehmens.“",
+    "wbm-seeds-index": "„Der Access to Seeds Index misst und vergleicht die Bemühungen der weltweit führenden Saatgutunternehmen, die Produktivität von Kleinbauern zu steigern.“",
+    "wbm-seafood-stewardship": "„Ein Maß dafür, wie die weltweit führenden Meeresfrüchteunternehmen zur nachhaltigen Bewirtschaftung unserer Ozeane und Küstenökosysteme beitragen und sicherstellen, dass verantwortungsvolle soziale Praktiken umgesetzt werden.“",
+    "wbm-oil-gas-benchmark": "„Eine Bewertung für die 100 einflussreichsten Öl- und Gasunternehmen hinsichtlich ihrer Ausrichtung auf eine kohlenstoffarme Welt.“",
+    "wbm-nature-benchmark": "„Bewerten Sie die Auswirkungen von Unternehmen auf stabile Ökosysteme und ermöglichen Sie eine Koexistenz innerhalb der planetaren Grenzen, einschließlich Artenvielfalt, Klima, Land, Ozeane und Wasser.“",
+    "wbm-just-transition-assessment": "„Diese Bewertungen befassen sich mit den sozialen Elementen des Übergangs der Unternehmen zu einer kohlenstoffarmen Zukunft.“",
+    "wbm-gender-benchmark": "„Ein Wert zur Bestimmung des Geschlechtergleichgewichts im Unternehmen.“",
+    "wbm-food-agriculture-benchmark": "„Eine Bewertung zur Bestimmung, wie nachhaltig die Geschäftspraktiken des Unternehmens im gesamten Betrieb sind.“",
+    "wbm-financial-system-benchmark": "„Eine Bewertung, die auf dem Beitrag des Unternehmens zu einer nachhaltigen Ressourcenallokation und einer genauen Risikobewertung innerhalb der Grenzen unseres Planeten und gesellschaftlicher Normen basiert.“",
+    "wbm-electric-utilities": "„Wir messen die Fortschritte der 68 einflussreichsten Energieversorger und 11 Investitionsgüterunternehmen bei der Erreichung des 1,5°C-Ziels.“",
+    "wbm-digital-inclusion": "„Zugriff darauf, ob ein gleichberechtigter, sinnvoller und sicherer Zugang zur Nutzung, Führung und Gestaltung digitaler Technologien vorhanden ist.“",
+    "wbm-climate-benchmark": "„Eine Bewertung der 2000 Unternehmen mit den höchsten CO2-Emittenten.“",
+    "wbm-chumanrightsb": "„Ein Score zur Bestimmung der Menschenrechte im Unternehmen“",
+    "wbm-buildings-benchmark": "„Bewertung der 50 einflussreichsten Bauunternehmen der Welt hinsichtlich ihres gerechten und gerechten Übergangs zu einer CO2-armen Wirtschaft.“",
+    "wbm-automotive-data": "„Eine Bewertung für Automobilunternehmen bei ihrem Übergang zur Dekarbonisierung und zum gerechten Übergang“",
+    "trust-scam": "„Ob eine Website sicher, mehrdeutig oder unsicher ist.“",
+    "trust-pilot": "„Kundenbewertungen des Unternehmens, bei dem sie ein Produkt oder eine Dienstleistung gekauft oder den Kundendienst kontaktiert haben.“",
+    "tosdr-link": "„Jeder Aspekt einer Nutzungsbedingungen oder Datenschutzrichtlinie wird als positiv, negativ oder neutral bewertet. Die Dienste werden von A (am besten) bis E (am schlechtesten) bewertet.“",
+    "social-wikidata": "„Die verschiedenen Social-Media-Handles und E-Mail-Adressen des Unternehmens.“",
+    "small-wikidata": "„Unternehmensdetails wie Umsatz, Einkommen, Vermögen, Rechtsstatus, Schlüsselpersonal, Mitarbeiterzahl, Gründer und Hauptsitz variieren stark.“",
+    "similar-site-wrapper": "„Ähnliche Websites wie die Website, auf der Sie sich gerade befinden. Dies basiert auf der Ähnlichkeit des Angebots, nicht auf Ethik.“",
+    "post": "„Vom Benutzer eingereichtes Modul, über das die Benutzer abgestimmt haben, damit es angezeigt wird“",
+    "politicali-wikidata": "„Die politische Ausrichtung einer Nachrichtenorganisation.“",
+    "political-wikidata": "„Die politische Ausrichtung einer Organisation.“",
+    "opensec": "„Verfolgt den Geldfluss globaler Privatunternehmen in der amerikanischen Politik.“",
+    "networkgraph": "„Die Eigentümer, die Muttergesellschaft und die verbundenen Unternehmen hinter der Website, die Sie besuchen, und deren Links untereinander.“",
+    "mbfc": "„Eine Faktenprüfungsgruppe, die sich auf Online-Journalismus auf der Ebene von Websites und nicht auf einzelne Geschichten konzentriert.“",
+    "markup": "„Wie die Website Sie verfolgt und welche Informationen aggregiert werden.“",
+    "lobbyeu": "„Eine Datenbank, die Organisationen auflistet, die versuchen, Einfluss auf den Gesetzgebungs- und Politikumsetzungsprozess der EU-Institutionen zu nehmen.“",
+    "goodonyou": "„Unternehmensunterlagen zu Arbeitnehmerrechten, Tierversuchen, Umweltauswirkungen sowie Herstellung und Beschaffung von Materialien.“",
+    "glassdoor": "„Bewertungen aktueller und ehemaliger Mitarbeiter des Unternehmens.“",
+    "cta": "„Eine kuratierte Liste von Links zu externen Websites, die für die aktuelle Unternehmenssicht relevant sind“",
+    "carbon": "„Ermitteln Sie, wie viel Kohlenstoff produziert wird, indem Sie die Webseite besuchen, auf der Sie sich befinden.“",
+    "bcorp": "„Es stellt hohe Standards in Bezug auf Leistung, Verantwortlichkeit und Transparenz sicher und umfasst Leistungen an Arbeitnehmer, Spenden für wohltätige Zwecke und Lieferkettenpraktiken.“"
+  },
   "esg": {
     "SEVERE": "SCHWER",
     "NEGLIGIBLE": "UNERHEBLICH",
@@ -310,7 +350,8 @@
     "priorityOrder": "Ziehen, um Module neu anzuordnen",
     "dashboard": "Dashboard auf dem Bildschirm behalten",
     "darkMode": "Dunkler Modus",
-    "bobbleDisabled": "„Bobble deaktivieren“"
+    "bobbleDisabled": "„Bobble deaktivieren“",
+    "externalPosts": "„Experimentelle Funktionen“"
   },
   "similar": {
     "title": "Ähnliche Website"
@@ -320,6 +361,46 @@
     "title": "Sozialen Medien"
   },
   "source": "(ursache)",
+  "title": {
+    "yahoo": "„ESG-Risiko“",
+    "wikipedia-first-frame": "„Wikipedia“",
+    "wbm-urban": "„Städtischer Benchmark“",
+    "wbm-transport-benchmark": "„Transport-Benchmark“",
+    "wbm-social-transformation": "„Soziale und nachhaltige Entwicklung“",
+    "wbm-seeds-index": "„Zugang zum Samenindex“",
+    "wbm-seafood-stewardship": "„Seafood Stewardship Index“",
+    "wbm-oil-gas-benchmark": "„Öl- und Gas-Benchmark“",
+    "wbm-nature-benchmark": "„Natur-Benchmark“",
+    "wbm-just-transition-assessment": "„Kohlenstoffarmer Übergang“",
+    "wbm-gender-benchmark": "„Gender-Benchmark“",
+    "wbm-food-agriculture-benchmark": "„Ernährung und landwirtschaftliche Nachhaltigkeit“",
+    "wbm-financial-system-benchmark": "„Finanzsystem-Benchmark“",
+    "wbm-electric-utilities": "„Benchmark für Stromversorger“",
+    "wbm-digital-inclusion": "„Digitale Inklusion“",
+    "wbm-climate-benchmark": "„Klima- und Energie-Benchmark“",
+    "wbm-chumanrightsb": "„Corporate Human Rights Benchmark“",
+    "wbm-buildings-benchmark": "„Gebäude-Benchmark“",
+    "wbm-automotive-data": "„Automobil-Benchmark“",
+    "trust-scam": "„Vertrauensbetrug“",
+    "trust-pilot": "„Trustpilot“",
+    "tosdr-link": "Privatsphäre",
+    "social-wikidata": "„Soziale Medien und E-Mail“",
+    "small-wikidata": "Firmeninfo",
+    "similar-site-wrapper": "„Ähnliche Websites“",
+    "post": "„Benutzerinhalte“",
+    "politicali-wikidata": "Politische Ideologie",
+    "political-wikidata": "„Politische Ausrichtung“",
+    "opensec": "„Politische Spenden“",
+    "networkgraph": "„Netzwerkdiagramm“",
+    "mbfc": "„MediaBiasFactCheck“",
+    "markup": "„Website-Datenschutzinspektor“",
+    "lobbyeu": "„EU-Transparenz“",
+    "goodonyou": "„Ethische Bewertung“",
+    "glassdoor": "„Mitarbeiterbewertung“",
+    "cta": "Aufruf zum Handeln",
+    "carbon": "„Kohlenstoff-Rechner-Websites“",
+    "bcorp": "„B Corp-Zertifizierungsergebnis“"
+  },
   "tos": {
     "wordGrade": "Klasse",
     "title": "Privatsphäre",
@@ -348,10 +429,16 @@
     "neutral": "Neutral",
     "danger": "Gefahr"
   },
+  "user": {
+    "moduletitle": "„Vom Benutzer eingereichter Inhalt“"
+  },
   "vote": {
-    "like": "Wie",
-    "dislike": "Nicht gefallen",
-    "boycott": "Boykott"
+    "like": "Genehmigen",
+    "dislike": "Missbilligen",
+    "boycott": "Boykott",
+    "important": "Wichtig für mich",
+    "loadinfo": "„Info laden“",
+    "comment": "Kommentar"
   },
   "w": {
     "socialmedia": "Soziale Medien und E-Mail",

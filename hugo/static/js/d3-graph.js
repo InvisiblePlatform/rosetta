@@ -178,16 +178,6 @@ renderer.getMouseCaptor().on("mousedown", () => {
 });
 
 function blankWikiBoxes(){
-    wikicardframe = document.createElement("section");
-    wikicardframe.id = "wikipedia-infocard-frame";
-    wikicardframe.style.display = "none";
-    wikicardframe.classList.add("contentSection");
-    wikicardframe.textContent = "loading...";
-    wikifirstframe = document.createElement("section");
-    wikifirstframe.id = "wikipedia-first-frame";
-    wikifirstframe.style.display = "none";
-    wikifirstframe.classList.add("contentSection");
-    wikifirstframe.textContent = "loading...";
     graphBox = document.createElement("section");
     graphBox.id = "graph-box";
     graphBox.style.display = "none";
@@ -195,8 +185,6 @@ function blankWikiBoxes(){
     graphBox.textContent = "loading..."
     graphBox.onclick = "loadNetworkGraph()"
 
-    document.getElementsByClassName("content")[0].appendChild(wikicardframe)
-    document.getElementsByClassName("content")[0].appendChild(wikifirstframe)
     document.getElementsByClassName("content")[0].appendChild(graphBox)
 }
 
@@ -370,6 +358,7 @@ function addNewFile(jsonloc, original=false, localX=0, localY=0, wikidataid=null
     });
 }
 
+
 function getWikipediaPage(id){
     let node = graph.getNodeAttributes(id)
     let wikiPage = node["wiki"].split('/').slice(4)
@@ -390,6 +379,8 @@ function getWikipediaPage(id){
         tempObj.innerHTML = data
         var tempElement = tempObj.getElementsByClassName("infobox")[0]
         if (debug) console.log(tempObj)
+        wikicardframe = document.getElementById("wikipedia-infocard-frame");
+        wikifirstframe = document.getElementById("wikipedia-first-frame");
         wikicardframe.innerHTML = ""
         wikicardframe.appendChild(tempElement)
         tempObj.getElementsByTagName("link")[2].remove()
@@ -406,8 +397,7 @@ function getWikipediaPage(id){
                 var tempEl = `<h2 class='sectionTitle' id='${itemArray[1]}' data-i18n='${itemArray[0]}'>${itemArray[2]}</h2>
                               <div class='scoreText'><div id='${itemArray[3]}' class='hideInSmall'>
                               ${itemArray[4]}</div></div><img src="${itemArray[5]}" class='iconclass' />
-                              <a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>
-                              <button type='button' onclick='${itemArray[6]}' class='fullView' data-i18n='common.fullview'>FULL-VIEW</button>`;
+                              <a href='${fullWikiUrl}' class='source'>WIKIPEDIA</a>`;
                 contentsLength = document.getElementsByClassName("content").length;
                 lastContent = document.getElementsByClassName("content")[contentsLength - 1];
                 if (itemArray[1] == "profile-card") {

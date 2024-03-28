@@ -1,1 +1,5 @@
-"settings.externalPosts","Experimental Features"
+"vote.like","Approve"
+"vote.dislike","Disapprove"
+"vote.important","Important to me"
+"vote.comment","Comment"
+"vote.loadinfo","Load Info"

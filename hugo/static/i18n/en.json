@@ -38,6 +38,46 @@
   "cta": {
     "title": "Call to Action"
   },
+  "desc": {
+    "yahoo": "A rating that is used to determine how sustainable a company is in the areas of environmental impact, social impact and governance.",
+    "wikipedia-first-frame": "A user generated and user reviewed encylopedia used worldwide",
+    "wbm-urban": "A score of the most influential companies on their efforts to create resilient and sustainable cities where everyone can thrive.",
+    "wbm-transport-benchmark": "A score for the transportation companies on their progress towards decarbonisation and just transition",
+    "wbm-social-transformation": "Benchmarking to assess the social and sustainable development record of a company.",
+    "wbm-seeds-index": "The Access to Seeds Index measures and compares the efforts of the world’s leading seed companies to enhance the productivity of smallholder farmers.",
+    "wbm-seafood-stewardship": "A measurement of how the world’s leading seafood companies contribute to the sustainable management of our oceans and coastal ecosystems and ensure responsible social practices are implemented.",
+    "wbm-oil-gas-benchmark": "A score for the 100 most influential oil and gas companies on their alignment to a low-carbon world.",
+    "wbm-nature-benchmark": "Evaluate business impacts on stable ecosystems, enabling coexistence within planetary limits, including biodiversity, climate, land, oceans, and water.",
+    "wbm-just-transition-assessment": "These assessments look at the social elements of the companies’ transition to a low-carbon future.",
+    "wbm-gender-benchmark": "A score to determine the gender balance at the company.",
+    "wbm-food-agriculture-benchmark": "A score to determine how sustainable the company’s business practices throughout their operations are.",
+    "wbm-financial-system-benchmark": "A score based on the company's contribution to sustainable resource allocation and accurate risk assessment within planetary boundaries and societal norms.",
+    "wbm-electric-utilities": "Measuring the 68 most influential electric utilities and 11 capital goods companies on their progress to 1.5°C.",
+    "wbm-digital-inclusion": "Access whether equitable, meaningful, and safe access to use, lead, and design of digital technologies is in place.",
+    "wbm-climate-benchmark": "A score of the top 2000 highest corporate carbon emitters.",
+    "wbm-chumanrightsb": "A score to determine the human rights at the company",
+    "wbm-buildings-benchmark": "Scoring the world’s 50 most influential buildings companies on their just and equitable low-carbon transition.",
+    "wbm-automotive-data": "A score for automative companies on their transition to decarbonisation and just transition ",
+    "trust-scam": "Whether a website is safe, ambiguous, or unsafe.",
+    "trust-pilot": "Customers’ reviews of the business from which they have purchased a product or service or contacted customer service.",
+    "tosdr-link": "Each aspect of a Terms of Service or privacy policy is assessed as positive, negative, or neutral. Services are graded from A (best) to E (worst)",
+    "social-wikidata": "The various social media handles and email addresses of the company.",
+    "small-wikidata": "Company details like revenue, income, assets, legal status, key personnel, employee count, founder, and headquarters vary widely.",
+    "similar-site-wrapper": "Similar websites to the website you are currently on. This is based on similarity of offering, not ethics.",
+    "post": "User submitted module that is voted on by users to be displayed",
+    "politicali-wikidata": "The political leaning of a news organisation.",
+    "political-wikidata": "The political alignment of an organisation.",
+    "opensec": "Tracks the flow of money from global private companies in American politics.",
+    "networkgraph": "The Owners, Parent Company, and Affiliates behind the website you are browsing, and their links to one another.",
+    "mbfc": "A fact checking group focusing on online journalism at the scale of sites rather than individual stories",
+    "markup": "How the website is tracking you, and what information is being aggregated.",
+    "lobbyeu": "A database that lists organisations that try to influence the law-making and policy implementation process of the EU institutions.",
+    "goodonyou": "Companies’ records on workers rights, animal testing, environmental impact, and manufacturing and sourcing of materials.",
+    "glassdoor": "Current and former employees’ reviews of the company.",
+    "cta": "A curated list of links to external websites that are relevant to the current company view",
+    "carbon": "Access how much carbon is produced by visiting the webpage you are on",
+    "bcorp": "It assures high standards in performance, accountability, and transparency, covering employee benefits, charitable giving, and supply chain practices."
+  },
   "esg": {
     "SEVERE": "SEVERE",
     "NEGLIGIBLE": "NEGLIGIBLE",
@@ -310,7 +350,8 @@
     "priorityOrder": "Drag to re-order modules",
     "dashboard": "Keep dashboard on screen",
     "darkMode": "Dark Mode",
-    "bobbleDisabled": "Disable Bobble"
+    "bobbleDisabled": "Disable Bobble",
+    "externalPosts": "Experimental Features"
   },
   "similar": {
     "title": "Similar Website"
@@ -320,6 +361,46 @@
     "title": "Social Media"
   },
   "source": "(source)",
+  "title": {
+    "yahoo": "ESG Risk",
+    "wikipedia-first-frame": "Wikipedia",
+    "wbm-urban": "Urban Benchmark",
+    "wbm-transport-benchmark": "Transport Benchmark",
+    "wbm-social-transformation": "Social And Sustainable Development",
+    "wbm-seeds-index": "Access to Seeds Index",
+    "wbm-seafood-stewardship": "Seafood Stewardship Index",
+    "wbm-oil-gas-benchmark": "Oil and Gas Benchmark",
+    "wbm-nature-benchmark": "Nature Benchmark",
+    "wbm-just-transition-assessment": "Low Carbon Transition",
+    "wbm-gender-benchmark": "Gender Benchmark",
+    "wbm-food-agriculture-benchmark": "Food And Agricultural Sustainability",
+    "wbm-financial-system-benchmark": "Financial System Benchmark",
+    "wbm-electric-utilities": "Electric Utilities Benchmark",
+    "wbm-digital-inclusion": "Digital Inclusion",
+    "wbm-climate-benchmark": "Climate and Energy Benchmark",
+    "wbm-chumanrightsb": "Corporate Human Rights Benchmark",
+    "wbm-buildings-benchmark": "Buildings Benchmark",
+    "wbm-automotive-data": "Automotive Benchmark",
+    "trust-scam": "Trust Scam",
+    "trust-pilot": "Trust Pilot",
+    "tosdr-link": "Privacy",
+    "social-wikidata": "Social Media And Email",
+    "small-wikidata": "Company Info",
+    "similar-site-wrapper": "Similar Websites",
+    "post": "User Content",
+    "politicali-wikidata": "Political Ideology",
+    "political-wikidata": "Political Alignment",
+    "opensec": "Political Donations",
+    "networkgraph": "Network Graph",
+    "mbfc": "MediaBiasFactCheck",
+    "markup": "Website Privacy Inspector",
+    "lobbyeu": "EU Transparency",
+    "goodonyou": "Ethical Rating",
+    "glassdoor": "Employee Rating",
+    "cta": "Call To Action",
+    "carbon": "Carbon Calculator Websites ",
+    "bcorp": "B Corp Certification Score"
+  },
   "tos": {
     "wordGrade": "Grade",
     "title": "Privacy",
@@ -348,10 +429,16 @@
     "neutral": "Neutral",
     "danger": "Danger"
   },
+  "user": {
+    "moduletitle": "User-submitted Content"
+  },
   "vote": {
-    "like": "Like",
-    "dislike": "Dislike",
-    "boycott": "Boycott"
+    "like": "Approve",
+    "dislike": "Disapprove",
+    "boycott": "Boycott",
+    "important": "Important to me",
+    "loadinfo": "Load Info",
+    "comment": "Comment"
   },
   "w": {
     "socialmedia": "Social Media and Email",

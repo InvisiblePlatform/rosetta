@@ -38,6 +38,46 @@
   "cta": {
     "title": "Crida a l'acció"
   },
+  "desc": {
+    "yahoo": "Una qualificació que s'utilitza per determinar com de sostenible és una empresa en les àrees d'impacte ambiental, impacte social i governança.",
+    "wikipedia-first-frame": "Una enciclopèdia generada i revisada per usuaris utilitzada a tot el món",
+    "wbm-urban": "Una puntuació de les empreses més influents en els seus esforços per crear ciutats resilients i sostenibles on tothom pugui prosperar.",
+    "wbm-transport-benchmark": "Una puntuació per a les empreses de transport pel seu progrés cap a la descarbonització i la transició justa",
+    "wbm-social-transformation": "Bechmarking per avaluar el historial de desenvolupament social i sostenible d'una empresa.",
+    "wbm-seeds-index": "L'índex d'accés a llavors mesura i compara els esforços de les empreses de llavors líders del món per millorar la productivitat dels petits agricultors.",
+    "wbm-seafood-stewardship": "Una mesura de com les principals empreses marineres del món contribueixen a la gestió sostenible dels nostres oceans i ecosistemes costaners i asseguren que s'implementen pràctiques socials responsables.",
+    "wbm-oil-gas-benchmark": "Una puntuació per a les 100 companyies de petroli i gas més influents en la seva alineació amb un món baix en carboni.",
+    "wbm-nature-benchmark": "Avaluar els impactes empresarials en ecosistemes estables, permetent la coexistència dins dels límits planetaris, incloent la biodiversitat, el clima, la terra, els oceans i l'aigua.",
+    "wbm-just-transition-assessment": "Aquestes avaluacions examinen els elements socials de la transició de les empreses cap a un futur baix en carboni.",
+    "wbm-gender-benchmark": "Una puntuació per determinar l'equilibri de gènere a l'empresa.",
+    "wbm-food-agriculture-benchmark": "Una puntuació per determinar com de sostenibles són les pràctiques comercials de l'empresa al llarg de les seves operacions.",
+    "wbm-financial-system-benchmark": "Una puntuació basada en la contribució de l'empresa a l'assignació sostenible de recursos i una avaluació precisa del risc dins dels límits planetaris i les normes socials.",
+    "wbm-electric-utilities": "Mesurant les 68 empreses d'electricitat més influents i 11 empreses de béns d'equipament en el seu progrés fins a 1,5 °C.",
+    "wbm-digital-inclusion": "Accés si hi ha un accés equitatiu, significatiu i segur per utilitzar, liderar i dissenyar les tecnologies digitals.",
+    "wbm-climate-benchmark": "Una puntuació dels 2000 principals emissors de carboni corporatius.",
+    "wbm-chumanrightsb": "Una puntuació per determinar els drets humans a l'empresa",
+    "wbm-buildings-benchmark": "Anotar les 50 empreses d'edificis més influents del món en la seva transició de baix carboni justa i equitativa.",
+    "wbm-automotive-data": "Una puntuació per a les empreses d'automoció en la seva transició cap a la descarbonització i la transició justa",
+    "trust-scam": "Si un lloc web és segur, ambigu o insegur.",
+    "trust-pilot": "Revisions dels clients sobre l'empresa a la qual han comprat un producte o servei o han contactat amb el servei d'atenció al client.",
+    "tosdr-link": "Cada aspecte d'una política de privadesa o de les Condicions del servei es valora com a positiu, negatiu o neutral. Els serveis es classifiquen de A (millor) a E (pitjor)",
+    "social-wikidata": "Les diferents manetes de xarxes socials i adreces de correu electrònic de l'empresa.",
+    "small-wikidata": "Els detalls de l'empresa com els ingressos, els ingressos, els actius, l'estatus legal, el personal clau, el nombre d'empleats, el fundador i la seu varien molt.",
+    "similar-site-wrapper": "Llocs web similars al lloc web on esteu actualment. Això es basa en la similitud de l'oferta, no en l'ètica.",
+    "post": "Mòdul enviat per l'usuari que és votat pels usuaris per mostrar",
+    "politicali-wikidata": "L'orientació política d'una organització de notícies.",
+    "political-wikidata": "L'alineació política d'una organització.",
+    "opensec": "Fa un seguiment del flux de diners de les empreses privades globals a la política nord-americana.",
+    "networkgraph": "Els propietaris, l'empresa matriu i els afiliats que hi ha darrere del lloc web que esteu navegant i els seus enllaços entre ells.",
+    "mbfc": "Un grup de verificació de fets centrat en el periodisme en línia a escala de llocs més que en històries individuals",
+    "markup": "Com us fa el seguiment el lloc web i quina informació s'està agregant.",
+    "lobbyeu": "Una base de dades que enumera les organitzacions que intenten influir en el procés d'elaboració de lleis i d'aplicació de polítiques de les institucions de la UE.",
+    "goodonyou": "Registres de les empreses sobre drets dels treballadors, proves amb animals, impacte mediambiental i fabricació i abastament de materials.",
+    "glassdoor": "Revisions de l'empresa dels empleats actuals i antics.",
+    "cta": "Una llista seleccionada d'enllaços a llocs web externs que són rellevants per a la vista actual de l'empresa",
+    "carbon": "Accediu a la quantitat de carboni que es produeix visitant la pàgina web on esteu",
+    "bcorp": "Assegura estàndards alts en rendiment, responsabilitat i transparència, que cobreixen els beneficis dels empleats, les donacions benèfiques i les pràctiques de la cadena de subministrament."
+  },
   "esg": {
     "environmental": "Puntuació de risc mediambiental",
     "title": "Risc ESG",
@@ -310,7 +350,8 @@
     "priorityOrder": "Arrossegar per tornar a ordenar els mòduls",
     "priorityTitle": "Mòduls de prioritat",
     "title": "Configuració",
-    "bobbleDisabled": "Desactiva Bobble"
+    "bobbleDisabled": "Desactiva Bobble",
+    "externalPosts": "Característiques experimentals"
   },
   "similar": {
     "title": "Webs semblants"
@@ -323,6 +364,46 @@
   },
   "source": {
     "source": "(font)"
+  },
+  "title": {
+    "yahoo": "Risc ESG",
+    "wikipedia-first-frame": "Viquipèdia",
+    "wbm-urban": "Referent urbà",
+    "wbm-transport-benchmark": "Referent de transport",
+    "wbm-social-transformation": "Desenvolupament Social i Sostenible",
+    "wbm-seeds-index": "Accés a l'índex de llavors",
+    "wbm-seafood-stewardship": "Índex de gestió del marisc",
+    "wbm-oil-gas-benchmark": "Referent de petroli i gas",
+    "wbm-nature-benchmark": "Referent de la natura",
+    "wbm-just-transition-assessment": "Transició baixa en carboni",
+    "wbm-gender-benchmark": "Referent de gènere",
+    "wbm-food-agriculture-benchmark": "Sostenibilitat alimentària i agrícola",
+    "wbm-financial-system-benchmark": "Referent del sistema financer",
+    "wbm-electric-utilities": "Referent d'utilitats elèctriques",
+    "wbm-digital-inclusion": "Inclusió digital",
+    "wbm-climate-benchmark": "Referent de Clima i Energia",
+    "wbm-chumanrightsb": "Referent de drets humans corporatius",
+    "wbm-buildings-benchmark": "Edificis de referència",
+    "wbm-automotive-data": "Referent d'automoció",
+    "trust-scam": "Estafa de confiança",
+    "trust-pilot": "Trustpilot",
+    "tosdr-link": "Privadesa",
+    "social-wikidata": "Xarxes socials i correu electrònic",
+    "small-wikidata": "Informació de l'empresa",
+    "similar-site-wrapper": "Pàgines web similars",
+    "post": "Contingut d'usuari",
+    "politicali-wikidata": "Ideologia política",
+    "political-wikidata": "Alineació política",
+    "opensec": "Donacions polítiques",
+    "networkgraph": "Gràfic de xarxa",
+    "mbfc": "MediaBiasFactCheck",
+    "markup": "Inspector de privadesa del lloc web",
+    "lobbyeu": "Transparència de la UE",
+    "goodonyou": "Valoració ètica",
+    "glassdoor": "Valoració dels empleats",
+    "cta": "Crida a l'acció",
+    "carbon": "Pàgines web de calculadores de carboni",
+    "bcorp": "Puntuació de certificació B Corp"
   },
   "tos": {
     "a": "Les millors condicions del servei: et tracten de manera justa, respecten els teus drets i no abusaran de les teves dades.",
@@ -352,10 +433,16 @@
     "neutral": "Neutral",
     "danger": "Perill"
   },
+  "user": {
+    "moduletitle": "Contingut enviat per l'usuari"
+  },
   "vote": {
     "boycott": "Boicot",
-    "dislike": "No m'agrada",
-    "like": "M'agrada"
+    "dislike": "Desaprovar",
+    "like": "Aprovar",
+    "important": "Important per a mi",
+    "loadinfo": "Carrega informació",
+    "comment": "Comentar"
   },
   "w": {
     "companyinfo": "Informació de l'empresa",
