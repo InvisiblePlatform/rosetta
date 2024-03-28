@@ -263,6 +263,7 @@ function dissmissedNotificationsDraw(){
         return
     }
     document.getElementById("dissmissedNotifications").style.display = "block";
+    container.innerHTML = ""
     for (const item in settingsState["dissmissedNotifications"]){
         site = settingsState["dissmissedNotifications"][item]
         container.innerHTML += `<li onclick="removeSiteFromDimissed(this)" style="display:inline;">${site}</li>`
