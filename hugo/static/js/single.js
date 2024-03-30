@@ -22,12 +22,14 @@ const keyconversion = {
     "m": 'mbfc',
     "o": 'osid',
     // "a": 'polalignment',
-    // "p": 'polideology',
+    // "q": 'polideology',
     "y": 'yahoo',
-    "P": 'tosdr-link',
+    "p": 'tosdr-link',
     "s": 'trust-scam',
     "t": 'trust-pilot',
-    // "w": 'wikidata_id'
+    "e": 'lobbyeu',
+    "w": 'wbm',
+    // "z": 'wikidata_id'
 }
 var ratingColorArray = {
     "success": "var(--c-main)",
@@ -81,12 +83,14 @@ var translate = {
 var defaultOrder = Object.keys(translate)
 var defaultOrderString = defaultOrder.join('|')
 
-const availableNotifications = "blPtsm";
+const availableNotifications = "beglmstwp";
 
 const defaultUserPreferences = {
    "l": { type: "range", min: 0, max: 10 },
-   "b": { type: "range", min: 0, max: 150 },
-   "P": { type: "range", min: 1, max: 6 },
+   "b": { type: "range", min: 0, max: 300 },
+   "w": { type: "multiRange", min: 0, max: 100 },
+   "g": { type: "range", min: 0, max: 5 },
+   "p": { type: "range", min: 1, max: 6 },
    "s": { type: "range", min: 0, max: 100 },
    "t": { type: "range", min: 0, max: 100 },
    "m": { type: "label", labels: [ "conspiracy-pseudoscience", "left",
@@ -144,7 +148,6 @@ translator.fetch(languages).then(() => {
 
 function pageSetup(){
     addToolsSection()
-
     resetSettings(false)
     send_message("IVSettingsReq", true);
     loadPageCore()
@@ -222,9 +225,9 @@ function settingsStateApply(newSettingsState=defaultSettingsState){
 
 
     recalculateList()
+	translator.translatePageTo(settingsState["preferred_language"]);
 	notificationsDraw();
     
-	translator.translatePageTo(settingsState["preferred_language"]);
 	debug = settingsState["debugMode"]
     oldSettings = JSON.parse(JSON.stringify(settingsState));
 	firstShot = false;
@@ -293,8 +296,15 @@ const loadPageCore = async () =>{
     try {
         const dataf = await fetch(pageCoreLocation)
         const response = await dataf.json()
+        let currentDomain = document.getElementsByClassName("co-name")[0].innerText.replace(".","")
         localString = ''
         moduleData = await response;
+
+        const siteDataSendable = { 
+            "siteData": response.data,
+            "domainKey": currentDomain,
+        }
+        send_message("IVSiteDataUpdate", siteDataSendable)
         for (module of response.core){
             if (module.url != 'local'){
 				await addModule(type=module.type, url=`${pageHost}/ds/${module.url}`)
@@ -1242,7 +1252,6 @@ let notificationCloseAndSave = function(save=true){
             userPreferences[diagTag].labels = activeButtons;
         }
         settingsState["userPreferences"] = userPreferences;
-        send_message("IVNotificationsPreferences", userPreferences)
 	    settingsStateChange();
     }
     floatDiag.remove()
@@ -1271,13 +1280,15 @@ let notificationsDraw = function(){
             }
             document.getElementById(`${tag}-bell`).getElementsByTagName("input")[0].checked = settingsState["notificationsTags"].includes(tag);
         }
+        cacheButton = document.getElementById("notificationsCache");
+        cacheButton.style.display = "block";
     } else {
         // check for if toggles are there already, remove them if they are 
         document.querySelectorAll(".notificationBell").forEach(x => x.remove());
         document.querySelectorAll(".notificationDialog").forEach(x => x.remove());
     }
-    translator.translatePageTo()
 }
+
 function settingTemplate(id, i18n, title, state="skip"){
     var el = document.createElement("div")
     el.id = id
@@ -1374,11 +1385,12 @@ let loadSettings = function(x) {
         closeButton.style.display = "none";
     }
     settings.firstElementChild.style.top = "0";
-	notificationsDraw();
     backButton.style.backgroundColor = 'var(--c-secondary-background)';
     backButton.style.borderColor = 'var(--c-light-text)';
     coName.style.opacity = "0%";
     fullPage.style.overflow = "hidden";
+
+	notificationsDraw();
     send_message("IVClicked", "settings");
     setBack('closeSettings()');
     }
@@ -1514,9 +1526,10 @@ function toggleNotifications(value) {
 }
 
 function notificationBell(ppId){
+    console.log(ppId)
     if (ppId == "cacheClear"){
-        send_message("IVNotificationsCacheClear", "please");
-        settingsState["userPreferences"] = JSON.stringify(defaultUserPreferences);
+        settingsState["userPreferences"] = defaultUserPreferences;
+        settingsStateChange();
         return
     }
     tagList = "";
@@ -1648,9 +1661,9 @@ document.addEventListener('mouseup', function (event) {
 
   var tid = event.target.id;
   
-  if (tid == '#indexRefresh') send_message("IVIndexRefresh", "please");
-  if (tid == '#notificationsCache') notificationBell("cacheClear")
-  if (tid == '#backButton') send_message("IVClicked", event.target.parentElement.id);
+  if (tid == 'indexRefresh') send_message("IVIndexRefresh", "please");
+  if (tid == 'notificationsCache') notificationBell("cacheClear")
+  if (tid == 'backButton') send_message("IVClicked", event.target.parentElement.id);
 
   if (event.target.classList.contains('invisible-disclaimer-title'))send_message("IVClicked", "disclaimer");
   if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {

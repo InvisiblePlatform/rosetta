@@ -1,18 +1,9 @@
 {{- $tempDict := (dict "k" .Params.tags) -}}
-{{- with .Params.bcorp_rating -}}
-{{- $tempDict = merge $tempDict (dict "b" . ) -}}
+{{- with .Params.tag_data -}}
+{{- $tempDict = merge $tempDict . -}}
 {{- end -}}
-{{- with .Params.glassdoor_rating -}}
-{{- $tempDict = merge $tempDict (dict "l" . ) -}}
-{{- end -}}
-{{- with .Params.tosdr_rating -}}
-{{- $tempDict = merge $tempDict (dict "P" . ) -}}
-{{- end -}}
-{{- with .Params.ts_rating -}}
-{{- $tempDict = merge $tempDict (dict "s"  . ) -}}
-{{- end -}}
-{{- with .Params.tp_rating -}}
-{{- $tempDict = merge $tempDict (dict "t" . ) -}}
+{{- with .Params.mbfc_source -}}
+{{- $tempDict = merge $tempDict (dict "_m" . ) -}}
 {{- end -}}
 {{- with .Params.mbfc_tags -}}
 {{- $tempDict = merge $tempDict (dict "m" . ) -}}

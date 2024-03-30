@@ -259,6 +259,7 @@ def build_document(website):
     try:
         if tosdr_data_array[str(website)]:
             output["tosdr_rating"] = tosdr_data_array[str(website)]["rating"]
+            output["tosdr_source"] = str(website)
             core.append({
                 "type": "tosdr", "url": f"tosdr/{tosdr_data_array[str(website)]['id']}.json"
             })
