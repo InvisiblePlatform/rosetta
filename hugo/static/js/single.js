@@ -145,6 +145,10 @@ Url = {
         return vars;
     }
 };
+if (Url.get["app"] == 'true'){
+	phoneMode = true;
+    console.log("phoneMode")
+}
 
 Hash = {
     get hash(){
@@ -497,16 +501,12 @@ function addToolsSection(){
 	voteButtons = document.getElementById('Invisible-vote');
 	boyButton = document.getElementById('Invisible-boycott');
 
-    if (Url.get["app"] == 'true'){
-    	phoneMode = true;
-        closeButton.style.visibility = "hidden";
-        console.log("phoneMode")
-    }
     
     if (phoneMode){
         if (debug) console.log("[ Invisible Voice ]: phone mode");
         document.getElementsByClassName("content")[0].classList.add("mobile");
         body.classList.add("mobile");
+        closeButton.style.visibility = "hidden";
     }
     if (!phoneMode){
         backButton.classList.add("show");
