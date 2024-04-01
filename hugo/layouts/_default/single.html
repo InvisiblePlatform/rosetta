@@ -24,26 +24,12 @@
 </script>
 
 <div id="location-url" style="display:none;">/db/{{ path.Base .RelPermalink }}/index.json</div>
-{{- if isset .Params "wikidata_id" -}}
-{{- if ne .Params.wikidata_id false }}
-{{- $ids := newScratch -}}
-{{- $ids.Add "count" 0 -}}
-{{- range .Params.wikidata_id -}}
-{{- $count := $ids.Get "count" -}}
-{{- $ids.Set (string $count) (int (replace . "Q" "" )) -}}
-{{- $ids.Add "count" 1 -}}
-{{- end -}}
-{{- $ids.Delete "count" -}}
-<div id="wikidataid" style="display:none;">Q{{- index (sort $ids.Values "value" "asc") 0 -}}</div>
-{{- end -}}
+{{- with .Params.wikidata_id -}}
+<div id="wikidataid" style="display:none;">{{- . -}}</div>
 {{- end -}}
 
 <section id="titlebar">
-<button id="roundelButton" type="button" onclick="spinRoundel()"></button>
-<button id="backButton" type="button" onclick="justSendBack()"></button>
-<span class="bk-bg co-name hideInSmall">{{ .Params.title }}</span>
-<button id="settingsButton" type="button" onclick="loadSettings()"><div></div></button>
-<button id="closeButton" type="button"><div></div></button>
+<span class="bk-bg co-name hideInSmall" style="order:3;">{{ .Params.title }}</span>
 </section>
 <div id="settings">
 <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
@@ -82,9 +68,6 @@
 {{- else -}}
 <div class="content">
 {{- end -}}
-<span class="blankForSmall" style="order:0;"> </span>
-<span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
-<span class="blankForSmall hideInSmall vbb" style="order:101;"> </span>
 </div>
 <section id="disclaimer" style="order: 100;"><h2><div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div> <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title"></div></h2><p class="disclaimer-text" data-i18n="header.disclaimer"></p><p data-i18n="header.dislcaimerNote" class="disclaimer-text"></p> <a class="hideInSmall" data-i18n="header.here" href="#"></a></section>
 </div>

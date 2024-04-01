@@ -9,6 +9,8 @@ var translator = new Translator({
     filesLocation: `${pageHost}/i18n`
 });
 
+var backButton, settingsButton, closeButton, loginButtonEl, roundelButton, boyButton, voteButtons;
+
 var loggedIn = false;
 
 var settingsState;
@@ -50,7 +52,6 @@ var translate = {
     "carbon": "carbon.title",
     "lobbyeu": "lb.title",
     "post": "user.moduletitle",
-    "wbm": "wbm.title",
     "wbm-automotive-data": "wbm.automotive-data",
     "wbm-gender-benchmark": "wbm.gender-benchmark",
     "wbm-just-transition-assessment": "wbm.just-transition-assessment",
@@ -78,10 +79,23 @@ var translate = {
     "similar-site-wrapper": "similar.title",
     "social-wikidata": "w.socialmedia",
     "trust-scam": "trustsc.title",
+    "wbm": "wbm.title",
 };
+// KEEP WBM LAST
 
-var defaultOrder = Object.keys(translate)
+var defaultestOrder = Object.keys(translate)
+var defaultOrder = []
+var defaultOrderWbm = []
+for (item in defaultestOrder){
+    if (defaultestOrder[item].startsWith("wbm")){
+        defaultOrderWbm.push(defaultestOrder[item])
+    } else {
+        defaultOrder.push(defaultestOrder[item])
+    }
+}
+defaultOrder.push("wbm")
 var defaultOrderString = defaultOrder.join('|')
+var defaultOrderStringWbm = defaultOrderWbm.join('|')
 
 const availableNotifications = "beglmstwp";
 
@@ -106,14 +120,15 @@ var defaultSettingsState = {
 	"debugMode": false,
 	"darkMode": false,
 	"keepOnScreen": false,
+    "dissmissedNotifications": [],
 	"userPreferences": defaultUserPreferences,
 	"bobbleOverride": false,
 	"notifications": false,
-	"notificationsTags":[],
+	"notificationsTags": availableNotifications,
 	"listOrder": defaultOrderString,
+    "listOrder-wbm": defaultOrderStringWbm,
 	"experimentalFeatures": false,
 }
-
 
 var oldSettings;
 
@@ -149,16 +164,15 @@ translator.fetch(languages).then(() => {
 function pageSetup(){
     addToolsSection()
     resetSettings(false)
-    send_message("IVSettingsReq", true);
     loadPageCore()
     addSettings()
-    slist(document.getElementById("sortlist"));
     loadPageExternal()
     scrollIntoPlace()
 	notificationsDraw();
 	forceAllLinksNewTab();
     translator.translatePageTo();
     recalculateList();
+    send_message("IVSettingsReq", true);
 }
 
 
@@ -194,7 +208,6 @@ function settingsStateApply(newSettingsState=defaultSettingsState){
 		loadPageExternal()
     }
 
-
 	if (firstShot){
 		document.getElementById("notifications-shade").getElementsByTagName("input")[0].checked = settingsState["notifications"]
 		for (const toggle in toggles){
@@ -224,6 +237,7 @@ function settingsStateApply(newSettingsState=defaultSettingsState){
     }
 
 
+    slist();
     recalculateList()
 	translator.translatePageTo(settingsState["preferred_language"]);
 	notificationsDraw();
@@ -236,10 +250,10 @@ function settingsStateApply(newSettingsState=defaultSettingsState){
 
 
 function settingsStateChange(){
-	send_message("IVSettingsChange", settingsState);
-    settingsStateApply(settingsState)
 	if (debug) console.log("Settings state changed")
 	if (debug) console.log(settingsState);
+	send_message("IVSettingsChange", settingsState);
+    settingsStateApply(settingsState)
 }
 
 
@@ -314,6 +328,7 @@ const loadPageCore = async () =>{
         for (const item in localModules)
             localString += (localModules[item] in response) ? await addLocalModule(localModules[item], response[localModules[item]]) : '';
         content.innerHTML += localString
+        recalculateList()
 		translator.translatePageTo()
     } catch (e) {
         console.log(e)
@@ -367,8 +382,7 @@ function loginCheck() {
     loginButtonEl = document.createElement("button"); 
     loginButtonEl.innerHTML = "<div></div>"
     loginButtonEl.id = "loginButton";
-    loginDistance = (phoneMode) ? '64px' : '112px';
-    loginButtonEl.style.right = loginDistance;
+    loginButtonEl.classList.add("squareButton")
     loginButtonEl.setAttribute("type", "button");
     loginButtonEl.setAttribute("onclick", "loginButtonAction()");
     settingsButton.parentNode.insertBefore(loginButtonEl,settingsButton);
@@ -419,8 +433,8 @@ function moduleString(id, i18n, label, subname=false, scoreText=false, scoreClas
     scoreTextString = scoreText ? `<div class="${scoreClass}">${scoreText}` : '';
     dataLocationString = dataLoc ? `data-location="${dataLoc}"` : '';
     return `<section class="contentSection" id="${id}" ${dataLocationString}>
-            <h2 class="sectionTitle"><div data-i18n="${i18n}">${label}</div>${subnameString}</h2>
-            <div class="hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.${id}"> </h3><p data-i18n="desc.${id}"></div>
+            <h2 class="sectionTitle"><div data-i18n="${i18n}">${label}</div>${subnameString}
+            <div class="squareButton hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.${id}"> </h3><p data-i18n="desc.${id}"></div></h2>
               ${scoreTextString}`
 }
 
@@ -436,7 +450,7 @@ function notPieString(data, trans=false, scoreClass=false, icon=false, outOf=fal
         </div>
 		</div>`
 }
-function pieString(data, trans=false, scoreClass=false, percent=false, outOf=false, reviews=false, pieColour=false ){
+function pieString(data, trans=false, scoreClass=false, percent=false, outOf=false, reviews=false, pieColour=false, inline=false ){
 	transString = (trans != false) ? ` data-i18n="${trans}"` : ''; 
 
 	scoreClassString = (scoreClass != false) ? scoreClass : 'biaslink'
@@ -444,8 +458,9 @@ function pieString(data, trans=false, scoreClass=false, percent=false, outOf=fal
     percentString = (percent != false) ? 
         `<div class="pie hideTilExpanded animate" style="--c:var(--chart-fore);--p:${percent};"></div>` : '';
     outOfString = (outOf != false) ? ` style="--outOf:'${outOf}';" ` : '';
+    containerClass = (inline) ? "inlinePieContainer" : "pieContainer";
     pieColourString = (pieColour != false) ? ` style='--c:${pieColour};'` : '';
-    return `<div class="pieContainer"><div>
+    return `<div class="${containerClass}"><div>
         <div class="pie hideTilExpanded"${pieColourString}></div>
         ${percentString}
         <score class="${scoreClassString}"${transString}${outOfString}>${ data }</score>
@@ -455,12 +470,18 @@ function pieString(data, trans=false, scoreClass=false, percent=false, outOf=fal
 }
 
 function addToolsSection(){
+    titleBar.innerHTML += `
+<button id="roundelButton" type="button" onclick="spinRoundel()" ></button>
+<button class="squareButton" id="backButton" type="button" onclick="justSendBack()" ><div></div></button>
+<button class="squareButton" id="settingsButton" type="button" onclick="loadSettings()" ><div></div></button>
+<button class="squareButton" id="closeButton" type="button" onclick="closeIV()" ><div></div></button>
+    `
     let currentDomain = document.getElementsByClassName("co-name")[0].innerText
     content.innerHTML += `
     <section id="carbon">
         <div class="iconarray">
-            <div><a href="https://www.websitecarbon.com/website/${currentDomain}"><img src="/icon/carbon.svg" alt="Website Carbon Calculator" /></a></div>
-            <div><a href="https://themarkup.org/blacklight?url=${currentDomain}"><img src="/icon/lightning.svg" alt="Blacklight" /></a></div>
+            <div><a href="https://www.websitecarbon.com/website/${currentDomain}"><i alt="Website Carbon Calculator"><div style="background-image:var(--image-carbon);" ></div></i></a></div>
+            <div><a href="https://themarkup.org/blacklight?url=${currentDomain}"> <i alt="Blacklight"><div style="background-image:var(--image-lightning);"></div></i></a></div>
         </div>
     </section>
     <section id="Invisible-vote" class="hideInSmall hide">
@@ -469,11 +490,32 @@ function addToolsSection(){
     </section>
     <section id="Invisible-boycott" onclick="boycott()" data-i18n="vote.boycott" class="hideInSmall hide">Boycott</section>
     `
-	let voteButtons = document.getElementById('Invisible-vote');
-	let boyButton = document.getElementById('Invisible-boycott');
+    backButton = document.getElementById('backButton');
+    closeButton = document.getElementById('closeButton');
+    roundelButton = document.getElementById('roundelButton');
+    settingsButton = document.getElementById('settingsButton');
+	voteButtons = document.getElementById('Invisible-vote');
+	boyButton = document.getElementById('Invisible-boycott');
+
     if (Url.get["app"] == 'true'){
+    	phoneMode = true;
         closeButton.style.visibility = "hidden";
+        console.log("phoneMode")
     }
+    
+    if (phoneMode){
+        if (debug) console.log("[ Invisible Voice ]: phone mode");
+        document.getElementsByClassName("content")[0].classList.add("mobile");
+        body.classList.add("mobile");
+    }
+    if (!phoneMode){
+        backButton.classList.add("show");
+        closeButton.classList.add("closeExtention");
+        document.getElementsByClassName("content")[0].classList.add("desktop");
+        body.classList.add("desktop");
+    }
+
+    if (debug) console.log("[ IV ] Page load")
     if (Url.get["vote"] == 'true'){
         body.classList.add("topBar");
         boyButton.classList.toggle("hide");
@@ -560,7 +602,7 @@ function toTitleCase(str) {
 }
 
 function opsTd(r){
-    return `<td style="--size: calc(${r.percent.replace("%", "")}}/100);">
+    return `<td style="--size: calc(${r.percent.replace("%", "")}/100);">
             <span class="data">${r.entity}</span>
             <span class="tooltip">${r.entity}<br>
                 (${r.amount})</span>
@@ -690,6 +732,53 @@ async function addModule(type=undefined,url=undefined){
     }
 
     if (type == "wbm"){
+        if (true){
+        
+        source = "https://www.worldbenchmarkingalliance.org/research/"
+        htmlString += "<div class='fullBleed'><div class=''>"
+        for (module in moduleResponse.modules){
+            pieItem =''
+            file = moduleResponse.modules[module].file;
+            trans = file.split("_").slice(1).join("-").toLowerCase()
+            year = file.split("_")[0]
+            fileName = file.split("_").slice(1).join(" ")
+	        dataLocationString = url.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+            htmlString+= `<div class='submodule' data-location="${dataLocationString}-${trans}"><h2 class="subModuleTitle"><span data-i18n="wbm.${trans}" style="--year:'${year}';">${fileName}</span>
+            <div class="squareButton hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.wbm-${trans}"> </h3><p data-i18n="desc.wbm-${trans}"></div></h2>
+                </h2><table>`
+            for (item of Object.keys(moduleResponse.modules[module])){
+                if (!item.includes("Total Score")){
+                    if (item != "file" && item != "Company Scorecard"){
+                        itemLabel = item.split("(")[0]
+						itemTrans = itemLabel.trim().toLowerCase().replaceAll(" ","-").replaceAll(/;|'|:|’|,/g, "").replaceAll("--","-").replaceAll("/","").replaceAll(".","")
+                        if (item.includes("(")){
+                            outOf = item.split("(")[1].replace(")","")
+                            htmlString += `<tr><th data-i18n='wbm.${itemTrans}'>${itemLabel}</th>
+								<td style="--outOf:'/ ${outOf}';" class="ratingOutOf" >${moduleResponse.modules[module][item]}</td></tr>`
+                        } else {
+							htmlString += `<tr><th data-i18n='${itemTrans}'>${item}</th> 
+								<td style="--outOf:'';" >${moduleResponse.modules[module][item]}</td></tr>`
+                        }
+                    }
+                } else {
+                  if (!item.includes("Raw")){
+					  outOf = Number(item.split("(")[1].replace(")",""))
+                	  itemLabel = item.split("(")[0]
+                	  score = Number(moduleResponse.modules[module][item])
+                	  percent = (score / outOf) * 100
+	            	  pieItem += `${pieString(score,false,"ratingOutOf",percent,"/ " + outOf, false,false,true)}`
+                  }
+                }
+            }
+            htmlString += `</table>${pieItem}${miniSource(fileName)}</div>`
+        }
+            htmlString += sourceStringClose(source, "WBM")
+
+        if (settingsState["experimentalFeatures"])
+            htmlString += `<button type='button' data-i18n="vote.loadinfo" class='loadInfoButton hideInSmall bottomLeftOfModule' onclick="postLoad(this)"> Load info</button>`
+        htmlString += "</section>"
+
+        } else {
 		wbmstring = ''
         for (module in moduleResponse.modules){
             file = moduleResponse.modules[module].file;
@@ -699,7 +788,7 @@ async function addModule(type=undefined,url=undefined){
             source = "https://www.worldbenchmarkingalliance.org/research/"
 			wbmstring += `<section id="wbm-${trans}" class="contentSection" data-location="${dataLocationString}-${trans}">
             <h2 class="sectionTitle"><div data-i18n="wbm.${trans}">${fileName}</div><div class="subname">(${moduleResponse.source})</div></h2>
-            <div class="hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.wbm-${trans}"> </h3><p data-i18n="desc.wbm-${trans}"></div>
+            <div class="squareButton hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.wbm-${trans}"> </h3><p data-i18n="desc.wbm-${trans}"></div>
             `
             additionalString = '<div class="scoreText"><div><table>'
             for (item of Object.keys(moduleResponse.modules[module])){
@@ -735,6 +824,7 @@ async function addModule(type=undefined,url=undefined){
             wbmstring += `</section>`
         }
 		htmlString = wbmstring
+        }
     }
     if (type == "cta"){
         positiveString = ''
@@ -747,7 +837,6 @@ async function addModule(type=undefined,url=undefined){
             }
         }
         htmlString += `
-        <score class="biaslink"> </score>
         <div class="fullBleed">
         <div>
         <p>${moduleResponse.description}</p>
@@ -972,17 +1061,19 @@ function commentDiagOpen(location=hash){
 	floatDiag.classList.add("recolorOutlineOnOpen")
 	floatDiag.setAttribute("style", "--start:0px;--end:400px;")
     floatDiag.innerHTML = `
-    <div id="diag_type" class="">${leader}</div><br/>
+    <div id="diag_type" class="commentLeader">${leader}</div><br/>
     <div style="display:none;" id="diag_tag">${location}</div><br/>
     <div class="commentBox">
 		<textarea id="commentBoxInput" name="commentBoxInput" maxlength="512" type="text" ></textarea>
     </div>
     <div onclick="commentClose(true)" class="commentButton commentPost">Post</div>
-	<div onclick="commentClose()" class="commentButton commentClose"><div></div></div>`
+	<div class="squareButton" onclick="commentClose()" class="commentButton commentClose"><div></div></div>`
     body.appendChild(floatDiag)
-	backButton.style.transform = "translate(42px,42px)";
-	backButton.classList.remove("show")
+    body.classList.add("somethingIsOpen");
     console.log(leader)
+    body.style.overflowY = "hidden";
+    titleBar.style.visibility = "hidden";
+    body.style.height = "100vh";
 }
 
 let commentClose = function(post=false){
@@ -1005,8 +1096,10 @@ let commentClose = function(post=false){
         send_message("IVMakePost", comment)
         console.log(comment_content)
     }
-	backButton.style.transform = "";
-	backButton.classList.add("show")
+    body.classList.remove("somethingIsOpen");
+    body.style.overflowY = "";
+    titleBar.style.visibility = "";
+    body.style.height = "";
     floatDiag.remove()
 }
 
@@ -1039,10 +1132,6 @@ function forceAllLinksNewTab(){
 }
 
 let noOpen = false;
-let backButton = document.getElementById('backButton');
-let closeButton = document.getElementById('closeButton');
-let roundelButton = document.getElementById('roundelButton');
-let settingsButton = document.getElementById('settingsButton');
 let titleBar = document.getElementById('titlebar');
 let coName = document.getElementsByClassName('co-name')[0];
 let blank = document.getElementsByClassName('blankForSmall')[0];
@@ -1053,39 +1142,12 @@ let settings = document.getElementById('settings');
 let graphButtons = document.getElementById('graphButtons');
 let networkGraph = document.getElementById('graph-container');
 let sigmacontainer = document.getElementById('sigma-container');
-let infoCard = document.getElementById('wikipedia-infocard-frame');
-let wikipediaPage = document.getElementById('wikipedia-first-frame');
-
-closeButton.setAttribute('onclick', 'closeIV()');
 let closeIV = function(){ send_message("IVClose", "closeButton"); };
 
 var voteNumbers = [2, 4];
 const phoneRegex = /Mobile/i;                                                   
 var phoneMode = false
                                                                                 
-if (Url.get["mode"] > 0){
-	phoneMode = true;
-    if (debug) console.log("mode override ")
-} else {
-if (phoneRegex.test(navigator.userAgent)){                                      
-	phoneMode = true;
-} 
-}
-
-if (phoneMode){
-    if (debug) console.log("[ Invisible Voice ]: phone mode");
-    document.getElementsByClassName("content")[0].classList.add("mobile");
-    body.classList.add("mobile");
-}
-if (!phoneMode){
-    backButton.classList.add("show");
-    closeButton.classList.add("closeExtention");
-    settingsButton.style.right = "64px";
-    document.getElementsByClassName("content")[0].classList.add("desktop");
-    body.classList.add("desktop");
-}
-
-if (debug) console.log("[ IV ] Page load")
 
 let spinRoundel = function(){
     roundelButton.animate(
@@ -1354,13 +1416,22 @@ function addSettings(){
     let priorityList = document.createElement("div");
     priorityList.id ="priority-list";
     listString = ''
+    wbmListString = ''
     for (item in translate){
-        listString += `<li data-id="${item}">${translate[item]}</li>`
+        if (!item.startsWith("wbm")){
+            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span></li>`
+        } else if (item == "wbm"){
+            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span><div id="sortlist-wbm">${wbmListString}</div></li>`
+        } else {
+            wbmListString += `<div data-id="${item}"><i class="priority-list-handle-wbm"></i><span>${translate[item]}</span></div>`
+        }
     }
     priorityList.innerHTML = `
      <h2 data-i18n="settings.priorityTitle">Prioritise Modules</h2>
      <div data-i18n="settings.priorityOrder">Drag to re-order modules</div>
-       <ul id="sortlist" class="slist">${listString}</ul>`
+       <ul id="sortlist" class="slist">
+       ${listString}
+        </ul>`;
     settings.appendChild(priorityList)
 }
 
@@ -1373,9 +1444,6 @@ let loadSettings = function(x) {
     } else {
     settings.style.bottom = "0";
     settings.style.top = `${settingsOffset}`;
-    titleBar.style.backgroundColor = "transparent";
-    titleBar.style.position = "fixed";
-    titleBar.style.top = "0";
     if (phoneMode){
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
@@ -1406,6 +1474,7 @@ let loadNetworkGraph = function(x) {
     sigmacontainer.style.position = "fixed";
     sigmacontainer.style.zIndex = "4";
     networkGraph.classList.add("expanded");
+    body.classList.add('somethingIsOpen');
     if (phoneMode){
         noOpen = true;
     }
@@ -1423,6 +1492,7 @@ let loadNetworkGraph = function(x) {
 
 let closeNetworkGraph = function(x){
     networkGraph.style.visibility = 'hidden';
+    body.classList.remove('somethingIsOpen');
     if (phoneMode){
         noOpen = false;
     }
@@ -1450,10 +1520,14 @@ let openGenericPage = function(x){
     backButton.style.backgroundColor = 'var(--c-background)';
     if (x == "wikipage" || x == "infocard"){
         if ( x == "infocard"){
+let infoCard = document.getElementById('wikipedia-infocard-frame');
+            window.scrollTo(0,0);
             send_message("IVClicked", "wikipedia-infocard-frame");
             infoCard.classList.add('expanded');
         } else {
             graphButtons.setAttribute("style", "");
+            window.scrollTo(0,0);
+let wikipediaPage = document.getElementById('wikipedia-first-frame');
             wikipediaPage.classList.add('expanded');
             send_message("IVClicked", "wikipedia-first-frame");
         }
@@ -1467,12 +1541,9 @@ let openGenericPage = function(x){
         element.style.top = (bb['y'] - 60) + "px";
         element.style.left = bb['x'] + "px";
         element.classList.add('expanded');
-        blank.style.order = element.style.order;
-        blank.style.display = "block";
-        blank.style.height = startH + "px";
-        blank.style.width = startW + "px";
-        blank.style.margin = "6px";
     }
+    voteButtons.style.visibility = "hidden";
+    boyButton.style.visibility = "hidden";
 
     setBack(`closeGenericPage("${x}")`);
 }
@@ -1480,9 +1551,11 @@ let openGenericPage = function(x){
 let closeGenericPage = function(x){
     switch (x){
         case "wikipage":
+let wikipediaPage = document.getElementById('wikipedia-first-frame');
             wikipediaPage.classList.remove('expanded');
             break;
         case "infocard":
+let infoCard = document.getElementById('wikipedia-infocard-frame');
             infoCard.classList.remove('expanded');
             break;
         default:
@@ -1492,14 +1565,13 @@ let closeGenericPage = function(x){
             element.style.transform =
             element.style.top =
             element.style.left = "";
-            blank.style.order = 0;
-            blank.style.display = "none";
-
             element.classList.remove('expanded');
             break;
     }
     content.classList.remove('somethingIsOpen');
     body.classList.remove('somethingIsOpen');
+    voteButtons.style.visibility = "visible";
+    boyButton.style.visibility = "visible";
     noOpen = false;
     setBack();
 }
@@ -1544,22 +1616,23 @@ function notificationBell(ppId){
     settingsStateChange()
 }
 
-function slist (target) {
+function slist () {
   // (A) SET CSS + GET ALL LIST ITEMS
-  target.classList.add("slist");
-  $('#sortlist').sortable({
-        group: 'iv-list',
-        animation: 200,
-        ghostClass: "sortghost",
-	    store: {
+  $('#sortlist-wbm').sortable({
+      group: 'iv-list-wbm',
+      animation: 150,
+      multiDrag: true,
+      selectedClass: 'selected',
+      ghostClass: "sortghost",
+      store: {
 	    	/**
 	    	 * Get the order of elements. Called once during initialization.
 	    	 * @param   {Sortable}  sortable
 	    	 * @returns {Array}
 	    	 */
 	    	get: function (sortable) {
-                var order = (settingsState["listOrder"] != defaultOrderString) ? settingsState["listOrder"].split('|') : defaultOrder;
-                let missingItems = defaultOrder.filter(item => !order.includes(item));
+                var order = (settingsState["listOrder-wbm"] != defaultOrderStringWbm) ? settingsState["listOrder-wbm"].split('|') : defaultOrderWbm;
+                let missingItems = defaultOrderWbm.filter(item => !order.includes(item));
                 // Add missing items to IVListOrder
                 order = order.concat(missingItems);
 	    		return order;
@@ -1571,7 +1644,51 @@ function slist (target) {
 	    	 */
 	    	set: function (sortable) {
 	    		var order = sortable.toArray();
+	    		settingsState["listOrder-wbm"] = order.join('|');
+				settingsStateChange();
+	    	}
+      }
+  });
+  $('#sortlist').sortable({
+        group: 'iv-list',
+        animation: 150,
+        multiDrag: true,
+        selectedClass: 'selected',
+        handle: '.priority-list-handle',
+        ghostClass: "sortghost",
+	    store: {
+	    	/**
+	    	 * Get the order of elements. Called once during initialization.
+	    	 * @param   {Sortable}  sortable
+	    	 * @returns {Array}
+	    	 */
+	    	get: function (sortable) {
+                var order = settingsState['listOrder'].split("|");
+                orderClean = []
+                for (item in order){
+                    if (order[item].includes('[')){
+                    }else{
+                        orderClean.push(order[item])
+                    }
+                }
+                let missingItems = defaultOrder.filter(item => !orderClean.includes(item));
+                // Add missing items to IVListOrder
+                orderClean = orderClean.concat(missingItems);
+                settingsState['listOrder'] = orderClean.join('|');
+                if (debug) console.log(orderClean);
+	    		return orderClean;
+	    	},
+
+	    	/**
+	    	 * Save the order of elements. Called onEnd (when the item is dropped).
+	    	 * @param {Sortable}  sortable
+	    	 */
+	    	set: function (sortable) {
+	    		var order = sortable.toArray();
 	    		settingsState["listOrder"] = order.join('|');
+                if (settingsState["listOrder"].startsWith('|')){
+                    settingsState["listOrder"] = settingsState["listOrder"].replace("|","")
+                }
                 if (settingsState["notifications"]) {
                   tagList = "";
                   document.querySelectorAll(".notificationBell").forEach(function(x){ 
@@ -1603,15 +1720,25 @@ function toggleToggle(type){
 // {value: items[it].value, label: items[it].innerHTML}
 function recalculateList(){
     if (debug) console.log("Recalculating List ...")
-  var propertyOrder = (settingsState["listOrder"] != "") ? settingsState["listOrder"].split('|') : defaultOrder;
-  let target = document.getElementById("sortlist")
-  let items = target.getElementsByTagName("li")
+    var propertyOrder = $("#sortlist").sortable('toArray')
+    let target = document.getElementById("sortlist")
 
   for (let x = 0; x < propertyOrder.length; x++){
     let value = propertyOrder[x];
-    if (items[x] !== undefined){
-        items[x].setAttribute("data-i18n", translate[value]);
-        items[x].setAttribute("data-id", value);
+    let item = $(`[data-id='${value}']`)[0];
+    if (item !== undefined){
+        item.getElementsByTagName("span")[0].setAttribute("data-i18n", translate[value]);
+        item.setAttribute("data-id", value);
+        if (value == "wbm"){
+            wbmlist = document.getElementById("sortlist-wbm").children;
+            for (child in wbmlist){
+                let currentChild = wbmlist[child]
+                if (typeof(currentChild) === 'object'){
+                    let childValue =  currentChild.getAttribute("data-id");
+                    currentChild.getElementsByTagName("span")[0].setAttribute("data-i18n", translate[childValue]);
+                }
+            }
+        }
         if (value == "networkgraph"){
             if (document.getElementById("graph-box")){
                 [...document.styleSheets[3].cssRules].find(y=> y.selectorText=='#graph-box').style.order = x + 5;
@@ -1623,8 +1750,8 @@ function recalculateList(){
             [...document.styleSheets[3].cssRules].find(y=> y.selectorText==`#${value}`).style.order= x + 5;
             if (document.getElementById(value)){
                 thiselement = document.getElementById(value);
-                if (phoneMode && value != "carbon"){
-                    thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+                if (value != "carbon"){
+                     if (phoneMode) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
                 }
             }
         }
@@ -1636,8 +1763,20 @@ function recalculateList(){
       document.getElementById('graph-box').setAttribute("onclick","loadNetworkGraph()");
   }
   if (document.getElementById("wikipedia-infocard-frame")){
-      document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("wikipedia-infocard-frame")`);
+      document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("infocard")`);
   }
+  if (document.getElementById("wikipedia-first-frame")){
+      document.getElementById("wikipedia-first-frame").setAttribute('onclick', `openGenericPage("wikipage")`);
+  }
+  var wbmOrder = $("#sortlist-wbm").sortable('toArray');
+  for (let x = 0; x < wbmOrder.length; x++){
+      let value = String(wbmOrder[x]);
+      let item = $(`[data-location$="${value.replace("wbm-","")}"]`)[0]
+      if (item !== undefined){
+        item.style.order = x;
+      }
+
+  } 
   
 }
 
@@ -1661,11 +1800,12 @@ document.addEventListener('mouseup', function (event) {
 
   var tid = event.target.id;
   
+  console.log(`clicked ${tid}`)
   if (tid == 'indexRefresh') send_message("IVIndexRefresh", "please");
   if (tid == 'notificationsCache') notificationBell("cacheClear")
   if (tid == 'backButton') send_message("IVClicked", event.target.parentElement.id);
 
-  if (event.target.classList.contains('invisible-disclaimer-title'))send_message("IVClicked", "disclaimer");
+  if (event.target.classList.contains('invisible-disclaimer-title')) send_message("IVClicked", "disclaimer");
   if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
     send_message("IVClicked", event.target.parentElement.id);
     if (event.target.parentElement.id == "wikipedia-first-frame") openGenericPage("wikipage");

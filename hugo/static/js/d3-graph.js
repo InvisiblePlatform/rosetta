@@ -41,7 +41,12 @@ var langArray = ["en", "fr", "ar", "es", "eo", "zh", "de", "hi"];
 var langPref = localStorage.preferred_language;
 var wikichoice = langArray.indexOf(langPref) ? `https://${langPref}.wikipedia.org` : "https://en.wikipedia.org";
 var wikidataid, wikidataidbackup;
-wikidataid = document.getElementById("wikidataid").textContent;
+
+wikidataidarray = JSON.parse(document.getElementById("wikidataid").textContent.replaceAll(" ", ",").replaceAll("Q",""));
+wikidataidarray.sort(function(a, b) {
+  return a - b;
+});
+wikidataid = `Q${wikidataidarray[0]}`
 
 var skipsections = ["See_also", "References", "Further_reading", "External_links",
                     "Sources", "undefined", "Notes", "Notes_et_références", 
