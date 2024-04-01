@@ -32,6 +32,9 @@ data_collection/static/WBMJSON/
 data_collection/trustscore/entries/
 data_collection/trustscore/html_cache/
 data_collection/yahoo/tickerinfo/
+IVDataIngestion/
+matched_connections/
+matched_output/
 hugo/.*
 hugo/cache/
 hugo/content-backup/
