@@ -241,7 +241,8 @@ option {
     transition-duration: 0.3s;
     width: 100%;
     bottom: 200vh;
-    background-color: var(--c-secondary-background);
+    background-color: var(--c-secondary-backgroundo);
+    backdrop-filter: blur(3px);
     z-index: 10;
     position: fixed;
     overflow-x: hidden;
@@ -712,8 +713,7 @@ figure {
 }
 
 #mbfc,
-#small-wikidata,
-{
+#small-wikidata{
     margin-bottom: 8px;
     text-align: center;
     vertical-align: center;

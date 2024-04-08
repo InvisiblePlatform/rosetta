@@ -65,3 +65,4 @@ data_collection/similar-sites/sites/
 data_collection/trust-pilot/*.list
 data_collection/trust-pilot/sites/
 data_collection/yahoo/ticker/*
+websites.list
