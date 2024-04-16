@@ -1,5 +1,5 @@
+let debug
 const pageHost = `${window.location.protocol}//${window.location.host}`
-const pageCoreLocation = `${pageHost}${document.getElementById('location-url').textContent}`;
 const assetsURL = `https://assets.reveb.la`
 
 const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
@@ -16,6 +16,10 @@ var loginButtonEl;
 let roundelButton;
 let boyButton;
 let voteButtons;
+let wikidataid;
+let pageLocation;
+let pageHash;
+let connectionsFile;
 
 let loggedIn = false;
 
@@ -87,8 +91,6 @@ const translate = {
     "trust-scam": "trustsc.title",
     "wbm": "wbm.title",
 };
-// KEEP WBM LAST
-
 const defaultestOrder = Object.keys(translate);
 const defaultOrder = [];
 const defaultOrderWbm = [];
@@ -170,12 +172,14 @@ translator.fetch(languages).then(() => {
     registerLanguageToggle();
 });
 
+const optionRegex = /&.*/ig;
 function pageSetup() {
+    const currentLocation = window.location.href.replaceAll('?', '&').replace(optionRegex, "")
+    pageLocation = Url.get.location ? `${pageHost}/db/${Url.get.location}/index.json` : `${currentLocation}index.json`
     addToolsSection()
     resetSettings(false)
-    loadPageCore()
+    loadPageCore(pageLocation)
     addSettings()
-    loadPageExternal()
     scrollIntoPlace()
     notificationsDraw();
     forceAllLinksNewTab();
@@ -198,7 +202,6 @@ function settingsStateApply(newSettingsState = defaultSettingsState) {
     }
     settingsState = newSettingsState;
 
-
     changed = []
     for (item in settingsState) {
         if (settingsState[item] != oldSettings[item] && item != 'userPreferences') {
@@ -213,7 +216,7 @@ function settingsStateApply(newSettingsState = defaultSettingsState) {
     if (changed.includes("experimentalFeatures")) {
         if (settingsState.experimentalFeatures)
             loginCheck(true);
-        loadPageExternal()
+        loadPageExternal(pageLocation)
     }
 
     if (firstShot) {
@@ -313,9 +316,9 @@ const scrollIntoPlace = async () => {
 
 let moduleData;
 const localModules = ["political", "social"]
-const loadPageCore = async () => {
+const loadPageCore = async (coreFile, localX=false, localY=false, wikidataid=null) => {
     try {
-        const dataf = await fetch(pageCoreLocation)
+        const dataf = await fetch(coreFile)
         const response = await dataf.json()
         const currentDomain = document.getElementsByClassName("co-name")[0].innerText.replace(".", "")
         localString = ''
@@ -325,7 +328,28 @@ const loadPageCore = async () => {
             "siteData": response.data,
             "domainKey": currentDomain,
         }
-        send_message("IVSiteDataUpdate", siteDataSendable)
+        if (moduleData.title) {
+            const coName = document.getElementsByClassName('co-name')[0];
+            coName.innerText = moduleData.title
+            const pageTitle = document.getElementById("pageTitle");
+            pageTitle.innerText = `Invisible Voice - ${moduleData.title}`
+        }
+        if (moduleData.connections) {
+            loadGraphEls(moduleData.connections, moduleData.wikidata_id);
+            pageHash = moduleData.connections.split('/')[2].replace('.json', '');
+            if (Url.get.vote == 'true') {
+                voteLoad();
+            }
+            connectionsFile = moduleData.connections;
+            if (typeof(addNewFile) == 'function'){
+            addNewFile(`${pageHost}${moduleData.connections}`, false, localX, localY, wikidataid)
+            }
+        }
+
+        contentSections = document.getElementsByClassName("content")[0].getElementsByClassName("contentSection")
+        while (contentSections.length > 0) {
+            contentSections[0].remove()
+        }
         for (module of response.core) {
             if (module.url != 'local') {
                 await addModule(type = module.type, url = `${pageHost}/ds/${module.url}`)
@@ -338,8 +362,47 @@ const loadPageCore = async () => {
         recalculateList()
         translator.translatePageTo()
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
+}
+function loadGraphEls(connections, wikidataIdList = false) {
+    wikidataidarray = wikidataIdList.join(",").replaceAll("Q", "").split(",");
+    wikidataidarray.sort((a, b) => a - b);
+    wikidataid = `Q${wikidataidarray[0]}`
+    // content.insertBefore()
+    if (!document.getElementById("graph-box")) {
+        const graphBox = document.createElement("section")
+        graphBox.classList.add("contentSection")
+        graphBox.id = "graph-box"
+        body.insertBefore(graphBox, content)
+    }
+    if (!document.getElementById("graph-container")) {
+        const graphContainer = document.createElement("div")
+        graphContainer.id = "graph-container"
+        graphContainer.classList.add("contentSection")
+        graphContainer.innerHTML = `
+        <h2 class="sectionTitle" data-i18n="graph.title" >Network Graph</h2>
+    <div id="wikipedia-frame" style="display: none" >
+        loading...
+    </div>
+    <div id="wikipedia-frame-close" style="display: none"></div>
+    <div id="graphButtons">
+        <button type="button" id="graphZoomIn"></button>
+        <button type="button" id="graphZoomOut"></button>
+        <button type="button" id="graphZoomReset"></button>
+    </div>
+    <div id="sigma-container"></div>`
+        body.insertBefore(graphContainer, content)
+    }
+
+    if (document.getElementById("graphScript")) {
+        return;
+    }
+    const graphScript = document.createElement("script")
+    graphScript.src = "/js/d3-graph.js"
+    graphScript.id = "graphScript"
+    graphScript.setAttribute("defer", '')
+    body.insertBefore(graphScript, content)
 }
 
 function postUpdate(data, topLevel = false) {
@@ -371,12 +434,12 @@ function postUpdate(data, topLevel = false) {
     }
 }
 
-const loadPageExternal = async () => {
+const loadPageExternal = async (location) => {
     if (document.getElementById("post")) {
         document.getElementById("post").remove()
     }
     if (!settingsState.experimentalFeatures) return;
-    postLocation = `${document.getElementById('location-url').textContent.replace("/index.json", "").replace('/db', 'db')}`
+    postLocation = `${location.replace("/index.json", "").replace('/db', 'db')}`
     send_message("IVGetPost", postLocation)
 }
 
@@ -522,7 +585,7 @@ function addToolsSection() {
         boyButton.classList.toggle("hide");
         voteButtons.classList.toggle("hide");
         if (!phoneMode) content.classList.add("padOnSmall");
-        voteLoad();
+        //voteLoad();
     } else {
         boyButton.style.visibility = "hidden";
         voteButtons.style.visibility = "hidden";
@@ -1066,10 +1129,10 @@ function send_message(type, data) {
         try {
             parent.postMessage(msg, "*");
         } catch (e) {
-            console.log(e);
+            console.error(e);
         }
     } else {
-        console.log("parent not found");
+        console.error("parent not found");
     }
 }
 
@@ -1081,14 +1144,10 @@ function forceAllLinksNewTab() {
 
 let noOpen = false;
 const titleBar = document.getElementById('titlebar');
-const coName = document.getElementsByClassName('co-name')[0];
 const fullPage = document.documentElement;
 const content = document.getElementsByClassName('content')[0];
 const body = document.body;
 const settings = document.getElementById('settings');
-const graphButtons = document.getElementById('graphButtons');
-const networkGraph = document.getElementById('graph-container');
-const sigmacontainer = document.getElementById('sigma-container');
 function closeIV() { send_message("IVClose", "closeButton"); };
 
 var phoneMode = false
@@ -1103,6 +1162,7 @@ function spinRoundel() {
 
 const settingsOffset = settings.firstElementChild.clientHeight;
 function setBack(x = false) {
+    const networkGraph = document.getElementById('graph-container');
     if (x == false) {
         backButton.style.backgroundColor = '';
         backButton.style.borderColor = '';
@@ -1158,7 +1218,7 @@ function notificationDialog(el) {
     userPreferences = mergedPreferences;
 
     notid = id.replace("-dialog", "")
-    console.log(notid)
+    if (debug) console.log(notid)
     defaults = defaultUserPreferences[notid]
     floatDiag = document.createElement("div");
     floatDiag.id = "floatDiag"
@@ -1377,6 +1437,7 @@ function addSettings() {
 }
 
 function loadSettings(x) {
+    const coName = document.getElementsByClassName('co-name')[0];
     body.classList.add("settingsOpen");
     if (settings.style.bottom == "0px") {
         closeSettings();
@@ -1390,8 +1451,7 @@ function loadSettings(x) {
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
         backButton.style.order = "unset";
-    }
-    if (!phoneMode) {
+    } else {
         closeButton.style.display = "none";
     }
     settings.firstElementChild.style.top = "0";
@@ -1406,6 +1466,9 @@ function loadSettings(x) {
 }
 
 function loadNetworkGraph(x) {
+    const networkGraph = document.getElementById('graph-container');
+    const sigmacontainer = document.getElementById('sigma-container');
+    const graphButtons = document.getElementById('graphButtons');
     backButton.style.borderColor = 'var(--c-border-color)';
     backButton.style.backgroundColor = 'var(--c-background)';
     networkGraph.style.visibility = 'visible';
@@ -1418,8 +1481,7 @@ function loadNetworkGraph(x) {
     body.classList.add('somethingIsOpen');
     if (phoneMode) {
         noOpen = true;
-    }
-    if (!phoneMode) {
+    } else {
         closeButton.style.display = "none";
     }
     titleBar.style.position = "";
@@ -1432,6 +1494,9 @@ function loadNetworkGraph(x) {
 }
 
 function closeNetworkGraph(x) {
+    const networkGraph = document.getElementById('graph-container');
+    const sigmacontainer = document.getElementById('sigma-container');
+    const graphButtons = document.getElementById('graphButtons');
     networkGraph.style.visibility = 'hidden';
     body.classList.remove('somethingIsOpen');
     if (phoneMode) {
@@ -1466,7 +1531,6 @@ function openGenericPage(x) {
             send_message("IVClicked", "wikipedia-infocard-frame");
             infoCard.classList.add('expanded');
         } else {
-            graphButtons.setAttribute("style", "");
             window.scrollTo(0, 0);
             const wikipediaPage = document.getElementById('wikipedia-first-frame');
             wikipediaPage.classList.add('expanded');
@@ -1517,6 +1581,7 @@ function closeGenericPage(x) {
 }
 
 function closeSettings(x) {
+    const coName = document.getElementsByClassName('co-name')[0];
     body.classList.remove("settingsOpen");
     if (phoneMode) {
         backButton.style.order = "2";
@@ -1860,15 +1925,13 @@ var hash;
 function vote(direction, thisOne = false) {
     // First look for hash
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
-    hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json', '');
-
-    voteRequest(hash, direction)
+    voteRequest(pageHash, direction)
 }
 
 async function voteLoad() {
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
-    hash = document.getElementById("graphLoc").innerText.split('/')[2].replace('.json', '');
-    send_message("IVVoteStuff", hash);
+    console.log(pageHash)
+    send_message("IVVoteStuff", pageHash);
 }
 async function voteRequest(hash, direction) {
     if (debug) console.log(`vote request: ${hash} ${direction}`);

@@ -1,15 +1,3 @@
-let debug
-Url = {
-    get get() {
-        const vars = {};
-        if (window.location.search.length !== 0)
-            window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
-                key = decodeURIComponent(key);
-                vars[key] = typeof vars[key] === "undefined" ? decodeURIComponent(value) : [].concat(vars[key], decodeURIComponent(value));
-            });
-        return vars;
-    }
-};
 if (Url.get.debug == 'true') {
     debug = true;
 }
@@ -29,15 +17,10 @@ let wikicardframe = document.getElementById("wikipedia-infocard-frame");
 let wikifirstframe = document.getElementById("wikipedia-first-frame");
 let graphBox = document.getElementById("graph-box");
 const currentDomain = `${window.location.protocol}//${window.location.host}`;
-const graphLoc = document.getElementById('graphLoc').innerHTML;
 const langArray = ["en", "fr", "ar", "es", "eo", "zh", "de", "hi"];
 const langPref = localStorage.preferred_language;
 const wikichoice = langArray.indexOf(langPref) ? `https://${langPref}.wikipedia.org` : "https://en.wikipedia.org";
-let wikidataid;
 
-wikidataidarray = JSON.parse(document.getElementById("wikidataid").textContent.replaceAll(" ", ",").replaceAll("Q", ""));
-wikidataidarray.sort((a, b) => a - b);
-wikidataid = `Q${wikidataidarray[0]}`
 
 const skipsections = ["See_also", "References", "Further_reading", "External_links",
     "Sources", "undefined", "Notes", "Notes_et_références",
@@ -59,9 +42,6 @@ function removeSectionsWithMatchingId() {
 
 // Initialize Sigma.js
 const container = document.getElementById("sigma-container");
-container.style.order = "0";
-container.style.width = "1px";
-container.style.height = "1px";
 const graph = new MultiDirectedGraph();
 const renderer = new Sigma(graph, container, initialSettings = {
     defaultEdgeType: "arrow",
@@ -92,7 +72,7 @@ function zoomOut() {
     renderer.camera.animatedUnzoom();
 }
 
-addNewFile(graphLoc, true, 0, 0, wikidataid)
+addNewFile(connectionsFile, true, 0, 0, wikidataid)
 
 let draggedNode;
 let isDragging = false;
@@ -178,31 +158,7 @@ function blankWikiBoxes() {
 }
 
 function getDocumentIndex(documentIndex, localX = 0, localY = 0, wikidataid = null) {
-    $.ajax({
-        url: `${currentDomain}/db/${documentIndex}/index.json`,
-        type: 'GET',
-    }).done((data) => {
-        if (debug) console.log(data)
-        if ('core' in data || 'connections' in data) {
-            document.getElementsByClassName("co-name")[0].innerHTML = data.title;
-            contentSections = document.getElementsByClassName("content")[0].getElementsByClassName("contentSection")
-            while (contentSections.length > 0) {
-                contentSections[0].remove()
-            }
-        }
-        if ('core' in data)
-            for (module of data.core) {
-                if (module.url == 'local') {
-                    if (debug) console.log(module);
-                } else {
-                    addModule(type = module.type, url = `${pageHost}/ds/${module.url}`);
-                }
-            }
-        blankWikiBoxes();
-        if ('connections' in data)
-            addNewFile(`${currentDomain}${data.connections}`, false, localX, localY, wikidataid)
-
-    })
+    loadPageCore(`${currentDomain}/db/${documentIndex}/index.json`, localX, localY, wikidataid)
 }
 
 wikiframeclose.onclick = () => {
@@ -281,7 +237,7 @@ function getWiki(node, lang = langPref) {
 }
 
 function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidataid = null) {
-    if (debug) console.log(wikidataid)
+    if (debug) console.log(`addNewFile ${jsonloc}`)
     loadJSON(jsonloc, (data) => {
         const links = data.links;
         const nodes = data.nodes;
@@ -301,7 +257,7 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
                 color = (original) ? "teal" : "green";
             } else { color = (original) ? "red" : "magenta"; }
 
-            console.log(node)
+            if (debug) console.log(node)
             if (label == 'null' && debug) console.log(`No label for ${node.id}`)
             graph.addNode(node.id, {
                 x: localX + (Math.random()),
@@ -331,7 +287,17 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
 
 
 function getWikipediaPage(id) {
-    const node = graph.getNodeAttributes(id)
+    let node;
+    try{
+        node = graph.getNodeAttributes(id)
+    } catch(e){
+        numberList = graph.nodes().join(',').replaceAll("Q",'').split(",")
+        numberList.sort((a, b) => a - b);
+        id = `Q${numberList[0]}`;
+        node = graph.getNodeAttributes(id);
+        //console.error(e);
+        
+    }
     const wikiPage = node.wiki.split('/').slice(4)
     const rootWiki = node.wiki.split('/').reverse().slice(-3)[0]
     const requestURL = `https://${rootWiki}/api/rest_v1/page/html/${wikiPage}?redirect=true`
@@ -419,9 +385,6 @@ function getWikipediaPage(id) {
                     "id": target
                 })
             }
-            if (target == id) {
-                // console.log(`${attributes["label"]} ${sourceAttributes["label"]}`)
-            }
         });
 
     sortedl1list = l1list.sort(sort_byg("id", true, String));
@@ -469,6 +432,6 @@ function wikipediaPanel(id) {
         wikiframe.appendChild(tempObj)
         removeSectionsWithMatchingId();
     }).fail(() => {
-        if (debug) console.log("oh no")
+        if (debug) console.error("oh no")
     });
 }

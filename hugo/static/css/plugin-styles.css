@@ -2645,6 +2645,14 @@ button.loadInfoButton {
     }
 }
 
+#sigma-container {
+    order: 0;
+    width: 1px;
+    height: 1px;
+}
+
+#graphLoc, #wikidataid { display: none;}
+
 #wikipedia-first-frame{ order: unset; }
 #networkgraph{ order: unset; } 
 #small-wikidata{ order: unset; }

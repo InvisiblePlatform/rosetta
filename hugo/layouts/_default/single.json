@@ -24,4 +24,7 @@
 {{- with .Params.title -}}
 {{- $.Scratch.SetInMap "index" "title" . -}}
 {{- end -}}
+{{- with .Params.wikidata_id -}}
+{{- $.Scratch.SetInMap "index" "wikidata_id" . -}}
+{{- end -}}
 {{- $.Scratch.Get "index" | jsonify -}}

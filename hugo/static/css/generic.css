@@ -262,6 +262,7 @@ b {
 
 body {
     color: var(--c-light-text);
+    background-color: var(--c-background);
     font-family: 'Roboto Flex', sans-serif;
 }
 html {
