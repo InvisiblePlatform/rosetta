@@ -1,22 +1,16 @@
 import json
 import os
-import sys
 import csv
-import yaml
-from threading import Thread
-from frontmatter import load as frontload
-from time import sleep
 from copy import deepcopy
 from pprint import pprint
 from pymongo import MongoClient
 from collections import defaultdict
-from urllib.parse import urlparse
 from multiprocessing import Pool
 from tqdm import tqdm
 from tools.mongoscripts.plain_node import do_graph
 from tld import get_tld
 
-output_dir="hugo/content/db/"
+output_dir="data_objects/db/"
 rootdir = "data_collection"
 
 
@@ -153,20 +147,29 @@ def query_for_wikidata(wikiid):
     return tmpdatapool
 
 def show_document(domain):
-    file_path = output_dir + domain.replace('.','') + ".md"
+    file_path = os.path.join(output_dir, domain.replace('.', '') + ".json")
     if os.path.exists(file_path):
         with open(file_path, "r") as file:
-            yaml_data = frontload(file)
-            pprint(yaml_data.metadata)
+            pprint(json.load(file))
+
+    # file_path = output_dir + domain.replace('.','') + ".md"
+    # if os.path.exists(file_path):
+    #     with open(file_path, "r") as file:
+    #         yaml_data = frontload(file)
+    #         pprint(yaml_data.metadata)
 
 def write_output_file(domain, data):
-    file_path = os.path.join(output_dir, domain.replace('.', '') + ".md")
-    separator_line = "---\n"
-
+    file_path = os.path.join(output_dir, domain.replace('.', '') + ".json")
     with open(file_path, "w") as file:
-        file.write(separator_line)
-        yaml.dump(data, file, sort_keys=False)
-        file.write(separator_line)
+        json.dump(data, file, indent=4)
+
+    # file_path = os.path.join(output_dir, domain.replace('.', '') + ".md")
+    # separator_line = "---\n"
+
+    # with open(file_path, "w") as file:
+    #     file.write(separator_line)
+    #     yaml.dump(data, file, sort_keys=False)
+    #     file.write(separator_line)
 
 
 social_claims = [ "twittername", "officialblog", "subreddit", "facebookid",
@@ -477,6 +480,7 @@ def testRun():
 prepare()
 build_pairings_and_datapool()
 #testRun()
+
 pbar = tqdm(total=len(website_list))
 if __name__ == "__main__":
     processed_results = process_domains_parrallel(website_list)

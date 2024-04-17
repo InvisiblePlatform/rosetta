@@ -11,5 +11,27 @@
         // Set the page URL as the content of the <span> element
         document.getElementById("page-url").textContent = pageURL;
 
+        Url = {
+            get get() {
+                const vars = {};
+                if (window.location.search.length !== 0)
+                    window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
+                        key = decodeURIComponent(key);
+                        vars[key] = typeof vars[key] === "undefined" ? decodeURIComponent(value) : [].concat(vars[key], decodeURIComponent(value));
+                    });
+                return vars;
+            }
+        };
+        if (pageURL.includes("/db/")){
+            splitcount = window.location.pathname.split("/").length;
+            locationDb = window.location.pathname.split("/")[2];
+            finalParam = window.location.pathname.split("/")[3];
+            if (locationDb && splitcount == 4 && window.location.search){
+                window.location = `/db/${window.location.search}&location=${locationDb}`
+            } else if (locationDb && splitcount == 4 && finalParam){
+                window.location = `/db/${locationDb}.json`
+            }
+        }
+
     </script>
 {{ end }}

@@ -175,7 +175,7 @@ translator.fetch(languages).then(() => {
 const optionRegex = /&.*/ig;
 function pageSetup() {
     const currentLocation = window.location.href.replaceAll('?', '&').replace(optionRegex, "")
-    pageLocation = Url.get.location ? `${pageHost}/db/${Url.get.location}/index.json` : `${currentLocation}index.json`
+    pageLocation = Url.get.location ? `${pageHost}/db/${Url.get.location}.json` : false;
     addToolsSection()
     resetSettings(false)
     loadPageCore(pageLocation)

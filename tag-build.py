@@ -1,11 +1,7 @@
 import json
 import re
 from tqdm import tqdm
-import threading
-import yaml
-import time
 import os
-import frontmatter
 import json
 from pprint import pprint
 from multiprocessing import Pool
@@ -32,8 +28,15 @@ keyconversion = {
 single_keys = "tsep"
 multiple_keys = "blgw"
 
+removeables = [
+    "glassdoor", "tp_rating", "tp_source", "lb_fte", "lb_source", "ts_rating", "ts_source", "lb_fte", "wikipedia", "domhash",
+    "industry", "lobbyeu", "wba_id", "ts_slug", "tp_slug", "glassdoor_id", "osids", "mbfc", "mbfc_slug", "mbfc_tags", "published",
+    "tosdr_source", "tosdr_rating", "ticker", "esg_rating", "esg_source"
+]
 def process_domain(domain):
-    file_loc = 'hugo/content/db/' + domain
+    file_loc = 'data_objects/db/' + domain
+    output_loc = 'hugo/static/db/' + domain
+
     tags = ""
     wbm = False
     wbm_data = []
@@ -41,7 +44,7 @@ def process_domain(domain):
     tag_data = {}
     if os.path.exists(file_loc):
         with open(file_loc, "r") as file:
-            yaml_data = frontmatter.load(file).metadata
+            yaml_data = json.load(file)
             for key in yaml_data.keys():
                 if key in keyconversion.keys():
                     tags += keyconversion[key]
@@ -52,7 +55,7 @@ def process_domain(domain):
                     wbm_data.append(core["url"])
 
             if wbm:
-                yaml_data["wbm_data"] = []
+                #yaml_data["wbm_data"] = []
                 tags += keyconversion["wbm"]
                 for wbm in wbm_data:
                     json_loc = f"hugo/static/ds/{wbm}"
@@ -105,13 +108,29 @@ def process_domain(domain):
 
 
 
-            yaml_data["tag_data"] = tag_data
-            yaml_data["tags"] = tags
+            if yaml_data.get("mbfc_tags"):
+                tag_data["m"] = yaml_data["mbfc_tags"]
+                # TODO: Blanking source right now due to it being a multiple match item
+                tag_data["_m"] = " " 
+                #tag_data["_m"] = yaml_data["mbfc_source"]
 
+            tag_data["k"] = tags
+            yaml_data["data"] = tag_data
+
+            to_remove = []
+            
+            for key in yaml_data.keys():
+                if key in removeables:
+                    to_remove.append(key)
+
+            for key in to_remove:
+                del yaml_data[key]
 
             #pprint(tag_data)
             #pprint(yaml_data)
-            write_output_file(file_loc, yaml_data)
+            #if not os.path.exists(output_dir):
+            #    os.makedirs(output_dir)
+            write_output_file(output_loc, yaml_data)
 
     return [True, keys_list]
 
@@ -126,21 +145,17 @@ def process_domains_parallel(domains):
 
 
 def write_output_file(file_path, data):
-    line = "---\n"
     with open(file_path, "w") as file:
-        file.write(line)
-    with open(file_path, "a") as file:
-        yaml.dump(data, file, sort_keys=False)
-        file.write(line)
+        json.dump(data, file, indent=4)
 
 
 if __name__ == "__main__":
-    #process_domain("examplecom.md")
+    #process_domain("dailymailcouk.json")
     #exit()
 
     dom_list = []
-    for filename in os.listdir('hugo/content/db/'):
-        if filename.endswith(".md"):
+    for filename in os.listdir('data_objects/db/'):
+        if filename.endswith(".json"):
             dom_list.append(filename)
 
     pbar = tqdm(total=len(dom_list))

@@ -14,7 +14,7 @@ def sort_filenames_by_line_count(domains):
     file_info = []
 
     for domain in domains:
-        file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
+        file_loc = 'data_objects/db/' + domain.replace('.','') + ".json"
         if os.path.exists(file_loc):
             with open(file_loc, 'r') as file:
                 line_count = sum(1 for _ in file)
@@ -37,11 +37,11 @@ def process_domain(domhash):
 
         sorted_domains = sort_filenames_by_line_count(domains)
         for domain in sorted_domains:
-            file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
+            file_loc = 'data_objects/db/' + domain.replace('.','') + ".json"
             json_loc = 'hugo/static/connections/' + domain + ".json"
             if os.path.exists(file_loc):
                 with open(file_loc, "r") as file:
-                    yaml_data = frontmatter.load(file)
+                    yaml_data = json.load(file)
                     for key in yaml_data.keys():
                         value = yaml_data[key]
                         if not key in total_data.keys():
@@ -83,11 +83,11 @@ def process_domain(domhash):
                             total_connection_links.append(link)
 
         for domain in sorted_domains:
-            file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
-            output_loc = 'matched_output/' + domain.replace('.','') + ".md"
+            file_loc = 'data_objects/db/' + domain.replace('.','') + ".json"
+            output_loc = 'matched_output/' + domain.replace('.','') + ".json"
             if os.path.exists(file_loc):
                 with open(file_loc, "r") as file:
-                    yaml_data = frontmatter.load(file)
+                    yaml_data = json.load(file)
                     for key in total_data.keys():
                         value = total_data[key]
                         if not key in yaml_data.keys():
@@ -115,18 +115,15 @@ def process_domain(domhash):
                     yaml_data['domhash'] = domhash
                     yaml_data['connections'] = f'/connections/{domhash}.json'
                     with open(output_loc, "w") as output:
-                        output.writelines(frontmatter.dumps(yaml_data))
+                        json.dump(yaml_data, output, indent=4)
         connections_out = {}
         connections_out['nodes'] = total_connection_nodes
         connections_out['links'] = total_connection_links
         json_output_file = f'hugo/static/connections/{domhash}.json'
         with open(json_output_file, 'w') as output:
-            json.dump(connections_out, output)
+            json.dump(connections_out, output, indent=4)
     except Exception as e:
         pprint(e)
-        # exit()
-
-        #return [e, domhash]
     return [True, domhash]
 
 def process_domains_parallel(domains):
@@ -136,23 +133,6 @@ def process_domains_parallel(domains):
                 results.append(result)
                 pbar.update(1)
     return results
-
-
-def write_output_file(domain, data):
-    file_path = domain + ".md"
-    if not os.path.exists(file_path):
-        return
-
-    with open(file_path, "r") as file:
-        content = file.read()
-
-    frontmatter_end = content.index("---", 4) + 3
-    new_frontmatter = yaml.dump(data, sort_keys=False)
-    new_content = "---\n" + new_frontmatter + "---\n" + content[frontmatter_end:]
-
-    with open(file_path, "w") as file:
-        file.write(new_content)
-
 
 if __name__ == "__main__":
     # Load associated domains from JSON file
@@ -166,7 +146,7 @@ if __name__ == "__main__":
         domains = data[domhash]
         found = 0
         for domain in domains:
-            file_loc = 'hugo/content/db/' + domain.replace('.','') + ".md"
+            file_loc = 'data_objects/db/' + domain.replace('.','') + ".json"
             if os.path.exists(file_loc):
                 found += 1
         if found > 2:

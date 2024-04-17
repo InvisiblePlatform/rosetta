@@ -1,14 +1,11 @@
 import os
 import shutil
-import time
-import yaml
-from threading import Thread
-from time import sleep
+import json
 from multiprocessing import Pool
 from tqdm import tqdm
 from pprint import pprint
 
-folder_path = "hugo/content/db"
+folder_path = "data_objects"
 core_data_set = set()
 
 
@@ -31,21 +28,22 @@ def process_files_parrallel(files):
 
 # Function to process a single file
 def process_file(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.read()
+    with open(file_path, "r") as file:
+        #content = file.read()
         # Check if the file starts with "---" (indicating frontmatter)
-        if content.startswith("---"):
-            frontmatter_end = content.index("---", 3)
-            frontmatter_text = content[3:frontmatter_end]
-            frontmatter = yaml.safe_load(frontmatter_text)
-            return extract_core_data(frontmatter)
+        #if content.startswith("---"):
+        #    frontmatter_end = content.index("---", 3)
+        #    frontmatter_text = content[3:frontmatter_end]
+        #    frontmatter = yaml.safe_load(frontmatter_text)
+        content = json.load(file)
+        return extract_core_data(content)
     return None
 
 # Get a list of all .md files in the folder
 md_files = []
 for root, _, files in os.walk(folder_path):
     for filename in files:
-        if filename.endswith(".md"):
+        if filename.endswith(".json"):
             file_path = os.path.join(root, filename)
             md_files.append(file_path)
 
