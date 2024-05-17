@@ -15,13 +15,13 @@ do_site(){
 }
 
 count=0
-pushd similar-sites
 mkdir sites
 while read -a site; do
     if ! [[ -s "sites/similar_site_${site}.json" ]]; then
         do_site "$site"    
         jq .SimilarSites[0].Site sites/similar_site_$site.json
-        sleep 0.5s
+        #sleep 0.1s
     fi
-done < <( sort -u ../websites.list | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sed -e "/\//d" | sort -u)
-popd
+done < <( sort -u ../../websites.list | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sed -e "/\//d" | sort -u)
+
+~/notification.sh "Similar Sites Done"

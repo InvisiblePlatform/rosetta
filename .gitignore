@@ -38,6 +38,7 @@ data_collection/yahoo/*.json
 data_collection/yahoo/ticker/*
 data_collection/yahoo/tickerinfo/
 data_objects/db/*
+data_objects/public/*
 hugo/.*
 hugo/cache/
 hugo/content-backup/

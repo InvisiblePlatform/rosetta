@@ -16,11 +16,13 @@ with open(average_input_file, "r") as json_file:
 
 # Define the output directory
 output_dir = "entities"
+split_dir = "split_files"
 available_ratings = {}
 index_filename = "site_slug.json"
 
 exceptions = {
-    "www.lamarqueenmoins.f": "www.lamarqueenmoins.fr"
+    "www.lamarqueenmoins.f": "www.lamarqueenmoins.fr",
+    "haymansgin.com & merserrum.com & respirited.com & bushrum.co.uk & symposiumspirits.co.uk & kimia.co.uk & hgcompany.co.uk": "haymansgin.com",
 }
 
 # Iterate through the data and split into individual files
@@ -32,9 +34,14 @@ for data in array:
             continue
 
         slug = data.get("slug")
+        with open(f"{split_dir}/bcorp_{slug}.json", "w") as file:
+            json.dump(data, file, indent=4)
+
         # Extract data from the JSON file as needed
         # Example: Create a new object with selected data
         website = re.sub(r'\([^)]*\)', '', data.get("website"))
+        if website in exceptions:
+            website = exceptions[website]
         new_obj = {
             "slug": slug,
             "source": data.get("name"),

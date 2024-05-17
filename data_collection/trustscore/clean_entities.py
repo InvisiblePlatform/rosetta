@@ -28,7 +28,7 @@ for key, values in data.items():
             "location": f"trustscore/{slug}"
         }
 
-        site_array[values["domain"]] = slug
+        site_array[values["domain"]] = {"slug": slug, "source": values["domain"], "rating": rated, "score": score }
 
         # Define the output filename based on the "slug" and "rated" fields
         if rated:
@@ -42,3 +42,7 @@ for key, values in data.items():
 
 with open(site_file, "w") as index_file:
     json.dump(site_array, index_file, indent=4)
+
+
+#if __name__ == "__main__":
+#    trustScoreClean()

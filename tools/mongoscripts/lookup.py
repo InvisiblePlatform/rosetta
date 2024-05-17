@@ -4,7 +4,7 @@ import json
 client = MongoClient('mongodb://localhost:27017/')
 db = client['rop']
 collection = db['wikidata']
-idn = "Q186068"
+idn = "Q28610155"
 query = {
     'id': idn
 }

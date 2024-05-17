@@ -2,7 +2,7 @@ import os
 import json
 from collections import defaultdict
 
-def calculate_average_ratings(folder_path):
+def calculate_average_ratings(folder_path: str):
     industry_ratings = defaultdict(list)
 
     # Iterate over each file in the folder

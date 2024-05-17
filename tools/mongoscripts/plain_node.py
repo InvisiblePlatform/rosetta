@@ -99,8 +99,11 @@ def do_node(ids, collection):
         except:
             node_groups = []
         nodelist.append(node["id"])
+
         nullname = node["labels"]["en"]["value"] if "en" in node["labels"] else "null"
         defSite = wikidata_array.get(node["id"], [None])[0]
+        sitelinks = wikidata_array.get("sitelinks", {}).keys()
+
         outnodes.append({
                 "id": node["id"],
                 "label":   nullname,
@@ -112,15 +115,15 @@ def do_node(ids, collection):
                 "frlabel": node["labels"]["fr"]["value"] if "fr" in node["labels"] else nullname,
                 "delabel": node["labels"]["de"]["value"] if "de" in node["labels"] else nullname,
                 "calabel": node["labels"]["ca"]["value"] if "ca" in node["labels"] else nullname,
-                "enwiki": node["sitelinks"]["enwiki"]["title"] if "enwiki" in node["sitelinks"] else "null", 
-                "eswiki": node["sitelinks"]["eswiki"]["title"] if "eswiki" in node["sitelinks"] else "null", 
-                "zhwiki": node["sitelinks"]["zhwiki"]["title"] if "zhwiki" in node["sitelinks"] else "null", 
-                "hiwiki": node["sitelinks"]["hiwiki"]["title"] if "hiwiki" in node["sitelinks"] else "null", 
-                "eowiki": node["sitelinks"]["eowiki"]["title"] if "eowiki" in node["sitelinks"] else "null", 
-                "arwiki": node["sitelinks"]["arwiki"]["title"] if "arwiki" in node["sitelinks"] else "null", 
-                "frwiki": node["sitelinks"]["frwiki"]["title"] if "frwiki" in node["sitelinks"] else "null", 
-                "dewiki": node["sitelinks"]["dewiki"]["title"] if "dewiki" in node["sitelinks"] else "null", 
-                "cawiki": node["sitelinks"]["cawiki"]["title"] if "cawiki" in node["sitelinks"] else "null", 
+                "enwiki": node["sitelinks"]["enwiki"]["title"] if "enwiki" in sitelinks else "null", 
+                "eswiki": node["sitelinks"]["eswiki"]["title"] if "eswiki" in sitelinks else "null", 
+                "zhwiki": node["sitelinks"]["zhwiki"]["title"] if "zhwiki" in sitelinks else "null", 
+                "hiwiki": node["sitelinks"]["hiwiki"]["title"] if "hiwiki" in sitelinks else "null", 
+                "eowiki": node["sitelinks"]["eowiki"]["title"] if "eowiki" in sitelinks else "null", 
+                "arwiki": node["sitelinks"]["arwiki"]["title"] if "arwiki" in sitelinks else "null", 
+                "frwiki": node["sitelinks"]["frwiki"]["title"] if "frwiki" in sitelinks else "null", 
+                "dewiki": node["sitelinks"]["dewiki"]["title"] if "dewiki" in sitelinks else "null", 
+                "cawiki": node["sitelinks"]["cawiki"]["title"] if "cawiki" in sitelinks else "null", 
                 "defSite": defSite.replace(".","") if defSite else "null",
                 "groups": node_groups
         })
@@ -163,7 +166,7 @@ def do_graph(main_node=None, file_out=None, collection=None, node_depth=2):
     }
 
     if file_out:
-        with open(file_out, "w") as f:
+        with open(file_out.encode('utf-8'), "w") as f:
             json.dump(graph, f, indent=4)
         return True
     else:

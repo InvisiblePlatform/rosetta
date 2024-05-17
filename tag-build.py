@@ -33,9 +33,12 @@ removeables = [
     "industry", "lobbyeu", "wba_id", "ts_slug", "tp_slug", "glassdoor_id", "osids", "mbfc", "mbfc_slug", "mbfc_tags", "published",
     "tosdr_source", "tosdr_rating", "ticker", "esg_rating", "esg_source"
 ]
+
+data_output_path = 'data_objects/public/db/'
+
 def process_domain(domain):
     file_loc = 'data_objects/db/' + domain
-    output_loc = 'hugo/static/db/' + domain
+    output_loc = data_output_path + domain
 
     tags = ""
     wbm = False
@@ -58,7 +61,7 @@ def process_domain(domain):
                 #yaml_data["wbm_data"] = []
                 tags += keyconversion["wbm"]
                 for wbm in wbm_data:
-                    json_loc = f"hugo/static/ds/{wbm}"
+                    json_loc = f"data_objects/public/ds/{wbm}"
                     wbm_obj = {}
                     with open(json_loc, "r") as json_file:
                         json_data = json.load(json_file)

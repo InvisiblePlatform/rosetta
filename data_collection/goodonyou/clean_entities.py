@@ -9,6 +9,7 @@ index_filename = "site_slug.json"
 # Function to process a single JSON file
 def process_json_file(json_filename):
     # Define the new variables to add to the data
+    # pprint(json_filename)
 
     try:
         with open(json_filename, 'r') as json_file:
@@ -53,7 +54,7 @@ def process_json_file(json_filename):
                         "t.cfjump.com", "poshmark.com", "target.com", "t.dgm-au.com" ]:
                    if available_ratings.get(domain.replace("www.","")):
                        available_ratings[domain.replace("www.","")].append(slug)
-                       pprint([domain, slug, available_ratings.get(domain.replace("www.",""))])
+                       #pprint([domain, slug, available_ratings.get(domain.replace("www.",""))])
                    else:
                        available_ratings[domain.replace("www.","")] = [slug]
             #else:
@@ -67,6 +68,8 @@ def process_json_file(json_filename):
 
     except FileNotFoundError:
         print(f"JSON file not found: {json_filename}")
+    except json.decoder.JSONDecodeError:
+        print(f"JSON file decode issue found: {json_filename}")
 
 # Directory containing the JSON files
 json_dir = 'brands'

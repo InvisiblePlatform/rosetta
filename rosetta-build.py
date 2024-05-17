@@ -3,7 +3,6 @@ from tqdm import tqdm
 import threading
 import time
 import os
-import frontmatter
 import json
 from pprint import pprint
 from multiprocessing import Pool
@@ -38,7 +37,7 @@ def process_domain(domhash):
         sorted_domains = sort_filenames_by_line_count(domains)
         for domain in sorted_domains:
             file_loc = 'data_objects/db/' + domain.replace('.','') + ".json"
-            json_loc = 'hugo/static/connections/' + domain + ".json"
+            json_loc = 'data_objects/public/connections/' + domain + ".json"
             if os.path.exists(file_loc):
                 with open(file_loc, "r") as file:
                     yaml_data = json.load(file)
@@ -119,7 +118,7 @@ def process_domain(domhash):
         connections_out = {}
         connections_out['nodes'] = total_connection_nodes
         connections_out['links'] = total_connection_links
-        json_output_file = f'hugo/static/connections/{domhash}.json'
+        json_output_file = f'data_objects/public/connections/{domhash}.json'
         with open(json_output_file, 'w') as output:
             json.dump(connections_out, output, indent=4)
     except Exception as e:

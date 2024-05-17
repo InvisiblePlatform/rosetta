@@ -46,8 +46,12 @@ def main():
     db = client['rop']
     collection = db['wikidata']
 
-    with open("missingsids.json", 'r') as f:
-        ids = json.load(f)["ids"]
+    output_file_name_id = 'labelindex.json'
+    with open(output_file_name_id, 'r') as file:
+        secrets_array = json.load(file)
+
+    with open("../../missingLabels.json", 'r') as f:
+        ids = json.load(f)
     main_node = ids
     query = {'id': {'$in': main_node}}
     print("do query")
@@ -72,7 +76,6 @@ def main():
     pbar.close()
     client.close()
 
-    output_file_name_id = 'labelindex.json'
     with open(output_file_name_id, 'w') as file:
         json.dump(secrets_array, file, indent=4)
 

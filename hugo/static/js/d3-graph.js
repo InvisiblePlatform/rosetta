@@ -1,14 +1,6 @@
 if (Url.get.debug == 'true') {
     debug = true;
 }
-let mode = 0;
-const phoneRegexG = /Mobile/i;
-
-if (phoneRegexG.test(navigator.userAgent)) {
-    mode = 1;
-    if (debug) console.log("[ Invisible Voice ]: phone mode");
-    // document.getElementsByClassName("content")[0].classList.add("mobile");
-}
 
 const wikiframe = document.getElementById("wikipedia-frame");
 const titlebar = document.getElementById("titlebar");
@@ -158,7 +150,7 @@ function blankWikiBoxes() {
 }
 
 function getDocumentIndex(documentIndex, localX = 0, localY = 0, wikidataid = null) {
-    loadPageCore(`${currentDomain}/db/${documentIndex}/index.json`, localX, localY, wikidataid)
+    loadPageCore(`/db/${documentIndex}.json`, localX, localY, wikidataid)
 }
 
 wikiframeclose.onclick = () => {
@@ -280,8 +272,14 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
 
             }
         });
-        if (wikidataid != null)
+        if (wikidataid != null){
             getWikipediaPage(wikidataid);
+        } else {
+            wikiidlist = graph.nodes().join(',').replaceAll("Q",'').split(",")
+            wikiidlist.sort((a, b) => a - b);
+            wikidataid = `Q${wikiidlist[0]}`
+            getWikipediaPage(wikidataid);
+        }
     });
 }
 
@@ -328,6 +326,7 @@ function getWikipediaPage(id) {
         
             const tempObj = document.createElement("div");
             tempObj.innerHTML = data
+            // TODO: Add handling if the page doesnt have an infobox
             const tempElement = tempObj.getElementsByClassName("infobox")[0];
             if (debug) console.log(tempObj)
             wikicardframe.innerHTML = ""

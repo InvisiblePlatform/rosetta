@@ -1,8 +1,0 @@
-{{- $.Scratch.SetInMap "index" "" (dict "" "" ) -}}
-{{- range where .Site.Pages "Type" "not in"  (slice "json") -}}
-    {{- $tempslice := (slice .Params.title ) -}}
-    {{- if ne (index $tempslice 0 ) "" -}}
-        {{- $.Scratch.SetInMap "index" (replace (replace .RelPermalink "/db/" "" ) "/" "") (dict "d" .Params.title "k" .Params.tags ) -}}
-    {{- end -}}
-{{- end -}}
-{{- $.Scratch.Get "index" | jsonify -}}

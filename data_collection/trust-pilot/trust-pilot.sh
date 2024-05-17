@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./trust-categories.sh
+#source ./trust-categories.sh
 
 do_category(){
     curl "https://www.trustpilot.com/_next/data/categoriespages-consumersite-1721/categories/${1}.json?page=${2}&categoryId=${1}" \
@@ -31,13 +31,19 @@ do_site(){
 }
 
 count=0
-pushd trust-pilot
+size=$(wc -l ../../websites.list )
+
+declare seen_sites=$(cat ./seen_sites.list)
+
 mkdir sites
 while read -a site; do
-    if ! [[ -s "sites/trust_site_${site}.json" ]]; then
-        do_site "$site"    
-        jq .name sites/trust_site_$site.json
-        sleep 0.5s
+    count=$(( count + 1 ))
+    if ! [[ " $seen_sites " =~ "${site}" ]]; then
+        if ! [[ -s "sites/trust_site_${site}.json" ]]; then
+            do_site "$site"    
+            jq .name sites/trust_site_$site.json
+            printf '%s\n' "${count} ${size} ${site}"
+            sleep 0.25s
+        fi
     fi
-done < <( sort -u ../websites.list | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sort -u)
-popd
+done < <( sort -u ../../websites.list | sed -e "s/\"//g" -e "s/\/[^\"]*\"//g" | sort -u)

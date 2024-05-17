@@ -1,6 +1,7 @@
 let debug
 const pageHost = `${window.location.protocol}//${window.location.host}`
 const assetsURL = `https://assets.reveb.la`
+const dataURL = `https://test.reveb.la`
 
 const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
 const translator = new Translator({
@@ -153,9 +154,6 @@ Url = {
         return vars;
     }
 };
-if (Url.get.app == 'true') {
-    phoneMode = true;
-}
 
 Hash = {
     get hash() {
@@ -175,7 +173,7 @@ translator.fetch(languages).then(() => {
 const optionRegex = /&.*/ig;
 function pageSetup() {
     const currentLocation = window.location.href.replaceAll('?', '&').replace(optionRegex, "")
-    pageLocation = Url.get.location ? `${pageHost}/db/${Url.get.location}.json` : false;
+    pageLocation = Url.get.site ? `/db/${Url.get.site}.json` : false;
     addToolsSection()
     resetSettings(false)
     loadPageCore(pageLocation)
@@ -316,9 +314,11 @@ const scrollIntoPlace = async () => {
 
 let moduleData;
 const localModules = ["political", "social"]
-const loadPageCore = async (coreFile, localX=false, localY=false, wikidataid=null) => {
+const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null) => {
     try {
-        const dataf = await fetch(coreFile)
+        console.log(dataURL)
+        console.log(coreFile)
+        const dataf = await fetch(dataURL + coreFile)
         const response = await dataf.json()
         const currentDomain = document.getElementsByClassName("co-name")[0].innerText.replace(".", "")
         localString = ''
@@ -340,9 +340,9 @@ const loadPageCore = async (coreFile, localX=false, localY=false, wikidataid=nul
             if (Url.get.vote == 'true') {
                 voteLoad();
             }
-            connectionsFile = moduleData.connections;
-            if (typeof(addNewFile) == 'function'){
-            addNewFile(`${pageHost}${moduleData.connections}`, false, localX, localY, wikidataid)
+            connectionsFile = dataURL + moduleData.connections;
+            if (typeof (addNewFile) == 'function') {
+                addNewFile(`${dataURL}${moduleData.connections}`, false, localX, localY, wikidataid)
             }
         }
 
@@ -352,7 +352,7 @@ const loadPageCore = async (coreFile, localX=false, localY=false, wikidataid=nul
         }
         for (module of response.core) {
             if (module.url != 'local') {
-                await addModule(type = module.type, url = `${pageHost}/ds/${module.url}`)
+                await addModule(type = module.type, url = `${dataURL}/ds/${module.url}`)
                     .then((string) => localString += string);
             }
         }
@@ -366,9 +366,11 @@ const loadPageCore = async (coreFile, localX=false, localY=false, wikidataid=nul
     }
 }
 function loadGraphEls(connections, wikidataIdList = false) {
-    wikidataidarray = wikidataIdList.join(",").replaceAll("Q", "").split(",");
-    wikidataidarray.sort((a, b) => a - b);
-    wikidataid = `Q${wikidataidarray[0]}`
+    if (wikidataIdList) {
+        wikidataidarray = wikidataIdList.join(",").replaceAll("Q", "").split(",");
+        wikidataidarray.sort((a, b) => a - b);
+        wikidataid = `Q${wikidataidarray[0]}`
+    }
     // content.insertBefore()
     if (!document.getElementById("graph-box")) {
         const graphBox = document.createElement("section")
@@ -439,7 +441,7 @@ const loadPageExternal = async (location) => {
         document.getElementById("post").remove()
     }
     if (!settingsState.experimentalFeatures) return;
-    postLocation = `${location.replace("/index.json", "").replace('/db', 'db')}`
+    postLocation = `${location.replace(".json", "").replace('/db', 'db')}`
     send_message("IVGetPost", postLocation)
 }
 
@@ -566,13 +568,33 @@ function addToolsSection() {
     boyButton = document.getElementById('Invisible-boycott');
 
 
-    if (phoneMode) {
+    if (Url.get.exhibit) {
+		blur = 'blur(3px)';
+        body.parentNode.setAttribute("style", "--c-background: transparent; --c-light-text:#111; --c-background-units: #fff6; background-color: transparent;");
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '.content > .contentSection').style.backgroundColor = '#fff8';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '.content > .contentSection').style.backdropFilter = blur;
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backdropFilter = blur;
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backgroundColor = '#fff8';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.top = 'calc(100vh - 190px)';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.position = 'sticky';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backgroundColor = '#fff8';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backdropFilter = blur;
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backgroundColor = '#fff8';
+        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backdropFilter = blur;
+        body.setAttribute("style", "background-color: transparent;")
+        closeButton.style.visibility = "hidden";
+        settingsButton.style.visibility = "hidden";
+        backButton.classList.add("hide")
+        console.log("exhibitMode")
+
+    }
+    if (Url.get.app) {
         if (debug) console.log("[ Invisible Voice ]: phone mode");
         document.getElementsByClassName("content")[0].classList.add("mobile");
         body.classList.add("mobile");
         closeButton.style.visibility = "hidden";
     }
-    if (!phoneMode) {
+    if (!Url.get.app) {
         backButton.classList.add("show");
         closeButton.classList.add("closeExtention");
         document.getElementsByClassName("content")[0].classList.add("desktop");
@@ -584,13 +606,13 @@ function addToolsSection() {
         body.classList.add("topBar");
         boyButton.classList.toggle("hide");
         voteButtons.classList.toggle("hide");
-        if (!phoneMode) content.classList.add("padOnSmall");
+        if (!Url.get.app) content.classList.add("padOnSmall");
         //voteLoad();
     } else {
         boyButton.style.visibility = "hidden";
         voteButtons.style.visibility = "hidden";
     }
-    if (Url.get.expanded && phoneMode) {
+    if (Url.get.expanded && Url.get.app) {
         document.getElementById(Url.get.expanded).classList.add("expanded")
         content.classList.add('somethingIsOpen');
     }
@@ -635,7 +657,7 @@ async function addLocalModule(type = undefined, data = undefined) {
     }
     if (type == 'post') {
         postContent = $('<div/>').html(data.content).text()
-        dataLocationString = data.uid.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+        dataLocationString = data.uid.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
         htmlString = `
 		${moduleString(types[type].id, "user.moduletitle", "User Content", data.location, ' ', "fullBleed userText", dataLocationString)}
         <div>${postContent}
@@ -682,7 +704,7 @@ async function addModule(type = undefined, url = undefined) {
     const moduleData = await fetch(url);
     const moduleResponse = await moduleData.json()
     //console.log(moduleResponse)
-    dataLocationString = url.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+    dataLocationString = url.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
     if (!(type in types)) { return; }
     typeDef = types[type]
     // Genericising needed
@@ -802,7 +824,7 @@ async function addModule(type = undefined, url = undefined) {
             trans = file.split("_").slice(1).join("-").toLowerCase()
             year = file.split("_")[0]
             fileName = file.split("_").slice(1).join(" ")
-            dataLocationString = url.replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+            dataLocationString = url.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
             htmlString += `<div class='submodule' data-location="${dataLocationString}-${trans}"><h2 class="subModuleTitle"><span data-i18n="wbm.${trans}" style="--year:'${year}';">${fileName}</span>
             <div class="squareButton hovertext hideInSmall"><div>?</div></div><div class="hidetext"><h3 data-i18n="title.wbm-${trans}"> </h3><p data-i18n="desc.wbm-${trans}"></div></h2>
                 </h2><table>`
@@ -894,7 +916,7 @@ ${sourceStringClose(sourceUrl, "GOODONYOU.ECO")}
     if (type == "bcorp") {
 
         sourceUrl = `https://www.bcorporation.net/en-us/find-a-b-corp/company/${moduleResponse.slug}`
-        iconUrl = `${pageHost}/icon/bcorp.svg`;
+        iconUrl = `${dataURL}/icon/bcorp.svg`;
 
         htmlString += `${notPieString(moduleResponse.score, false, "ratingOutOf", iconUrl, "/140+")}
     <div class="scoreText"><div>
@@ -1095,7 +1117,7 @@ function commentClose(post = false) {
         comment_content = document.getElementById("commentBoxInput").value
         if (diagTag.length == "32") {
             console.log("page")
-            diagTag = `${document.getElementById('location-url').textContent.replace("/index.json", "").replace('/db', 'db')}`
+            diagTag = `${document.getElementById('location-url').textContent.replace(".json", "").replace('/db', 'db')}`
         } else {
             console.log("module")
         }
@@ -1150,8 +1172,6 @@ const body = document.body;
 const settings = document.getElementById('settings');
 function closeIV() { send_message("IVClose", "closeButton"); };
 
-var phoneMode = false
-
 
 function spinRoundel() {
     roundelButton.animate(
@@ -1182,7 +1202,7 @@ function setBack(x = false) {
     }
 
     if (networkGraph != null && x != "closeNetworkGraph()") networkGraph.style.visibility = 'hidden';
-    if (phoneMode) backButton.classList.remove("show");
+    if (Url.get.app) backButton.classList.remove("show");
     if (settingsState.experimentalFeatures) loginButtonEl.style.display = 'block';
 
     backAction = (x == false) ? "justSendBack()" : x;
@@ -1447,7 +1467,7 @@ function loadSettings(x) {
     }
     settings.style.bottom = "0";
     settings.style.top = `${settingsOffset}`;
-    if (phoneMode) {
+    if (Url.get.app) {
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
         backButton.style.order = "unset";
@@ -1471,6 +1491,7 @@ function loadNetworkGraph(x) {
     const graphButtons = document.getElementById('graphButtons');
     backButton.style.borderColor = 'var(--c-border-color)';
     backButton.style.backgroundColor = 'var(--c-background)';
+	backButton.classList.remove("hide")
     networkGraph.style.visibility = 'visible';
     sigmacontainer.style.visibility = 'visible';
     sigmacontainer.style.width = "100vw";
@@ -1479,7 +1500,7 @@ function loadNetworkGraph(x) {
     sigmacontainer.style.zIndex = "4";
     networkGraph.classList.add("expanded");
     body.classList.add('somethingIsOpen');
-    if (phoneMode) {
+    if (Url.get.app) {
         noOpen = true;
     } else {
         closeButton.style.display = "none";
@@ -1499,9 +1520,12 @@ function closeNetworkGraph(x) {
     const graphButtons = document.getElementById('graphButtons');
     networkGraph.style.visibility = 'hidden';
     body.classList.remove('somethingIsOpen');
-    if (phoneMode) {
+    if (Url.get.app) {
         noOpen = false;
     }
+	if (Url.get.exhibit){
+		backButton.classList.add("hide")
+	}
     sigmacontainer.style.width = "1px";
     sigmacontainer.style.height = "1px";
     networkGraph.classList.remove("expanded");
@@ -1583,7 +1607,7 @@ function closeGenericPage(x) {
 function closeSettings(x) {
     const coName = document.getElementsByClassName('co-name')[0];
     body.classList.remove("settingsOpen");
-    if (phoneMode) {
+    if (Url.get.app) {
         backButton.style.order = "2";
     }
     coName.style.opacity = "100%";
@@ -1752,7 +1776,7 @@ function recalculateList() {
                 [...document.styleSheets[3].cssRules].find(y => y.selectorText == `#${value}`).style.order = x + 5;
                 if (document.getElementById(value)) {
                     thiselement = document.getElementById(value);
-                    if (value != "carbon" && phoneMode) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+                    if (value != "carbon" && Url.get.app) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
                 }
             }
         }
@@ -1964,7 +1988,7 @@ function boycott() {
 }
 
 function postLoad(el) {
-    elementId = el.parentElement.getAttribute("data-location").replace(pageHost, "").replace("/ds/", "").replace(".json", "");
+    elementId = el.parentElement.getAttribute("data-location").replace(dataURL, "").replace("/ds/", "").replace(".json", "");
     send_message("IVPostStuff", elementId);
 }
 

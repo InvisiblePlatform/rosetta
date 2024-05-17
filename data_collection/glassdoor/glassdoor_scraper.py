@@ -1,21 +1,17 @@
 import json
 import sys
-import datetime
-import re
 import requests
-import time
 import yaml
 from bs4 import BeautifulSoup as bs
-from os import listdir
-from os.path import isfile, join
 try:
-    from yaml import CLoader as Loader, CDumper as Dumper
+    from yaml import CDumper as Dumper
 except ImportError:
-    from yaml import Loader, Dumper
+    from yaml import Dumper
 
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/83.0.4103.116 Safari/537.36'
 }
 
 def get_info(url):
@@ -43,6 +39,7 @@ def get_info(url):
         out[key] = str(value)
 
     # sys.stderr.write("itemReviewed {}, ({})\n".format(thing.string, url))
+    
     for thing in soup.findAll(name='script', attrs={'type': 'application/ld+json'}):
         obj = json.loads(thing.string)
         try:
@@ -72,7 +69,12 @@ def get_info(url):
             continue
     out["url"] = url
     try:
-        links = json.loads("{}".format(soup.findAll(name="script")[-3].string.split('\n')[3].replace("        $.extend(GD.page,", "").split("},")[0]) + "}}}")
+        links = json.loads("{}".format(
+            soup.findAll(name="script")[-3]
+            .string.split('\n')[3]
+            .replace("        $.extend(GD.page,", "")
+            .split("},")[0]) + "}}}")
+        
         overview = links['employerHeaderData']['eiOverviewUrl']
     except:
         links = False

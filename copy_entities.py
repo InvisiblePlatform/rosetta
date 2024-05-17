@@ -5,7 +5,7 @@ from multiprocessing import Pool
 from tqdm import tqdm
 from pprint import pprint
 
-folder_path = "data_objects"
+folder_path = "data_objects/db"
 core_data_set = set()
 
 
@@ -88,5 +88,5 @@ for url in core_data_set:
         pprint(url)
         exit()
     shutil.copy2(f"data_collection/{locationmap[path[0]]}/entities/{path[1]}", 
-                 f"hugo/static/ds/{path[0]}/{path[1]}")
+                 f"data_objects/public/ds/{path[0]}/{path[1]}")
 

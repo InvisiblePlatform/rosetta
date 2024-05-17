@@ -36,6 +36,7 @@ urlencode() {
 
 #countries=( "United%20States" "Australia" "Brazil" "Canada" "France" "Germany" "Italy" "Netherlands%20The" "United%20Kingdom" "Spain" ) 
 #apikey=$(python ./SeleniumGetKey.py)
+apikey="98d73adc16fd8025da51184125177c11"
 
 do_category(){
   curl "https://bx1p6tr71m-dsn.algolia.net/1/indexes/*/queries?x-algolia-api-key=${apikey}&x-algolia-application-id=BX1P6TR71M"   \
@@ -58,18 +59,18 @@ do_brand(){
     wget -nv "www.bcorperation.net/page-data/en-us/find-a-b-corp/company/$1/page-data.json" -O bcorp_$1.json
 }
 
-#query_number=0
-#for i in ${countries[@]}; do
-#    for j in ${timestamps[@]}; do
-#        for e in $(seq 0 10); do
-#            do_category $e $i $j $query_number
-#            num=$(jq .results[].hits[].slug pages/bcorp_page_${query_number}_${j}_${e}.json | wc -l)
-#            printf '%s\n' "$num,$i,$j,$e"
-#            [[ "$num" == "0" ]] && break
-#        done
-#    done
-#    query_number+=1
-#done
+query_number=0
+for i in ${countries[@]}; do
+    for j in ${timestamps[@]}; do
+        for e in $(seq 0 10); do
+            do_category $e $i $j $query_number
+            num=$(jq .results[].hits[].slug pages/bcorp_page_${query_number}_${j}_${e}.json | wc -l)
+            printf '%s\n' "$num,$i,$j,$e"
+            [[ "$num" == "0" ]] && break
+        done
+    done
+    query_number+=1
+done
 
 jq .results[].hits[].slug pages/bcorp_page_* | sort -u | wc -l
 jq .results[].hits[].slug pages/bcorp_page_* | wc -l

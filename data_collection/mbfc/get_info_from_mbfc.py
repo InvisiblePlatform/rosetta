@@ -18,6 +18,7 @@ with open('./combined.json') as json_file:
 
 for source in reversed(data["sources"]):
     url = source["url"]
+
     stub = url.replace("https://mediabiasfactcheck.com/", "").replace("/", "")
 
     if not os.path.exists("./html_cache/" + stub + ".html"):
@@ -39,15 +40,13 @@ for source in reversed(data["sources"]):
         source["description"] = ""
 
     source["stub"] = stub
-    source
-
     with open("./entries/" + stub + ".json", "w") as f:
-        json.dump(source, f)
+        json.dump(source, f, indent=4)
 
     print([source["stub"], source["domain"]])
     index[source["domain"]] = source["stub"]
 
 with open("mbfc-index.json", "w") as f:
-    json.dump(index, f)
+    json.dump(index, f, indent=4)
 exit()
 
