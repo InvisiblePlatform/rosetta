@@ -69,3 +69,10 @@ matched_output/
 old/glassdoor_archive/
 rosetta/*.csv
 websites.list
+contentlist
+hasheslist.csv
+bcorp/*.json
+industrylist_with_count
+industrylist
+*.pyc
+data_collection/bcorp/split_data/*

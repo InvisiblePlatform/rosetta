@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 from time import sleep
 from tld import get_tld
+from tld.exceptions import TldDomainNotFound
 from urllib.parse import urlparse
 import json
 import os
@@ -95,7 +96,11 @@ def mbfcProcessFile(json_filename):
             if site in exceptions:
                 site = exceptions[site]
 
-            get_tld("https://" + site, as_object=True)
+            try:
+                get_tld("https://" + site, as_object=True)
+            except TldDomainNotFound:
+                return
+                
             new_variables = {
                 "location": f"mbfc/{slug}",
                 "source": clean.get("name"),
