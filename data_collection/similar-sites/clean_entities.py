@@ -134,6 +134,7 @@ def similarSitesUpdate(siteList: str) -> None:
                         total=sitesToCheck,
                         skipped=ignoreLength,
                         value=site,
+                        print_over=True,
                     )
                 else:
                     sitesChecked += 1
@@ -145,9 +146,6 @@ def similarSitesUpdate(siteList: str) -> None:
                         skipped=ignoreLength,
                         value=site,
                     )
-                    print(
-                        f"{bcolors.OKGREEN}Updated    {bcolors.ENDC}[{sitesChecked} / {sitesToCheck}, ignored: {ignoreLength}] ({site})"
-                    )
             else:
                 sitesToCheck -= 1
                 seen += 1
@@ -157,6 +155,7 @@ def similarSitesUpdate(siteList: str) -> None:
                     total=sitesToCheck,
                     skipped=ignoreLength,
                     value=site,
+                    print_over=True,
                 )
 
             if sitesChecked % 100000 == 0 and sitesChecked > 0:

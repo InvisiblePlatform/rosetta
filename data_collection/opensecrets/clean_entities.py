@@ -7,7 +7,7 @@ available_ratings = {}
 index_filename = "site_slug.json"
 
 # Function to process a single JSON file
-def process_json_file(json_filename):
+def openSecProcessJson(json_filename):
     # Define the new variables to add to the data
 
     try:
@@ -56,4 +56,4 @@ for root, _, files in os.walk(json_dir):
     for file in files:
         if file.endswith(".json"):
             json_filename = os.path.join(root, file)
-            process_json_file(json_filename)
+            openSecProcessJson(json_filename)

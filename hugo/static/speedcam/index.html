@@ -1,0 +1,35 @@
+<script src="script.js?v=18"></script>
+<link rel="stylesheet" href="style.css?v=4">
+<video id="video">Video stream not available.</video>
+<iframe style="width:100vw;" src=""></iframe>
+<section id="extraBar">
+    <button id="returnButton">Return</button>
+</section>
+<div class="contentarea noDebug noLogo">
+    <div id="topDisplay">
+    </div>
+    <div class="camera">
+    </div>
+    <button id="startbutton">Take photo</button>
+    <canvas id="canvas"> </canvas>
+    <div class="output">
+        <img id="photo" alt="The screen capture will appear in this box." />
+        <div id="buttonHolder">
+            <button id="azureBrand">Azure</button>
+            <button id="googleVision">Google</button>
+            <button id="geminiVision">Gemini</button>
+        </div>
+    </div>
+    <div id="apiKeyList">
+        <div>
+            <label for="azureApiKey">Azure</label>
+            <input type="text" id="azureApiKey">
+        </div>
+        <div>
+            <label for="googleApiKey">Google</label>
+            <input type="text" id="googleApiKey">
+        </div>
+        <button id="saveApiKeys">Save Apikeys</button>
+    </div>
+    <div id="outputText"></div>
+</div>

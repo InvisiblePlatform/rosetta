@@ -9,40 +9,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/css/generic.css">
-
     <script>
         document.write('<link href="/css/plugin-styles.css?dev=' + Date.now() + '" rel="stylesheet"/>');
     </script>
-    <title id="pageTitle"></title>
-</head>
 
-<body>
+    <title id="pageTitle"></title>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
         integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@andreasremdt/simple-translator@latest/dist/umd/translator.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js" defer></script>
+    <link rel="stylesheet" href="/speedcam/style.css?v=4">
+    <script src="/speedcam/script.js?v=43"></script>
     <script>
         document.write('<script src="/js/single.js?dev=' + Date.now() + '" defer><\/script>');
     </script>
     <script src="/js/graph-libs.js?v=1"></script>
-    <script>
-        var url = window.location.href;
-        if (url.includes('index.html')) {
-            window.location.href = url.replace('index.html', '');
-        }
-    </script>
+</head>
 
+<body class="speedbody">
+    <video id="video">Video stream not available.</video>
+
+    <div class="contentArea noDebug noLogo speedCam">
+        <div id="topDisplay"></div>
+        <div class="camera"></div>
+        <button id="startbutton">Take photo</button>
+        <canvas id="canvas"></canvas>
+        <div class="output">
+            <img id="photo" alt="The screen capture will appear in this box." />
+            <div id="buttonHolder">
+                <button id="azureBrand">Azure</button>
+                <button id="googleVision">Google</button>
+                <button id="geminiVision">Gemini</button>
+            </div>
+        </div>
+        <div id="apiKeyList">
+            <div>
+                <label for="azureApiKey">Azure</label>
+                <input type="text" id="azureApiKey">
+            </div>
+            <div>
+                <label for="googleApiKey">Google</label>
+                <input type="text" id="googleApiKey">
+            </div>
+            <button id="saveApiKeys">Save Apikeys</button>
+        </div>
+        <div id="outputText"></div>
+
+    </div>
     <section id="titlebar">
         <span class="bk-bg co-name hideInSmall" style="order:3;"></span>
     </section>
-
     <div id="settings">
         <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
     </div>
 
-    <div class="content">
-    </div>
+    <div class="content speedcontent"></div>
 
     <section id="disclaimer" style="order: 100;">
         <h2>
@@ -53,7 +76,7 @@
         <p data-i18n="header.dislcaimerNote" class="disclaimer-text"></p>
         <a class="hideInSmall" data-i18n="header.here" href="#"></a>
     </section>
-
+    <section id="popArea"> </section>
 </body>
 
 </html>

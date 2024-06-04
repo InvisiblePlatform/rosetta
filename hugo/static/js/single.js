@@ -142,6 +142,9 @@ const defaultSettingsState = {
 };
 
 let oldSettings;
+const currenturl = window.location.href;
+const containsSpeedcam = currenturl.includes("speedcam.html");
+const isSpeedcam = containsSpeedcam ? true : false;
 
 Url = {
     get get() {
@@ -152,8 +155,13 @@ Url = {
                 vars[key] = typeof vars[key] === "undefined" ? decodeURIComponent(value) : [].concat(vars[key], decodeURIComponent(value));
             });
         return vars;
-    }
+    },
 };
+function setSearchParam(key, value) {
+    const url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    window.history.replaceState(null, null, url.toString());
+}
 
 Hash = {
     get hash() {
@@ -167,8 +175,20 @@ Hash = {
 }
 translator.fetch(languages).then(() => {
     translator.translatePageTo();
-    registerLanguageToggle();
+    if (!Url.get.exhibit || isSpeedcam) {
+        registerLanguageToggle();
+    }
 });
+
+function manualSetup(site) {
+    if (site == '' || site == undefined) {
+        backButton.classList.add("hide")
+    } else {
+        backButton.classList.remove("hide")
+    }
+    setSearchParam("site", site)
+    pageSetup()
+}
 
 const optionRegex = /&.*/ig;
 function pageSetup() {
@@ -176,14 +196,18 @@ function pageSetup() {
     pageLocation = Url.get.site ? `/db/${Url.get.site}.json` : false;
     addToolsSection()
     resetSettings(false)
-    loadPageCore(pageLocation)
-    addSettings()
-    scrollIntoPlace()
-    notificationsDraw();
-    forceAllLinksNewTab();
-    translator.translatePageTo();
-    recalculateList();
-    send_message("IVSettingsReq", true);
+    if (Url.get.site) {
+        loadPageCore(pageLocation)
+        addSettings()
+        scrollIntoPlace()
+        notificationsDraw();
+        forceAllLinksNewTab();
+        translator.translatePageTo();
+        recalculateList();
+        send_message("IVSettingsReq", true);
+    } else {
+        translator.translatePageTo();
+    }
 }
 
 
@@ -447,6 +471,7 @@ const loadPageExternal = async (location) => {
 
 var loginButtonEl;
 function loginCheck() {
+    if (isSpeedcam) return;
     if (document.getElementById("loginButton")) {
         document.getElementById("loginButton").remove()
     }
@@ -539,6 +564,29 @@ function pieString(data, trans = false, scoreClass = false, percent = false, out
 		</div>`
 }
 
+function addPopover(contentString) {
+    const notification = document.createElement("div");
+    notification.classList.add("notification");
+    notification.innerHTML = `<div id="notification-content">${contentString}</div>`;
+    notification.popover = "manual"
+    if (document.getElementsByClassName("notification").length > 0) {
+        offset = document.getElementsByClassName("notification").length * 30;
+    } else {
+        offset = 0;
+    }
+    if (document.getElementById("popArea")) {
+        document.getElementById("popArea").appendChild(notification);
+    } else {
+        document.body.appendChild(notification);
+    }
+    notification.style.top = `${offset}px`;
+    notification.showPopover()
+    setTimeout(() => {
+        notification.hidePopover()
+        notification.remove()
+    }, 10000);
+}
+
 function addToolsSection() {
     titleBar.innerHTML += `
 <button id="roundelButton" type="button" onclick="spinRoundel()" ></button>
@@ -547,13 +595,16 @@ function addToolsSection() {
 <button class="squareButton" id="closeButton" type="button" onclick="closeIV()" ><div></div></button>
     `
     const currentDomain = document.getElementsByClassName("co-name")[0].innerText
-    content.innerHTML += `
+    if (!Url.get.exhibit && !isSpeedcam) {
+        content.innerHTML += `
     <section id="carbon">
         <div class="iconarray">
             <div><a href="https://www.websitecarbon.com/website/${currentDomain}"><i alt="Website Carbon Calculator"><div style="background-image:var(--image-carbon);" ></div></i></a></div>
             <div><a href="https://themarkup.org/blacklight?url=${currentDomain}"> <i alt="Blacklight"><div style="background-image:var(--image-lightning);"></div></i></a></div>
         </div>
-    </section>
+    </section>`
+    }
+    content.innerHTML += `
     <section id="Invisible-vote" class="hideInSmall hide">
     <section id="Invisible-like" onclick="vote('up')" style="--count:'0';" data-i18n="vote.like">Like</section>
     <section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike</section>
@@ -568,33 +619,32 @@ function addToolsSection() {
     boyButton = document.getElementById('Invisible-boycott');
 
 
-    if (Url.get.exhibit) {
-		blur = 'blur(3px)';
-        body.parentNode.setAttribute("style", "--c-background: transparent; --c-light-text:#111; --c-background-units: #fff6; background-color: transparent;");
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '.content > .contentSection').style.backgroundColor = '#fff8';
+    if (isSpeedcam || Url.get.exhibit) {
+        body.parentNode.setAttribute("style", "--scroll-width: 0px; --c-background: transparent; --c-background-units: #0009; background-color: transparent;");
+        //[...document.styleSheets[3].cssRules].find(y => y.selectorText == '.content > .contentSection').style.backgroundColor = '#fff8';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '.content > .contentSection').style.backdropFilter = blur;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backgroundColor = '#fff8';
+        // [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backgroundColor = '#fff8';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.top = 'calc(100vh - 190px)';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.position = 'sticky';
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backgroundColor = '#fff8';
+        //[...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backgroundColor = '#fff8';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backgroundColor = '#fff8';
+        //[...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backgroundColor = '#fff8';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backdropFilter = blur;
         body.setAttribute("style", "background-color: transparent;")
         closeButton.style.visibility = "hidden";
         settingsButton.style.visibility = "hidden";
-        backButton.classList.add("hide")
+        //backButton.classList.add("hide")
         console.log("exhibitMode")
 
     }
-    if (Url.get.app) {
+    if (Url.get.app || isSpeedcam) {
         if (debug) console.log("[ Invisible Voice ]: phone mode");
         document.getElementsByClassName("content")[0].classList.add("mobile");
         body.classList.add("mobile");
         closeButton.style.visibility = "hidden";
     }
-    if (!Url.get.app) {
+    if (!Url.get.app || isSpeedcam) {
         backButton.classList.add("show");
         closeButton.classList.add("closeExtention");
         document.getElementsByClassName("content")[0].classList.add("desktop");
@@ -902,7 +952,7 @@ async function addModule(type = undefined, url = undefined) {
         htmlString += `
         ${pieString(moduleResponse.rating, false, "ratingOutOf", rating, '/5', false)}
 <div class="scoreText">
-    <div>
+    <div class="hideTilExpanded">
 <table class="dataTable">
 <tr><th data-i18n="goy.lr">Labour Rating</th><td class="ratingOutOf" style="--outOf:'/5';">${lrating}</td></tr>
 <tr><th data-i18n="goy.ar">Animal Rating</th><td class="ratingOutOf" style="--outOf:'/5';">${arating}</td></tr>
@@ -919,7 +969,7 @@ ${sourceStringClose(sourceUrl, "GOODONYOU.ECO")}
         iconUrl = `${dataURL}/icon/bcorp.svg`;
 
         htmlString += `${notPieString(moduleResponse.score, false, "ratingOutOf", iconUrl, "/140+")}
-    <div class="scoreText"><div>
+    <div class="scoreText"><div class="hideTilExpanded">
     <table class="dataTable">
     <tr><th data-i18n="common.industry_average">Industry Average Score</th><td class="ratingOutOf" style="--outOf:'/140+'">${moduleResponse.score_industryAverage}</td></tr>
     <tr><th data-i18n="bcorp.governance"></th><td class="ratingOutOf">${moduleResponse.Governance}</td></tr>
@@ -945,7 +995,7 @@ ${sourceStringClose(sourceUrl, "GOODONYOU.ECO")}
         ['esg.social', 'Social Risk Score', moduleResponse.socialScore],
         ['esg.total', 'Total ESG', moduleResponse.totalEsg]]
 
-        tableString = '<div class="scoreText"><div><table>'
+        tableString = '<div class="scoreText "><div class="hideTilExpanded"><table>'
         for (item in scores) {
             tableString += `<tr><th data-i18n='${scores[item][0]}'>${scores[item][1]}</th><td style="--outOf:'/ 40+';">${scores[item][2]}</td></tr>`
         }
@@ -965,9 +1015,9 @@ ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOO! FINANCE")}`
         htmlString += `
 		${pieString(moduleResponse.score, false, false, false, false, false, ratingColorArray[moduleResponse.rating])}
         <div class="scoreText">
-            <div>
+            <div class="hideTilExpanded">
                 <h3>${moduleResponse.score}</h3>
-                <p data-i18n="trustsc.${moduleResponse.rating}">${moduleResponse.rating}</p>
+                <p  data-i18n="trustsc.${moduleResponse.rating}">${moduleResponse.rating}</p>
                 ${sourceStringClose(sourceUrl, "TRUSTSCAM")}`;
     }
 
@@ -979,7 +1029,7 @@ ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOO! FINANCE")}`
         htmlString += `
 		${pieString(moduleResponse.bias, `bias.${moduleResponse.bias}`)}
         <div class="scoreText">
-            <div>
+            <div class="hideTilExpanded">
                 <h3 data-i18n="bias.${moduleResponse.bias}"></h3>
                 <p>${moduleResponse.description}</p>
 				<table>
@@ -996,7 +1046,7 @@ ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOO! FINANCE")}`
         htmlString += `
 			${pieString(moduleResponse.glasroom_rating.ratingValue, false, "ratingOutOf", percentValue, "/5", moduleResponse.glasroom_rating.ratingCount)}
             <div class="scoreText">
-                <div>
+                <div class="hideTilExpanded">
             <div class="ratingCount">${moduleResponse.glasroom_rating.ratingCount} <emphasis class="ratingCount" data-i18n="glassdoor.reviews"></emphasis></div>
             <table class="dataTable">
             <tr><th data-i18n="common.industry_average">Industry Average Score</th><td class="ratingOutOf glass" style="--outOf:'/5'">${moduleResponse.score_industryAverage}</td></tr>
@@ -1016,9 +1066,9 @@ ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOO! FINANCE")}`
         htmlString += `
 			${pieString(rated)}
             <div class="scoreText">
-                <div>
+                <div class="hideTilExpanded">
             <h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> ${rated}</h3>
-            <p data-i18n="tos.${rated.toLowerCase()}"></p>
+            <p class="hideTilExpanded" data-i18n="tos.${rated.toLowerCase()}"></p>
             ${sourceStringClose(sourceUrl, "TOS;DR")}`;
     }
 
@@ -1039,7 +1089,7 @@ ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOO! FINANCE")}`
          <div class="stars">
          ${starString}
          </div>
-         <table id="trustChart">
+         <table class="hideTilExpanded" id="trustChart">
              <tr><th data-i18n="trustpilot.total">Total Reviews</th><td>${moduleResponse.reviews.total}</td></tr>
              <tr><th data-i18n="trustpilot.one">One Star</th><td>${moduleResponse.reviews.oneStar}</td></tr>
              <tr><th data-i18n="trustpilot.two">Two Star</th><td>${moduleResponse.reviews.twoStars}</td></tr>
@@ -1202,7 +1252,7 @@ function setBack(x = false) {
     }
 
     if (networkGraph != null && x != "closeNetworkGraph()") networkGraph.style.visibility = 'hidden';
-    if (Url.get.app) backButton.classList.remove("show");
+    if (isSpeedcam || Url.get.app) backButton.classList.remove("show");
     if (settingsState.experimentalFeatures) loginButtonEl.style.display = 'block';
 
     backAction = (x == false) ? "justSendBack()" : x;
@@ -1467,7 +1517,7 @@ function loadSettings(x) {
     }
     settings.style.bottom = "0";
     settings.style.top = `${settingsOffset}`;
-    if (Url.get.app) {
+    if (isSpeedcam || Url.get.app) {
         backButton.style.visibility = "visible";
         backButton.style.display = "inherit";
         backButton.style.order = "unset";
@@ -1491,7 +1541,7 @@ function loadNetworkGraph(x) {
     const graphButtons = document.getElementById('graphButtons');
     backButton.style.borderColor = 'var(--c-border-color)';
     backButton.style.backgroundColor = 'var(--c-background)';
-	backButton.classList.remove("hide")
+    backButton.classList.remove("hide")
     networkGraph.style.visibility = 'visible';
     sigmacontainer.style.visibility = 'visible';
     sigmacontainer.style.width = "100vw";
@@ -1500,7 +1550,7 @@ function loadNetworkGraph(x) {
     sigmacontainer.style.zIndex = "4";
     networkGraph.classList.add("expanded");
     body.classList.add('somethingIsOpen');
-    if (Url.get.app) {
+    if (Url.get.app || isSpeedcam) {
         noOpen = true;
     } else {
         closeButton.style.display = "none";
@@ -1520,12 +1570,12 @@ function closeNetworkGraph(x) {
     const graphButtons = document.getElementById('graphButtons');
     networkGraph.style.visibility = 'hidden';
     body.classList.remove('somethingIsOpen');
-    if (Url.get.app) {
+    if (Url.get.app || isSpeedcam) {
         noOpen = false;
     }
-	if (Url.get.exhibit){
-		backButton.classList.add("hide")
-	}
+    //if (Url.get.exhibit){
+    //	backButton.classList.add("hide")
+    //}
     sigmacontainer.style.width = "1px";
     sigmacontainer.style.height = "1px";
     networkGraph.classList.remove("expanded");
@@ -1536,6 +1586,10 @@ function closeNetworkGraph(x) {
 
 function justSendBack(x) {
     bw = backButton.getBoundingClientRect().width;
+    if (body.classList.contains("somethingIsOpen")) {
+        document.getElementsByClassName("expanded")[0].classList.remove("expanded");
+        body.classList.remove("somethingIsOpen");
+    }
     send_message("IVClicked", "back");
 }
 
@@ -1566,7 +1620,7 @@ function openGenericPage(x) {
         const startW = bb.width;
         element.style.width = `${startW}px`;
         element.style.transform = `translate( -${bb.x}px, -${bb.y}px)`;
-        element.style.top = `${bb.y - 60}px`;
+        // element.style.top = `${bb.y - 60}px`;
         element.style.left = `${bb.x}px`;
         element.classList.add('expanded');
     }
@@ -1607,7 +1661,7 @@ function closeGenericPage(x) {
 function closeSettings(x) {
     const coName = document.getElementsByClassName('co-name')[0];
     body.classList.remove("settingsOpen");
-    if (Url.get.app) {
+    if (Url.get.app || isSpeedcam) {
         backButton.style.order = "2";
     }
     coName.style.opacity = "100%";
@@ -1773,10 +1827,11 @@ function recalculateList() {
                     [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#wikipedia-infocard-frame').style.order = x + 5;
                 }
             } else {
+
                 [...document.styleSheets[3].cssRules].find(y => y.selectorText == `#${value}`).style.order = x + 5;
                 if (document.getElementById(value)) {
                     thiselement = document.getElementById(value);
-                    if (value != "carbon" && Url.get.app) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
+                    if (value != "carbon" && (Url.get.app || isSpeedcam)) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
                 }
             }
         }
@@ -1815,6 +1870,7 @@ const toggles = {
 }
 
 document.addEventListener('mouseup', (event) => {
+    if (!event.target.matches) return;
     if (event.target.matches("html")) return;
     if (event.target.matches("#floatDiag")) return;
     if (event.target.matches("#floatDiagSave")) {
@@ -1828,6 +1884,11 @@ document.addEventListener('mouseup', (event) => {
     if (tid == 'indexRefresh') send_message("IVIndexRefresh", "please");
     if (tid == 'notificationsCache') notificationBell("cacheClear")
     if (tid == 'backButton') send_message("IVClicked", event.target.parentElement.id);
+    if (tid == 'wikipedia-first-frame') {
+        send_message("IVClicked", "wikipedia-first-frame");
+        openGenericPage("wikipage");
+        event.target.scrollIntoView();
+    }
 
     if (event.target.classList.contains('invisible-disclaimer-title')) send_message("IVClicked", "disclaimer");
     if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
@@ -2003,6 +2064,6 @@ function sort_by(field, reverse, primer) {
 
 
 pageSetup();
-content.addEventListener("DOMNodeInserted", (event) => {
-    scrollIntoPlace()
-});
+// content.addEventListener("DOMNodeInserted", (event) => {
+//     scrollIntoPlace()
+// });

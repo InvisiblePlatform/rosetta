@@ -1,0 +1,230 @@
+body {
+    overflow-y: hidden;
+    overflow-x: hidden;
+
+}
+
+.noDebug {
+    & #photo {
+        display: none;
+    }
+
+    & button {
+        display: none;
+    }
+
+    & #apiKeyList {
+        display: none;
+    }
+}
+
+.noLogo {
+    & .logo {
+        display: none;
+    }
+}
+
+#blankSplash {
+    font-size: 10vw;
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration-line: underline;
+    text-decoration-thickness: 10px;
+    text-decoration-skip-ink: all;
+    text-decoration-color: green;
+    animation: animatedLine 10s infinite both alternate linear;
+}
+
+@keyframes animatedLine {
+    0% {
+        text-underline-offset: -10vw;
+    }
+
+    100% {
+        text-underline-offset: 1vw;
+    }
+}
+
+
+.currentItem {
+    z-index: 2;
+}
+
+#video {
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0px;
+    z-index: -1;
+    transform: translateY(-100%) rotate(90deg);
+    transform-origin: bottom left;
+    height: 100vw;
+    width: 100vh;
+
+}
+
+#video.notRotated {
+    transform: translateY(0%) rotate(0deg);
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    transform-origin: center;
+}
+
+
+.companyPanel {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: grid;
+    grid-template-areas: 'text' 'logo';
+    font-family: sans-serif;
+    font-size: 30px;
+    background-color: #ffffffcc;
+    left: 0;
+    top: 0;
+    background-size: cover;
+    box-sizing: border-box;
+    padding: 40px 50px;
+    animation: bkgmove 30s infinite both alternate;
+
+    .companyText {
+        grid-area: text;
+        color: white;
+
+        .title {
+            font-size: 6dvh;
+            font-weight: bold;
+            color: #ffe;
+            -webkit-text-stroke-width: 2px;
+            -webkit-text-stroke-color: black;
+        }
+    }
+
+    .logo {
+        grid-area: logo;
+        margin: auto;
+    }
+}
+
+
+@keyframes bkgmove {
+    0% {
+        background-position-x: 0%;
+    }
+
+    100% {
+        background-position-x: 100%;
+    }
+}
+
+#canvas {
+    display: none;
+}
+
+.output {
+    width: 340px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.contentArea {
+    font-size: 16px;
+    font-family: "Lucida Grande", "Arial", sans-serif;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    top: 0vh;
+    bottom: 0vh;
+    left: 0vw;
+    right: 0vw;
+    transition: top 1s;
+    z-index: 100;
+}
+
+#buttonHolder {
+    display: grid;
+    grid-auto-flow: column;
+    width: 100%;
+}
+
+#apiKeyList {
+    display: flex;
+    flex-direction: column;
+
+    & div {
+        display: inline;
+    }
+}
+
+#outputText {
+    background-color: #FFFFFFAA;
+    backdrop-filter: blur(10px);
+}
+
+iframe {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    box-sizing: border-box;
+    border: 0px;
+    inset: 0px;
+}
+
+#extraBar {
+    display: none;
+    visibility: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 80px;
+}
+
+#returnButton {
+    height: 40px;
+    visibility: hidden;
+    background-color: white;
+}
+
+#topDisplay>* {
+    position: absolute;
+    transition: top 1s;
+    top: 0vh;
+}
+
+.offScreen {
+    top: 100vh !important;
+}
+
+.offScreenUp {
+    bottom: 100vh !important;
+}
+
+#popArea {
+    z-index: 1000;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+
+}
+
+#popArea:has(.popoverApi) {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0px;
+}
+
+.popoverApi {
+    display: block;
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #000000AA;
+    z-index: 1001;
+    place-self: center;
+}

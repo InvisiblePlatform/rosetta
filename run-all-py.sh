@@ -8,13 +8,11 @@ rm -rf data_objects/db
 mkdir data_objects/db
 [ $DEBUGGING ] && echo "Record Build Start ${SECONDS}"
 python ./record-build.py
-[ $DEBUGGING ] && echo "Copy Entities Start ${SECONDS}"
+#[ $DEBUGGING ] && echo "Copy Entities Start ${SECONDS}"
 $PYTHONBINARY ./copy_entities.py
 rm matched_output/*
 [ $DEBUGGING ] && echo "Rosetta Start ${SECONDS}"
-$PYTHONBINARY ./rosetta-build.py
-[ $DEBUGGING ] && echo "Copy Files Start ${SECONDS}"
-cp matched_output/* data_objects/db/
+python ./neo_rosetta.py
 [ $DEBUGGING ] && echo "Tags Start ${SECONDS}"
 $PYTHONBINARY ./tag-build.py
 [ $DEBUGGING ] && echo "End ${SECONDS}"

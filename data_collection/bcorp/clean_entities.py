@@ -10,7 +10,12 @@ import requests
 from typing import Any
 
 sys.path.append("..")
-from common import get_key, print_status, send_notification, calculate_average_ratings
+from common import (
+    get_key,
+    print_status,
+    send_notification,
+    calculate_average_ratings,
+)
 
 
 timestamps = [
@@ -43,7 +48,7 @@ def bcorpGetKey() -> str:
     key: str | None = get_key(
         url="https://www.bcorporation.net/en-us/find-a-b-corp/?query=3M",
         timeout=5000,
-        querystring_key="x-algolia-api-key",
+        key_string="x-algolia-api-key",
         request_filter="queries",
     )
     if key is None:

@@ -13,13 +13,16 @@ from tools.mongoscripts.plain_node import do_graph
 from tld import get_tld
 from tld.exceptions import TldDomainNotFound, TldBadUrl
 
-output_dir="data_objects/db/"
+
+output_dir = "data_objects/db/"
 rootdir = "data_collection"
-extra=True
+extra = True
 
 
 def get_domain(url):
     try:
+        if not url.startswith("http"):
+            url = "http://" + url
         parsed_url = get_tld(url, as_object=True)
     except TldDomainNotFound:
         failures.append(url)
@@ -27,18 +30,23 @@ def get_domain(url):
     except TldBadUrl:
         failures.append(url)
         return None
-    domain = parsed_url.subdomain + parsed_url.fld
+    if parsed_url.subdomain != "":
+        domain = parsed_url.subdomain + "." + parsed_url.fld
+    else:
+        domain = parsed_url.fld
+
     if parsed_url.subdomain in ["about", "shop", "m"]:
         domain = parsed_url.fld
     return domain
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['rop']
-collection = db['wikidata']
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["rop"]
+collection = db["wikidata"]
 items = {}
 query = {}
-datapool ={}
-exceptions=[]
+datapool = {}
+exceptions = []
 failures = []
 missingLabels = set()
 
@@ -69,7 +77,7 @@ TRUSTPILOTLOOKUP = f"{rootdir}/trust-pilot/site_slug.json"
 trustp_array = {}
 WBMLOOKUP = f"{rootdir}/static/site_wbaid.json"
 wbm_array = {}
-YAHOOLOOKUP = f"{rootdir}/yahoo/site_index_temp.json"
+YAHOOLOOKUP = f"{rootdir}/yahoo/site_ticker_new.json"
 yahoo_array = {}
 LOBBYLOOKUP = f"{rootdir}/lobbyfacts/site_id.json"
 lobby_array = {}
@@ -83,6 +91,8 @@ PROPSLABEL = f"tools/mongoscripts/labelindex.json"
 propsLabels = {}
 
 missingLabelArray = set()
+
+
 def process_domains_parrallel(domains):
     global missingLabelArray
     with Pool() as pool:
@@ -91,46 +101,49 @@ def process_domains_parrallel(domains):
             pbar.update(1)
     return
 
+
 def build_pairings_and_datapool():
-    pairings=[
-        {"label":"twittername", "id":"P2002"},
-        {"label":"officialblog", "id":"P1581"},
-        {"label":"subreddit", "id":"P3984"},
-        {"label":"facebookid", "id":"P2013"},
-        {"label":"facebookpage", "id":"P4003"},
-        {"label":"instagramid", "id":"P2003"},
-        {"label":"youtubechannelid", "id":"P2397"},
-        {"label":"emailaddress", "id":"P968"},
-        {"label":"truthsocial", "id":"P10858"},
-        {"label":"parleruser", "id":"P8904"},
-        {"label":"gabuser", "id":"P8919"},
-        {"label":"soundcloud", "id":"P3040"},
-        {"label":"tumblr", "id":"P3943" },
-        {"label":"medium", "id":"P3899"},
-        {"label":"telegram", "id":"P3789"},
-        {"label":"mastodon", "id":"P4033"},
-        {"label":"patreon", "id":"P4175"},
-        {"label":"reddituser", "id":"P4265"},
-        {"label":"twitch", "id":"P5797"},
-        {"label":"tiktok", "id":"P7085"},
+    pairings = [
+        {"label": "emailaddress", "id": "P968"},
+        {"label": "officialblog", "id": "P1581"},
+        {"label": "twittername", "id": "P2002"},
+        {"label": "instagramid", "id": "P2003"},
+        {"label": "facebookid", "id": "P2013"},
+        {"label": "youtubechannelid", "id": "P2397"},
+        {"label": "soundcloud", "id": "P3040"},
+        {"label": "telegram", "id": "P3789"},
+        {"label": "medium", "id": "P3899"},
+        {"label": "tumblr", "id": "P3943"},
+        {"label": "subreddit", "id": "P3984"},
+        {"label": "facebookpage", "id": "P4003"},
+        {"label": "mastodon", "id": "P4033"},
+        {"label": "patreon", "id": "P4175"},
+        {"label": "reddituser", "id": "P4265"},
+        {"label": "twitch", "id": "P5797"},
+        {"label": "tiktok", "id": "P7085"},
+        {"label": "parleruser", "id": "P8904"},
+        {"label": "gabuser", "id": "P8919"},
+        {"label": "truthsocial", "id": "P10858"},
     ]
     items.update({pair["id"]: {"mainsnak.datavalue.value": 1} for pair in pairings})
-    datapool.update({pair["id"]: {"label": pair["label"], "data": []} for pair in pairings})
+    datapool.update(
+        {pair["id"]: {"label": pair["label"], "data": []} for pair in pairings}
+    )
     datapool["P1387"] = {"label": "polalignment", "data": []}
     datapool["P1142"] = {"label": "polideology", "data": []}
     datapool["P452"] = {"label": "industry_wd", "data": []}
     items["P452"] = items["P1142"] = items["P1387"] = {"mainsnak.datavalue.value.id": 1}
 
-#exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
+
+# exceptions = ["P1142", "P1387", "P414", "P946", "P8525"]
 exceptions = ["P1142", "P1387", "P452"]
 
+
 def query_for_wikidata(wikiid):
-    tmpoutput = collection.find_one({'id': wikiid }, {
-                "claims": items,
-                "sitelinks": {"enwiki": {"title": 1}},
-                "id": 1,
-                "_id": 0
-    })
+    tmpoutput = collection.find_one(
+        {"id": wikiid},
+        {"claims": items, "sitelinks": {"enwiki": {"title": 1}}, "id": 1, "_id": 0},
+    )
     if not tmpoutput:
         return None
     if not tmpoutput["claims"]:
@@ -139,29 +152,44 @@ def query_for_wikidata(wikiid):
     tmpdatapool = deepcopy(datapool)
 
     for claim, claim_data in tmpoutput["claims"].items():
-        tmpdatapool[claim]["data"].extend([
-                    {
-                        "data": i['mainsnak']['datavalue']['value'] if claim not in exceptions else i['mainsnak']['datavalue']['value']['id'],
-                        "claim": claim,
-                        "output_id": wikiid
-                    }
-                    for i in claim_data
-                    if "mainsnak" in i and "datavalue" in i["mainsnak"]
-        ])
+        tmpdatapool[claim]["data"].extend(
+            [
+                {
+                    "data": (
+                        i["mainsnak"]["datavalue"]["value"]
+                        if claim not in exceptions
+                        else i["mainsnak"]["datavalue"]["value"]["id"]
+                    ),
+                    "claim": claim,
+                    "output_id": wikiid,
+                }
+                for i in claim_data
+                if "mainsnak" in i and "datavalue" in i["mainsnak"]
+            ]
+        )
     if "enwiki" in tmpoutput["sitelinks"]:
         tmpdatapool["wikipedia_page"] = tmpoutput["sitelinks"]["enwiki"]["title"]
     return tmpdatapool
 
+
 def show_document(domain):
-    file_path = os.path.join(output_dir, domain.replace('.', '') + ".json")
+    file_path = os.path.join(output_dir, domain.replace(".", "") + ".json")
     if os.path.exists(file_path):
         with open(file_path, "r") as file:
             pprint(load_json(file))
 
+    if os.path.exists(f"data_objects/public/connections/{domain}.json"):
+        with open(f"data_objects/public/connections/{domain}.json", "r") as file:
+            graph = load_json(file)
+            pprint(graph)
+            pprint(f"Connections: {len(graph['nodes'])}, {len(graph['links'])}")
+
+
 def write_output_file(domain, data):
-    file_path = os.path.join(output_dir, domain.replace('.', '') + ".json")
+    file_path = os.path.join(output_dir, domain.replace(".", "") + ".json")
     with open(file_path, "w") as file:
         dump_json(data, file, indent=4)
+
 
 def map_data(item, website):
     try:
@@ -169,17 +197,36 @@ def map_data(item, website):
             "data": propsLabels[item["data"]],
             "dataId": item["data"],
             "source": website,
-            "sourceLabels": propsLabels[item["data"]]
+            "sourceLabels": propsLabels[item["data"]],
         }
     except KeyError:
         missingLabels.update(item["data"])
         return None
 
-social_claims = [ "twittername", "officialblog", "subreddit", "facebookid",
-        "facebookpage", "instagramid", "youtubechannelid", "emailaddress",
-        "truthsocial", "parleruser", "gabuser", "soundcloud", "tumblr",
-        "medium", "telegram", "mastodon", "patreon", "reddituser", "twitch",
-        "tiktok" ]
+
+social_claims = [
+    "twittername",
+    "officialblog",
+    "subreddit",
+    "facebookid",
+    "facebookpage",
+    "instagramid",
+    "youtubechannelid",
+    "emailaddress",
+    "truthsocial",
+    "parleruser",
+    "gabuser",
+    "soundcloud",
+    "tumblr",
+    "medium",
+    "telegram",
+    "mastodon",
+    "patreon",
+    "reddituser",
+    "twitch",
+    "tiktok",
+]
+
 
 def build_document(website):
     global failures, missingLabels
@@ -193,13 +240,17 @@ def build_document(website):
         wids = list(set(tmp_wids))
         output["wikidata_id"] = wids
         output["connections"] = f"/connections/{website}.json"
-        do_graph(main_node=wids, file_out=f"data_objects/public/connections/{website}.json", collection=collection)
+        do_graph(
+            main_node=wids,
+            file_out=f"data_objects/public/connections/{website}.json",
+            collection=collection,
+        )
         for wid in wids:
             result = query_for_wikidata(wid)
             if result is None:
                 continue
 
-            #pprint(result)
+            # pprint(result)
             if "wikipedia_page" in result:
                 output["wikipedia_page"] = result["wikipedia_page"]
                 result.pop("wikipedia_page")
@@ -213,9 +264,15 @@ def build_document(website):
                         try:
                             propName = propsNaming[claim]
                             propFormat = propsFormatting[claim]
-                            resolvedResult= list(map(
-                                lambda item: {"url": f"{propFormat.replace('$1', item['data'])}", "source": website},
-                                result[claim]["data"]))
+                            resolvedResult = list(
+                                map(
+                                    lambda item: {
+                                        "url": f"{propFormat.replace('$1', item['data'])}",
+                                        "source": website,
+                                    },
+                                    result[claim]["data"],
+                                )
+                            )
 
                             if not propName in output["social"]:
                                 output["social"][propName] = resolvedResult
@@ -224,15 +281,17 @@ def build_document(website):
                         except KeyError:
                             continue
                     else:
-                        resolvedResult =filter(lambda x: x is not None,
-                                                map(map_data, result[claim]["data"],repeat(website)))
+                        resolvedResult = filter(
+                            lambda x: x is not None,
+                            map(map_data, result[claim]["data"], repeat(website)),
+                        )
                         if claim == "P452":
                             if not "industry" in output:
-                                output["industry"] = {label:[]}
+                                output["industry"] = {label: []}
                             output["industry"][label].extend(resolvedResult)
                         else:
                             if not "political" in output:
-                                output["political"] = { label:[] }
+                                output["political"] = {label: []}
                             if not label in output["political"]:
                                 output["political"][label] = []
                             output["political"][label].extend(resolvedResult)
@@ -242,67 +301,96 @@ def build_document(website):
             case "tosdr_slug":
                 pass
             case "bcorp_slug":
-                core.append({
-                    "type": "bcorp", "url": f"bcorp/{output['bcorp_slug']}.json"
-                })
+                core.append(
+                    {"type": "bcorp", "url": f"bcorp/{output['bcorp_slug']}.json"}
+                )
                 with open(f'{rootdir}/bcorp/entities/{output["bcorp_slug"]}.json') as f:
                     bcorp_data = load_json(f)
-                    output["bcorp"] = {"source": bcorp_data["source"],
-                                       "score": bcorp_data["score"]}
+                    output["bcorp"] = {
+                        "source": bcorp_data["source"],
+                        "score": bcorp_data["score"],
+                    }
             case "goodonyou_slug":
-                for slug in output.get("goodonyou_slug"):
-                    core.append({
-                        "type": "goodonyou", "url": f"goodonyou/{slug}.json"
-                    })
-                    with open(f'{rootdir}/goodonyou/entities/{slug}.json') as f:
+                for slug in output.get("goodonyou_slug", []):
+                    core.append({"type": "goodonyou", "url": f"goodonyou/{slug}.json"})
+                    with open(f"{rootdir}/goodonyou/entities/{slug}.json") as f:
                         goy = load_json(f)
                         if not output.get("goodonyou"):
                             output["goodonyou"] = []
-                        output["goodonyou"].append({
-                            "rating": goy["rating"],
-                            "source": goy["source"]
-                        })
+                        output["goodonyou"].append(
+                            {"rating": goy["rating"], "source": goy["source"]}
+                        )
             case "mbfc_slug":
                 for slug in output.get("mbfc_slug", []):
-                    core.append({
-                        "type": "mbfc", "url": f"mbfc/{slug}.json"
-                    })
-                    with open(f'{rootdir}/mbfc/entities/{slug}.json') as f:
+                    core.append({"type": "mbfc", "url": f"mbfc/{slug}.json"})
+                    with open(f"{rootdir}/mbfc/entities/{slug}.json") as f:
                         mbfc = load_json(f)
                         if not output.get("mbfc"):
                             output["mbfc"] = []
-                        output["mbfc"].append({
-                            "rating": mbfc["bias"],
-                            "questionable": mbfc["questionable"],
-                            "source": mbfc["source"]
-                        })
+                        output["mbfc"].append(
+                            {
+                                "rating": mbfc["bias"],
+                                "questionable": mbfc["questionable"],
+                                "source": mbfc["source"],
+                            }
+                        )
                         if not output.get("mbfc_tags"):
-                            output["mbfc_tags"] = [ mbfc["bias"]] + mbfc.get("questionable", [])
+                            output["mbfc_tags"] = [mbfc["bias"]] + mbfc.get(
+                                "questionable", []
+                            )
                         else:
-                            for tag in [ mbfc["bias"] ] + mbfc.get("questionable", []):
+                            for tag in [mbfc["bias"]] + mbfc.get("questionable", []):
                                 if not tag in output["mbfc_tags"]:
                                     output["mbfc_tags"].append(tag)
             case "ts_slug":
-                tsdata = output.get("ts_slug")
-                core.append({"type": "trustscore", "url": f"trustscore/{tsdata['slug']}.json"})
-                output.update({"ts_rating": tsdata["rating"], "ts_source": tsdata["source"], "ts_slug": tsdata["slug"]})
+                tsdata = output.get("ts_slug", {})
+                core.append(
+                    {"type": "trustscore", "url": f"trustscore/{tsdata['slug']}.json"}
+                )
+                output.update(
+                    {
+                        "ts_rating": tsdata["rating"],
+                        "ts_source": tsdata["source"],
+                        "ts_slug": tsdata["slug"],
+                    }
+                )
             case "tp_slug":
-                tpdata = output.get("tp_slug")
-                core.append({"type": "trustpilot", "url": f"trustpilot/{tpdata['slug']}.json"})
-                output.update({"tp_rating": tpdata["score"],
-                               "tp_source": tpdata["source"],
-                               "tp_slug": tpdata["slug"]})
+                tpdata = output.get("tp_slug", {})
+                core.append(
+                    {"type": "trustpilot", "url": f"trustpilot/{tpdata['slug']}.json"}
+                )
+                output.update(
+                    {
+                        "tp_rating": tpdata["score"],
+                        "tp_source": tpdata["source"],
+                        "tp_slug": tpdata["slug"],
+                    }
+                )
             case "osid_slug":
-                core.extend(map(lambda osid: {"type": "opensecrets", "url": f"opensecrets/{osid}.json"}, output.get("osid_slug",[])))
+                core.extend(
+                    map(
+                        lambda osid: {
+                            "type": "opensecrets",
+                            "url": f"opensecrets/{osid}.json",
+                        },
+                        output.get("osid_slug", []),
+                    )
+                )
                 output["osids"] = output.get("osid_slug", [])
 
             case "ticker_slug":
                 ticker = output.get("ticker_slug")
-                output["ticker"] = ticker
-                core.append({"type": "yahoo", "url": f"yahoo/{ticker}.json"})
                 with open(f"{rootdir}/yahoo/entities/{ticker}.json", "r") as f:
                     yahoo_data = load_json(f)
-                    output.update({"esg_rating": yahoo_data["totalEsg"], "esg_source": yahoo_data["source"]})
+                    if yahoo_data.get("totalEsg") and yahoo_data.get("source"):
+                        output["ticker"] = ticker
+                        core.append({"type": "yahoo", "url": f"yahoo/{ticker}.json"})
+                        output.update(
+                            {
+                                "esg_rating": yahoo_data["totalEsg"],
+                                "esg_source": yahoo_data["source"],
+                            }
+                        )
 
             case "glassdoor_slug":
                 glassid = output["glassdoor_slug"]
@@ -310,8 +398,13 @@ def build_document(website):
                 try:
                     with open(f"{rootdir}/glassdoor/entities/{glassid}.json", "r") as f:
                         glassdata = load_json(f)
-                        output["glassdoor"] = {"source": glassdata["source"], "rating": glassdata["glasroom_rating"]["ratingValue"]}
-                        core.append({"type":"glassdoor","url":f"glassdoor/{glassid}.json"})
+                        output["glassdoor"] = {
+                            "source": glassdata["source"],
+                            "rating": glassdata["glasroom_rating"]["ratingValue"],
+                        }
+                        core.append(
+                            {"type": "glassdoor", "url": f"glassdoor/{glassid}.json"}
+                        )
                 except KeyError:
                     pass
             case "wba_slug":
@@ -323,14 +416,23 @@ def build_document(website):
                 core.append({"type": "lobbyeu", "url": f"lobbyfacts/{lobby}.json"})
                 with open(f"{rootdir}/lobbyfacts/entities/{lobby}.json", "r") as f:
                     lbdata = load_json(f)
-                    output.update({"lb_fte": lbdata["lobbyist_fte"], "lb_source": lbdata["source"], "lobbyeu": lobby})
+                    output.update(
+                        {
+                            "lb_fte": lbdata["lobbyist_fte"],
+                            "lb_source": lbdata["source"],
+                            "lobbyeu": lobby,
+                        }
+                    )
 
-    if os.path.isfile(f"{rootdir}/similar-sites/entities/{website.replace('.','')}.json"):
-        core.append({"type": "similar", "url": f"similar/{website.replace('.','')}.json"})
+    if os.path.isfile(
+        f"{rootdir}/similar-sites/entities/{website.replace('.','')}.json"
+    ):
+        core.append(
+            {"type": "similar", "url": f"similar/{website.replace('.','')}.json"}
+        )
 
-   # if os.path.isfile(f"{rootdir}/trustpilot/entities/{website.replace('.','')}.json"):
-   #     core.extend([{"type": "similar", "url": f"similar/{website.replace('.','')}.json"}])
-
+    # if os.path.isfile(f"{rootdir}/trustpilot/entities/{website.replace('.','')}.json"):
+    #     core.extend([{"type": "similar", "url": f"similar/{website.replace('.','')}.json"}])
 
     output["core"] = core
     write_output_file(website, output)
@@ -340,7 +442,10 @@ def build_document(website):
 def prepare():
     global tosdr_data_array, bulk_array, propsFormatting, propsNaming, propsLabels, website_list
 
+    print("Preparing data...")
+
     def process_lookup_file(lookup_file, array, field):
+        print(f"Processing {lookup_file}...")
         with open(lookup_file, "r") as f:
             csv_reader = csv.reader(f)
             next(csv_reader)  # Skip the header row, if present
@@ -353,22 +458,30 @@ def prepare():
                 bulk_array[domain][field] = row[1]
 
     def process_lookup_file_json(lookup_file, array):
+        print(f"Processing {lookup_file}...")
         with open(lookup_file, "r") as f:
             for i, data in load_json(f).items():
                 domain = get_domain("http://" + i)
                 if not domain:
                     continue
-                bulk_array[domain].update({
-                    "tosdr_rating": data["rating"],
-                    "tosdr_slug": data["id"],
-                    "tosdr_source": i,
-                })
+                bulk_array[domain].update(
+                    {
+                        "tosdr_rating": data["rating"],
+                        "tosdr_slug": data["id"],
+                        "tosdr_source": i,
+                    }
+                )
                 if not "core" in bulk_array[domain]:
-                    bulk_array[domain]["core"] = [{ "type": "tosdr", "url": f"tosdr/{data['id']}.json"}]
+                    bulk_array[domain]["core"] = [
+                        {"type": "tosdr", "url": f"tosdr/{data['id']}.json"}
+                    ]
                     continue
-                bulk_array[domain]["core"].append({ "type": "tosdr", "url": f"tosdr/{data['id']}.json"})
+                bulk_array[domain]["core"].append(
+                    {"type": "tosdr", "url": f"tosdr/{data['id']}.json"}
+                )
 
     def processWikidataList(lookup_file, array, onlyAdd=False):
+        print(f"Processing {lookup_file}...")
         with open(lookup_file, "r") as f:
             wikidata_file = csv.reader(f)
             for i in wikidata_file:
@@ -383,7 +496,7 @@ def prepare():
                     if bulk_array[domain]["wikidata_id"]:
                         bulk_array[domain]["wikidata_id"] = array[domain]
                 except KeyError:
-                    bulk_array[domain]["wikidata_id"]=[i[1]]
+                    bulk_array[domain]["wikidata_id"] = [i[1]]
 
     # Process Wikidata lookup file
     processWikidataList(WDLOOKUP, wikidata_array)
@@ -391,20 +504,21 @@ def prepare():
         processWikidataList(WDLOOKUPEXTRA, wikidata_array, True)
 
     lookups = [
-        (GYLOOKUP,          None,    "goodonyou_slug"), # Process GoodOnYou lookup file
-        (BCLOOKUP,          None,    "bcorp_slug"),     # Process Bcorp lookup file
-        (OSLOOKUP,          None,    "osid_slug"),      # Process OSID lookup file
-        (MBLOOKUP,          None,    "mbfc_slug"),      # Process MediaBias lookup file
-        (TRUSTSCORELOOKUP,  None,    "ts_slug"),        # Trustscore Data
-        (TRUSTPILOTLOOKUP,  None,    "tp_slug"),        # Trustpilot array
-        (YAHOOLOOKUP,       None,    "ticker_slug"),    # Process Yahoo lookup_file
-        (GDLOOKUP,          None,    "glassdoor_slug"), # Process Glassdoor lookup file
-        (WBMLOOKUP,         None,    "wba_slug"),       # Process WBM lookup file
-        (LOBBYLOOKUP,       None,    "lobbyeu_slug"), # Process Lobby lookup_file
+        (GYLOOKUP, None, "goodonyou_slug"),  # Process GoodOnYou lookup file
+        (BCLOOKUP, None, "bcorp_slug"),  # Process Bcorp lookup file
+        (OSLOOKUP, None, "osid_slug"),  # Process OSID lookup file
+        (MBLOOKUP, None, "mbfc_slug"),  # Process MediaBias lookup file
+        (TRUSTSCORELOOKUP, None, "ts_slug"),  # Trustscore Data
+        (TRUSTPILOTLOOKUP, None, "tp_slug"),  # Trustpilot array
+        (YAHOOLOOKUP, None, "ticker_slug"),  # Process Yahoo lookup_file
+        (GDLOOKUP, None, "glassdoor_slug"),  # Process Glassdoor lookup file
+        (WBMLOOKUP, None, "wba_slug"),  # Process WBM lookup file
+        (LOBBYLOOKUP, None, "lobbyeu_slug"),  # Process Lobby lookup_file
     ]
 
     def process_lookup_file_json_webaware(arr):
         lookup_file, coreTemplate, field = arr
+        print(f"Processing {lookup_file}...")
         with open(lookup_file, "r") as f:
             for i, i_data in load_json(f).items():
                 domain = get_domain("http://" + i)
@@ -416,7 +530,12 @@ def prepare():
                     continue
                 if not bulk_array[domain].get("core"):
                     bulk_array[domain]["core"] = []
-                bulk_array[domain]["core"].append({ "type": coreTemplate[0], "url": f"{coreTemplate[1]}{i_data[coreTemplate[2]]}.json"})
+                bulk_array[domain]["core"].append(
+                    {
+                        "type": coreTemplate[0],
+                        "url": f"{coreTemplate[1]}{i_data[coreTemplate[2]]}.json",
+                    }
+                )
 
     for lookup in lookups:
         process_lookup_file_json_webaware(lookup)
@@ -427,7 +546,6 @@ def prepare():
     # Process Wikipedia lookup file
     process_lookup_file(WPLOOKUP, wikipedia_array, "wikipedia")
 
-
     with open(PROPSFORM, "r") as f:
         propsFormatting = load_json(f)
     with open(PROPSNAME, "r") as f:
@@ -435,38 +553,46 @@ def prepare():
     with open(PROPSLABEL, "r") as f:
         propsLabels = load_json(f)
     with open("websites.list", "w") as f:
-        f.write('\n'.join(list(website_list)))
+        f.write("\n".join(list(website_list)))
+
 
 def testRun():
-    #testdomain = "meta.com"
-    #testdomain = "reddit.com"
-    #testdomain = "facebook.com"
-    #testdomain = "theguardian.com"
-    #testdomain = "breitbart.com"
-    testdomain = "nespresso.com"
-    #testdomain = "nike.com"
+    # testdomain = "meta.com"
+    # testdomain = "reddit.com"
+    # testdomain = "facebook.com"
+    # testdomain = "theguardian.com"
+    # testdomain = "breitbart.com"
+    # testdomain = "facebook.com"
+    # testdomain = "microsoft.com"
+    testdomain = "monsterenergy.com"
     build_document(testdomain)
     show_document(testdomain)
     pprint(len(bulk_array))
-    #with open("missingLabels.json", "w") as missingLabelFile:
+
+    # with open("missingLabels.json", "w") as missingLabelFile:
     #    dump_json(list(missingLabels),missingLabelFile, indent=4)
     exit()
 
+
 def checkForFiles():
     for domain in website_list:
-        if not os.path.exists(os.path.join(output_dir, domain.replace('.', '') + ".json")):
+        if not os.path.exists(
+            os.path.join(output_dir, domain.replace(".", "") + ".json")
+        ):
             pprint(domain)
+
 
 prepare()
 build_pairings_and_datapool()
-#testRun()
+# testRun()
 
 pbar = tqdm(total=len(website_list))
 if __name__ == "__main__":
     processed_results = process_domains_parrallel(website_list)
+    pprint(f"Missing labels: {len(missingLabels)}")
+    pprint(f"Fails: {len(failures)}")
     pprint(failures)
     pprint(len(missingLabelArray))
     with open("missingLabels.json", "w") as missingLabelFile:
-        dump_json(list(missingLabelArray),missingLabelFile, indent=4)
+        dump_json(list(missingLabelArray), missingLabelFile, indent=4)
     checkForFiles()
-

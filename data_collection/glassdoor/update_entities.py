@@ -1,5 +1,6 @@
 import json
 import sys
+from regex import W
 import requests
 import time
 from requests.adapters import HTTPAdapter, Retry
@@ -9,7 +10,7 @@ from bs4 import BeautifulSoup as bs
 import os
 
 sys.path.append("..")
-from common import is_file_modified_over_a_week_ago
+from common import is_file_modified_over_a_week_ago, print_status, print_status_line
 
 
 def create_session(
@@ -155,14 +156,14 @@ def glassdoorGetInfoForId(id: str, session, json_filename, sleepTime):
 
 
 if __name__ == "__main__":
-    count = 0
     testSession = create_session(None, True, True)
     dir_to_check = "data_json"
+    total_files, updated, failed, fine = 0, 0, 0, 0
     sleepTime = 60
     for root, _, files in os.walk(dir_to_check):
         total_files = len(files)
         pprint(f"{total_files} files to check")
-        for file in files:
+        for index, file in enumerate(files):
             if file.endswith(".json"):
                 json_filename = os.path.join(root, file)
                 if is_file_modified_over_a_week_ago(json_filename):
@@ -175,10 +176,14 @@ if __name__ == "__main__":
                         if sleepTime < 1800:
                             sleepTime += 60
                         pprint("new session")
+                        failed += 1
+                        print_status("fail", index, total_files, file)
                     else:
                         sleepTime = 60
-                    count += 1
+                        updated += 1
+                        print_status("upd8", index, total_files, file)
                     time.sleep(0.2)
                 else:
-                    count += 1
-                pprint(f"{count} / {total_files} done")
+                    fine += 1
+                    print_status("fine", index, total_files, file, print_over=True)
+    print_status_line(total_files, updated=updated, fine=fine, failed=failed)

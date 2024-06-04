@@ -2,7 +2,6 @@
 */*.pyc
 */*/*.pyc
 IVDataIngestion/
-bcorp/*.json
 contentlist
 data_collection/*/entities/*.json
 data_collection/*/failures.json
@@ -12,6 +11,8 @@ data_collection/*/site_slug.json
 data_collection/*/site_parent_slug.json
 data_collection/*/slug_data.json
 data_collection/*/slug_site.json
+data_collection/*/*_backup
+data_collection/*/indexes/*.json
 data_collection/bcorp/*.json
 data_collection/bcorp/pages/
 data_collection/bcorp/split_data/*
@@ -72,7 +73,6 @@ hugo/data/wikipedia/wikicard/
 hugo/data/yahoo/
 hugo/justTest
 hugo/public
-hugo/static/*/
 hugo/static/connections/
 hugo/static/ds/*/*
 hugo/sync.sh

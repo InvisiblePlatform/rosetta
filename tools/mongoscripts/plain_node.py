@@ -1,5 +1,6 @@
 import json
 from pymongo import MongoClient
+from typing import Optional, List, Dict, Any
 import sys
 from pprint import pprint
 from tld import get_tld
@@ -9,12 +10,14 @@ rootdir = "data_collection"
 WDLOOKUP = f"{rootdir}/wikidata/website_id_list.csv"
 wikidata_array = {}
 
+
 def get_domain(url):
     parsed_url = get_tld(url, as_object=True)
     domain = parsed_url.subdomain + parsed_url.fld
     if parsed_url.subdomain in ["about", "shop", "m"]:
         domain = parsed_url.fld
     return domain
+
 
 # Process Wikidata lookup file
 with open(WDLOOKUP, "r") as f:
@@ -24,131 +27,280 @@ with open(WDLOOKUP, "r") as f:
         wikidata_array.setdefault(i[1], []).append(domain)
 
 graph_pairings = [
-    {"id":"P1037","in":"Directed_By","out":"Director_of"},
-    {"id":"P1040","in":"Film_Editor","out":"Film_Editor_of"},
-    {"id":"P169","in":"Chief_Executive_Officer","out":"Chief_Executive_Officer"},
-    {"id":"P112","in":"Founded_by","out":"Founder_of"},
-    {"id":"P123","in":"Published_by","out":"Publisher_of"},
-    {"id":"P127","in":"Owned_by","out":"Owner_of" },
-    {"id":"P1431","in":"Executive_Producer","out":"Executive_Producer_of"},
-    {"id":"P162","in":"Produced_by","out":"Producer_of"},
-    {"id":"P170","in":"Created_by","out":"Creator_of"},
-    {"id":"P1951","in":"Invested_in_by","out":"Invested_in"},
-    {"id":"P2554","in":"Production_Designer","out":"Production_Designer_of"},
-    {"id":"P2652","in":"Division","out":"Division_of"},
-    {"id":"P2652","in":"Partnered_with","out":"Partnered_with"},
-    {"id":"P286","in":"Head_coach","out":"Head_coach_of"},
-    {"id":"P3320","in":"Board_Member","out":"Board_Member_of"},
-    {"id":"P355","in":"Subsidary","out":"Subsidary_of"},
-    {"id":"P371","in":"Presented_by","out":"Presentor_of"},
-    {"id":"P488","in":"Chaired_by","out":"Chairperson_of"},
-    {"id":"P50","in":"Authored_by","out":"Author_of"},
-    {"id":"P5769","in":"Editor-in-chief","out":"Editor-in-chief_of"},
-    {"id":"P749","in":"Parent_Company","out":"Parent_Company_of"},
-    {"id":"P749","in":"Parent_organisation_of","out":"Parent_organisation"},
-    {"id":"P8324","in":"Funded_by","out":"Funder_of"},
-    {"id":"P98","in":"Edited_By","out":"Editor_of"},
+    # {"id": "P199", "in": "Division", "out": "Division_of"},
+    # {"id": "P31", "in": "Instance_of", "out": "Has_Instance"},
+    # {"id": "P361", "in": "Part_of", "out": "Has_Part"},
+    # {"id": "P463", "in": "Member_of", "out": "Has_Member"},
+    # {"id": "P527", "in": "Has_Part", "out": "Part_of"},
+    # {"id": "P1433", "in": "Published_in", "out": "Contains"},
+    {"id": "P1037", "in": "Directed_By", "out": "Director_of"},
+    {"id": "P1040", "in": "Film_Editor", "out": "Film_Editor_of"},
+    {"id": "P112", "in": "Founded_by", "out": "Founder_of"},
+    {"id": "P123", "in": "Published_by", "out": "Publisher_of"},
+    {"id": "P127", "in": "Owned_by", "out": "Owner_of"},
+    {"id": "P1431", "in": "Executive_Producer", "out": "Executive_Producer_of"},
+    {"id": "P162", "in": "Produced_by", "out": "Producer_of"},
+    {"id": "P169", "in": "Chief_Executive_Officer", "out": "Chief_Executive_Officer"},
+    {"id": "P170", "in": "Created_by", "out": "Creator_of"},
+    {"id": "P1951", "in": "Invested_in_by", "out": "Invested_in"},
+    {"id": "P2554", "in": "Production_Designer", "out": "Production_Designer_of"},
+    {"id": "P2652", "in": "Partnered_with", "out": "Partnered_with"},
+    {"id": "P286", "in": "Head_coach", "out": "Head_coach_of"},
+    {"id": "P3320", "in": "Board_Member", "out": "Board_Member_of"},
+    {"id": "P355", "in": "Subsidary", "out": "Subsidary_of"},
+    {"id": "P371", "in": "Presented_by", "out": "Presentor_of"},
+    {"id": "P488", "in": "Chaired_by", "out": "Chairperson_of"},
+    {"id": "P50", "in": "Authored_by", "out": "Author_of"},
+    {"id": "P5769", "in": "Editor-in-chief", "out": "Editor-in-chief_of"},
+    {"id": "P749", "in": "Parent_organisation_of", "out": "Parent_organisation"},
+    {"id": "P8324", "in": "Funded_by", "out": "Funder_of"},
+    {"id": "P859", "in": "Sponsered_By", "out": "Sponser_of"},
+    {"id": "P98", "in": "Edited_By", "out": "Editor_of"},
 ]
+
+label_array = ["es", "en", "zh", "eo", "ar", "fr", "de", "hi", "ca"]
+wiki_array = [f"{lang}wiki" for lang in label_array]
 
 pairing_id_out_list = {pair["id"]: pair["out"] for pair in graph_pairings}
 pairing_id_list = set([pair["id"] for pair in graph_pairings])
 
-def do_node(ids, collection):
-    nodes = collection.find({
-    "id": {"$in": ids}
-}, {
-    "sitelinks": {
-        "eswiki": {"title": 1}, "enwiki": {"title": 1}, "zhwiki": {"title": 1},
-        "eowiki": {"title": 1}, "arwiki": {"title": 1}, "frwiki": {"title": 1},
-        "dewiki": {"title": 1}, "hiwiki": {"title": 1}, "cawiki": {"title": 1}
-    },
-    "labels": {
-        "es": {"value":1}, "en": {"value":1}, "zh": {"value":1}, "eo": {"value":1},
-        "ar": {"value":1}, "fr": {"value":1}, "de": {"value":1}, "hi": {"value":1}, "ca": {"value": 1}
-    },
-    "claims": {
-        "P169": {"mainsnak.datavalue.value.id": 1},
-        "P1037": {"mainsnak.datavalue.value.id": 1}, "P1040": {"mainsnak.datavalue.value.id": 1},
-        "P112":  {"mainsnak.datavalue.value.id": 1}, "P123":  {"mainsnak.datavalue.value.id": 1},
-        "P127":  {"mainsnak.datavalue.value.id": 1}, "P1431": {"mainsnak.datavalue.value.id": 1},
-        "P162":  {"mainsnak.datavalue.value.id": 1}, "P170":  {"mainsnak.datavalue.value.id": 1},
-        "P1951": {"mainsnak.datavalue.value.id": 1}, "P2554": {"mainsnak.datavalue.value.id": 1},
-        "P2652": {"mainsnak.datavalue.value.id": 1}, "P286":  {"mainsnak.datavalue.value.id": 1},
-        "P31":   {"mainsnak.datavalue.value.id": 1}, "P3320": {"mainsnak.datavalue.value.id": 1},
-        "P355":  {"mainsnak.datavalue.value.id": 1}, "P371":  {"mainsnak.datavalue.value.id": 1},
-        "P488":  {"mainsnak.datavalue.value.id": 1}, "P50":   {"mainsnak.datavalue.value.id": 1},
-        "P5769": {"mainsnak.datavalue.value.id": 1}, "P749": {"mainsnak.datavalue.value.id": 1},
-        "P8324": {"mainsnak.datavalue.value.id": 1}, "P98":   {"mainsnak.datavalue.value.id": 1},
-    },
-    "id": 1, "_id":0})
-    outnodes=[]
-    outlinks=[]
-    nodelist=[]
-    new_nodes = [node for node in nodes if node not in nodelist]
-    for node in new_nodes:
-        check_list = set(node['claims'].keys()).intersection(pairing_id_list)
+skip_groups = ["Q13442814", "Q108095628", "Q93204"]
+single_groups = [
+    ["Q591041"],
+    ["Q2352616"],
+    ["Q732577"],
+    ["Q1266946"],
+    ["Q7725634"],
+]
+
+
+def do_node(ids, collection) -> dict[str, list[Any]]:
+    nodes = collection.find(
+        {
+            # "$or": [
+            "id": {"$in": ids},
+            # {"claims.P1037.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P1040.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P112.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P123.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P127.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P1431.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P162.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P170.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P1951.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P2554.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P2652.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P286.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P3320.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P355.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P371.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P488.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P50.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P5769.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P749.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P8324.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P856.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P859.mainsnak.datavalue.value.id": {"$in": ids}},
+            # {"claims.P98.mainsnak.datavalue.value.id": {"$in": ids}},
+            # ]
+        },
+        {
+            "sitelinks": {
+                "eswiki": {"title": 1},
+                "enwiki": {"title": 1},
+                "zhwiki": {"title": 1},
+                "eowiki": {"title": 1},
+                "arwiki": {"title": 1},
+                "frwiki": {"title": 1},
+                "dewiki": {"title": 1},
+                "hiwiki": {"title": 1},
+                "cawiki": {"title": 1},
+            },
+            "labels": {
+                "es": {"value": 1},
+                "en": {"value": 1},
+                "zh": {"value": 1},
+                "eo": {"value": 1},
+                "ar": {"value": 1},
+                "fr": {"value": 1},
+                "de": {"value": 1},
+                "hi": {"value": 1},
+                "ca": {"value": 1},
+            },
+            "claims": {
+                "P169": {"mainsnak.datavalue.value.id": 1},
+                "P1037": {"mainsnak.datavalue.value.id": 1},
+                "P1040": {"mainsnak.datavalue.value.id": 1},
+                "P112": {"mainsnak.datavalue.value.id": 1},
+                "P123": {"mainsnak.datavalue.value.id": 1},
+                "P127": {"mainsnak.datavalue.value.id": 1},
+                "P1431": {"mainsnak.datavalue.value.id": 1},
+                "P162": {"mainsnak.datavalue.value.id": 1},
+                "P170": {"mainsnak.datavalue.value.id": 1},
+                "P1951": {"mainsnak.datavalue.value.id": 1},
+                "P2554": {"mainsnak.datavalue.value.id": 1},
+                "P2652": {"mainsnak.datavalue.value.id": 1},
+                "P286": {"mainsnak.datavalue.value.id": 1},
+                "P31": {"mainsnak.datavalue.value.id": 1},
+                "P3320": {"mainsnak.datavalue.value.id": 1},
+                "P355": {"mainsnak.datavalue.value.id": 1},
+                "P371": {"mainsnak.datavalue.value.id": 1},
+                "P488": {"mainsnak.datavalue.value.id": 1},
+                "P50": {"mainsnak.datavalue.value.id": 1},
+                "P5769": {"mainsnak.datavalue.value.id": 1},
+                "P859": {"mainsnak.datavalue.value.id": 1},
+                "P749": {"mainsnak.datavalue.value.id": 1},
+                "P8324": {"mainsnak.datavalue.value.id": 1},
+                "P98": {"mainsnak.datavalue.value.id": 1},
+            },
+            "id": 1,
+            "_id": 0,
+        },
+    )
+    outnodes = []
+    outlinks = []
+    nodeIds = []
+    nodelist = []
+    for node in nodes:
+        check_list = set(node["claims"].keys()).intersection(pairing_id_list)
+        links_to_add = []
         for pair in check_list:
-            for claim in [claim for claim in node['claims'][pair] if "datavalue" in claim['mainsnak']]:
-                outlinks.append({
-                    "target": claim['mainsnak']['datavalue']['value']['id'],
-                    "source": node['id'],
-                    "type": pairing_id_out_list[pair],
-                })
+            for claim in [
+                claim
+                for claim in node["claims"][pair]
+                if "datavalue" in claim["mainsnak"]
+            ]:
+                links_to_add.append(
+                    {
+                        "target": claim["mainsnak"]["datavalue"]["value"]["id"],
+                        "source": node["id"],
+                        "type": pairing_id_out_list[pair],
+                    }
+                )
         try:
-            node_groups = [node_in["mainsnak"]["datavalue"]["value"]["id"] for node_in in node['claims']['P31']]
+            node_groups = [
+                node_in["mainsnak"]["datavalue"]["value"]["id"]
+                for node_in in node["claims"]["P31"]
+            ]
         except:
             node_groups = []
-        nodelist.append(node["id"])
 
-        nullname = node["labels"]["en"]["value"] if "en" in node["labels"] else "null"
+        if node_groups in single_groups:
+            continue
+        skipNode = False
+        for group in skip_groups:
+            if group in node_groups:
+                skipNode = True
+        if skipNode:
+            continue
+
+        nullname = node.get("labels", {"en": {"value": "null"}}).get(
+            "en", {"value": "null"}
+        )["value"]
+        nullwiki = node.get("sitelinks", {"enwiki": {"title": "null"}}).get(
+            "enwiki", {"title": "null"}
+        )["title"]
         defSite = wikidata_array.get(node["id"], [None])[0]
-        sitelinks = wikidata_array.get("sitelinks", {}).keys()
+        sitelinks = node.get("sitelinks", {}).keys()
+        # sitelinks = wikidata_array.get("sitelinks", {}).keys()
+        wikiLinks = {
+            wiki: node["sitelinks"][wiki]["title"]
+            for wiki in wiki_array
+            if wiki in sitelinks
+            and (node["sitelinks"][wiki]["title"] != nullwiki or wiki == "enwiki")
+        }
+        labels = {
+            lang: node["labels"][lang]["value"]
+            for lang in label_array
+            if lang in node["labels"]
+            and (node["labels"][lang]["value"] != nullname or lang == "en")
+        }
+        defSiteObj = defSite.replace(".", "") if defSite else "null"
 
-        outnodes.append({
+        if len(wikiLinks) == 0 and defSiteObj == "null":
+            continue
+
+        outlinks.extend(links_to_add)
+        nodelist.append(node["id"])
+        outnodes.append(
+            {
                 "id": node["id"],
-                "label":   nullname,
-                "eslabel": node["labels"]["es"]["value"] if "es" in node["labels"] else nullname,
-                "zhlabel": node["labels"]["zh"]["value"] if "zh" in node["labels"] else nullname,
-                "hilabel": node["labels"]["hi"]["value"] if "hi" in node["labels"] else nullname,
-                "eolabel": node["labels"]["eo"]["value"] if "eo" in node["labels"] else nullname,
-                "arlabel": node["labels"]["ar"]["value"] if "ar" in node["labels"] else nullname,
-                "frlabel": node["labels"]["fr"]["value"] if "fr" in node["labels"] else nullname,
-                "delabel": node["labels"]["de"]["value"] if "de" in node["labels"] else nullname,
-                "calabel": node["labels"]["ca"]["value"] if "ca" in node["labels"] else nullname,
-                "enwiki": node["sitelinks"]["enwiki"]["title"] if "enwiki" in sitelinks else "null", 
-                "eswiki": node["sitelinks"]["eswiki"]["title"] if "eswiki" in sitelinks else "null", 
-                "zhwiki": node["sitelinks"]["zhwiki"]["title"] if "zhwiki" in sitelinks else "null", 
-                "hiwiki": node["sitelinks"]["hiwiki"]["title"] if "hiwiki" in sitelinks else "null", 
-                "eowiki": node["sitelinks"]["eowiki"]["title"] if "eowiki" in sitelinks else "null", 
-                "arwiki": node["sitelinks"]["arwiki"]["title"] if "arwiki" in sitelinks else "null", 
-                "frwiki": node["sitelinks"]["frwiki"]["title"] if "frwiki" in sitelinks else "null", 
-                "dewiki": node["sitelinks"]["dewiki"]["title"] if "dewiki" in sitelinks else "null", 
-                "cawiki": node["sitelinks"]["cawiki"]["title"] if "cawiki" in sitelinks else "null", 
-                "defSite": defSite.replace(".","") if defSite else "null",
-                "groups": node_groups
-        })
+                "label": nullname,
+                "defSite": defSiteObj,
+                # "website": node.get("claims", {}).get("P854", [{}])[0]
+                "labels": labels,
+                "wiki": wikiLinks,
+                "groups": node_groups,
+            }
+        )
+
+    # for node in outnodes:
+    #    nodeIds.append(node["id"])
+
+    # linkNodeIds = set()
+    # cleanedOutLinks = set()
+    # for link in outlinks:
+    #    linkString = f"{link['source']}@{link['target']}@{link['type']}"
+    #    if link["source"] not in nodeIds and link["target"] not in nodeIds:
+    #        continue
+    #    if linkString not in cleanedOutLinks:
+    #        linkNodeIds.add(link["source"])
+    #        linkNodeIds.add(link["target"])
+    #        cleanedOutLinks.add(linkString)
+
+    # outlinks = []
+    # for link in list(cleanedOutLinks):
+    #    source, target, linkType = link.split("@")
+    #    outlinks.append({"source": source, "target": target, "type": linkType})
+
+    # new_nodes = [node for node in outnodes if node["id"] in linkNodeIds]
 
     return {"nodes": outnodes, "links": outlinks}
 
+
 def set_client():
-    client = MongoClient('mongodb://localhost:27017/')
-    db = client['rop']
-    collection = db['wikidata']
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["rop"]
+    collection = db["wikidata"]
     return collection
 
-def do_graph(main_node=None, file_out=None, collection=None, node_depth=2):
+
+def do_graph(
+    main_node: Optional[List[str]] = None,
+    file_out: Optional[str] = None,
+    collection: Optional[Any] = None,
+    node_depth: int = 2,
+) -> Dict[str, Any] | bool:
+    """
+    Generate a graph based on the given main_node and collection.
+
+    Args:
+        main_node (List[str], optional): The main node to start the graph from. Defaults to None.
+        file_out (str, optional): The output file path to save the graph. Defaults to None.
+        collection (Any, optional): The MongoDB collection to query. Defaults to None.
+        node_depth (int, optional): The depth of nodes to include in the graph. Defaults to 2.
+
+    Returns:
+        Dict[str, Any]: The generated graph.
+
+    Raises:
+        pymongo.errors.PyMongoError: If there is an error in querying the MongoDB collection.
+    """
     gnodes = []
     links = []
 
     if collection is None:
-        client = MongoClient('mongodb://localhost:27017/')
-        db = client['rop']
-        collection = db['wikidata']
-        node_depth=1
+        client = MongoClient("mongodb://localhost:27017/")
+        db = client["rop"]
+        collection = db["wikidata"]
+        node_depth = 1
 
     node_one = do_node(main_node, collection)
     gnodes.extend(node_one["nodes"])
     links.extend(node_one["links"])
+
+    if main_node is None:
+        main_node = [node["id"] for node in gnodes]
 
     oldids = set(main_node)
     ids = set(main_node)
@@ -160,20 +312,21 @@ def do_graph(main_node=None, file_out=None, collection=None, node_depth=2):
         gnodes.extend(newnode["nodes"])
         links.extend(newnode["links"])
 
-    graph = {
-        "nodes": gnodes,
-        "links": links
-    }
+    graph = {"nodes": gnodes, "links": links}
 
     if file_out:
-        with open(file_out.encode('utf-8'), "w") as f:
+        with open(file_out.encode("utf-8"), "w") as f:
             json.dump(graph, f, indent=4)
         return True
     else:
         pprint(graph)
+        with open("testFileOut.json", "w") as f:
+            json.dump(graph, f, indent=4)
 
     return graph
 
+
 if __name__ == "__main__":
-    do_graph(main_node=["Q118398"])
-    #do_graph(["Q355", "Q380"])
+    # do_graph(main_node=["Q544293"])
+    do_graph(main_node=["Q623561"])
+    # do_graph(["Q355", "Q380"])

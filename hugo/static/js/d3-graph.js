@@ -47,8 +47,10 @@ const layout = new FA2Layout(graph, {
         "gravity": 0.04,
         "scalingRatio": 1,
         "outboundAttractionDistribution": true,
-        "strongGravityMode": true,
+        "strongGravityMode": false,
+        "linlogMode": true,
         "adjustSizes": true,
+        "slowDown": 0.1,
     }
 });
 renderer.camera.ratio = 0.69;
@@ -120,7 +122,7 @@ renderer.getMouseCaptor().on("mouseup", () => {
         const localX = graph.getNodeAttribute(draggedNode, "x");
         const localY = graph.getNodeAttribute(draggedNode, "y");
         const wiki = graph.getNodeAttribute(draggedNode, "wiki");
-        if (defSite == "null" || typeof(defSite) == 'undefined') {
+        if (defSite == "null" || typeof (defSite) == 'undefined') {
             if (debug) console.log(wiki)
             wikipediaPanel(draggedNode)
         } else {
@@ -192,14 +194,14 @@ function loadJSON(url, callback) {
 // var langArray = ["en", "fr", "ar", "es", "eo", "zh", "de", "hi"];
 function getLabel(node, lang = langPref) {
     // if (typeof(node) != typeof(list))
-    label = (lang == "en") ? node.label : node[`${lang}label`];
+    label = (lang == "en") ? node.label : node['labels'][`${lang}`];
     if (label == 'null') {
         possibleLabels = []
         for (lang of langArray) {
             lc = (lang == "en") ? "" : lang;
-            if (node[`${lc}label`] != 'null') {
-                if (debug) console.log([node[`${lc}label`], lang, "label"])
-                possibleLabels.push(node[`${lc}label`])
+            if (node['labels'][`${lc}`] != 'null') {
+                if (debug) console.log([node['labels'][`${lc}`], lang, "label"])
+                possibleLabels.push(node['labels'][`${lc}`])
             }
         }
         return possibleLabels.length == 0 ? "null" : possibleLabels[0];
@@ -208,13 +210,13 @@ function getLabel(node, lang = langPref) {
 }
 function getWiki(node, lang = langPref) {
     // if (typeof(node) != typeof(list))
-    wiki = node[`${lang}wiki`];
+    wiki = node['wiki'][`${lang}wiki`];
     if (wiki == 'null') {
         possibleWiki = []
         for (lang of langArray) {
-            if (node[`${lang}wiki`] != 'null') {
-                if (debug) console.log([node[`${lang}wiki`], lang, "wiki"])
-                possibleWiki.push(`https://${lang}.wikipedia.org/wiki/${node[`${lang}wiki`].replaceAll(" ", "%20")}`)
+            if (node['wiki'][`${lang}wiki`] != 'null') {
+                if (debug) console.log([node['wiki'][`${lang}wiki`], lang, "wiki"])
+                possibleWiki.push(`https://${lang}.wikipedia.org/wiki/${node['wiki'][`${lang}wiki`].replaceAll(" ", "%20")}`)
             }
         }
         if (possibleWiki.length == 0) {
@@ -223,6 +225,9 @@ function getWiki(node, lang = langPref) {
             if (debug) console.log(possibleWiki[0])
             return possibleWiki[0]
         }
+        return;
+    }
+    if (typeof wiki === 'undefined') {
         return;
     }
     return `${wikichoice}/wiki/${wiki.replaceAll(" ", "%20")}`
@@ -245,15 +250,15 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
             wiki = getWiki(node)
 
             let color;
-            if (node.defSite == 'null' || typeof(node.defSite) == 'undefined') {
-                color = (original) ? "teal" : "green";
-            } else { color = (original) ? "red" : "magenta"; }
+            if (node.defSite == 'null' || typeof (node.defSite) == 'undefined') {
+                color = (original) ? "#008080EE" : "#008000EE";
+            } else { color = (original) ? "#FF0000EE" : "#FF00FFEE"; }
 
             if (debug) console.log(node)
             if (label == 'null' && debug) console.log(`No label for ${node.id}`)
             graph.addNode(node.id, {
-                x: localX + (Math.random()),
-                y: localY + (Math.random()),
+                x: localX + (Math.random() * 100),
+                y: localY + (Math.random() * 100),
                 size: 5,
                 label,
                 color,
@@ -272,34 +277,44 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
 
             }
         });
-        if (wikidataid != null){
+        if (wikidataid != null) {
             getWikipediaPage(wikidataid);
         } else {
-            wikiidlist = graph.nodes().join(',').replaceAll("Q",'').split(",")
+            wikiidlist = graph.nodes().join(',').replaceAll("Q", '').split(",")
             wikiidlist.sort((a, b) => a - b);
             wikidataid = `Q${wikiidlist[0]}`
             getWikipediaPage(wikidataid);
         }
+        graph.nodes().forEach((nodeId) => {
+            const node = graph.getNodeAttributes(nodeId);
+            node.size = 5 + (graph.neighbors(nodeId).length / 4);
+        });
+        settingsReset = forceAtlas2.inferSettings(graph);
+        for (let key in settingsReset) {
+            layout.settings[key] = settingsReset[key];
+        }
     });
+
 }
 
 
 function getWikipediaPage(id) {
     let node;
-    try{
+    try {
         node = graph.getNodeAttributes(id)
-    } catch(e){
-        numberList = graph.nodes().join(',').replaceAll("Q",'').split(",")
+    } catch (e) {
+        numberList = graph.nodes().join(',').replaceAll("Q", '').split(",")
         numberList.sort((a, b) => a - b);
         id = `Q${numberList[0]}`;
         node = graph.getNodeAttributes(id);
         //console.error(e);
-        
+
     }
     const wikiPage = node.wiki.split('/').slice(4)
     const rootWiki = node.wiki.split('/').reverse().slice(-3)[0]
     const requestURL = `https://${rootWiki}/api/rest_v1/page/html/${wikiPage}?redirect=true`
     const wikichoice = `https://${rootWiki}`
+    if (debug) console.log(node)
     if (wikiPage[0]) {
         if (debug) console.log(wikiPage)
         if (debug) console.log(requestURL)
@@ -310,7 +325,7 @@ function getWikipediaPage(id) {
 
         }).done((data) => {
             if (document.getElementById("wikipedia-infocard-frame")) {
-               wikicardframe = document.getElementById("wikipedia-infocard-frame");
+                wikicardframe = document.getElementById("wikipedia-infocard-frame");
             } else {
                 wikicardframe = document.createElement("section")
                 wikicardframe.id = "wikipedia-infocard-frame"
@@ -323,15 +338,29 @@ function getWikipediaPage(id) {
                 wikifirstframe.id = "wikipedia-first-frame"
                 wikifirstframe.classList.add("contentSection")
             }
-        
+
             const tempObj = document.createElement("div");
             tempObj.innerHTML = data
             // TODO: Add handling if the page doesnt have an infobox
             const tempElement = tempObj.getElementsByClassName("infobox")[0];
-            if (debug) console.log(tempObj)
             wikicardframe.innerHTML = ""
             wikicardframe.appendChild(tempElement)
-            tempObj.getElementsByTagName("link")[2].remove()
+            const tagsToRemove = ["link", "meta", "base", "title", "script", "style"];
+
+            for (let i = 0; i < tagsToRemove.length; i++) {
+                while (tempObj.getElementsByTagName(tagsToRemove[i]).length > 0) {
+                    tempObj.getElementsByTagName(tagsToRemove[i])[0].remove()
+                }
+            }
+            const tagsToRemoveEmpties = ["p", "div"];
+            for (let i = 0; i < tagsToRemoveEmpties.length; i++) {
+                for (let j = 0; j < tempObj.getElementsByTagName(tagsToRemoveEmpties[i]).length; j++) {
+                    if (tempObj.getElementsByTagName(tagsToRemoveEmpties[i])[j].innerText.trim() == "") {
+                        tempObj.getElementsByTagName(tagsToRemoveEmpties[i])[j].remove()
+                    }
+                }
+            }
+            if (debug) console.log(tempObj)
             wikifirstframe.innerHTML = ""
             wikifirstframe.appendChild(tempObj)
             wikifirstframe.innerHTML = wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
@@ -392,7 +421,12 @@ function getWikipediaPage(id) {
     list.setAttribute('class', 'graphList');
     graphBox.childNodes[0].classList.add("noShowTitle");
     graphBox.getElementsByTagName('img')[0].classList.add("graphIconOffset");
+    const listNameLimit = '5';
+    let listNameCount = 0;
     for (item in sortedl1list) {
+        if (listNameCount >= listNameLimit) {
+            break;
+        }
         itemData = sortedl1list[item];
         if (!l1list_ids.includes(itemData.id)) {
             listItem = document.createElement('li');
@@ -401,6 +435,7 @@ function getWikipediaPage(id) {
                 `<i>${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</i>`;
             list.appendChild(listItem);
             l1list_ids.push(itemData.id);
+            listNameCount++;
         }
     }
     graphBox.appendChild(list)
