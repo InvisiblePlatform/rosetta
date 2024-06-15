@@ -3,7 +3,6 @@ from playwright.sync_api import sync_playwright
 from tld import get_tld
 from tld.exceptions import TldDomainNotFound, TldBadUrl
 from typing import List, Dict, Optional, Any
-from unittest import skip
 from urllib.parse import urlparse, parse_qs
 import datetime
 import glob
@@ -445,25 +444,33 @@ def lookup_document_by_label(label, alias=False, returnWebsite=False):
     return document
 
 
-def get_domain(url, nottld=False):
+def get_domain(url, nottld=False, noDot=False):
+    if type(url) != str:
+        return None
     url = "http://" + url if not url.startswith("http") else url
     try:
         parsed_url = get_tld(url, as_object=True)
+        if type(parsed_url) == str or parsed_url == None:
+            return None
     except TldDomainNotFound:
         return None
     except TldBadUrl:
         return None
 
     if nottld:
-        return parsed_url.fld.replace(f".{parsed_url.tld}", "")
+        return parsed_url.fld.replace(f".{parsed_url.tld}", "")  # type: ignore
 
-    if parsed_url.subdomain != "":
-        domain = parsed_url.subdomain + "." + parsed_url.fld
+    if parsed_url.subdomain != "":  # type: ignore
+        domain = parsed_url.subdomain + "." + parsed_url.fld  # type: ignore
     else:
-        domain = parsed_url.subdomain + parsed_url.fld
+        domain = parsed_url.subdomain + parsed_url.fld  # type: ignore
 
-    if parsed_url.subdomain in ["about", "shop", "m"]:
-        domain = parsed_url.fld
+    if parsed_url.subdomain in ["about", "shop", "m", "www"]:  # type: ignore
+        domain = parsed_url.fld  # type: ignore
+
+    if noDot:
+        return domain.replace(".", "")
+
     return domain
 
 

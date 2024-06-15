@@ -126,7 +126,7 @@ def bcorpGetData() -> list[Any]:
     return combined_data
 
 
-def bcorpGetCombinedData():
+def bcorpGetCombinedData() -> Any | dict[Any, Any]:
     DATETODAY = datetime.datetime.now().strftime("%Y-%m-%d")
     if os.path.exists(f"combined_data_{DATETODAY}.json"):
         pprint("Loading existing data")

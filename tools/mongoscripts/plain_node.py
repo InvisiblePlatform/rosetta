@@ -1,22 +1,17 @@
 import json
 from pymongo import MongoClient
 from typing import Optional, List, Dict, Any
-import sys
 from pprint import pprint
-from tld import get_tld
 import csv
+import sys
+
+sys.path.append(".")
+from data_collection.common import get_domain
+
 
 rootdir = "data_collection"
 WDLOOKUP = f"{rootdir}/wikidata/website_id_list.csv"
 wikidata_array = {}
-
-
-def get_domain(url):
-    parsed_url = get_tld(url, as_object=True)
-    domain = parsed_url.subdomain + parsed_url.fld
-    if parsed_url.subdomain in ["about", "shop", "m"]:
-        domain = parsed_url.fld
-    return domain
 
 
 # Process Wikidata lookup file
@@ -54,6 +49,7 @@ graph_pairings = [
     {"id": "P5769", "in": "Editor-in-chief", "out": "Editor-in-chief_of"},
     {"id": "P749", "in": "Parent_organisation_of", "out": "Parent_organisation"},
     {"id": "P8324", "in": "Funded_by", "out": "Funder_of"},
+    {"id": "P8402", "in": "Open_data_portal_for", "out": "Open_data_portal_of"},
     {"id": "P859", "in": "Sponsered_By", "out": "Sponser_of"},
     {"id": "P98", "in": "Edited_By", "out": "Editor_of"},
 ]
@@ -74,36 +70,79 @@ single_groups = [
 ]
 
 
-def do_node(ids, collection) -> dict[str, list[Any]]:
+def do_node(ids, collection, person=False, organisation=False) -> dict[str, list[Any]]:
+    print(f"Doing node for {ids} {person} {organisation}")
+    personLookup = {
+        "$or": [
+            {"id": {"$in": ids}},
+            # {"claims.P1037.mainsnak.datavalue.value.id": {"$in": ids}}, # Directed By
+            # {"claims.P1040.mainsnak.datavalue.value.id": {"$in": ids}}, # Film Editor
+            {"claims.P112.mainsnak.datavalue.value.id": {"$in": ids}},  # Founded By
+            # {"claims.P123.mainsnak.datavalue.value.id": {"$in": ids}}, # Published By
+            # {"claims.P127.mainsnak.datavalue.value.id": {"$in": ids}}, # Owned By
+            # {"claims.P1431.mainsnak.datavalue.value.id": {"$in": ids}}, # Executive Producer
+            # {"claims.P162.mainsnak.datavalue.value.id": {"$in": ids}}, # Produced By
+            # {"claims.P170.mainsnak.datavalue.value.id": {"$in": ids}}, # Created By
+            # {"claims.P1951.mainsnak.datavalue.value.id": {"$in": ids}}, # Invested In By
+            # {"claims.P2554.mainsnak.datavalue.value.id": {"$in": ids}}, # Production Designer
+            # {"claims.P2652.mainsnak.datavalue.value.id": {"$in": ids}}, # Partnered With
+            {"claims.P286.mainsnak.datavalue.value.id": {"$in": ids}},  # Head Coach
+            {"claims.P3320.mainsnak.datavalue.value.id": {"$in": ids}},  # Board Member
+            # {"claims.P355.mainsnak.datavalue.value.id": {"$in": ids}}, # Subsidary
+            # {"claims.P371.mainsnak.datavalue.value.id": {"$in": ids}},  # Presented By
+            {"claims.P488.mainsnak.datavalue.value.id": {"$in": ids}},  # Chaired By
+            # {"claims.P50.mainsnak.datavalue.value.id": {"$in": ids}}, # Authored By
+            {"claims.P5769.mainsnak.datavalue.value.id": {"$in": ids}},  # EditorNchief
+            # {"claims.P749.mainsnak.datavalue.value.id": {"$in": ids}}, # Parent organisation of
+            # {"claims.P8324.mainsnak.datavalue.value.id": {"$in": ids}}, # Funded By
+            # {"claims.P856.mainsnak.datavalue.value.id": {"$in": ids}},  # Website
+            # {"claims.P859.mainsnak.datavalue.value.id": {"$in": ids}}, # Sponsered By
+            # {"claims.P98.mainsnak.datavalue.value.id": {"$in": ids}}, # Edited By
+        ]
+    }
+
+    defaultLookup = {
+        "id": {"$in": ids},
+    }
+
+    organisationLookup = {
+        "$or": [
+            {"id": {"$in": ids}},
+            # {"claims.P1037.mainsnak.datavalue.value.id": {"$in": ids}}, # Directed By
+            # {"claims.P1040.mainsnak.datavalue.value.id": {"$in": ids}}, # Film Editor
+            {"claims.P112.mainsnak.datavalue.value.id": {"$in": ids}},  # Founded By
+            # {"claims.P123.mainsnak.datavalue.value.id": {"$in": ids}},  # Published By
+            {"claims.P127.mainsnak.datavalue.value.id": {"$in": ids}},  # Owned By
+            # {"claims.P1431.mainsnak.datavalue.value.id": {"$in": ids}}, # Executive Producer
+            # {"claims.P162.mainsnak.datavalue.value.id": {"$in": ids}},  # Produced By
+            # {"claims.P170.mainsnak.datavalue.value.id": {"$in": ids}},  # Created By
+            {"claims.P1951.mainsnak.datavalue.value.id": {"$in": ids}},  # Invested In
+            # {"claims.P2554.mainsnak.datavalue.value.id": {"$in": ids}},  # Production Designer
+            # {"claims.P2652.mainsnak.datavalue.value.id": {"$in": ids}},  # Partnered With
+            # {"claims.P286.mainsnak.datavalue.value.id": {"$in": ids}},  # Head Coach
+            # {"claims.P3320.mainsnak.datavalue.value.id": {"$in": ids}},  # Board Member
+            {"claims.P355.mainsnak.datavalue.value.id": {"$in": ids}},  # Subsidary
+            # {"claims.P371.mainsnak.datavalue.value.id": {"$in": ids}},  # Presented By
+            # {"claims.P488.mainsnak.datavalue.value.id": {"$in": ids}},  # Chaired By
+            # {"claims.P50.mainsnak.datavalue.value.id": {"$in": ids}},  # Authored By
+            # {"claims.P5769.mainsnak.datavalue.value.id": {"$in": ids}},  # EditorNchief
+            {"claims.P749.mainsnak.datavalue.value.id": {"$in": ids}},  # Parent orgof
+            {"claims.P8324.mainsnak.datavalue.value.id": {"$in": ids}},  # Funded By
+            # {"claims.P856.mainsnak.datavalue.value.id": {"$in": ids}},  # Website
+            {"claims.P8402.mainsnak.datavalue.value.id": {"$in": ids}},  # Opendata
+            {"claims.P859.mainsnak.datavalue.value.id": {"$in": ids}},  # Sponsered By
+            {"claims.P98.mainsnak.datavalue.value.id": {"$in": ids}},  # Edited By
+        ]
+    }
+
+    if person:
+        lookup = personLookup
+    elif organisation:
+        lookup = organisationLookup
+    else:
+        lookup = defaultLookup
     nodes = collection.find(
-        {
-            # "$or": [
-            "id": {"$in": ids},
-            # {"claims.P1037.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P1040.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P112.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P123.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P127.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P1431.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P162.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P170.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P1951.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P2554.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P2652.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P286.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P3320.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P355.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P371.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P488.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P50.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P5769.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P749.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P8324.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P856.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P859.mainsnak.datavalue.value.id": {"$in": ids}},
-            # {"claims.P98.mainsnak.datavalue.value.id": {"$in": ids}},
-            # ]
-        },
+        lookup,
         {
             "sitelinks": {
                 "eswiki": {"title": 1},
@@ -149,8 +188,10 @@ def do_node(ids, collection) -> dict[str, list[Any]]:
                 "P50": {"mainsnak.datavalue.value.id": 1},
                 "P5769": {"mainsnak.datavalue.value.id": 1},
                 "P859": {"mainsnak.datavalue.value.id": 1},
+                "P856": {"mainsnak.datavalue.value": 1},
                 "P749": {"mainsnak.datavalue.value.id": 1},
                 "P8324": {"mainsnak.datavalue.value.id": 1},
+                "P8402": {"mainsnak.datavalue.value.id": 1},
                 "P98": {"mainsnak.datavalue.value.id": 1},
             },
             "id": 1,
@@ -161,6 +202,7 @@ def do_node(ids, collection) -> dict[str, list[Any]]:
     outlinks = []
     nodeIds = []
     nodelist = []
+
     for node in nodes:
         check_list = set(node["claims"].keys()).intersection(pairing_id_list)
         links_to_add = []
@@ -222,39 +264,54 @@ def do_node(ids, collection) -> dict[str, list[Any]]:
 
         outlinks.extend(links_to_add)
         nodelist.append(node["id"])
+        websites = (
+            list(
+                set(
+                    [
+                        get_domain(
+                            website.get("mainsnak", {})
+                            .get("datavalue", {})
+                            .get("value", {}),
+                            noDot=True,
+                        )
+                        for website in node["claims"]["P856"]
+                    ]
+                )
+            )
+            if (node.get("claims", {}).get("P856", None) is not None)
+            else None
+        )
+        if websites:
+            newWebsites = []
+            for website in websites:
+                if website is not None:
+                    newWebsites.append(website)
+
+            if len(newWebsites) > 0:
+                websites = newWebsites
+            else:
+                websites = None
+
+        if websites is not None:
+            if defSiteObj == "null":
+                defSiteObj = websites[0]
+            if defSiteObj not in websites:
+                # Take sortest domain as default
+                websites.sort(key=lambda x: len(x))
+                websites.append(defSiteObj)
+                defSiteObj = websites[0]
+
         outnodes.append(
             {
                 "id": node["id"],
                 "label": nullname,
                 "defSite": defSiteObj,
-                # "website": node.get("claims", {}).get("P854", [{}])[0]
+                "website": websites,
                 "labels": labels,
                 "wiki": wikiLinks,
                 "groups": node_groups,
             }
         )
-
-    # for node in outnodes:
-    #    nodeIds.append(node["id"])
-
-    # linkNodeIds = set()
-    # cleanedOutLinks = set()
-    # for link in outlinks:
-    #    linkString = f"{link['source']}@{link['target']}@{link['type']}"
-    #    if link["source"] not in nodeIds and link["target"] not in nodeIds:
-    #        continue
-    #    if linkString not in cleanedOutLinks:
-    #        linkNodeIds.add(link["source"])
-    #        linkNodeIds.add(link["target"])
-    #        cleanedOutLinks.add(linkString)
-
-    # outlinks = []
-    # for link in list(cleanedOutLinks):
-    #    source, target, linkType = link.split("@")
-    #    outlinks.append({"source": source, "target": target, "type": linkType})
-
-    # new_nodes = [node for node in outnodes if node["id"] in linkNodeIds]
-
     return {"nodes": outnodes, "links": outlinks}
 
 
@@ -270,6 +327,8 @@ def do_graph(
     file_out: Optional[str] = None,
     collection: Optional[Any] = None,
     node_depth: int = 2,
+    silent: bool = False,
+    skip_to_fancy: bool = False,
 ) -> Dict[str, Any] | bool:
     """
     Generate a graph based on the given main_node and collection.
@@ -299,20 +358,70 @@ def do_graph(
     gnodes.extend(node_one["nodes"])
     links.extend(node_one["links"])
 
+    indexes = collection.index_information()
+    pprint(indexes)
+
     if main_node is None:
         main_node = [node["id"] for node in gnodes]
 
     oldids = set(main_node)
     ids = set(main_node)
-    for _ in range(node_depth):
+    for place in range(node_depth):
         oldids = set(node["id"] for node in gnodes)
         ids = set(link["target"] for link in links)
         newids = list(ids.difference(oldids))
-        newnode = do_node(newids, collection)
-        gnodes.extend(newnode["nodes"])
-        links.extend(newnode["links"])
+        if skip_to_fancy:
+            newids = main_node
+        if place != 1 and not skip_to_fancy:
+            newnode = do_node(newids, collection)
+            gnodes.extend(newnode["nodes"])
+            links.extend(newnode["links"])
+        else:
+            skip_to_fancy = False
+            newnode = do_node(newids, collection)
+            gnodes.extend(newnode["nodes"])
+            links.extend(newnode["links"])
+            peopleIds = list(node["id"] for node in gnodes if "Q5" in node["groups"])
+            busineIds = list(
+                node["id"] for node in gnodes if "Q4830453" in node["groups"]
+            )
+            if len(peopleIds) == 0 or len(busineIds) == 0:
+                pprint("doing fancy due to no people or business")
+                peopleIds = newids
+                busineIds = newids
+            newnode1 = do_node(peopleIds, collection, person=True)
+            pprint("newnodes")
+            newnode2 = do_node(busineIds, collection, organisation=True)
+            gnodes.extend(newnode1["nodes"])
+            links.extend(newnode1["links"])
+            gnodes.extend(newnode2["nodes"])
+            links.extend(newnode2["links"])
 
-    graph = {"nodes": gnodes, "links": links}
+    # Remove duplicate nodes and links
+    nodeIds = []
+    for node in gnodes:
+        nodeIds.append(node["id"])
+
+    pprint(nodeIds)
+    linkNodeIds = set()
+    cleanedOutLinks = set()
+    for link in links:
+        linkString = f"{link['source']}@{link['target']}@{link['type']}"
+        if link["source"] not in nodeIds and link["target"] not in nodeIds:
+            continue
+        if linkString not in cleanedOutLinks:
+            linkNodeIds.add(link["source"])
+            linkNodeIds.add(link["target"])
+            cleanedOutLinks.add(linkString)
+
+    outlinks = []
+    for link in list(cleanedOutLinks):
+        source, target, linkType = link.split("@")
+        outlinks.append({"source": source, "target": target, "type": linkType})
+
+    new_nodes = [node for node in gnodes if node["id"] in linkNodeIds]
+
+    graph = {"nodes": new_nodes, "links": outlinks}
 
     if file_out:
         with open(file_out.encode("utf-8"), "w") as f:
@@ -323,10 +432,12 @@ def do_graph(
         with open("testFileOut.json", "w") as f:
             json.dump(graph, f, indent=4)
 
+    if silent:
+        return True
     return graph
 
 
 if __name__ == "__main__":
     # do_graph(main_node=["Q544293"])
-    do_graph(main_node=["Q623561"])
+    do_graph(main_node=["Q5227102"])
     # do_graph(["Q355", "Q380"])

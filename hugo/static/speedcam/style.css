@@ -204,21 +204,6 @@ iframe {
     bottom: 100vh !important;
 }
 
-#popArea {
-    z-index: 1000;
-    display: grid;
-    justify-content: center;
-    align-items: center;
-
-}
-
-#popArea:has(.popoverApi) {
-    width: 100vw;
-    height: 100vh;
-    position: absolute;
-    top: 0px;
-}
-
 .popoverApi {
     display: block;
     width: 300px;

@@ -161,7 +161,9 @@ def rosettaGatherData():
                 found += 1
         if found > 2:
             hash_list.append(hash)
-
+    # hash_list = ["b1e620b575faa516fd243b5700539b4e"]
+    # process_domain(hash_list[0])
+    # exit()
     pbar = tqdm(total=len(hash_list))
     processed_results = process_domains_parallel(hash_list)
     return
@@ -189,152 +191,164 @@ def process_domain(domhash):
 
     """
     global hash_to_canon
-    try:
-        # Get the set of domains associated with the given hash
-        domains = set(hash_to_canon[domhash]["sites"])
-        total_data = {}
+    # Get the set of domains associated with the given hash
+    domains = set(hash_to_canon[domhash]["sites"])
+    total_data = {}
 
-        total_connection_nodes = []
-        total_connection_links = []
+    total_connection_nodes = []
+    total_connection_links = []
+    canon_site = hash_to_canon[domhash]["canon"]
 
-        # Remove the canonical domain from the set of domains
-        domains.remove(hash_to_canon[domhash]["canon"])
+    # Remove the canonical domain from the set of domains
+    if canon_site in domains:
+        domains.remove(canon_site)
 
-        # Sort the domains by line count and add the canonical domain at the beginning
-        sorted_domains = sort_filenames_by_line_count(list(domains))
-        domains = [hash_to_canon[domhash]["canon"]] + sorted_domains
+    # Sort the domains by line count and add the canonical domain at the beginning
+    sorted_domains = sort_filenames_by_line_count(list(domains))
+    domains = [canon_site] + sorted_domains
 
-        # Process each domain
-        for domain in domains:
-            clean_domain = domain.replace(".", "")
-            file_loc = f"data_objects/db/{clean_domain}.json"
-            json_loc = f"data_objects/public/connections/{clean_domain}.json"
-            if not os.path.exists(json_loc):
-                json_loc = f"data_objects/public/connections/{domain}.json"
+    # Process each domain
+    for domain in domains:
+        clean_domain = domain.replace(".", "")
+        file_loc = f"data_objects/db/{clean_domain}.json"
+        json_loc = f"data_objects/public/connections/{clean_domain}.json"
+        if not os.path.exists(json_loc):
+            json_loc = f"data_objects/public/connections/{domain}.json"
 
-            # Check if the file exists
-            if os.path.exists(file_loc):
-                with open(file_loc, "r") as file:
-                    yaml_data = json.load(file)
-                    for key, value in yaml_data.items():
-                        # Merge the data into total_data
-                        if key not in total_data:
-                            total_data[key] = value
-                        else:
-                            if isinstance(total_data[key], list) and key not in dicts:
-                                if key != "wikidata_id" and key != "mbfc_tags":
-                                    total_data[key] = list(
-                                        set(total_data[key]).union(set(value))
-                                    )
-                            elif isinstance(total_data[key], list) and key in dicts:
-                                if key == "core":
-                                    seen = set(["trustpilot", "trustscore", "similar"])
-                                    seen.update(
-                                        item["type"] for item in total_data["core"]
-                                    )
-                                    total_data["core"].extend(
-                                        item
-                                        for item in value
-                                        if item["type"] not in seen
-                                    )
-                            elif key == "social":
-                                seen = set(total_data["social"].keys())
-                                total_data["social"].update(
-                                    (k, v) for k, v in value.items() if k not in seen
+        # Check if the file exists
+        if os.path.exists(file_loc):
+            with open(file_loc, "r") as file:
+                yaml_data = json.load(file)
+                for key, value in yaml_data.items():
+                    # Merge the data into total_data
+                    if key not in total_data:
+                        total_data[key] = value
+                    else:
+                        if isinstance(total_data[key], list) and key not in dicts:
+                            if key != "wikidata_id" and key != "mbfc_tags":
+                                total_data[key] = list(
+                                    set(total_data[key]).union(set(value))
                                 )
-
-            # Check if the JSON file exists
-            if os.path.exists(json_loc):
-                with open(json_loc, "r") as jsonfile:
-                    json_data = json.load(jsonfile)
-                    json_nodes = json_data["nodes"]
-                    json_links = json_data["links"]
-                    total_connection_nodes.extend(
-                        node
-                        for node in json_nodes
-                        if node not in total_connection_nodes
-                    )
-                    total_connection_links.extend(
-                        link
-                        for link in json_links
-                        if link not in total_connection_links
-                    )
-
-        # nodeIds = set()
-        # for node in total_connection_nodes:
-        #     nodeIds.add(node["id"])
-
-        # linkNodeId = set()
-        # for link in total_connection_links:
-        #     if link["source"] not in nodeIds or link["target"] not in nodeIds:
-        #         continue
-        #     linkNodeId.add(link["source"])
-        #     linkNodeId.add(link["target"])
-
-        # for node in total_connection_nodes:
-        #     if node["id"] not in linkNodeId:
-        #         nodeIds.remove(node["id"])
-
-        # total_connection_nodes = [
-        #     node for node in total_connection_nodes if node["id"] in nodeIds
-        # ]
-
-        # Save the connection data to a JSON file
-        connections_out = {
-            "nodes": total_connection_nodes,
-            "links": total_connection_links,
-        }
-        json_output_file = f"data_objects/public/connections/{domhash}.json"
-        save_data_to_file(connections_out, json_output_file)
-
-        # Process each domain again
-        for domain in domains:
-            clean_domain = domain.replace(".", "")
-            output_loc = f"matched_output/{clean_domain}.json"
-            file_loc = f"data_objects/db/{clean_domain}.json"
-
-            # Check if the file exists
-            if os.path.exists(file_loc):
-                with open(file_loc, "r") as file:
-                    yaml_data = json.load(file)
-
-                    oldconnections = yaml_data.get("connections", None)
-                    if oldconnections:
-                        path = f"data_objects/public/connections/{oldconnections}"
-                        if os.path.exists(path):
-                            os.remove(path)
-
-                    for key, value in total_data.items():
-                        # Merge the data into yaml_data
-                        if key not in yaml_data:
-                            yaml_data[key] = value
-                        else:
-                            if isinstance(total_data[key], list) and key not in dicts:
-                                if key != "wikidata_id" and key != "mbfc_tags":
-                                    yaml_data[key] = list(
-                                        set(yaml_data[key]).union(set(value))
-                                    )
-                            elif isinstance(total_data[key], list) and key in dicts:
-                                if key == "core":
-                                    seen = set(
-                                        item["type"] for item in yaml_data["core"]
-                                    )
-                                    yaml_data["core"].extend(
-                                        item
-                                        for item in value
-                                        if item["type"] not in seen
-                                    )
-                            elif key == "social":
-                                seen = set(yaml_data["social"].keys())
-                                yaml_data["social"].update(
-                                    (k, v) for k, v in value.items() if k not in seen
+                        elif isinstance(total_data[key], list) and key in dicts:
+                            if key == "core":
+                                seen = set(["trustpilot", "trustscore", "similar"])
+                                # seen.update(
+                                #    item["type"] for item in total_data["core"]
+                                # )
+                                total_data["core"].extend(
+                                    item for item in value if item["type"] not in seen
                                 )
-                    yaml_data["domhash"] = domhash
-                    yaml_data["connections"] = f"/connections/{domhash}.json"
-                    save_data_to_file(yaml_data, output_loc)
+                        elif key == "social":
+                            seen = set(total_data["social"].keys())
+                            total_data["social"].update(
+                                (k, v) for k, v in value.items() if k not in seen
+                            )
 
-    except Exception as e:
-        pprint(e)
+        # Check if the JSON file exists
+        if os.path.exists(json_loc):
+            with open(json_loc, "r") as jsonfile:
+                json_data = json.load(jsonfile)
+                json_nodes = json_data["nodes"]
+                json_links = json_data["links"]
+                total_connection_nodes.extend(
+                    node for node in json_nodes if node not in total_connection_nodes
+                )
+                total_connection_links.extend(
+                    link for link in json_links if link not in total_connection_links
+                )
+
+    # nodeIds = set()
+    # for node in total_connection_nodes:
+    #     nodeIds.add(node["id"])
+
+    # linkNodeId = set()
+    # for link in total_connection_links:
+    #     if link["source"] not in nodeIds or link["target"] not in nodeIds:
+    #         continue
+    #     linkNodeId.add(link["source"])
+    #     linkNodeId.add(link["target"])
+
+    # for node in total_connection_nodes:
+    #     if node["id"] not in linkNodeId:
+    #         nodeIds.remove(node["id"])
+
+    # total_connection_nodes = [
+    #     node for node in total_connection_nodes if node["id"] in nodeIds
+    # ]
+
+    # Save the connection data to a JSON file
+    connections_out = {
+        "nodes": total_connection_nodes,
+        "links": total_connection_links,
+    }
+    json_output_file = f"data_objects/public/connections/{domhash}.json"
+    save_data_to_file(connections_out, json_output_file)
+
+    # Process each domain again
+    for domain in domains:
+        clean_domain = domain.replace(".", "")
+        output_loc = f"matched_output/{clean_domain}.json"
+        file_loc = f"data_objects/db/{clean_domain}.json"
+
+        # Check if the file exists
+        if os.path.exists(file_loc):
+            with open(file_loc, "r") as file:
+                yaml_data = json.load(file)
+
+                oldconnections = yaml_data.get("connections", None)
+                if oldconnections:
+                    path = f"data_objects/public/connections/{oldconnections}"
+                    if os.path.exists(path):
+                        os.remove(path)
+
+                for key, value in total_data.items():
+                    # Merge the data into yaml_data
+                    if key not in yaml_data:
+                        yaml_data[key] = value
+                    else:
+                        if isinstance(total_data[key], list) and key not in dicts:
+                            if key != "wikidata_id" and key != "mbfc_tags":
+                                yaml_data[key] = list(
+                                    set(yaml_data[key]).union(set(value))
+                                )
+                        elif isinstance(total_data[key], list) and key in dicts:
+                            if key == "core":
+                                stable = set(["trustpilot", "trustscore", "similar"])
+                                # seen = set(
+                                #    item["type"] for item in yaml_data["core"]
+                                # )
+                                coreSetReal = {}
+                                coreSet = set()
+                                for module in total_data["core"]:
+                                    if module["type"] not in stable:
+                                        moduleId = f"{module['type']},{module['url']}"
+                                        if not coreSetReal.get(moduleId):
+                                            coreSetReal[moduleId] = module
+                                        elif (
+                                            coreSetReal[moduleId].get("src")
+                                            == canon_site
+                                        ):
+                                            coreSetReal[moduleId] = module
+
+                                for module in yaml_data["core"]:
+                                    moduleId = f"{module['type']},{module['url']}"
+                                    if not coreSetReal.get(moduleId):
+                                        coreSetReal[moduleId] = module
+
+                                newValue = []
+                                for moduleId, module in coreSetReal.items():
+                                    newValue.append(module)
+
+                                yaml_data["core"] = newValue
+                        elif key == "social":
+                            seen = set(yaml_data["social"].keys())
+                            yaml_data["social"].update(
+                                (k, v) for k, v in value.items() if k not in seen
+                            )
+                yaml_data["domhash"] = domhash
+                yaml_data["connections"] = f"/connections/{domhash}.json"
+                save_data_to_file(yaml_data, output_loc)
+
     return [True, domhash]
 
 

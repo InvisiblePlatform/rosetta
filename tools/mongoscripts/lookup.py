@@ -4,7 +4,7 @@ import json
 client = MongoClient("mongodb://localhost:27017/")
 db = client["rop"]
 collection = db["wikidata"]
-idn = "Q380"
+idn = "Q56787199"
 query = {"id": idn}
 
 document = collection.find_one(query)
