@@ -2130,9 +2130,9 @@ function recalculateList() {
                 seenModulesDesktop.push(value)
             } else if (seenModulesDesktop.includes(value)) {
             } else {
-                blanksDesktop++;
                 gridTemplateAreasDesktop += `"${value} blank${blanksDesktop}" `
                 gridAutoRowsDesktop += "120px "
+                blanksDesktop++;
             }
         } else {
             gridTemplateAreasDesktop += `"${value} ${value}" `
@@ -2147,9 +2147,9 @@ function recalculateList() {
                 seenModulesApp.push(value)
             } else if (seenModulesApp.includes(value)) {
             } else {
-                blanksApp++;
                 gridTemplateAreasApp += `"${value} blank${blanksApp}" `
                 gridAutoRowsApp += "120px "
+                blanksApp++;
             }
         } else {
             gridTemplateAreasApp += `"${value} ${value}" `
@@ -2173,6 +2173,31 @@ function recalculateList() {
     } else {
         numberOfBlanks = blanksApp;
     }
+    // count the number of instances of "blank" in the gridTemplateAreas
+    const blankCountDesktop = (gridTemplateAreasDesktop.match(/blank/g) || []).length;
+    const blankCountApp = (gridTemplateAreasApp.match(/blank/g) || []).length;
+    const blankCountSmall = (gridTemplateAreasSmall.match(/blank/g) || []).length;
+    // if the number of blanks in the gridTemplateAreas is less than the number of blanks needed
+    // add the correct number of blanks to the gridTemplateAreas string
+    if (blankCountDesktop < numberOfBlanks) {
+        for (let index = blankCountDesktop; index < numberOfBlanks; index++) {
+            gridTemplateAreasDesktop += `"blank${index}" "blank${index}" `;
+            gridAutoRowsDesktop += "0px "
+        }
+    }
+    if (blankCountApp < numberOfBlanks) {
+        for (let index = blankCountApp; index < numberOfBlanks; index++) {
+            gridTemplateAreasApp += `"blank${index}" "blank${index}" `;
+            gridAutoRowsApp += "0px "
+        }
+    }
+    if (blankCountSmall < numberOfBlanks) {
+        for (let index = blankCountSmall; index < numberOfBlanks; index++) {
+            gridTemplateAreasSmall += `"blank${index}" `;
+            gridAutoRowsSmall += "0px "
+        }
+    }
+
     for (let index = 0; index < numberOfBlanks; index++) {
         const blank = document.createElement("div");
         blank.classList.add("blank");
@@ -2597,11 +2622,6 @@ function createGenericPopoverMenu(contentString, options = { id: false, title: f
                 popoverDiv.style.border = "1px solid";
                 break;
         }
-    }
-
-    if (darkenBackground) {
-        //popoverDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        // popoverDiv.style.backdropFilter = "blur(5px), darken(0.5)";
     }
 
     if (closeButton) {
