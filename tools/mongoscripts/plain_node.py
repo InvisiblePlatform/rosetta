@@ -71,7 +71,6 @@ single_groups = [
 
 
 def do_node(ids, collection, person=False, organisation=False) -> dict[str, list[Any]]:
-    print(f"Doing node for {ids} {person} {organisation}")
     personLookup = {
         "$or": [
             {"id": {"$in": ids}},
@@ -359,25 +358,24 @@ def do_graph(
     links.extend(node_one["links"])
 
     indexes = collection.index_information()
-    pprint(indexes)
 
     if main_node is None:
         main_node = [node["id"] for node in gnodes]
-
+    skipping_to_fancy = skip_to_fancy
     oldids = set(main_node)
     ids = set(main_node)
     for place in range(node_depth):
         oldids = set(node["id"] for node in gnodes)
         ids = set(link["target"] for link in links)
         newids = list(ids.difference(oldids))
-        if skip_to_fancy:
+        if skipping_to_fancy:
             newids = main_node
-        if place != 1 and not skip_to_fancy:
+        if place != 1 and not skipping_to_fancy:
             newnode = do_node(newids, collection)
             gnodes.extend(newnode["nodes"])
             links.extend(newnode["links"])
         else:
-            skip_to_fancy = False
+            skipping_to_fancy = False
             newnode = do_node(newids, collection)
             gnodes.extend(newnode["nodes"])
             links.extend(newnode["links"])
@@ -386,11 +384,9 @@ def do_graph(
                 node["id"] for node in gnodes if "Q4830453" in node["groups"]
             )
             if len(peopleIds) == 0 or len(busineIds) == 0:
-                pprint("doing fancy due to no people or business")
                 peopleIds = newids
                 busineIds = newids
             newnode1 = do_node(peopleIds, collection, person=True)
-            pprint("newnodes")
             newnode2 = do_node(busineIds, collection, organisation=True)
             gnodes.extend(newnode1["nodes"])
             links.extend(newnode1["links"])
@@ -402,7 +398,6 @@ def do_graph(
     for node in gnodes:
         nodeIds.append(node["id"])
 
-    pprint(nodeIds)
     linkNodeIds = set()
     cleanedOutLinks = set()
     for link in links:
@@ -422,6 +417,8 @@ def do_graph(
     new_nodes = [node for node in gnodes if node["id"] in linkNodeIds]
 
     graph = {"nodes": new_nodes, "links": outlinks}
+    if not skip_to_fancy and len(new_nodes) == 0:
+        return do_graph(main_node, file_out, collection, node_depth+1, silent, True)
 
     if file_out:
         with open(file_out.encode("utf-8"), "w") as f:

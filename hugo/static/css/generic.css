@@ -383,7 +383,7 @@ details {
   position: absolute;
   top: 0px;
 
-  >div {
+  >div:not(.notification) {
     display: block;
     width: 300px;
     color: var(--c-light-text);

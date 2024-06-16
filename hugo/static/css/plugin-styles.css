@@ -2865,8 +2865,9 @@ button.loadInfoButton {
 }
 
 #popOptions #popover-content .popOptions {
+    --columnWidth: calc(50% - .5em);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, var(--columnWidth));
     grid-template-rows: auto;
     gap: 1em;
 
@@ -2903,6 +2904,10 @@ button.loadInfoButton {
         border-radius: 0 8px 8px 0;
     }
 
+    #popOptionsModuleLocations {
+        overflow-x: hidden;
+        text-wrap: nowrap;
+    }
 }
 
 div.speedcontent.somethingIsOpen {

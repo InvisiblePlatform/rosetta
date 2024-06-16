@@ -223,7 +223,25 @@ function resetSettings(change = true) {
     if (change) settingsStateChange()
 }
 
-function settingsStateApply(newSettingsState = defaultSettingsState) {
+function checkExtensionVersion(currentVersion = false) {
+    const manifestLocationUrl = 'https://raw.githubusercontent.com/InvisiblePlatform/extension/unstable/manifest.json'
+    const updateUrl = 'https://github.com/InvisiblePlatform/extension/'
+    if (isSpeedcam || Url.get.app || !settingsState.experimentalFeatures) return;
+    fetch(manifestLocationUrl).then(response => response.json()).then(data => {
+        const version = data.version;
+        if (version !== currentVersion) {
+            addPopover(`New version available: ${version} (current: ${currentVersion})`, false, updateUrl);
+        } else {
+            addPopover(`Current version: ${version}`, true);
+        }
+        //const currentVersion = chrome.runtime.getManifest().version;
+        //if (version !== currentVersion) {
+        //    addPopover(`New version available: ${version}`, true);
+        //}
+    })
+}
+
+function settingsStateApply(newSettingsState = defaultSettingsState, fromMessage = false) {
     if (typeof (oldSettings) === 'undefined') {
         oldSettings = JSON.parse(JSON.stringify(settingsState));
         firstShot = true;
@@ -232,6 +250,9 @@ function settingsStateApply(newSettingsState = defaultSettingsState) {
 
     settingsState = newSettingsState;
 
+    if (fromMessage) {
+        checkExtensionVersion(settingsState.extension_version);
+    }
     changed = []
     for (item in settingsState) {
         if (settingsState[item] != oldSettings[item] && item != 'userPreferences') {
@@ -343,6 +364,7 @@ const scrollIntoPlace = async () => {
 }
 
 let moduleData;
+let dataObjectDictionary = {};
 const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null) => {
     if (coreFile === false) return;
     coreFile = coreFile.split("?")[0]
@@ -363,9 +385,15 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
             }
         }
 
+        let response;
         setTimeout(async () => {
-            const dataf = await fetch(dataURL + coreFile);
-            const response = await dataf.json();
+            if (dataObjectDictionary.hasOwnProperty(coreFile)) {
+                response = dataObjectDictionary[coreFile];
+            } else {
+                const dataf = await fetch(dataURL + coreFile);
+                response = await dataf.json();
+                dataObjectDictionary[coreFile] = response;
+            }
             const currentDomain = document.getElementsByClassName("co-name")[0].innerText.replace(".", "");
             const { title = false, connections = false, wikidata_id = false, core = false, political = false, social = false } = await response;
             wikidataIdList = wikidata_id;
@@ -798,8 +826,6 @@ const boldP = (bold, text, styles = false) => {
     const classString = styles ? `class="${styles}"` : '';
     return `<p ${classString}><b>${bold}</b> ${text}</p>`;
 };
-
-
 
 function moduleOpensecrets(data) {
     const { cycle_year, contributions_rank, contributions_amount, lobbying_rank, bars, charts, osid, lobbycards, bill_most_code, bill_most_heading, bill_most_title, bill_most_url } = data;
@@ -1241,9 +1267,19 @@ function moduleSimilar(data) {
 async function addModule(type = undefined, url = undefined, src = undefined) {
     if (type == undefined || url == undefined) return;
     // needs some mechanic for caching when we switch to graph mode
-    const moduleData = await fetch(url);
-    const moduleResponse = await moduleData.json()
     const dataLocationString = url.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
+
+    let moduleResponse = false;
+    if (dataObjectDictionary[dataLocationString]) {
+        moduleResponse = dataObjectDictionary[dataLocationString];
+    } else {
+        const moduleData = await fetch(url);
+        moduleResponse = await moduleData.json()
+        dataObjectDictionary[dataLocationString] = moduleResponse;
+    }
+    if (moduleResponse == undefined) return;
+    if (moduleResponse.error) return;
+
     if (!(type in types)) { return; }
     const typeDef = types[type]
     // Genericising needed
@@ -2292,7 +2328,7 @@ window.addEventListener('message', (e) => {
             postUpdate(decoded, true);
             break;
         case "SettingsUpdate":
-            settingsStateApply(decoded.data);
+            settingsStateApply(decoded.data, true);
             break;
     }
 });
@@ -2410,7 +2446,7 @@ function sort_by(field, reverse, primer) {
     return (a, b) => (a = key(a), b = key(b), reverse * ((a > b) - (b > a)))
 }
 
-function addPopover(contentString, isDebug = false) {
+function addPopover(contentString, isDebug = false, actionLink = false) {
     if (!settingsState.debugMode && isDebug) return;
     const notification = document.createElement("div");
     notification.classList.add("notification");
@@ -2425,6 +2461,17 @@ function addPopover(contentString, isDebug = false) {
     popArea.appendChild(notification);
     notification.style.top = `${offset}px`;
     notification.showPopover();
+    if (actionLink) {
+        notification.addEventListener("click", () => {
+            window.open(actionLink, "_blank");
+            notification.hidePopover();
+            notification.remove();
+            const existingNotifications = document.getElementsByClassName("notification");
+            for (let i = 0; i < existingNotifications.length; i++) {
+                existingNotifications[i].style.top = `${i * 30}px`;
+            }
+        })
+    }
     setTimeout(() => {
         notification.hidePopover();
         notification.remove();
@@ -2432,7 +2479,7 @@ function addPopover(contentString, isDebug = false) {
         for (let i = 0; i < existingNotifications.length; i++) {
             existingNotifications[i].style.top = `${i * 30}px`;
         }
-    }, 100);
+    }, 20000);
 }
 function handleSizeChange(size, removeSize1, removeSize2, target) {
     const content = document.getElementById("content");
@@ -2462,13 +2509,13 @@ function createPopoverOptions() {
     popoverDiv.classList.add("popOptions");
     popoverDiv.innerHTML = `
         <div> <h3> Size Options </h3> <form>
-                <label for="smallSize">Small Size</label>
-                <input type="checkbox" id="smallSize" name="smallSize" onchange='handleSizeChange("small", "medium", "mobile", this)'></br>
-                <label for="mediumSize">Medium Size</label>
+                <input type="checkbox" id="smallSize" name="smallSize" onchange='handleSizeChange("small", "medium", "mobile", this)'>
+                <label for="smallSize">Small Size</label></br>
                 <input type="checkbox" id="mediumSize" name="medumSize" onchange='handleSizeChange("medium", "small", "mobile", this)'>
+                <label for="mediumSize">Medium Size</label>
                 </br>
-                <label for="mobileSize">Mobile Size</label>
                 <input type="checkbox" id="mobileSize" name="mobileSize" onchange='handleSizeChange("mobile", "small", "medium", this)'>
+                <label for="mobileSize">Mobile Size</label>
                 </br></form>
         </div>
         <div> <h3> Graph Options </h3>
@@ -2496,7 +2543,7 @@ function createPopoverOptions() {
         })
     }
 
-    popoverDiv.innerHTML += `<div><h3> Module Locations </h3>
+    popoverDiv.innerHTML += `<div id="popOptionsModuleLocations"><h3> Module Locations </h3>
             <h4> Current Module Locations </h4>
             <ul>
                 ${currentModuleLocations.map(x => `<li>${x}</li>`).join("")}
