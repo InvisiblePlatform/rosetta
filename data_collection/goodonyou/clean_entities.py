@@ -4,7 +4,9 @@ from pprint import pprint
 from urllib.parse import urlparse
 
 available_ratings = {}
+available_ratings_plus = {}
 index_filename = "site_slug.json"
+index_plus_filename = "site_slug_plus.json"
 
 
 # Function to process a single JSON file
@@ -38,6 +40,7 @@ def process_json_file(json_filename):
                 "environmentRating": clean.get("environmentRating"),
                 "price": clean.get("price"),
                 "website": site,
+                "categories": clean.get("categories"),
                 "rating": clean.get("ethicalRating"),
             }
 
@@ -49,7 +52,8 @@ def process_json_file(json_filename):
                 domain = urlparse(f"http://{site}").hostname
 
             if not domain is None and not site is None:
-                if domain.replace("www.", "") not in [
+                clean_domain = domain.replace("www.", "")
+                if clean_domain not in [
                     "linkedin.com",
                     "facebook.com",
                     "instagram.com",
@@ -67,11 +71,25 @@ def process_json_file(json_filename):
                     "target.com",
                     "t.dgm-au.com",
                 ]:
-                    if available_ratings.get(domain.replace("www.", "")):
-                        available_ratings[domain.replace("www.", "")].append(slug)
+                    if available_ratings.get(clean_domain):
+                        available_ratings[clean_domain].append(slug)
+                        available_ratings_plus[clean_domain].append(
+                            {
+                                "slug": slug,
+                                "rating": clean.get("ethicalRating"),
+                                "source": clean.get("name"),
+                            }
+                        )
                         # pprint([domain, slug, available_ratings.get(domain.replace("www.",""))])
                     else:
-                        available_ratings[domain.replace("www.", "")] = [slug]
+                        available_ratings[clean_domain] = [slug]
+                        available_ratings_plus[clean_domain] = [
+                            {
+                                "slug": slug,
+                                "rating": clean.get("ethicalRating"),
+                                "source": clean.get("name"),
+                            }
+                        ]
             # else:
             #    pprint([site, slug])
 
@@ -100,6 +118,9 @@ for root, _, files in os.walk(json_dir):
 
 with open(index_filename, "w") as index_file:
     json.dump(available_ratings, index_file, indent=4)
+
+with open(index_plus_filename, "w") as index_plus_file:
+    json.dump(available_ratings_plus, index_plus_file, indent=4)
 
 
 pprint(len(available_ratings))

@@ -7,7 +7,10 @@ import sys
 import os
 
 sys.path.append("..")
-from common import is_file_modified_over_a_week_ago, print_status_line
+from common import (
+    print_status_line,
+    is_file_modified_over_duration,
+)
 
 
 def yahooGetData(ticker: str):
@@ -19,7 +22,7 @@ def yahooGetData(ticker: str):
 
 def yahooProcessData(ticker: str):
     filepath = f"entities/{ticker}.json"
-    if not is_file_modified_over_a_week_ago(filepath):
+    if not is_file_modified_over_duration(filepath, "1w"):
         with open(filepath, "r") as file:
             return json.load(file)
     tags = [
@@ -172,9 +175,33 @@ def addToIgnore(sym):
         json.dump(list(ignoreData), file, indent=4)
 
 
+def yahooCreateAverageListForPeerGroup(dir_to_check):
+    peerGroupScores = {}
+    for root, dirs, files in os.walk(dir_to_check):
+        for file in files:
+            with open(f"{root}/{file}", "r") as f:
+                data = json.load(f)
+                if "peerGroup" not in data:
+                    continue
+                peerGroup = data["peerGroup"]
+                if peerGroup not in peerGroupScores:
+                    peerGroupScores[peerGroup] = []
+                peerGroupScores[peerGroup].append(data["totalEsg"])
+
+    peerGroupAverages = {}
+    for peerGroup, scores in peerGroupScores.items():
+        if peerGroup == "":
+            continue
+        peerGroupAverages[peerGroup] = sum(scores) / len(scores)
+
+    with open("yahoo_peer_group_averages.json", "w") as f:
+        json.dump(peerGroupAverages, f, indent=4)
+
+
 if __name__ == "__main__":
     tickerList = "2023-12-tickerlist.json"
     indexFile = "site_ticker_new.json"
     ignoreFile = "ignorefile.json"
     missingDataFile = "missingdata.json"
     yahooProcessDataList(tickerList, indexFile, ignoreFile, missingDataFile)
+    yahooCreateAverageListForPeerGroup("entities")

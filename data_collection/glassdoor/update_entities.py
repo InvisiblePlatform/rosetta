@@ -1,16 +1,21 @@
 import json
 import sys
-from regex import W
 import requests
 import time
 from requests.adapters import HTTPAdapter, Retry
 import tls_client
 from pprint import pprint
 from bs4 import BeautifulSoup as bs
+from collections import defaultdict
 import os
+from clean_entities import glassDoorClean
 
 sys.path.append("..")
-from common import is_file_modified_over_a_week_ago, print_status, print_status_line
+from common import (
+    print_status,
+    print_status_line,
+    is_file_modified_over_duration,
+)
 
 
 def create_session(
@@ -155,6 +160,29 @@ def glassdoorGetInfoForId(id: str, session, json_filename, sleepTime):
     return dataObj
 
 
+def glassdoor_calculate_average_ratings(folder_path: str):
+    industry_ratings = defaultdict(list)
+
+    # Iterate over each file in the folder
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".json"):
+            with open(os.path.join(folder_path, filename), "r") as file:
+                data = json.load(file)
+                industry = data.get("industry")
+                rating_value = data.get("glasroom_rating", {}).get("ratingValue")
+
+                if industry and rating_value:
+                    industry_ratings[industry].append(float(rating_value))
+
+    # Calculate average ratings for each industry
+    average_ratings = {}
+    for industry, ratings in industry_ratings.items():
+        average_rating = sum(ratings) / len(ratings)
+        average_ratings[industry] = round(average_rating, 2)
+
+    return average_ratings
+
+
 if __name__ == "__main__":
     testSession = create_session(None, True, True)
     dir_to_check = "data_json"
@@ -166,7 +194,7 @@ if __name__ == "__main__":
         for index, file in enumerate(files):
             if file.endswith(".json"):
                 json_filename = os.path.join(root, file)
-                if is_file_modified_over_a_week_ago(json_filename):
+                if is_file_modified_over_duration(json_filename, "1w"):
                     data_id = file.replace(".json", "")
                     ret = glassdoorGetInfoForId(
                         data_id, testSession, json_filename, sleepTime
@@ -186,4 +214,21 @@ if __name__ == "__main__":
                 else:
                     fine += 1
                     print_status("fine", index, total_files, file, print_over=True)
+
+    glassDoorClean(
+        index_filename="site_id.json",
+        dir_to_check="data_json",
+        average_data_index="average_ratings.json",
+    )
+
+    folder_path = "entities"
+    average_ratings = glassdoor_calculate_average_ratings(folder_path)
+
+    # Output results as JSON object
+    with open("glassdoor_average_ratings_by_industry.json", "w") as json_file:
+        json.dump(average_ratings, json_file, indent=4)
+
+    print("Average Ratings by Industry:")
+    for industry, avg_rating in average_ratings.items():
+        print(f"{industry}: {avg_rating:.2f}")
     print_status_line(total_files, updated=updated, fine=fine, failed=failed)

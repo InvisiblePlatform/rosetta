@@ -100,6 +100,108 @@ const translate = {
     "trust-scam": "trustsc.title",
     "wbm": "wbm.title",
 };
+
+let industryAverageData = {};
+const industryAverageLookup = {
+    "goodonyou": [
+        {
+            "file": "glassdoor_average_ratings_by_category.json",
+            "discriminator": "category",
+            "value": "average_rating",
+            "labelAffix": "Average Rating for"
+        },
+    ],
+    "bcorp": [
+        {
+            "file": "bcorp_average_score_by_industry.json",
+            "discriminator": "industry",
+            "value": "average_score",
+            "labelAffix": "Average Score for"
+        },
+    ],
+    "glassdoor": [
+        {
+            "file": "glassdoor_average_ratings_by_industry.json",
+            "discriminator": "industry",
+            "value": "average_rating",
+            "labelAffix": "Average Rating for"
+        },
+    ],
+    "lobbyfacts": [
+        {
+            "file": "lobbyeu_average_calculated_cost_by_category.json",
+            "discriminator": "category",
+            "value": "average_cost",
+            "labelAffix": "Average Cost for"
+        },
+        {
+            "file": "lobbyeu_average_fte_by_category.json",
+            "discriminator": "category",
+            "value": "average_fte",
+            "labelAffix": "Average FTE for"
+        },
+        {
+            "file": "lobbyeu_average_meeting_count_by_category.json",
+            "discriminator": "category",
+            "value": "average_meeting_count",
+            "labelAffix": "Average Meeting Count for"
+        },
+        {
+            "file": "lobbyeu_average_lobbyist_count_by_category.json",
+            "discriminator": "category",
+            "value": "average_lobbyist_count",
+            "labelAffix": "Average Lobbyist Count for"
+        },
+    ],
+    "opensecrets": [
+        {
+            "file": "opensec_industries_contribution_amounts_averages.json",
+            "discriminator": "industry",
+            "value": "average_contribution",
+            "labelAffix": "Average Contribution for"
+        },
+        {
+            "file": "opensec_industries_lobbying_amounts_averages.json",
+            "discriminator": "industry",
+            "value": "average_lobbying",
+            "labelAffix": "Average Lobbying for"
+        },
+        {
+            "file": "opensec_industries_number_of_lobbyists_in_government_averages.json",
+            "discriminator": "industry",
+            "value": "average_lobbyists_in_government",
+            "labelAffix": "Average Lobbyists in Government for"
+        },
+        {
+            "file": "opensec_industries_number_of_lobbyists_not_in_government_averages.json",
+            "discriminator": "industry",
+            "value": "average_lobbyists_not_in_government",
+            "labelAffix": "Average Lobbyists not in Government for"
+        },
+    ],
+    "trust-pilot": [
+        {
+            "file": "trustpilot_bottom_level_category_averages.json",
+            "discriminator": "category",
+            "value": "average_rating",
+            "labelAffix": "Average Rating for"
+        },
+        {
+            "file": "trustpilot_top_level_category_averages.json",
+            "discriminator": "category",
+            "value": "average_rating",
+            "labelAffix": "Average Rating for"
+        },
+    ],
+    "yahoo": [
+        {
+            "file": "yahoo_peer_group_averages.json",
+            "discriminator": "industry",
+            "value": "average_esg_score",
+            "labelAffix": "Average ESG Score for"
+        },
+    ],
+}
 const defaultestOrder = Object.keys(translate);
 let defaultOrder = [];
 let defaultOrderWbm = [];
@@ -157,7 +259,7 @@ let knownPosts = {};
 let knownPostsByLocation = {};
 
 const currenturl = window.location.href;
-const containsSpeedcam = currenturl.includes("speedcam.html");
+const containsSpeedcam = currenturl.includes("speedcam");
 const isSpeedcam = containsSpeedcam ? true : false;
 
 Url = {
@@ -191,7 +293,12 @@ function debugLogging(message, data = false) {
 
 function setSearchParam(key, value) {
     const url = new URL(window.location.href);
-    url.searchParams.set(key, value);
+    // if the value is empty, remove the key
+    if (value === '' || value === undefined || value === null || value === false || value === 'false' || value === 'undefined' || value === 'null') {
+        url.searchParams.delete(key);
+    } else {
+        url.searchParams.set(key, value);
+    }
     window.history.replaceState(null, null, url.toString());
 }
 
@@ -205,6 +312,7 @@ function pageSetup() {
     pageLocation = Url.get.site ? Url.get.site : false;
     addToolsSection()
     resetSettings(false)
+    fetchIndustryAverageData()
     if (Url.get.site) {
         loadPageCore(pageLocation)
         addSettings()
@@ -221,6 +329,23 @@ function pageSetup() {
 function resetSettings(change = true) {
     settingsState = defaultSettingsState;
     if (change) settingsStateChange()
+}
+
+function fetchIndustryAverageData() {
+    for (const item in industryAverageLookup) {
+        for (const file of industryAverageLookup[item]) {
+            fetch(`${dataURL}/ds/${file.file}`).then(response => response.json()).then(data => {
+                descriminator = file.discriminator;
+                if (!industryAverageData.hasOwnProperty(item)) {
+                    industryAverageData[item] = {};
+                }
+                if (!industryAverageData[item].hasOwnProperty(descriminator)) {
+                    industryAverageData[item][descriminator] = {};
+                }
+                industryAverageData[item][descriminator][file.labelAffix] = data;
+            });
+        }
+    }
 }
 
 function checkExtensionVersion(currentVersion = false) {
@@ -319,6 +444,7 @@ function settingsStateChange() {
 }
 
 function registerLanguageToggle() {
+    if (isSpeedcam) return;
     const select = document.getElementById("langselect");
     for (let i = 0, len = select.childElementCount; i < len; ++i) {
         if (select.children[i].value == settingsState.preferred_language)
@@ -637,9 +763,9 @@ function sectionTitleString(i18n, label, id, dataLoc, subname = false, tab = fal
     if (tab !== false) {
         if (tab == 0) {
             return `${sectionHeaderString}${hoverTitleString(id)}<div class="tabButtonArea"></div><div class="tabContainer">
-                <div class="tabContent activeLeft" ${dataLoc} data-tab="0" data-tabLabel="${subname}" style="display: grid;">${buttonString}`
+                <div class="tabContent activeLeft" ${dataLoc} data-tab="0" data-tabLabel="${subname.replace("www.", "")}" style="display: grid;">${buttonString}`
         } else {
-            return `<div class="tabContent inactiveRight" ${dataLoc} data-tab="${tab}" data-tabLabel="${subname}" style="display: none;">${buttonString}`
+            return `<div class="tabContent inactiveRight" ${dataLoc} data-tab="${tab}" data-tabLabel="${subname.replace("www.", "")}" style="display: none;">${buttonString}`
         }
     }
     return `${sectionHeaderString}${subnameString}${hoverTitleString(id)}`
@@ -705,14 +831,13 @@ function addToolsSection() {
     const voteButtons = document.getElementById('Invisible-interaction');
 
     if (isSpeedcam || Url.get.exhibit) {
-        body.parentNode.setAttribute("style", "--scroll-width: 0px; --c-background: transparent; --c-background-units: #0009; background-color: transparent;");
+        body.parentNode.setAttribute("style", "--scroll-width: 0px; --c-background: transparent; --c-background-units: #0009;");
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content > .contentSection').style.backdropFilter = blur;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backdropFilter = blur;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.top = 'calc(100vh - 190px)';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.position = 'sticky';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backdropFilter = blur;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backdropFilter = blur;
-        body.setAttribute("style", "background-color: transparent;");
         closeButton.style.visibility = "hidden";
         settingsButton.style.visibility = "hidden";
         debugLogging("exhibitMode");
@@ -1055,6 +1180,17 @@ function moduleLobbyEu(data) {
         ["Meetings with the EU", "meeting_count", data.meeting_count, false],
         ["Lobbyist Passes Count", "passes_count", data.passes_count, false],
     ]
+    if (data.category != "") {
+        if (industryAverageData["lobbyfacts"]["category"] != undefined) {
+            const averages = industryAverageData["lobbyfacts"]["category"];
+            for (const item in averages) {
+                if (averages[item].hasOwnProperty(data.category)) {
+                    dataForTable.push([`${item} ${data.category}`, "industry_average", averages[item][data.category], false])
+                }
+            }
+
+        }
+    }
     return `<div class="fullBleed"><div>
             ${dataToTable(dataForTable, false, "lb")}
             ${sourceStringClose(sourceUrl, "EU Transparency register via LobbyFacts.eu")}`;
@@ -1069,12 +1205,33 @@ function moduleGoodOnYou(data) {
     const lrating = Math.floor(data.labourRating / 4);
     const arating = Math.floor(data.animalRating / 4);
     const erating = Math.floor(data.environmentRating / 4);
+    const categories = data.categories.map(x => x.name.toLowerCase());
     const dataForTable = [
         ["Labour Rating", "lr", lrating, 5],
         ["Animal Rating", "ar", arating, 5],
         ["Environment Rating", "er", erating, 5],
         ["Price", "p", data.price, 4],
     ]
+    if (industryAverageData["goodonyou"]["category"] != undefined) {
+        const averages = industryAverageData["goodonyou"]["category"];
+        for (const category in categories) {
+            for (const item in averages) {
+                if (averages[item].hasOwnProperty(categories[category])) {
+                    averages_for_category = averages[item][categories[category]]
+                    formatted_averages_for_category = [
+                        [`Ethical Rating Average for ${categories[category]}`, "ra", Math.floor(averages_for_category["ethicalRating"] / 4), 5],
+                        [`Environment Rating Average for ${categories[category]}`, "era", Math.floor(averages_for_category["environmentRating"] / 4), 5],
+                        [`Labour Rating Average for ${categories[category]}`, "lra", Math.floor(averages_for_category["labourRating"] / 4), 5],
+                        [`Animal Rating Average for ${categories[category]}`, "ara", Math.floor(averages_for_category["animalRating"] / 4), 5],
+                        [`Price Average for ${categories[category]}`, "pa", Math.floor(averages_for_category["price"]), 4]
+                    ]
+                    for (const average in formatted_averages_for_category) {
+                        dataForTable.push(formatted_averages_for_category[average])
+                    }
+                }
+            }
+        }
+    }
     return `${pieString(data.rating, false, "ratingOutOf", rating, '/5', false)}
             <div class="scoreText"><div>
             ${dataToTable(dataForTable, true, "g")}
@@ -1087,7 +1244,6 @@ function moduleBcorp(data) {
     const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 140+'">@</span></div>`;
     if (currentModuleState["bcorp"]["_preview"] == undefined) currentModuleState["bcorp"]["_preview"] = '';
     const dataForTable = [
-        ["Industry Average Score", "industry_average", data.score_industryAverage, "140+"],
         ["Governance", "governance", data.Governance, false],
         ["Workers", "workers", data.Workers, false],
         ["Community", "community", data.Community, false],
@@ -1095,7 +1251,14 @@ function moduleBcorp(data) {
         ["Customers", "customers", data.Customers, false],
     ]
     currentModuleState["bcorp"]["_preview"] += previewTemplate.replace("@", data.score).replace("&", data.slug);
-
+    if (industryAverageData["bcorp"]["industry"] != undefined) {
+        const averages = industryAverageData["bcorp"]["industry"];
+        for (const item in averages) {
+            if (averages[item].hasOwnProperty(data.industry)) {
+                dataForTable.push([`${item} ${data.industry}`, "industry_average", averages[item][data.industry], "140+"])
+            }
+        }
+    }
     return `${notPieString(data.score, false, "ratingOutOf", iconUrl, "/140+")}
             <div class="scoreText"><div>
             ${dataToTable(dataForTable, true, "bcorp")}
@@ -1126,6 +1289,14 @@ function moduleYahoo(data) {
         ["Social Risk Score", "social", data.socialScore, "40+"],
         ["Total ESG", "total", data.totalEsg, "40+"],
     ]
+    if (industryAverageData["yahoo"]["industry"] != undefined) {
+        const averages = industryAverageData["yahoo"]["industry"];
+        for (const item in averages) {
+            if (averages[item].hasOwnProperty(data.peerGroup)) {
+                dataForTable.push([`${item} ${data.peerGroup}`, "industry_average", averages[item][data.peerGroup], "40+"])
+            }
+        }
+    }
     return `${pieString(data.totalEsg, false, "ratingOutOf", false, '/40+')}
     <div class="scoreText"><div>
         ${dataToTable(dataForTable, true, "esg")}
@@ -1184,19 +1355,29 @@ function moduleGlassdoor(data) {
     currentModuleState["glassdoor"]["_preview"] += previewTemplate.replace("@", data.glasroom_rating.ratingValue).replace("&", data.source);
     const percentValue = (parseFloat(data.glasroom_rating.ratingValue) / 5) * 100;
     const typeClean = data.type.toLowerCase().replace(" - ", "_").replace(" ", "_")
+    let dataForTable = [
+        ["Rating Count", "ratingCount", data.glasroom_rating.ratingCount, false],
+        ["Company Type", "companyt", data.type, false],
+        ["Headquarters", "headquarters", data.headquarters, false],
+        ["Founded", "founded", data.founded, false],
+        ["Industry", "industry", data.industry, false],
+        ["Revenue", "revenue", data.revenue, false],
+        ["Size", "size", data.size, false],
+    ]
+
+    if (industryAverageData["glassdoor"]["industry"] != undefined) {
+        const averages = industryAverageData["glassdoor"]["industry"];
+        for (const item in averages) {
+            if (averages[item].hasOwnProperty(data.industry)) {
+                dataForTable.push([`${item} ${data.industry}`, "industry_average", averages[item][data.industry], false])
+            }
+        }
+    }
     return `${pieString(data.glasroom_rating.ratingValue, false, "ratingOutOf", percentValue, "/5", data.glasroom_rating.ratingCount)}
             <div class="scoreText">
             <div class="">
             <div class="ratingCount mobileOnly">${data.glasroom_rating.ratingCount} <emphasis data-i18n="glassdoor.reviews"></emphasis></div>
-            <table class="dataTable">
-            <tr><th data-i18n="common.industry_average">Industry Average Score</th><td class="ratingOutOf glass" style="--outOf:'/5'">${data.score_industryAverage}</td></tr>
-            <tr><th data-i18n="glassdoor.companyt"></th><td class="ratingOutOf glass" data-i18n="glassdoor.${typeClean}">${data.type}</td></tr>
-            <tr><th data-i18n="glassdoor.headquarters"></th><td class="ratingOutOf glass">${data.headquarters}</td></tr>
-            <tr><th data-i18n="glassdoor.founded"></th><td class="ratingOutOf glass">${data.founded}</td></tr> 
-            <tr><th data-i18n="glassdoor.industry"></th><td class="ratingOutOf glass">${data.industry}</td></tr>
-            <tr><th data-i18n="glassdoor.revenue"></th><td class="ratingOutOf glass">${data.revenue}</td></tr>
-            <tr><th data-i18n="glassdoor.size"></th><td class="ratingOutOf glass">${data.size}</td></tr>
-            </table>
+            ${dataToTable(dataForTable, false, "glassdoor")}
             ${sourceStringClose(data.url, "GLASSDOOR")}`;
 }
 
@@ -1227,20 +1408,29 @@ function moduleTrustpilot(data) {
         division = (numberOfStars == i) ? remainingStar : division;
         starString += `<span class="coolStar" style="--division:${division};"></span>`
     }
+    let dataForTable = [
+        ["Total Reviews", "total", data.reviews.total, false],
+        ["One Star", "one", data.reviews.oneStar, false],
+        ["Two Star", "two", data.reviews.twoStars, false],
+        ["Three Star", "three", data.reviews.threeStars, false],
+        ["Four Star", "four", data.reviews.fourStars, false],
+        ["Five Star", "five", data.reviews.fiveStars, false],
+    ]
+    if (industryAverageData["trust-pilot"]) {
+        const averages = industryAverageData["trust-pilot"]["category"];
+        for (const item in averages) {
+            if (averages[item].hasOwnProperty(data.bottomLevelCategory) || averages[item].hasOwnProperty(data.topLevelCategory)) {
+                dataForTable.push([`${item}`, "industry_average", averages[item][data.domain], false])
+            }
+        }
+    }
     return `${notPieString(data.score, false, "ratingOutOf", false, '/5', data.reviews.total)}
             <div class="scoreText">
             <div>
             <div class="stars">
             ${starString}
             </div>
-            <table class="" id="trustChart">
-            <tr><th data-i18n="trustpilot.total">Total Reviews</th><td>${data.reviews.total}</td></tr>
-            <tr><th data-i18n="trustpilot.one">One Star</th><td>${data.reviews.oneStar}</td></tr>
-            <tr><th data-i18n="trustpilot.two">Two Star</th><td>${data.reviews.twoStars}</td></tr>
-            <tr><th data-i18n="trustpilot.three">Three Star</th><td>${data.reviews.threeStars}</td></tr>
-            <tr><th data-i18n="trustpilot.four">Four Star</th><td>${data.reviews.fourStars}</td></tr>
-            <tr><th data-i18n="trustpilot.five">Five Star</th><td>${data.reviews.fiveStars}</td></tr>
-            </table>
+            ${dataToTable(dataForTable, false, "trustpilot")}
             ${sourceStringClose(sourceUrl, "TRUST PILOT")}`;
 }
 
@@ -1539,6 +1729,7 @@ function setBack(x = false) {
             titleBar.style.display =
             titleBar.style.position =
             titleBar.style.top = "";
+        recalculateList();
     }
 
     if (networkGraph != null && x != "closeNetworkGraph()") networkGraph.style.visibility = 'hidden';
@@ -1722,9 +1913,7 @@ function settingTemplate(id, i18n, title, state = "skip") {
     settings.appendChild(el)
 }
 
-
-function addSettings() {
-    // Language Picker
+function addLanguagePicker() {
     const languagePicker = document.createElement("label");
     languagePicker.classList.add("languageSelect")
     let languagePickerOptions = `<option value="-">-</option>`
@@ -1733,8 +1922,13 @@ function addSettings() {
     }
     languagePicker.innerHTML = `<h2 data-i18n="common.language">Language</h2>
                                 <select id="langselect" title="Language Picker">${languagePickerOptions}</select>`
+    return languagePicker
+}
 
-    settings.appendChild(languagePicker)
+
+function addSettings() {
+    // Language Picker
+    settings.appendChild(addLanguagePicker())
 
     settingTemplate("onScreen", "settings.dashboard", "Keep dashboard on screen", settingsState.keepOnScreen)
     settingTemplate("permaDark", "settings.darkMode", "Dark Mode", settingsState.darkMode)
@@ -1771,12 +1965,13 @@ function addSettings() {
     const priorityList = document.createElement("div");
     priorityList.id = "priority-list";
     listString = ''
-    wbmListString = ''
+    wbmListString = '<details><summary data-i18n="settings.wbm">WorldBenchmark</summary><div id="sortlist-wbm">'
     for (item in translate) {
         if (!item.startsWith("wbm")) {
             listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span></li>`
         } else if (item == "wbm") {
-            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span><div id="sortlist-wbm">${wbmListString}</div></li>`
+            wbmListString += `</div></details>`
+            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span>${wbmListString}</li>`
         } else {
             wbmListString += `<div data-id="${item}"><i class="priority-list-handle-wbm"></i><span>${translate[item]}</span></div>`
         }
@@ -1855,6 +2050,7 @@ function loadNetworkGraph(x) {
     send_message("IVClicked", "antwork");
     resetNodeStyles();
     setBack('closeNetworkGraph()');
+    layout.start();
 }
 
 function closeNetworkGraph(x) {
@@ -1882,6 +2078,7 @@ function closeNetworkGraph(x) {
     graphButtons.style.top = "";
     send_message("IVClicked", "unwork");
     setBack();
+    layout.stop();
 }
 
 function justSendBack(x) {
@@ -2122,6 +2319,7 @@ function recalculateList() {
 
     for (let index = 0; index < filteredPropertyOrder.length; index++) {
         value = filteredPropertyOrder[index];
+        // console.log(value)
         if (singleColumnModulesDesktop.includes(value)) {
             if (singleColumnModulesDesktop.includes(filteredPropertyOrder[index + 1]) && !seenModulesDesktop.includes(value)) {
                 gridTemplateAreasDesktop += `"${value} ${filteredPropertyOrder[index + 1]}" `;
@@ -2163,6 +2361,7 @@ function recalculateList() {
 
     debugLogging(`Desktop ${gridTemplateAreasDesktop}`)
     debugLogging(`App ${gridTemplateAreasApp}`)
+
     // create the blanks
     // Count the blanks that are needed between app&desktop then create them
     // If there are no blanks needed, remove all blanks
@@ -2181,13 +2380,13 @@ function recalculateList() {
     // add the correct number of blanks to the gridTemplateAreas string
     if (blankCountDesktop < numberOfBlanks) {
         for (let index = blankCountDesktop; index < numberOfBlanks; index++) {
-            gridTemplateAreasDesktop += `"blank${index}" "blank${index}" `;
+            gridTemplateAreasDesktop += `"blank${index} blank${index}" `;
             gridAutoRowsDesktop += "0px "
         }
     }
     if (blankCountApp < numberOfBlanks) {
         for (let index = blankCountApp; index < numberOfBlanks; index++) {
-            gridTemplateAreasApp += `"blank${index}" "blank${index}" `;
+            gridTemplateAreasApp += `"blank${index} blank${index}" `;
             gridAutoRowsApp += "0px "
         }
     }
@@ -2207,7 +2406,7 @@ function recalculateList() {
     }
     //document.getElementById("content").style.gridTemplateAreas = gridTemplateAreas;
     //document.getElementById("content").style.gridAutoRows = gridAutoRows;
-    const styleMode = true;
+    const styleMode = false;
     if (styleMode) {
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridTemplateAreas = gridTemplateAreasDesktop;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridAutoRows = gridAutoRowsDesktop;
@@ -2218,12 +2417,16 @@ function recalculateList() {
     } else {
         if (Object.values(content.classList).includes("small")) {
             debugLogging("small")
-            content.style = `grid-template-areas: ${gridTemplateAreasSmall}; grid-auto-rows: ${gridAutoRowsSmall};`
+            content.style.gridTemplateAreas = gridTemplateAreasSmall;
+            content.style.gridAutoRows = gridAutoRowsSmall;
         } else if (Object.values(content.classList).includes("mobile")) {
             debugLogging("app")
-            content.style = `grid-template-areas: ${gridTemplateAreasApp}; grid-auto-rows: ${gridAutoRowsApp};`
+            content.style.gridTemplateAreas = gridTemplateAreasApp;
+            content.style.gridAutoRows = gridAutoRowsApp;
         } else {
-            content.style = `grid-template-areas: ${gridTemplateAreasDesktop}; grid-auto-rows: ${gridAutoRowsDesktop};`
+            content.style.gridTemplateAreas = gridTemplateAreasDesktop;
+            content.style.gridAutoRows = gridAutoRowsDesktop;
+            // console.log(gridTemplateAreasDesktop)
             debugLogging("desktop")
         }
     }
@@ -2384,7 +2587,7 @@ function moduleUpdate(mesg, comment = false) {
         data = mesg
         sVB = elmt.getElementsByClassName("smallVoteBox")[0]
         if (typeof (sVB) == 'undefined') return
-        debugLogging("moduleUpdate comment", contentText)
+        debugLogging("moduleUpdate comment", mesg.content)
         if (elmt.getElementsByClassName("smallCommentBox").length > 0) {
             elmt.getElementsByClassName("smallCommentBox")[0].remove()
         }
@@ -2392,7 +2595,7 @@ function moduleUpdate(mesg, comment = false) {
         commentBox.classList.add("smallCommentBox")
         commentBox.setAttribute("data-location", mesg.uid)
         commentBox.innerHTML = `
-		<div>${contentText}<a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
+		<div>${mesg.content}<a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
         ${voteBox(data.uid, data, "smallerVoteBox hideInSmall")}`
 
         sVB.parentNode.insertBefore(commentBox, sVB)
@@ -2567,6 +2770,17 @@ function createPopoverOptions() {
                 currentModuleLocations.push(y);
         })
     }
+    if (isSpeedcam) {
+        popoverDiv.innerHTML += `<div id="speedCamDebug"><h3> SpeedCam Debug </h3>
+            <h4> Current SpeedCam </h4>
+            <span id="range_number">0</span>
+            <span id="number_number">0</span>
+            <span id="speed_number">0</span>
+            <span id="output_output">0</span>
+            <button id="speedCamSensorButton" onclick="connectSerial()">Serial Pair</button>
+            </div>
+            `
+    }
 
     popoverDiv.innerHTML += `<div id="popOptionsModuleLocations"><h3> Module Locations </h3>
             <h4> Current Module Locations </h4>
@@ -2715,7 +2929,7 @@ const detectDarkMode = window.matchMedia && window.matchMedia('(prefers-color-sc
 
 translator.fetch(languages).then(() => {
     translator.translatePageTo();
-    if (!Url.get.exhibit || isSpeedcam) {
+    if (!Url.get.exhibit || !isSpeedcam) {
         registerLanguageToggle();
     }
 });
@@ -2729,6 +2943,10 @@ window.addEventListener('keypress', (e) => {
     }
     if (e.key === "e") {
         addPopover("This is a test notification", true);
+    }
+    if (e.key === "r") {
+        recalculateList();
+        addPopover("Recalculated List");
     }
 });
 

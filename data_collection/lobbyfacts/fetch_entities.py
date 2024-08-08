@@ -1,12 +1,8 @@
-from email import message
-from pprint import pprint
-import re
 from urllib.parse import urlparse
 import csv
 import datetime
 import json
 import os
-from itsdangerous import NoneAlgorithm
 import pandas as pd
 import requests
 import sys
@@ -16,6 +12,7 @@ sys.path.append("..")
 
 from common import (
     is_file_modified_over_a_week_ago,
+    is_file_modified_over_duration,
     get_key,
     lookup_document_by_label,
     print_status,
@@ -97,8 +94,8 @@ def lobbyEuGetData(json_file):
         count += 1
         identification_code = value.get("Identification code")
         if identification_code:
-            if is_file_modified_over_a_week_ago(
-                f"json_data/{identification_code}.json"
+            if is_file_modified_over_duration(
+                f"json_data/{identification_code}.json", "2m"
             ):
                 url = f"https://www.lobbyfacts.eu/csv_export/{identification_code}"
                 response = requests.get(url)
@@ -162,7 +159,12 @@ def lobbyEuGetData(json_file):
 
 # Function to process a single JSON file
 def lobbyeuProcessJsonFile(
-    json_filename, available_ratings, ids_missing_domains, fresh_index_data, outliers
+    json_filename,
+    available_ratings,
+    available_ratings_plus,
+    ids_missing_domains,
+    fresh_index_data,
+    outliers,
 ):
     # Define the new variables to add to the data
     try:
@@ -241,6 +243,15 @@ def lobbyeuProcessJsonFile(
                 new_variables["website"] = domain.replace("www.", "")
                 domain_key = domain.replace("www.", "")
                 available_ratings[domain_key] = value
+                available_ratings_plus[domain_key] = {
+                    "source": clean.get("original_name"),
+                    "lobbyist_fte": clean.get("members_fte"),
+                    "lobbyist_count": clean.get("members"),
+                    "calculated_cost": clean.get("calculated_cost"),
+                    "meeting_count": meetings,
+                    "category": clean.get("main_category"),
+                    "slug": value,
+                }
 
             entity_filename = f"entities/{value}.json"
             # Write the modified data to the entities folder
@@ -268,6 +279,7 @@ def lobbyeuProcessJsonFile(
 
 def lobbyEuCleanEntities(
     output_index_filename="site_id.json",
+    output_index_plus_filename="site_id_plus.json",
     missing_filename="missing_websites.json",
     fresh_index=None,
 ):
@@ -277,6 +289,7 @@ def lobbyEuCleanEntities(
 
     # Define the new variables to add to the data
     available_ratings = {}
+    available_ratings_plus = {}
     ids_missing_domains = {}
     fresh_index_data = {}
     outliers = ["deleted"]
@@ -295,6 +308,7 @@ def lobbyEuCleanEntities(
                 lobbyeuProcessJsonFile(
                     json_filename=json_filename,
                     available_ratings=available_ratings,
+                    available_ratings_plus=available_ratings_plus,
                     ids_missing_domains=ids_missing_domains,
                     fresh_index_data=fresh_index_data,
                     outliers=outliers,
@@ -303,10 +317,69 @@ def lobbyEuCleanEntities(
     with open(output_index_filename, "w") as index_file:
         json.dump(available_ratings, index_file, indent=4)
 
+    with open(output_index_plus_filename, "w") as index_file:
+        json.dump(available_ratings_plus, index_file, indent=4)
+
     with open(missing_filename, "w") as index_file:
         json.dump(ids_missing_domains, index_file, indent=4)
 
     # pprint(len(available_ratings))
+
+
+def lobbyEuAverageRatingsByCategory(output_index_plus_filename="site_id_plus.json"):
+    with open(output_index_plus_filename, "r") as json_file:
+        data = json.load(json_file)
+        categories_fte = {}
+        categories_lobbyist_count = {}
+        categories_calculated_cost = {}
+        categories_meeting_count = {}
+        for key, value in data.items():
+            category = value.get("category")
+            fte = value.get("lobbyist_fte")
+            meeting_count = value.get("meeting_count")
+            lobbyist_count = value.get("lobbyist_count")
+            calculated_cost = value.get("calculated_cost")
+            if category in categories_fte:
+                categories_fte[category].append(fte)
+            else:
+                categories_fte[category] = [fte]
+            if category in categories_meeting_count:
+                categories_meeting_count[category].append(meeting_count)
+            else:
+                categories_meeting_count[category] = [meeting_count]
+            if category in categories_lobbyist_count:
+                categories_lobbyist_count[category].append(lobbyist_count)
+            else:
+                categories_lobbyist_count[category] = [lobbyist_count]
+            if category in categories_calculated_cost:
+                categories_calculated_cost[category].append(calculated_cost)
+            else:
+                categories_calculated_cost[category] = [calculated_cost]
+
+        for category, fte in categories_fte.items():
+            categories_fte[category] = sum(fte) / len(fte)
+        for category, meeting_count in categories_meeting_count.items():
+            categories_meeting_count[category] = sum(meeting_count) / len(meeting_count)
+        for category, lobbyist_count in categories_lobbyist_count.items():
+            categories_lobbyist_count[category] = sum(lobbyist_count) / len(
+                lobbyist_count
+            )
+        for category, calculated_cost in categories_calculated_cost.items():
+            categories_calculated_cost[category] = sum(calculated_cost) / len(
+                calculated_cost
+            )
+
+        with open("lobbyeu_average_fte_by_category.json", "w") as f:
+            json.dump(categories_fte, f, indent=4)
+
+        with open("lobbyeu_average_meeting_count_by_category.json", "w") as f:
+            json.dump(categories_meeting_count, f, indent=4)
+
+        with open("lobbyeu_average_lobbyist_count_by_category.json", "w") as f:
+            json.dump(categories_lobbyist_count, f, indent=4)
+
+        with open("lobbyeu_average_calculated_cost_by_category.json", "w") as f:
+            json.dump(categories_calculated_cost, f, indent=4)
 
 
 if __name__ == "__main__":
@@ -317,7 +390,9 @@ if __name__ == "__main__":
     lobbyEuGetData(index_file)
     lobbyEuCleanEntities(
         output_index_filename="site_id.json",
+        output_index_plus_filename="site_id_plus.json",
         missing_filename="missing_websites.json",
         fresh_index=index_file,
     )
+    lobbyEuAverageRatingsByCategory()
     print("complete")

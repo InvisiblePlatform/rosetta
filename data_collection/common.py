@@ -77,8 +77,14 @@ def is_file_modified_over_duration(file_path: str, duration_str: str) -> bool:
     match = duration_regex.match(duration_str)
     if not match:
         raise ValueError("Invalid duration string format. Example format: '2y 1m 1d'")
+    processed_groups = []
+    for group in match.groups():
+        if group is None:
+            processed_groups.append(0)
+        else:
+            processed_groups.append(int(group))
 
-    years, months, days = map(int, match.groups())
+    years, months, days = map(int, processed_groups)
 
     try:
         modification_time = os.path.getmtime(file_path)
@@ -95,6 +101,58 @@ def is_file_modified_over_duration(file_path: str, duration_str: str) -> bool:
         return True
     else:
         return False
+
+
+def is_file_modified_over_duration_or_oldest_ten_percent_of_list_of_files(
+    list_of_files: List[str], duration_str: str
+) -> List[str] | None:
+    """
+    Checks if a file has been modified over a specified duration ago or oldest 10% of the files in the list have been modified over the specified duration ago.
+
+    Args:
+        list_of_files (List[str]): The list of file paths.
+        duration_str (str): A string representing the duration. Format: "2y 1m 1d"
+
+    Returns:
+        List[str] | None: A list of files that have been modified over the specified duration ago or do not exist, or the oldest 10% of files or None if no files meet the criteria.
+    Raises:
+        ValueError: If the duration string has an invalid format.
+    """
+    duration_regex = re.compile(r"(?:(\d+)y)?\s*(?:(\d+)m)?\s*(?:(\d+)d)?")
+    match = duration_regex.match(duration_str)
+    if not match:
+        raise ValueError("Invalid duration string format. Example format: '2y 1m 1d'")
+    processed_groups = []
+    for group in match.groups():
+        if group is None:
+            processed_groups.append(0)
+        else:
+            processed_groups.append(int(group))
+
+    years, months, days = map(int, processed_groups)
+
+    modified_files = []
+    for file_path in list_of_files:
+        try:
+            modification_time = os.path.getmtime(file_path)
+        except FileNotFoundError:
+            modified_files.append(file_path)
+            continue
+
+        modification_datetime = datetime.datetime.fromtimestamp(modification_time)
+
+        time_difference = datetime.datetime.now() - modification_datetime
+
+        duration_in_days = days + months * 30 + years * 365
+
+        if time_difference.days > duration_in_days:
+            modified_files.append(file_path)
+
+    num_files = len(list_of_files)
+    num_oldest_files = math.ceil(num_files * 0.1)
+    oldest_files = list_of_files[:num_oldest_files]
+
+    return modified_files if modified_files else oldest_files if oldest_files else None
 
 
 def send_notification(title: str, message: str) -> None:
@@ -422,7 +480,9 @@ def get_value_from_path(data, path):
     return value
 
 
-def lookup_document_by_label(label, alias=False, returnWebsite=False):
+def lookup_document_by_label(
+    label, alias=False, returnWebsite=False
+) -> str | Any | None:
     client = pymongo.MongoClient("mongodb://localhost:27017/")
     db = client["rop"]
     collection = db["wikidata"]
@@ -442,6 +502,82 @@ def lookup_document_by_label(label, alias=False, returnWebsite=False):
             return None
 
     return document
+
+
+def lookup_document_by_id(wikidata_id, returnWebsite=False) -> str | Any | None:
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["rop"]
+    collection = db["wikidata"]
+    query = {"id": wikidata_id}
+    document = collection.find_one(query)
+    if returnWebsite:
+        if document and "claims" in document and "P856" in document["claims"]:
+            canon = get_domain(
+                document["claims"]["P856"][0]["mainsnak"]["datavalue"]["value"]
+            )
+            return canon
+        else:
+            return None
+    return document
+
+
+def lookup_document_by_website(website, returnWebsite=False) -> str | Any | None:
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["rop"]
+    collection = db["wikidata"]
+    query = {"claims.P856.mainsnak.datavalue.value": {"$eq": website}}
+    document = collection.find_one(query)
+    if returnWebsite:
+        if document and "claims" in document and "P856" in document["claims"]:
+            canon = get_domain(
+                document["claims"]["P856"][0]["mainsnak"]["datavalue"]["value"]
+            )
+            return canon
+        else:
+            return None
+    return document
+
+
+# https://search.logo.dev/?query=
+def get_results_from_logodev_search(querystring: str) -> list:
+    if not querystring:
+        return []
+    url = f"https://search.logo.dev/?query={querystring}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    return []
+
+
+def wikidata_id_to_industry(wikidata_id):
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["rop"]
+    collection = db["wikidata"]
+    query = {"id": wikidata_id, "claims.P31": {"$exists": True}}
+    document = collection.find_one(query)
+
+    if document and "claims" in document and "P31" in document["claims"]:
+        industries = set()
+        for claim in document["claims"]["P31"]:
+            industry = claim["mainsnak"]["datavalue"]["value"]["id"]
+            industries.add(industry)
+
+        return list(industries)
+
+    else:
+        return None
+
+
+def wikidata_id_to_label(wikidata_id):
+    client = pymongo.MongoClient("mongodb://localhost:27017/")
+    db = client["rop"]
+    collection = db["wikidata"]
+    query = {"id": wikidata_id, "labels.en": {"$exists": True}}
+    document = collection.find_one(query)
+    if document and "labels" in document and "en" in document["labels"]:
+        return document["labels"]["en"]["value"]
+    else:
+        return None
 
 
 def get_domain(url, nottld=False, noDot=False):

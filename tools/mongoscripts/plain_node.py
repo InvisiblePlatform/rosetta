@@ -60,7 +60,7 @@ wiki_array = [f"{lang}wiki" for lang in label_array]
 pairing_id_out_list = {pair["id"]: pair["out"] for pair in graph_pairings}
 pairing_id_list = set([pair["id"] for pair in graph_pairings])
 
-skip_groups = ["Q13442814", "Q108095628", "Q93204"]
+skip_groups = ["Q13442814", "Q108095628", "Q93204", "Q196600", "Q1186399", "Q5398426"]
 single_groups = [
     ["Q591041"],
     ["Q2352616"],
@@ -228,11 +228,7 @@ def do_node(ids, collection, person=False, organisation=False) -> dict[str, list
 
         if node_groups in single_groups:
             continue
-        skipNode = False
-        for group in skip_groups:
-            if group in node_groups:
-                skipNode = True
-        if skipNode:
+        if any(group in node_groups for group in skip_groups):
             continue
 
         nullname = node.get("labels", {"en": {"value": "null"}}).get(
@@ -357,8 +353,6 @@ def do_graph(
     gnodes.extend(node_one["nodes"])
     links.extend(node_one["links"])
 
-    indexes = collection.index_information()
-
     if main_node is None:
         main_node = [node["id"] for node in gnodes]
     skipping_to_fancy = skip_to_fancy
@@ -393,7 +387,7 @@ def do_graph(
             gnodes.extend(newnode2["nodes"])
             links.extend(newnode2["links"])
 
-    # Remove duplicate nodes and links
+    # Remove duplicate links
     nodeIds = []
     for node in gnodes:
         nodeIds.append(node["id"])
@@ -414,11 +408,10 @@ def do_graph(
         source, target, linkType = link.split("@")
         outlinks.append({"source": source, "target": target, "type": linkType})
 
-    new_nodes = [node for node in gnodes if node["id"] in linkNodeIds]
+    graph = {"nodes": gnodes, "links": outlinks}
 
-    graph = {"nodes": new_nodes, "links": outlinks}
-    if not skip_to_fancy and len(new_nodes) == 0:
-        return do_graph(main_node, file_out, collection, node_depth+1, silent, True)
+    if not skip_to_fancy and len(gnodes) == 0:
+        return do_graph(main_node, file_out, collection, node_depth + 1, silent, True)
 
     if file_out:
         with open(file_out.encode("utf-8"), "w") as f:

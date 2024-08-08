@@ -1,11 +1,10 @@
-from calendar import c
 import os
-from re import I
-import subprocess
+from numpy import save
 import requests
 from pprint import pprint
 import json
 from typing import Any
+import datetime
 import sys
 
 sys.path.append("..")
@@ -105,6 +104,10 @@ def goodonyouGetBrand(brand, ID):
                 "lastRated": json_data["pageProps"]["brand"].get("lastRated", None),
                 "ethicalLabel": json_data["pageProps"]["brand"]["ethicalLabel"],
                 "ethicalRating": json_data["pageProps"]["brand"]["ethicalRating"],
+                "environmentRating": json_data["pageProps"]["brand"][
+                    "environmentRating"
+                ],
+                "environmentLabel": json_data["pageProps"]["brand"]["environmentLabel"],
                 "labourRating": json_data["pageProps"]["brand"]["labourRating"],
                 "labourLabel": json_data["pageProps"]["brand"]["labourLabel"],
                 "animalRating": json_data["pageProps"]["brand"]["animalRating"],
@@ -122,8 +125,10 @@ def goodonyouGetBrand(brand, ID):
         print(f"Error with {brand}")
         print(f"{e}")
         return None, None
-
-    brandObj["categories"] = brand_catagories
+    # convert all the categories to lowercase
+    brandObj["categories"] = [
+        category.lower().replace("&", "and") for category in brand_catagories
+    ]
 
     if not json_data.get("pageProps"):
         return None, None
@@ -142,6 +147,7 @@ def goodonyouUpdate():
         request_filter="/index.json",
         from_url=True,
     )
+    print(f"ID: {ID}")
 
     if is_file_modified_over_a_week_ago("categories.json"):
         goodonyouCategoryIndexGet(ID=ID)
@@ -175,6 +181,7 @@ def goodonyouUpdate():
             if brand not in brands_to_do:
                 brands_to_do.add(brand)
 
+    categories_to_brandid = {}
     brands_download_done = False
     brands_checked = set()
     while not brands_download_done:
@@ -199,6 +206,11 @@ def goodonyouUpdate():
                 pprint(f"Adding {similarBrand['id']} to brands_to_do")
                 brands_to_do.add(similarBrand["id"])
 
+        for category in data["categories"]:
+            if category not in categories_to_brandid:
+                categories_to_brandid[category] = set()
+            categories_to_brandid[category].add(brand)
+
         if len(brands_to_do) == 0:
             brands_download_done = True
 
@@ -210,12 +222,71 @@ def goodonyouUpdate():
             print_over=True,
         )
 
-    pprint(brandInfo)
+    # pprint(brandInfo)
     with open("brands.json", "w") as file:
         json.dump(brandInfo, file, indent=4)
 
+    with open("brand_id_list.list", "w") as file:
+        for brand in brands_checked:
+            file.write(f"{brand}\n")
+
+    categories_to_brandid = {
+        key: list(value) for key, value in categories_to_brandid.items()
+    }
+    with open("categories_to_brandid.json", "w") as file:
+        json.dump(categories_to_brandid, file, indent=4)
+
     print(f"Total brands seen: {len(brandInfo)}")
+    return categories_to_brandid, brandInfo
+
+
+def goodonyouCategoryAverages(categories_to_brandid, brands):
+    average_ratings_by_category = {}
+    types_of_ratings = [
+        "ethicalRating",
+        "labourRating",
+        "animalRating",
+        "environmentRating",
+        "price",
+    ]
+    for item in categories_to_brandid:
+        print(f"Processing {item}")
+        category_brands = categories_to_brandid[item]
+        category_ratings = {}
+        average_ratings = {}
+        for brand in category_brands:
+            number_of_brands = len(category_brands)
+            if brands.get(brand):
+                for rating_type in types_of_ratings:
+                    if brands[brand].get(rating_type):
+                        if rating_type not in category_ratings:
+                            category_ratings[rating_type] = []
+                        category_ratings[rating_type].append(
+                            float(brands[brand][rating_type])
+                        )
+        for rating_type in category_ratings:
+            average_ratings[rating_type] = sum(category_ratings[rating_type]) / len(
+                category_ratings[rating_type]
+            )
+        average_ratings["number_of_brands"] = number_of_brands
+
+        average_ratings_by_category[item] = average_ratings
+
+    with open("glassdoor_average_ratings_by_category.json", "w") as file:
+        json.dump(average_ratings_by_category, file, indent=4)
+    return average_ratings_by_category
 
 
 if __name__ == "__main__":
-    goodonyouUpdate()
+    categories_to_brandid, brandInfo = goodonyouUpdate()
+    average_ratings_by_category = goodonyouCategoryAverages(
+        categories_to_brandid, brandInfo
+    )
+    build_state = {
+        "entity_count": len(brandInfo),
+        "category_count": len(average_ratings_by_category),
+        "build_date": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "source": "goodonyou",
+    }
+    pprint(build_state)
+    save_data_to_file(build_state, "build_state.json")

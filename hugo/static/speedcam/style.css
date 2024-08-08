@@ -1,7 +1,7 @@
 body {
     overflow-y: hidden;
     overflow-x: hidden;
-
+    background: blue;
 }
 
 .noDebug {
@@ -25,10 +25,12 @@ body {
 }
 
 #blankSplash {
+    --adjust-opacity: 1;
     font-size: 10vw;
     margin: 0 auto;
     height: 100%;
     width: 100%;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,6 +39,9 @@ body {
     text-decoration-skip-ink: all;
     text-decoration-color: green;
     animation: animatedLine 10s infinite both alternate linear;
+    background-color: #000000;
+    opacity: var(--adjust-opacity);
+    transition: opacity 0.2s;
 }
 
 @keyframes animatedLine {
@@ -190,18 +195,12 @@ iframe {
     background-color: white;
 }
 
-#topDisplay>* {
-    position: absolute;
-    transition: top 1s;
-    top: 0vh;
-}
-
 .offScreen {
-    top: 100vh !important;
+    transform: translate(0, 100vh);
 }
 
 .offScreenUp {
-    bottom: 100vh !important;
+    transform: translate(0, -100vh);
 }
 
 .popoverApi {
@@ -209,7 +208,141 @@ iframe {
     width: 300px;
     height: 200px;
     margin: 0 auto;
-    background-color: #000000AA;
+    background-color: #000000AA !important;
     z-index: 1001;
     place-self: center;
+    border-radius: 10px;
+    padding: 8px;
+}
+
+#speedCamDebug {
+    #range_number {
+        display: block;
+        font-size: 7em;
+        width: 100%;
+        text-align: center;
+    }
+
+    #number_number,
+    #speed_number {
+        display: none;
+    }
+
+    #output_output {
+        font-size: 0.4em;
+        display: block;
+        width: 100%;
+    }
+}
+
+#popOverMenu {
+    background-color: #FFFFFFCC !important;
+}
+
+
+::backdrop {
+    background-color: transparent;
+}
+
+@starting-style {
+    ::backdrop {
+        background-color: transparent;
+    }
+}
+
+#topDisplay {
+    display: grid;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    grid-area: topDisplay;
+}
+
+.story {
+    font-family: 'Space Grotesk', sans-serif;
+    top: 0;
+    left: 0;
+    position: relative;
+    background-size: cover;
+    height: auto;
+    width: auto;
+    grid-area: 1 / 1;
+    margin: 40px;
+    border-radius: 22px;
+
+    >.storyInfo {
+        color: black;
+        background-color: white;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+
+        width: calc(927px - 80px);
+        height: fit-content;
+        min-height: 14.1%;
+        top: 10%;
+        padding: 80px;
+        margin: 0 auto;
+        border-radius: 11px;
+
+        >.title {
+            font-size: 80px;
+            font-weight: 300;
+            text-wrap: balance;
+        }
+
+        >.authorArticle {
+            font-size: 48px;
+            font-weight: 500;
+            place-self: flex-end;
+        }
+
+    }
+
+    >.attribution {
+        position: absolute;
+        float: right;
+        bottom: 3em;
+        right: 3em;
+
+    }
+}
+
+#content {
+    background-color: white;
+    top: 20%;
+    margin: 0 auto;
+    left: 5%;
+    padding: 80px !important;
+    grid-area: content;
+}
+
+body {
+    display: grid;
+    gap: 40px;
+    grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
+    padding: 40px;
+}
+
+#disclaimer {
+    grid-area: disclaimer;
+    background-color: #FFFFFFAA;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#titlebar {
+    grid-area: titlebar;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    height: 80px;
+    place-self: center;
+}
+
+#graph-container {
+    grid-area: graph;
 }

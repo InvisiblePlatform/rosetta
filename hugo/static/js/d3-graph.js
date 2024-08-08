@@ -62,7 +62,6 @@ const layout = new FA2Layout(graph, {
     }
 });
 renderer.camera.ratio = 0.69;
-layout.start()
 
 function zoomReset() {
     renderer.camera.animate({ x: 0.5, y: 0.5, ratio: 0.69 }, { duration: 150 });

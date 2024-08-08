@@ -103,7 +103,7 @@ def process_domain(domain):
 
                     if isinstance(data, dict):
                         tag_data[tag] = data.get("rating", False)
-                        if tag_data[tag] == False:
+                        if tag_data[tag] == False or tag_data[tag] == '':
                             tag_data[tag] = float(data.get("score", False))
                         else:
                             tag_data[tag] = float(tag_data[tag])

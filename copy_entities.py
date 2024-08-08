@@ -92,3 +92,32 @@ for filename in os.listdir(folder_path):
     file_path = os.path.join(folder_path, filename)
     if os.path.isfile(file_path):
         os.remove(file_path)
+
+
+# copy average ratings to public folder
+average_ratings_files = [
+    "goodonyou/glassdoor_average_ratings_by_category.json",
+    "bcorp/bcorp_average_score_by_industry.json",
+    "glassdoor/glassdoor_average_ratings_by_industry.json",
+    "lobbyfacts/lobbyeu_average_calculated_cost_by_category.json",
+    "lobbyfacts/lobbyeu_average_fte_by_category.json",
+    "lobbyfacts/lobbyeu_average_meeting_count_by_category.json",
+    "lobbyfacts/lobbyeu_average_lobbyist_count_by_category.json",
+    "opensecrets/opensec_industries_contribution_amounts_averages.json",
+    "opensecrets/opensec_industries_lobbying_amounts_averages.json",
+    "opensecrets/opensec_industries_number_of_lobbyists_in_government_averages.json",
+    "opensecrets/opensec_industries_number_of_lobbyists_not_in_government_averages.json",
+    "trust-pilot/trustpilot_bottom_level_category_averages.json",
+    "trust-pilot/trustpilot_top_level_category_averages.json",
+    "yahoo/yahoo_peer_group_averages.json",
+]
+
+for filename in average_ratings_files:
+    new_filename = filename.split("/")[-1]
+    if not os.path.isfile(f"data_collection/{filename}"):
+        pprint(filename)
+        continue
+    shutil.copy2(
+        f"data_collection/{filename}",
+        f"data_objects/public/ds/{new_filename}",
+    )

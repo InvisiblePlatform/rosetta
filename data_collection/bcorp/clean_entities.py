@@ -1,5 +1,6 @@
 from pprint import pprint
 from urllib.parse import urlparse
+from numpy import save
 from tld import get_tld
 import json
 import re
@@ -15,6 +16,7 @@ from common import (
     print_status,
     send_notification,
     calculate_average_ratings,
+    save_data_to_file,
 )
 
 
@@ -89,7 +91,6 @@ def bcorpGetCategoryData(page, filters, index_name, query_number, apikey, count)
     response = requests.post(url, headers=headers, data=json.dumps(data), timeout=5)
     response_data = response.json()
     if response_data.get("results")[0] is not None:
-        print(len(response_data["results"][0]["hits"]))
         return response_data["results"]
     else:
         return None
@@ -147,94 +148,118 @@ def bcorpGetCombinedData() -> Any | dict[Any, Any]:
     return clean_combined_data
 
 
-data_array = bcorpGetCombinedData()
-average_score_array = calculate_average_ratings(
-    data_list=data_array, industry_path="industry", score_path="latestVerifiedScore"
-)
-available_ratings = {}
-index_filename = "site_slug.json"
-split_dir = "split_data"
-os.makedirs(split_dir, exist_ok=True)
-exceptions = {
-    "www.lamarqueenmoins.f": "www.lamarqueenmoins.fr",
-    "haymansgin.com & merserrum.com & respirited.com & bushrum.co.uk & symposiumspirits.co.uk & kimia.co.uk & hgcompany.co.uk": "haymansgin.com",
-}
+def bcorpMain():
+    data_array = bcorpGetCombinedData()
+    average_score_array = calculate_average_ratings(
+        data_list=data_array, industry_path="industry", score_path="latestVerifiedScore"
+    )
+    save_data_to_file(average_score_array, "bcorp_average_score_by_industry.json")
+    available_ratings = {}
+    available_ratings_plus = {}
+    index_filename = "site_slug.json"
+    split_dir = "split_data"
+    os.makedirs(split_dir, exist_ok=True)
+    exceptions = {
+        "www.lamarqueenmoins.f": "www.lamarqueenmoins.fr",
+        "haymansgin.com & merserrum.com & respirited.com & bushrum.co.uk & symposiumspirits.co.uk & kimia.co.uk & hgcompany.co.uk": "haymansgin.com",
+    }
 
-# Iterate through the data and split into individual files
-for data in data_array.values():
-    try:
-        if not data.get("slug"):
-            continue
-        if len(data.get("assessments")) == 0:
-            continue
+    # Iterate through the data and split into individual files
+    duplicate_domains = []
+    for data in data_array.values():
+        try:
+            if not data.get("slug"):
+                continue
+            if len(data.get("assessments")) == 0:
+                continue
 
-        slug = data.get("slug")
-        with open(f"{split_dir}/{slug}.json", "w") as file:
-            json.dump(data, file, indent=4)
+            slug = data.get("slug")
+            with open(f"{split_dir}/{slug}.json", "w") as file:
+                json.dump(data, file, indent=4)
 
-        # Extract data from the JSON file as needed
-        # Example: Create a new object with selected data
-        website = re.sub(r"\([^)]*\)", "", data.get("website"))
-        if website in exceptions:
-            website = exceptions[website]
+            # Extract data from the JSON file as needed
+            # Example: Create a new object with selected data
+            website = re.sub(r"\([^)]*\)", "", data.get("website"))
+            if website in exceptions:
+                website = exceptions[website]
 
-        new_obj = {
-            "slug": slug,
-            "source": data.get("name"),
-            "score": data.get("latestVerifiedScore"),
-            "score_industryAverage": average_score_array.get(data.get("industry")),
-            "industry": data.get("industry"),
-            "ratingDate": data.get("assessments")[0]["ratingDate"],
-            "location": f"bcorp/{slug}",
-            "website": website,
-        }
+            new_obj = {
+                "slug": slug,
+                "source": data.get("name"),
+                "score": data.get("latestVerifiedScore"),
+                "score_industryAverage": average_score_array.get(data.get("industry")),
+                "industry": data.get("industry"),
+                "ratingDate": data.get("assessments")[0]["ratingDate"],
+                "location": f"bcorp/{slug}",
+                "website": website,
+            }
 
-        for area in data.get("assessments")[0]["impactAreas"]:
-            new_obj[area["name"]] = area["score"]
+            for area in data.get("assessments")[0]["impactAreas"]:
+                new_obj[area["name"]] = area["score"]
 
-        entity_filename = f"entities/{slug}.json"
+            entity_filename = f"entities/{slug}.json"
 
-        # Write the new object to the entities folder
-        with open(entity_filename, "w") as entity_file:
-            json.dump(new_obj, entity_file, indent=4)
+            # Write the new object to the entities folder
+            save_data_to_file(new_obj, entity_filename)
 
-        domains = []
+            domains = []
 
-        if " " in website:
-            for site in (
-                website.replace("/", "").replace(";", "").replace(",", "").split(" ")
-            ):
-                if site == "":
-                    continue
-                domains.append(site)
-        else:
-            domains.append(website)
+            if " " in website:
+                for site in (
+                    website.replace("/", "")
+                    .replace(";", "")
+                    .replace(",", "")
+                    .split(" ")
+                ):
+                    if site == "":
+                        continue
+                    domains.append(site)
+            else:
+                domains.append(website)
 
-        for site in domains:
-            domain = urlparse(site).hostname
-            if domain is None:
-                domain = urlparse(f"http://{site}").hostname
+            for site in domains:
+                domain = urlparse(site).hostname
+                if domain is None:
+                    domain = urlparse(f"http://{site}").hostname
 
-            if domain is not None:
-                if domain in exceptions:
-                    domain = exceptions[domain]
-                get_tld("https://" + domain, as_object=True)
-                if domain.replace("www.", "") not in [
-                    "linkedin.com",
-                    "facebook.com",
-                    "instagram.com",
-                    "linktr.ee",
-                ]:
-                    if available_ratings.get(domain.replace("www.", "")):
-                        print(domain)
-                    available_ratings[domain.replace("www.", "")] = slug
+                if domain is not None:
+                    clean_domain = domain.replace("www.", "")
+                    if domain in exceptions:
+                        domain = exceptions[domain]
+                    get_tld("https://" + domain, as_object=True)
+                    if clean_domain not in [
+                        "linkedin.com",
+                        "facebook.com",
+                        "instagram.com",
+                        "linktr.ee",
+                    ]:
+                        if available_ratings.get(clean_domain):
+                            if not duplicate_domains.count(clean_domain):
+                                duplicate_domains.append(clean_domain)
+                        available_ratings[clean_domain] = slug
+                        available_ratings_plus[clean_domain] = {
+                            "slug": slug,
+                            "source": data.get("name"),
+                            "score": data.get("latestVerifiedScore"),
+                        }
 
-    except Exception as e:
-        pprint(data)
-        print(e)
-        exit()
+        except Exception as e:
+            pprint(data)
+            print(e)
+            exit()
 
-with open(index_filename, "w") as index_file:
-    json.dump(available_ratings, index_file, indent=4)
+    save_data_to_file(available_ratings, index_filename)
+    save_data_to_file(available_ratings_plus, "site_slug_plus.json")
+    build_state = {
+        "entity_count": len(data_array),
+        "rating_count": len(available_ratings),
+        "build_date": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "source": "bcorp",
+        "duplicate_domains": duplicate_domains,
+    }
+    pprint(build_state)
+    save_data_to_file(build_state, "build_state.json")
 
-pprint(len(available_ratings))
+
+if __name__ == "__main__":
+    bcorpMain()
