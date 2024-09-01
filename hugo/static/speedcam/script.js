@@ -31,6 +31,100 @@ let saveKeysButton = null;
 
 let rotatedFeed = true;
 
+let targetInfo = {
+    'target_range': 0,
+    'target_number': 0,
+    'target_speed': 0,
+}
+// If a port is paired already with the device, connect to it
+if ('serial' in navigator) {
+    navigator.serial.getPorts().then(ports => {
+        if (ports.length > 0) {
+            connectSerial(ports[0]);
+        }
+    });
+}
+async function connectSerial(initport = null) {
+    try {
+        let reader;
+        if (initport) {
+            const port = initport;
+            await port.open({ baudRate: 9600 });
+            reader = port.readable.getReader();
+        } else {
+            const port = await navigator.serial.requestPort();
+            await port.open({ baudRate: 9600 });
+            reader = port.readable.getReader();
+        }
+        console.log("Connected to serial port")
+        let responseString = "";
+        let allowReset = true;
+        let waitingTimeoutTime = 0;
+        let dataCount = 0;
+        let scanOnce = true
+
+        while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            // Decode and Display the received data on the webpage
+            readString = new TextDecoder().decode(value);
+            responseString += readString;
+            responseString = responseString.trim();
+            if (!responseString.startsWith('{') || responseString.length > 80) {
+                responseString = "";
+            }
+            // Skip the first 5 data points
+            // Read the data until the first JSON object is received
+            if (responseString.endsWith("}")) {
+                targetInfo = JSON.parse(responseString.replace(/'/g, '"'));
+                // console.log(targetInfo);
+                //if (dataCount < 5) {
+                //    dataCount++;
+                //    continue;
+                //}
+                // add current time to the waitingTimeoutTime
+                waitingTimeoutTime = Date.now();
+                if (document.getElementById("output_output")) {
+                    document.getElementById("output_output").textContent = responseString;
+                    // Parse the JSON object
+                    document.getElementById("range_number").textContent = targetInfo.target_range;
+                    document.getElementById("number_number").textContent = targetInfo.target_number;
+                    document.getElementById("speed_number").textContent = targetInfo.target_speed;
+                }
+                // Adjust the opacity of the blank splash screen
+                lowerThreshold = 1.5;
+                upperThreshold = 3.5;
+                adjustedOpacity = Math.min(1, Math.max(0, (targetInfo.target_range - lowerThreshold) / (upperThreshold - lowerThreshold)));
+                document.getElementById("blankSplash").style = `--adjust-opacity: ${adjustedOpacity}`;
+                responseString = "";
+                // if target is below threshold
+                if (targetInfo.target_range > upperThreshold && scanOnce) {
+                    takepicture();
+                    sendRequestForScan("openai");
+                    addPopover("Scanning")
+                    dataCount = 0;
+                    scanOnce = false;
+                }
+                if (targetInfo.target_range < lowerThreshold) {
+                    // open IV
+                    openSpeedCam(currentItem.getAttribute("data-brand"))
+                    scanOnce = true;
+                }
+                // set adjust opacity to 1 if we havent seen a new target in 5 seconds
+                setTimeout(() => {
+                    if (Date.now() - waitingTimeoutTime > 5000) {
+                        document.getElementById("blankSplash").style = `--adjust-opacity: 1`;
+                        // Reset dataCount to 0
+                        dataCount = 0;
+                    }
+                }, 5000);
+            }
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
 function showViewLiveResultButton() {
     if (window.self !== window.top) {
         // Ensure that if our document is in a frame, we get the user
@@ -131,35 +225,16 @@ function startupSpeedCam() {
 // Fill the photo with an indication that none has been
 // captured.
 function openSpeedCam(brand = false) {
-    if (brand) {
-        const currentBrand = brandStack[brand].db;
-        manualSetup(currentBrand)
-    }
-    console.log(`${brand} open`)
-    contentArea.classList.toggle("offScreen")
-    itsOpen = true;
-    checkInputTimeout()
-}
-
-let lastInputTime = Date.now();
-
-function handleInput() {
-    lastInputTime = Date.now();
-}
-
-function checkInputTimeout() {
-    const timeoutDuration = 2 * 60 * 1000; // 2 minutes
-    if (Date.now() - lastInputTime >= timeoutDuration) {
-        closeIV();
-        addPopover("Timeout")
-    } else {
-        setTimeout(checkInputTimeout, timeoutDuration);
+    if (!contentArea.classList.contains("offScreen")) {
+        if (brand) {
+            const currentBrand = brandStack[brand].db;
+            manualSetup(currentBrand)
+        }
+        addPopover("Opened")
+        contentArea.classList.toggle("offScreen")
+        itsOpen = true;
     }
 }
-
-document.addEventListener("mousemove", handleInput);
-document.addEventListener("touchstart", handleInput);
-
 
 function closeIV() {
     itsOpen = false;
@@ -361,9 +436,14 @@ document.onkeydown = function (e) {
     if (e.key === "a") {
         createPopoverApiKey()
     }
+
+    if (e.key === "p") {
+        doAuthForUnsplash()
+    }
     const coolDownPeriod = 60000; // 60 seconds
 
     if (e.key === "F14" || e.key === "Enter") {
+        currentTime = new Date().getTime();
         takepicture();
         sendRequestForScan("openai");
         console.log("F14 pressed");
@@ -371,6 +451,7 @@ document.onkeydown = function (e) {
         lastKeyPressTimeF14 = currentTime;
 
     }
+
     if (e.key === "F15" || e.key === "Escape") {
         if (document.getElementsByClassName("currentItem").length > 0) {
             const currentTime = new Date().getTime();
@@ -384,7 +465,6 @@ document.onkeydown = function (e) {
             }
             console.log("F15 pressed")
             lastKeyPressTimeF15 = currentTime;
-            addPopover("Opened")
         } else {
             itsOpen = false;
             refreshDisplay()
@@ -566,6 +646,15 @@ function shuffleArray(array) {
     }
     return array;
 }
+
+function resetData() {
+    brandStack = {};
+    brandStackOrder = [];
+    localStorage.removeItem("keywordImagesLookup")
+    localStorage.removeItem("graphOverrideLookup")
+    refreshDisplay()
+}
+
 function setDisplay(brandNameIn) {
     const brandInfo = brandStack[brandNameIn]
     internalObject = `<div class="companyText">${JSON.stringify(brandInfo.site)}</div>`
@@ -573,12 +662,18 @@ function setDisplay(brandNameIn) {
 
     if ("storyStack" in brandInfo) {
         for (const story in brandInfo.storyStack) {
-            if (brandInfo.cleanNews[brandInfo.storyStack[story].el].originalLink in graphOverrideLookup) {
-                imageSelection = graphOverrideLookup[brandInfo.storyStack[story].originalLink]
-                internalObject = `<div class="companyText">
+            try {
+                if (brandInfo.cleanNews) {
+                    if (brandInfo.cleanNews[brandInfo.storyStack[story].el].originalLink in graphOverrideLookup) {
+                        imageSelection = graphOverrideLookup[brandInfo.storyStack[story].originalLink]
+                        internalObject = `<div class="companyText">
                 <div class="title">${brandInfo.storyStack[story].originalTitle}</div>
                 <div class="source">${brandInfo.storyStack[story].originalSource}</div></div>`
-                break
+                        break
+                    }
+                }
+            } catch (error) {
+                console.error(error)
             }
         }
         if (imageSelection == null) {
@@ -637,6 +732,7 @@ async function getOpenGraphData(url) {
 }
 
 async function handleOpenGraphData(url) {
+    return false
     const data = await getOpenGraphData(url);
     if ('image' in data && data) {
         const imgContainer = document.createElement("div");
@@ -650,7 +746,7 @@ async function handleOpenGraphData(url) {
 
 async function getPexelsImageForTag(tag) {
     const apiKey = window.localStorage.getItem("apiPexelsKey")
-    const url = `https://api.pexels.com/v1/search?query=${tag}&per_page=1`
+    const url = `https://api.pexels.com/v1/search?query=${tag}&per_page=1&orientation=landscape`
     const options = {
         method: 'GET',
         headers: {
@@ -664,6 +760,26 @@ async function getPexelsImageForTag(tag) {
     } else {
         return null;
     }
+}
+
+async function getUnsplashImageForTag(tag) {
+    const apiKey = window.localStorage.getItem("apiUnsplashKey")
+    const parameters = {
+        query: tag,
+        per_page: 1,
+        orientation: 'portrait',
+        client_id: "NqO7CO5X1lGALuFvQXUXfu6OEW1lZx-bKNLG6Be4plg"
+    }
+    const url = `https://api.unsplash.com/search/photos?${new URLSearchParams(parameters)}`
+    const options = {
+        method: 'GET',
+    }
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (data.results.length > 0) {
+        return data.results[0].urls.regular;
+    }
+    return null;
 }
 
 
@@ -805,7 +921,7 @@ function addToBrandStack(brand) {
 
 function addCoverDisplay() {
     console.log("cover!!!")
-    topDisplay.innerHTML += '<div id="blankSplash">Invisible Voice</div>'
+    topDisplay.innerHTML += '<div id="blankSplash" style="--adjust-opacity: 1">Invisible Voice</div>'
 }
 
 function refreshDisplay() {
@@ -821,22 +937,71 @@ function refreshDisplay() {
     }
 }
 
+function doAuthForUnsplash() {
+    const query = {
+        client_id: "NqO7CO5X1lGALuFvQXUXfu6OEW1lZx-bKNLG6Be4plg",
+        redirect_uri: "urn:ietf:wg:oauth:2.0:oob",
+        response_type: "code",
+        scope: "public"
+    }
+    const url = `https://unsplash.com/oauth/authorize?${new URLSearchParams(query)}`
+    window.open(url)
+}
+
+function doPostAuthForUnsplash(authcode) {
+    const query = {
+        client_id: "NqO7CO5X1lGALuFvQXUXfu6OEW1lZx-bKNLG6Be4plg",
+        client_secret: "gkLZrV2C7ctUuKamwARE0C5teLirQtjKBHS0xLNq93I",
+        redirect_uri: "urn:ietf:wg:oauth:2.0:oob",
+        code: authcode,
+        grant_type: "authorization_code"
+    }
+    const url = `https://unsplash.com/oauth/token?${new URLSearchParams(query)}`
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(query)
+    })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(err => console.error(err));
+
+}
 async function getImagesForKeywords(keywords, returnImages = false) {
     let collectedImages = []
+
     for (const keyword in keywords) {
         if (Object.keys(keywordImagesLookup).includes(keywords[keyword])) {
             if (returnImages) collectedImages.push(keywordImagesLookup[keywords[keyword]])
             continue
         }
-        getPexelsImageForTag(keyword)
-            .then((data) => {
-                console.log(data);
-                if (data) {
-                    keywordImagesLookup[keywords[keyword]] = data
-                    if (returnImages) collectedImages.push(data)
-                    localStorage.setItem("keywordImagesLookup", JSON.stringify(keywordImagesLookup))
-                }
-            });
+        // Depending on what api is selected pick between the two
+        const switchState = localStorage.getItem("imageApi")
+        if (switchState == "pexels") {
+            getPexelsImageForTag(keywords[keyword])
+                .then((data) => {
+                    console.log(data);
+                    if (data) {
+                        keywordImagesLookup[keywords[keyword]] = data
+                        if (returnImages) collectedImages.push(data)
+                        localStorage.setItem("keywordImagesLookup", JSON.stringify(keywordImagesLookup))
+                    }
+                });
+        } else if (switchState == "unsplash") {
+            getUnsplashImageForTag(keywords[keyword])
+                .then((data) => {
+                    console.log(data);
+                    if (data) {
+                        keywordImagesLookup[keywords[keyword]] = data
+                        if (returnImages) collectedImages.push(data)
+                        localStorage.setItem("keywordImagesLookup", JSON.stringify(keywordImagesLookup))
+                    }
+                });
+        } else if (switchState == "printtags") {
+            console.log(keywords[keyword])
+        }
     }
     if (returnImages) {
         return collectedImages
@@ -935,6 +1100,8 @@ function createPopoverApiKey() {
                 <input type="text" id="apiKey" name="apiKey" value="${localStorage.getItem('apiKey') || ''}"><br/>
                 <label for="apiPexelsKey">Pexels Key:</label>
                 <input type="text" id="apiPexelsKey" name="apiPexelsKey" value="${localStorage.getItem('apiPexelsKey') || ''}">
+                <label for="apiUnsplashKey">Unsplash Key:</label>
+                <input type="text" id="apiUnsplashKey" name="apiUnsplashKey" value="${localStorage.getItem('apiUnsplashKey') || ''}">
                 <button type="submit">Save</button>
                 <button type="button">Load</button>
             </form>
@@ -943,11 +1110,30 @@ function createPopoverApiKey() {
         const form = popoverDiv.querySelector('form');
         const apiKeyInput = popoverDiv.querySelector('#apiKey');
         const apiPexelsKeyInput = popoverDiv.querySelector('#apiPexelsKey');
+        const apiUnsplashKeyInput = popoverDiv.querySelector('#apiUnsplashKey');
+
+        // Add a check box to switch between pexels and unsplash
+        const imageApiSwitch = document.createElement('div');
+        imageApiSwitch.innerHTML = `
+            <label for="imageApi">Image API:</label>
+            <select id="imageApi" name="imageApi">
+                <option value="pexels">Pexels</option>
+                <option value="unsplash">Unsplash</option>
+                <option value="printtags">PrintTags</option>
+            </select>
+        `;
+        form.appendChild(imageApiSwitch);
+        const imageApiSelect = form.querySelector('#imageApi');
+        imageApiSelect.value = localStorage.getItem('imageApi') || 'pexels';
+        imageApiSelect.addEventListener('change', (event) => {
+            localStorage.setItem('imageApi', event.target.value);
+        });
 
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             localStorage.setItem('apiKey', apiKeyInput.value);
             localStorage.setItem('apiPexelsKey', apiPexelsKeyInput.value);
+            localStorage.setItem('apiUnsplashKey', apiUnsplashKeyInput.value);
             popoverDiv.remove();
         });
         popArea.appendChild(popoverDiv);

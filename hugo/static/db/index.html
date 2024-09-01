@@ -9,9 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="/css/generic.css">
-
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+    </style>
     <script>
-        document.write('<link href="/css/plugin-styles.css?dev=' + Date.now() + '" rel="stylesheet"/>');
+        document.write('<link href="/css/neodesign.css?dev=' + Date.now() + '" rel="stylesheet"/>');
     </script>
     <title id="pageTitle"></title>
 </head>
@@ -26,8 +29,15 @@
     <script type="text/javascript" src="/js/bbcode.min.js"></script>
     <script src="/js/graph-libs-1.js?v=1"></script>
 
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/elkjs@0.7.0/lib/elk.bundled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-elk@2.2.0/dist/cytoscape-elk.min.js"></script>
+    <!-- <script src="https://unpkg.com/cytoscape-edge-connections"></script> -->
     <script>
-        document.write('<script src="/js/single.js?dev=' + Date.now() + '" defer><\/script>');
+        document.write('<script src="/js/cy-graph.js?dev=' + Date.now() + '" defer><\/script>');
+    </script>
+    <script>
+        document.write('<script src="/js/single-2024.js?dev=' + Date.now() + '" defer><\/script>');
     </script>
     <script>
         document.write('<script src="/js/d3-graph.js?dev=' + Date.now() + '" defer><\/script>');
@@ -53,17 +63,19 @@
     </div>
 
     <section id="disclaimer" style="order: 100;">
-        <h2>
-            <div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div>
-            <div data-i18n='header.titledisclaimer' class="invisible-disclaimer-title"></div>
-        </h2>
-        <p class="disclaimer-text" data-i18n="header.disclaimer"></p>
-        <p data-i18n="header.dislcaimerNote" class="disclaimer-text"></p>
-        <a class="hideInSmall" data-i18n="header.here" href="#"></a>
+        <span>
+            <div>invisible voice</div>
+            <div data-i18n='header.titledisclaimer'></div>
+        </span>
+        <span>
+            <p class="disclaimer-text" data-i18n="header.disclaimer"></p>
+            <p data-i18n="header.dislcaimerNote" class="disclaimer-text"></p>
+            <a class="hideInSmall" data-i18n="header.here" href="#"></a>
+        </span>
     </section>
     <section id="popArea"> </section>
-    <section id="graph-box" class="contentSection"></section>
-    <div id="graph-container" class="contentSection">
+    <section id="graph-box"></section>
+    <div id="graph-container">
         <div id="sigma-container"></div>
         <div id="wikipedia-frame" style="display: none">
             loading...
@@ -80,6 +92,30 @@
                 <div></div>
             </button>
         </div>
+    </div>
+    <div id="extraDisplay"></div>
+    <div id="neoGraphFilterBar"></div>
+    <div id="neoGraphTopBar">
+        <span id="neoGraphControlAnchor">
+            <button type="button" class="squareButton in" onclick="zoomByFactor(1.25)">
+            </button>
+            <button type="button" class="squareButton out" onclick="zoomByFactor(0.75)">
+            </button>
+            <button type="button" class="squareButton fit" onclick="cy.fit()">
+            </button>
+            <button type="button" class="squareButton recalc" onclick="resetNodeInternalsOnTimeoutCy(false, 0, true)">
+            </button>
+        </span>
+        <div id="neoGraphTitle">Network Graph</div>
+        <button type="button" class="squareButton" onclick="closeNetworkGraph()" id="neoGraphClose"></button>
+    </div>
+    <section id="Invisible-interaction" class="">
+        <button class="squareButton" id="Invisible-like" onclick="vote('up')"></button>
+        <button class="squareButton" id="Invisible-dislike" onclick="vote('down')"></button>
+        <button class="squareButton" id="Invisible-boycott" onclick="boycott()"> </button>
+        <button class="squareButton" id="Invisible-communications" onclick="comms()"></button>
+        <div class="Invisible-logo"></div>
+    </section>
 </body>
 
 </html>

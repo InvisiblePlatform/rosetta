@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-theme">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -27,8 +27,9 @@
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
         crossorigin="anonymous"></script>
     <script>
-        document.write('<script src="/js/single.js?dev=' + Date.now() + '" defer><\/script>');
+        document.write('<script src="/js/single-2024.js?dev=' + Date.now() + '" defer><\/script>');
         document.write('<script src="/js/d3-graph.js?dev=' + Date.now() + '" defer><\/script>');
+        document.write('<script src="/js/cy-graph.js?dev=' + Date.now() + '" defer><\/script>');
         document.write('<script src="/speedcam/script2.js?dev=' + Date.now() + '" defer><\/script>');
     </script>
 </head>
@@ -79,6 +80,13 @@
                 <div></div>
             </button>
         </div>
+    </div>
+    <section id="Invisible-interaction" class="hideInSmall hide">
+        <section id="Invisible-like" onclick="vote('up')" style="--count:'0';" data-i18n="vote.like">Like</section>
+        <section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike
+        </section>
+        <section id="Invisible-boycott" onclick="boycott()" data-i18n="vote.boycott">Boycott</section>
+    </section>
 </body>
 
 </html>

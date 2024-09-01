@@ -14,11 +14,8 @@ const content = document.getElementById("content");
 let backButton;
 let settingsButton;
 let closeButton;
-let boyButton;
-let wikidataid;
 let pageLocation;
 let pageHash;
-let connectionsFile;
 
 let userPreferences = {}
 let buttonState = {}
@@ -26,6 +23,7 @@ let diagOpen = false;
 let loggedIn = false;
 let settingsState;
 let oldSettings;
+var forCoNameRel = '';
 
 let firstShot = false;
 const localModules = ["political", "social"]
@@ -101,7 +99,7 @@ const translate = {
     "wbm": "wbm.title",
 };
 
-let industryAverageData = {};
+const industryAverageData = {};
 const industryAverageLookup = {
     "goodonyou": [
         {
@@ -203,8 +201,8 @@ const industryAverageLookup = {
     ],
 }
 const defaultestOrder = Object.keys(translate);
-let defaultOrder = [];
-let defaultOrderWbm = [];
+const defaultOrder = [];
+const defaultOrderWbm = [];
 for (item in defaultestOrder) {
     if (defaultestOrder[item].startsWith("wbm")) {
         defaultOrderWbm.push(defaultestOrder[item])
@@ -248,15 +246,19 @@ const defaultSettingsState = {
     "listOrder": defaultOrderString,
     "listOrder-wbm": defaultOrderStringWbm,
     "experimentalFeatures": false,
+    "singleColumn": true,
+    "monoChrome": false,
     "disabledModules": [],
 };
 
 let currentModuleState = {};
+let currentMiniState = {};
 let currentModules = Object.keys(currentModuleState)
-let tabbedContent = {};
+const tabbedContent = {};
+const mtabbedContent = {};
 let addNewFilesToGraph = false;
-let knownPosts = {};
-let knownPostsByLocation = {};
+const knownPosts = {};
+const knownPostsByLocation = {};
 
 const currenturl = window.location.href;
 const containsSpeedcam = currenturl.includes("speedcam");
@@ -311,11 +313,21 @@ function manualSetup(site) {
 function pageSetup() {
     pageLocation = Url.get.site ? Url.get.site : false;
     addToolsSection()
+    showDisclaimer()
+    showInteractions()
     resetSettings(false)
     fetchIndustryAverageData()
     if (Url.get.site) {
         loadPageCore(pageLocation)
         addSettings()
+        // if there are settings in local storage, load them
+        if (localStorage.getItem("settingsState")) {
+            console.log("loading settings from local storage")
+            settingsState = JSON.parse(localStorage.getItem("settingsState"));
+            settingsStateApply(settingsState);
+        } else {
+            settingsStateApply(defaultSettingsState);
+        }
         scrollIntoPlace()
         notificationsDraw();
         forceAllLinksNewTab();
@@ -351,13 +363,13 @@ function fetchIndustryAverageData() {
 function checkExtensionVersion(currentVersion = false) {
     const manifestLocationUrl = 'https://raw.githubusercontent.com/InvisiblePlatform/extension/unstable/manifest.json'
     const updateUrl = 'https://github.com/InvisiblePlatform/extension/'
-    if (isSpeedcam || Url.get.app || !settingsState.experimentalFeatures) return;
+    if (isSpeedcam || Url.get.app) return;
     fetch(manifestLocationUrl).then(response => response.json()).then(data => {
         const version = data.version;
-        if (version !== currentVersion) {
-            addPopover(`New version available: ${version} (current: ${currentVersion})`, false, updateUrl);
-        } else {
+        if (version === currentVersion) {
             addPopover(`Current version: ${version}`, true);
+        } else {
+            addPopover(`New version available: ${version} (current: ${currentVersion})`, false, updateUrl);
         }
         //const currentVersion = chrome.runtime.getManifest().version;
         //if (version !== currentVersion) {
@@ -389,13 +401,8 @@ function settingsStateApply(newSettingsState = defaultSettingsState, fromMessage
     if (changed.includes("loggedIn"))
         loggedIn = settingsState.loggedIn
 
-    if (changed.includes("experimentalFeatures")) {
-        if (settingsState.experimentalFeatures) {
-            loginCheck(true);
-            buttonString = `<button type='button' data-i18n="vote.loadinfo" class='loadInfoButton hideInSmall bottomLeftOfModule' onclick="postLoad(this)"> Load info</button>`
-        }
-        loadPageExternal(pageLocation)
-    }
+    loginCheck(true);
+    loadPageExternal(pageLocation)
 
     if (firstShot) {
         document.getElementById("notifications-shade").getElementsByTagName("input")[0].checked = settingsState["notifications"]
@@ -420,6 +427,18 @@ function settingsStateApply(newSettingsState = defaultSettingsState, fromMessage
         document.lastChild.classList.remove('dark-theme');
     }
 
+    if (newSettingsState.singleColumn) {
+        document.lastChild.classList.add('single-column');
+    } else {
+        document.lastChild.classList.remove('single-column');
+    }
+
+    if (newSettingsState.monoChrome) {
+        document.lastChild.classList.add('mono-chrome');
+    } else {
+        document.lastChild.classList.remove('mono-chrome');
+    }
+
     if (settingsState["dissmissedNotifications"].length > 0) {
         dissmissedNotificationsDraw();
     }
@@ -434,6 +453,9 @@ function settingsStateApply(newSettingsState = defaultSettingsState, fromMessage
     firstShot = false;
 
     debugLogging("Settings state updated", settingsState);
+
+    localStorage.setItem("settingsState", JSON.stringify(settingsState));
+
     addPopover("Settings Updated", true);
 }
 
@@ -489,13 +511,13 @@ const scrollIntoPlace = async () => {
     }
 }
 
-let moduleData;
-let dataObjectDictionary = {};
+const dataObjectDictionary = {};
 const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null) => {
     if (coreFile === false) return;
     coreFile = coreFile.split("?")[0]
     coreFile = coreFile.startsWith("/db/") ? coreFile : `/db/${coreFile}`;
     coreFile = coreFile.endsWith(".json") ? coreFile : `${coreFile}.json`;
+    forCoNameRel = '';
     try {
         let wikidataIdList = [];
         debugLogging("loadPageCore", coreFile)
@@ -524,6 +546,7 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
             const { title = false, connections = false, wikidata_id = false, core = false, political = false, social = false } = await response;
             wikidataIdList = wikidata_id;
             document.getElementsByClassName('co-name')[0].innerText = (title) ? title : "Invisible Voice";
+            document.getElementById("neoGraphTitle").style.setProperty("--subname", (title) ? `"${title}"` : "Invisible Voice");
             document.getElementById("pageTitle").innerText = (title) ? `Invisible Voice - ${title}` : "Invisible Voice";
 
             if (connections) {
@@ -534,6 +557,7 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
                     if (addNewFilesToGraph) {
                         addNewFile(`${dataURL}${connections}`, false, localX, localY, wikidataid, fulllist);
                     } else {
+                        startCY(`${dataURL}${connections}`, wikidataid);
                         addNewFile(`${dataURL}${connections}`, true, localX, localY, wikidataid, fulllist);
                         addNewFilesToGraph = true;
                     }
@@ -547,62 +571,39 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
             }
             currentModuleState = {}
             let localString = '';
+            // We should presort the core array so that they are added close to in order, taking 
+            // the order from settingsState.listOrder
+            if (settingsState.listOrder) {
+                const order = settingsState.listOrder.split("|");
+                core.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+            }
+
+
             await Promise.all(core.map(async (module) => {
-                if (module.url !== 'local') {
-                    const string = await addModule(module.type, `${dataURL}/ds/${module.url}`);
+                if (module.url === 'local') {
+                    const string = await addLocalModule(module.type, module.data);
                     localString += string;
                 } else {
-                    const string = await addLocalModule(module.type, module.data);
+                    const string = await addModule(module.type, `${dataURL}/ds/${module.url}`);
                     localString += string;
                 }
             }));
 
             content.innerHTML += localString
+            arrangeForTabs("content", "tabContainer", "tabContent", "tabButtonArea", tabbedContent);
+            arrangePreviews(currentModuleState, "_preview");
 
-            for (const tab of tabable) {
-                for (const item in tabbedContent[tab]) {
-                    if (document.getElementById(tab)) {
-                        const tabContainer = document.getElementById(tab).getElementsByClassName("tabContainer")[0];
-                        tabContainer.innerHTML += tabbedContent[tab][item];
-                    } else {
-                        content.innerHTML += tabbedContent[tab][item];
-                    }
-                }
-                if (document.getElementById(tab)) {
-                    const tabContainer = document.getElementById(tab).getElementsByClassName("tabContainer")[0];
-                    const tabContent = tabContainer.getElementsByClassName("tabContent");
-                    const tabButtonArea = document.getElementById(tab).getElementsByClassName("tabButtonArea")[0];
-                    for (let i = 0; i < tabContent.length; i++) {
-                        const subname = tabContent[i].getAttribute("data-tabLabel");
-                        tabButtonArea.innerHTML += `<button class="tabButton${(i == 0) ? ' active' : ''}" data-tab="${i}" onclick="tabChange(${i}, '${tab}')">${subname}</button>`
-                    }
-                }
-
-            }
-
-            for (const item in currentModuleState) {
-                if (currentModuleState[item].hasOwnProperty("_preview")) {
-                    document.getElementById(item).getElementsByClassName("previewContainer")[0].innerHTML = currentModuleState[item]["_preview"];
-                } else if (item.startsWith("political")) {
-                    for (const internal in currentModuleState[item]) {
-                        if (currentModuleState[item][internal].hasOwnProperty("_preview")) {
-                            document.getElementById(item).getElementsByClassName("previewContainer")[0].innerHTML = currentModuleState[item][internal]["_preview"];
-                        }
-                    }
-                }
-            }
             if (!Url.get.exhibit && !isSpeedcam) {
-                content.innerHTML += `
-                <section id="carbon" class="contentSection overridden">
-                    <div class="iconarray">
-                        <div><a href="https://www.websitecarbon.com/website/${currentDomain}"><i alt="Website Carbon Calculator"><div style="background-image:var(--image-carbon);"></div></i></a></div>
-                        <div><a href="https://themarkup.org/blacklight?url=${currentDomain}"> <i alt="Blacklight"><div style="background-image:var(--image-lightning);"></div></i></a></div>
-                    </div>
-                </section>
-            `;
-                currentModuleState["carbon"] = { "carbon": currentDomain }
+                //    content.innerHTML += `
+                //    <section id="carbon" class="contentSection overridden">
+                //        <div class="iconarray">
+                //            <div><a href="https://www.websitecarbon.com/website/${currentDomain}"><i alt="Website Carbon Calculator"><div style="background-image:var(--image-carbon);"></div></i></a></div>
+                //            <div><a href="https://themarkup.org/blacklight?url=${currentDomain}"> <i alt="Blacklight"><div style="background-image:var(--image-lightning);"></div></i></a></div>
+                //        </div>
+                //    </section>
+                //`;
+                //    currentModuleState.carbon = { "carbon": currentDomain }
             }
-
             recalculateList()
             translator.translatePageTo()
             unexplode()
@@ -611,12 +612,133 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
         console.error(e)
     }
 }
-async function loadGraphEls(wikidataIdList = false) {
-    if (wikidataIdList) {
-        let wikidataidarray = wikidataIdList.join(",").replaceAll("Q", "").split(",");
-        wikidataidarray.sort((a, b) => a - b);
-        return { wikidataid: `Q${wikidataidarray[0]}`, fulllist: wikidataIdList }
+
+function arrangeForTabs(container = "content", tabContainerClass = "tabContainer", tabContentClass = "tabContent", tabButtonAreaClass = "tabButtonArea", tabbedContent = undefined) {
+    const content = document.getElementById(container);
+    for (const tab of tabable) {
+        for (const item in tabbedContent[tab]) {
+            if (document.getElementById(tab)) {
+                const tabContainer = document.getElementById(tab).getElementsByClassName(tabContainerClass)[0];
+                tabContainer.innerHTML += tabbedContent[tab][item];
+            } else {
+                content.innerHTML += tabbedContent[tab][item];
+            }
+        }
+        if (document.getElementById(tab) && document.getElementById(tab).getElementsByClassName(tabContentClass).length > 1) {
+            const tabContainer = document.getElementById(tab).getElementsByClassName(tabContainerClass)[0];
+            const tabContent = tabContainer.getElementsByClassName(tabContentClass);
+            const tabButtonArea = document.getElementById(tab).getElementsByClassName(tabButtonAreaClass)[0];
+            document.getElementById(tab).setAttribute("data-location", tabContent[0].getAttribute("data-location"));
+            for (let i = 0; i < tabContent.length; i++) {
+                const subname = tabContent[i].getAttribute("data-tabLabel");
+                tabButtonArea.innerHTML += `<button class="tabButton${(i == 0) ? ' active' : ''}" data-tab="${i}" onclick="tabChange(${i}, '${tab}')">${subname}</button>`
+            }
+        }
+
     }
+}
+
+const sourceStringLookup = {
+    "cta": "cta.source",
+    "wikipedia-first-frame": "wikipedia.source",
+    "graph-box": "wikidata.source",
+    "wikipedia-infocard-frame": "wikipedia.source",
+    "mbfc": "mbfc.source",
+    "trust-pilot": "trustpilot.source",
+    "yahoo": "esg.source",
+    "opensec": "os.source",
+    "lobbyeu": "lb.source",
+    // "post": false,
+    "political-wikidata": "wikidata.source",
+    "politicali-wikidata": "wikidata.source",
+    "goodonyou": "goy.source",
+    "bcorp": "bcorp.source",
+    "tosdr-link": "tos.source",
+    "glassdoor": "glassdoor.source",
+    "similar-site-wrapper": "similar.source",
+    "social-wikidata": "wikidata.source",
+    "trust-scam": "trustsc.source",
+    "wbm": "wbm.source",
+}
+
+
+function arrangePreviews(state = currentModuleState, previewAccess = "_preview") {
+    for (const item in state) {
+        const itemElement = document.getElementById(item)
+        if (state[item].hasOwnProperty(previewAccess)) {
+            // if the preview is a string, it's a single module, if it's an object, it's a multi module
+            // so add each preview seperately and add an id to the div inside, so it can be targeted when switching tabs
+            const previewContainer = itemElement.getElementsByClassName("previewContainer")[0];
+            if (typeof state[item][previewAccess] === "string") {
+                previewContainer.innerHTML = state[item][previewAccess];
+                // get the first non-_preview object in the module and use the source value as the subname
+                const nonPreview = Object.keys(state[item]).filter(key => key !== previewAccess)[0];
+                const subname = item == "similar-site-wrapper" ? state[item][nonPreview].domain : state[item][nonPreview].source;
+                if (subname) {
+                    previewContainer.classList.add("tabbed")
+                    previewContainer.style.setProperty("--subnamePreview", `'(${subname}'`);
+                    previewContainer.style.setProperty("--companyCount", `')'`);
+                }
+            } else {
+                let dataTabId = 0;
+                for (const internal in state[item][previewAccess]) {
+                    let tabPreviewContent = state[item][previewAccess][internal];
+                    tabPreviewContent = tabPreviewContent.replace(/<div/, `<div data-tab="${dataTabId}" style="display:none;"`);
+                    if (dataTabId == 0) {
+                        tabPreviewContent = tabPreviewContent.replace("previewScore", "previewScore activeLeft active");
+                        tabPreviewContent = tabPreviewContent.replace("none", "");
+                    } else {
+                        tabPreviewContent = tabPreviewContent.replace("previewScore", "previewScore inactiveRight");
+                    }
+                    previewContainer.innerHTML += tabPreviewContent;
+                    dataTabId++;
+                }
+                // we also want to add a subname and company count -1 as css vars into the previewContainer style, so we can use it in the css
+                // we also should add a class so we can add these values to the previewContainer
+                // to get the first subname, we can just get it from the first element in tabContainer
+                previewContainer.classList.add("tabbed")
+                currentSourceUrl = previewContainer.getElementsByClassName("previewScore")[0].getAttribute("data-source-url");
+                console.log(item)
+                if (itemElement.getElementsByClassName("sourceAnchor")[0]) {
+                    itemElement.getElementsByClassName("sourceAnchor")[0].setAttribute("href", currentSourceUrl);
+
+                    const subname = itemElement.getElementsByClassName("tabContainer")[0].getElementsByClassName("tabContent")[0].getAttribute("data-tabLabel");
+                    previewContainer.style.setProperty("--companyCount", `') +${dataTabId}'`);
+                    previewContainer.style.setProperty("--subnamePreview", `'(${subname}'`);
+                }
+
+            }
+        } else if (item.startsWith("political")) {
+            for (const internal in state[item]) {
+                if (state[item][internal].hasOwnProperty(previewAccess)) {
+                    itemElement.getElementsByClassName("previewContainer")[0].innerHTML = state[item][internal][previewAccess];
+                }
+            }
+        }
+        // While we are in this loop we may as well add the source string to the module
+        if (sourceStringLookup.hasOwnProperty(item) && itemElement) {
+            itemElement.getElementsByClassName("sourceAnchor")[0].innerText = sourceStringLookup[item];
+            itemElement.getElementsByClassName("sourceAnchor")[0].setAttribute("data-i18n", sourceStringLookup[item]);
+            // as well as grabbing the href from the data-source-url attribute of the first previewScore if there isnt one already
+            if (!itemElement.getElementsByClassName("sourceAnchor")[0].getAttribute("href")) {
+                if (itemElement.getElementsByClassName("previewScore")[0]) {
+                    sourceUrl = itemElement.getElementsByClassName("previewScore")[0].getAttribute("data-source-url");
+                    itemElement.getElementsByClassName("sourceAnchor")[0].setAttribute("href", sourceUrl);
+                }
+            }
+
+        }
+    }
+}
+
+
+async function loadGraphEls(wikidataIdList = false) {
+    if (!wikidataIdList) {
+        return;
+    }
+    const wikidataidarray = wikidataIdList.join(",").replaceAll("Q", "").split(",");
+    wikidataidarray.sort((a, b) => a - b);
+    return { wikidataid: `Q${wikidataidarray[0]}`, fulllist: wikidataIdList }
 }
 
 function postUpdate(data, topLevel = false) {
@@ -639,17 +761,15 @@ function postUpdate(data, topLevel = false) {
                 send_message("IVGetPost", top_comment);
             }
         }
-    } else {
-        if (data.location.startsWith("db")) {
-            document.getElementById("post")?.remove()
-            addLocalModule(type = "post", data = data).then((htmlString) => {
-                content.innerHTML += htmlString
-            }).then(() => {
-                recalculateList()
-            })
-            if (data) {
-                send_message("IVGetPost", top_comment);
-            }
+    } else if (data.location.startsWith("db")) {
+        document.getElementById("post")?.remove()
+        addLocalModule(type = "post", data = data).then((htmlString) => {
+            content.innerHTML += htmlString
+        }).then(() => {
+            recalculateList()
+        })
+        if (data) {
+            send_message("IVGetPost", top_comment);
         }
     }
 }
@@ -658,7 +778,6 @@ const loadPageExternal = async (location) => {
     if (document.getElementById("post")) {
         document.getElementById("post").remove()
     }
-    if (!settingsState.experimentalFeatures) return;
     postLocation = `${location.replace(".json", "").replace('/db', 'db')}`
     if (!postLocation.startsWith("db/") && (!postLocation.includes("/") && postLocation.length != 32)) {
         postLocation = `db/${postLocation}`
@@ -669,37 +788,30 @@ const loadPageExternal = async (location) => {
 
 function loginCheck() {
     if (isSpeedcam) return;
-    if (document.getElementById("loginButton")) {
-        document.getElementById("loginButton").remove()
-    }
-    if (!settingsState.experimentalFeatures) return;
-    const titleBar = document.getElementById("titlebar");
-    titleBar.innerHTML += buttonTemplate("loginButton", "loginButtonAction");
-
+    // if (!settingsState.experimentalFeatures) return;
     if (Url.get.username)
         settingsState.loggedIn = true;
 }
 // load modules for matching data
 
 const types = {
-    "trustscore": { "id": "trust-scam", "label": "Trust Scam", "translate": "trustsc.title", "subname": true },
-    "mbfc": { "id": "mbfc", "label": "Media Bias", "translate": "mbfc.title", "subname": true },
-    "glassdoor": { "id": "glassdoor", "label": "Employee Rating", "translate": "glassdoor.title", "subname": true },
-    "similar": { "id": "similar-site-wrapper", "label": "Similar Sites", "translate": "similar.title", "subname": false },
-    "tosdr": { "id": "tosdr-link", "label": "Privacy", "translate": "tosdr.title", "subname": true },
-    "trustpilot": { "id": "trust-pilot", "label": "Trust Pilot", "translate": "trustpilot.title", "subname": true },
-    "yahoo": { "id": "yahoo", "label": "Esg Rating", "translate": "esg.title", "subname": true },
-    "post": { "id": "post", "label": "User Added", "translate": "user.moduletitle", "subname": true },
     "bcorp": { "id": "bcorp", "label": "Bcorp Rating", "translate": "bcorp.title", "subname": true },
-    "goodonyou": { "id": "goodonyou", "label": "Goodonyou Rating", "translate": "goy.title", "subname": true },
-    "wbm": { "id": "wbm", "label": "WBM", "translate": "wbm.title", "subname": true },
     "cta": { "id": "cta", "label": "Call to Action", "translate": "cta.title", "subname": true },
-    "opensecrets": { "id": "opensec", "label": "OpenSecrets", "translate": "os.title", "subname": true },
+    "glassdoor": { "id": "glassdoor", "label": "Employee Rating", "translate": "glassdoor.title", "subname": true },
+    "goodonyou": { "id": "goodonyou", "label": "Goodonyou Rating", "translate": "goy.title", "subname": true },
     "lobbyeu": { "id": "lobbyeu", "label": "LobbyFacts.eu", "translate": "lb.title", "subname": true },
-    "post": { "id": "post", "label": "User Content", "translate": "user.moduletitle", "subname": true },
-    "social": { "id": "social-wikidata", "label": "Social Media", "translate": "social.title", "subname": false },
+    "mbfc": { "id": "mbfc", "label": "Media Bias", "translate": "mbfc.title", "subname": true },
+    "opensecrets": { "id": "opensec", "label": "OpenSecrets", "translate": "os.title", "subname": true },
     "political": { "id": "political-wikidata", "label": "Political Leanings", "translate": "political.title", "subname": true },
     "politicali": { "id": "politicali-wikidata", "label": "Political Ideology", "translate": "wikidata.polideology", "subname": true },
+    "post": { "id": "post", "label": "User Content", "translate": "user.moduletitle", "subname": true },
+    "similar": { "id": "similar-site-wrapper", "label": "Similar Sites", "translate": "similar.title", "subname": false },
+    "social": { "id": "social-wikidata", "label": "Social Media", "translate": "social.title", "subname": false },
+    "tosdr": { "id": "tosdr-link", "label": "Privacy", "translate": "tosdr.title", "subname": true },
+    "trustpilot": { "id": "trust-pilot", "label": "Trust Pilot", "translate": "trustpilot.title", "subname": true },
+    "trustscore": { "id": "trust-scam", "label": "Trust Scam", "translate": "trustsc.title", "subname": true },
+    "wbm": { "id": "wbm", "label": "WBM", "translate": "wbm.title", "subname": true },
+    "yahoo": { "id": "yahoo", "label": "Esg Rating", "translate": "esg.title", "subname": true },
 }
 
 function tableRow(...lists) {
@@ -713,13 +825,39 @@ function tableRow(...lists) {
     return rows;
 }
 
-const sourceStringClose = (href, text) => `</div></div><a target="_blank" class="hideInSmall source" href='${href}'>${text}</a>`;
 const miniSource = (href) => `<a class="minisource" target="_blank" href="${href}"></a>`;
-const buttonTemplate = (id, functionName) => `<button type="button" class="squareButton" onclick="${functionName}()" id="${id}"><div></div></button>`;
+function buttonTemplate(id, functionName, interaction = false, replacementDiv = '<div></div>') {
+    const idString = interaction ? "" : `id="${id}"`;
+    const classString = interaction ? `class="squareButton invert ${id} interactionButton"` : `class="invert squareButton"`;
+    const functionString = functionName.match(/[()]/) ? `${functionName}` : `${functionName}()`;
+    return `<button type="button" ${classString} onclick="${functionString}" ${idString} >${replacementDiv}</button>`;
+}
 const opsTd = (r) => `<td style="--size: calc(${r.percent.replace("%", "")}/100);">
     <span class="data">${r.entity}</span><span class="tooltip">${r.entity}<br>(${r.amount})</span></td>`;
 const hoverTitleString = (trans) => `<div class="squareButton hovertext hideInSmall"><div>?</div></div>
             <div class="hidetext"><h3 data-i18n="title.${trans}"> </h3><p data-i18n="desc.${trans}"></p></div>`
+function voteBox(location_str, dataObj, styles = false) {
+    classString = styles ? `class="${styles}"` : '';
+    const { voteStatus, up_total, down_total, comment_total } = dataObj;
+    return `<ul ${classString}>
+				<li><a target="_blank" data-i18n="vote.like" onclick="postalVote('up','${location_str}', '${voteStatus}')" >Up</a><div>(${up_total})</div></li>
+				<li><a target="_blank" data-i18n="vote.dislike" onclick="postalVote('down','${location_str}', '${voteStatus}')" >Down</a><div>(${down_total})</div></li>
+            	<li><a target="_blank" data-i18n="vote.comment" onclick="postalVote('comment','${location_str}', '${voteStatus}')" >Comment</a><div>(${comment_total})</div></li>
+            </ul>`
+}
+
+function toTitleCase(str) {
+    return str.replace(
+        /\w\S*/g,
+        (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+    );
+}
+
+const boldP = (bold, text, styles = false) => {
+    const classString = styles ? `class="${styles}"` : '';
+    return `<p ${classString}><b>${bold}</b> ${text}</p>`;
+};
+
 
 var localString = ''
 
@@ -727,28 +865,49 @@ function tabChange(tab, id) {
     const tabContent = document.getElementById(id).getElementsByClassName("tabContent");
     const tabButtons = document.getElementById(id).getElementsByClassName("tabButton");
     const tabButtonArea = document.getElementById(id).getElementsByClassName("tabButtonArea")[0];
+    const tabPreviewContent = document.getElementById(id).getElementsByClassName("previewScore");
     const currentlyActive = tabButtonArea.getElementsByClassName("active")[0].getAttribute("data-tab");
+
     for (let i = 0; i < tabContent.length; i++) {
         if (i == tab) {
             tabContent[i].style.display = "grid";
             tabContent[i].classList.remove("inactiveRight");
             tabContent[i].classList.remove("inactiveLeft");
             tabButtons[i].classList.add("active");
+            tabPreviewContent[i].style.display = "";
+            tabPreviewContent[i].classList.remove("inactiveRight");
+            tabPreviewContent[i].classList.remove("inactiveLeft");
+            tabPreviewContent[i].classList.add("active");
             if (currentlyActive > tab) {
                 tabContent[i].classList.add("activeRight");
+                tabPreviewContent[i].classList.add("activeRight");
             } else {
                 tabContent[i].classList.add("activeLeft");
+                tabPreviewContent[i].classList.add("activeLeft");
             }
+            // we need to set the subname of the previewContainer to the subname of the tabButton, getting the company count from the previewContainer
+            const subname = tabButtons[i].innerText;
+            document.getElementById(id).getElementsByClassName("previewContainer")[0].style.setProperty("--subnamePreview", `'(${subname}`);
+
+            // we need to update the data-location of the main element to the data-location of the tabContent
+            document.getElementById(id).setAttribute("data-location", tabContent[i].getAttribute("data-location"));
+            document.getElementById(id).getElementsByClassName("sourceAnchor")[0].setAttribute("href", tabContent[i].getAttribute("data-source-url"));
         } else {
             tabContent[i].style.display = "none";
             tabContent[i].classList.remove("activeRight");
             tabContent[i].classList.remove("activeLeft");
+            tabPreviewContent[i].style.display = "none";
+            tabPreviewContent[i].classList.remove("activeRight");
+            tabPreviewContent[i].classList.remove("activeLeft");
             if (tab < i) {
                 tabContent[i].classList.add("inactiveRight");
+                tabPreviewContent[i].classList.add("inactiveRight");
             } else {
                 tabContent[i].classList.add("inactiveLeft");
+                tabPreviewContent[i].classList.add("inactiveLeft");
             }
             tabButtons[i].classList.remove("active");
+            tabPreviewContent[i].classList.remove("active");
         }
     }
 }
@@ -756,29 +915,43 @@ function tabChange(tab, id) {
 function sectionTitleString(i18n, label, id, dataLoc, subname = false, tab = false) {
     const subnameString = subname ? `<div class='subname'>(${subname})</div>` : '';
     const previewContainer = `<div class="previewContainer"></div>`;
-    const noTabDataLoc = (tab !== false) ? '' : dataLoc;
+    const noTabDataLoc = tab === false ? dataLoc : '';
     const sectionHeaderString = `<section class="contentSection" ${noTabDataLoc} id='${id}'>
+    <details><summary>
         <h2 class="sectionTitle" data-i18n="${i18n}">${label}</h2>${previewContainer}`;
 
     if (tab !== false) {
-        if (tab == 0) {
-            return `${sectionHeaderString}${hoverTitleString(id)}<div class="tabButtonArea"></div><div class="tabContainer">
+        return tab == 0 ? `${sectionHeaderString}${hoverTitleString(id)}<div class="tabButtonArea"></div></summary><div class="tabContainer">
                 <div class="tabContent activeLeft" ${dataLoc} data-tab="0" data-tabLabel="${subname.replace("www.", "")}" style="display: grid;">${buttonString}`
-        } else {
-            return `<div class="tabContent inactiveRight" ${dataLoc} data-tab="${tab}" data-tabLabel="${subname.replace("www.", "")}" style="display: none;">${buttonString}`
-        }
+            : `<div class="tabContent inactiveRight" ${dataLoc} data-tab="${tab}" data-tabLabel="${subname.replace("www.", "")}" style="display: none;">${buttonString}`;
     }
     return `${sectionHeaderString}${subnameString}${hoverTitleString(id)}`
 
 }
 
-
-function moduleString(id, i18n, label, subname = false, scoreText = false, scoreClass = false, dataLoc = false, tab = false) {
+function moduleStartString(id, i18n, label, subname = false, scoreText = false, scoreClass = false, dataLoc = false, tab = false) {
     scoreClassString = scoreClass ? `${scoreClass}` : 'scoreText';
     scoreTextString = scoreText ? `<div class="${scoreClass}">${scoreText}` : '';
     dataLocationString = dataLoc ? `data-location="${dataLoc}"` : '';
     return `${sectionTitleString(i18n = i18n, label = label, id = id, dataLoc = dataLocationString, subname = subname, tab = tab)}
-              ${scoreTextString}`
+              ${scoreTextString}</summary>`;
+}
+
+const sourceStringClose = (href, text) => `</div></div><a target="_blank" class="hideInSmall source" href='${href}'>${text}</a>`;
+
+function moduleCloseString(includeInteractions = false, id = false) {
+    const sourceString = `<a target="_blank" class="hideInSmall source sourceAnchor">SOURCE</a>`;
+    const interactionsString = includeInteractions ? `
+        ${buttonTemplate("commentButton", "commentButtonAction", true)}
+        ${buttonTemplate("likeButton", "likeModule", true)}
+        ${buttonTemplate("dislikeButton", "dislikeModule", true)}
+        ${buttonTemplate("aboutButton", "aboutButtonAction", true)}
+         ` : '';
+    const interactionBar = `
+    <button class='squareButton scrollToTop interactionButton' style="anchor-name:--${id}-interactions;" onclick='interact(this)'></button>
+    <div class="interactionAnchor"style="position-anchor:--${id}-interactions;"></div>
+    <div class="interactionBar" >${interactionsString}${sourceString}</div>`;
+    return `</details>${interactionBar}</section>`;
 }
 
 function notPieString(data, trans = false, scoreClass = false, icon = false, outOf = false, reviews = false) {
@@ -812,32 +985,548 @@ function pieString(data, trans = false, scoreClass = false, percent = false, out
 		</div>`
 }
 
+function dataToTable(data, ratingOutOf = false, tranlationModuleTag = '', hyperlink = false) {
+    // data should be an object with the following structure
+    // [[label, translation, value, outOf], ...]
+    // ratingOutOf is a boolean, if true, the table will be styled as a rating out of table
+    // tranlationModuleTag is the tag that the translation should be in
+    // hyperlink is a boolean, if true, the value will be wrapped in an a tag, with the href being the value
+    //let tableString = '<table>';
+    let tableString = '<ol class="fakeTable">';
+    const rowClassAndStyleString = (ratingOutOf) ? ` class="ratingOutOf" style="--outOf:'@';"` : '';
+    tableString += Object.values(data).map(([label, translate, value, outOf]) => {
+        outOfString = outOf ? `/ ${outOf}` : '';
+        // Some links may end in a / so we need to remove that
+        if (hyperlink) {
+            value = value.endsWith("/") ? value.slice(0, -1) : value;
+            value = `<a href="${value}">
+                    ${value.replace("http://", "").replace("https://", "").replace("www.", "").replace("mailto:", "")}
+                    </a>`;
+        }
+        // return value ? `<tr><th data-i18n="${tranlationModuleTag}.${translate}">${label.replace(":", "")}</th>
+        // <td${rowClassAndStyleString.replace("@", outOfString)}>${value}</td></tr>` : '';
+        return value ? `<li><span data-i18n="${tranlationModuleTag}.${translate}">${label.replace(":", "")}</span>
+            <span${rowClassAndStyleString.replace("@", outOfString)}>${value}</span></li>` : '';
+    }).join('');
+    // tableString += '</table>';
+    tableString += '</ol>';
+    return tableString;
+}
+
+function spanString(label, translation, style = false) {
+    classString = style ? `class="${style}"` : '';
+    return `<span ${classString} data-i18n="${translation}">${label}</span>`
+}
+
+function lineGraphString(title, score, outOf, colourMe = false, averageScore = false, extraInfo = false, threshold = false, labelOverride = false, addKey = false) {
+    // Create a line that is an svg with a line and a circle
+    // If averageScore is true, then the line get a second circle
+    // If colourMe is true, then the line and circle are coloured
+    // the circles are placed along the line relative to the score and outOf
+    // we want another circle that is placed at threshold/outOf * 100, this is to show the threshold
+    // that circle should be white with a black border
+    // we also need 2 circles to round off the line and a second line that is coloured to fill the line up to the score
+    let scoreNum = (score / outOf) * 100;
+    let lineString = `<div class="lineGraph">
+    <h4>${title}</h4>
+    <svg viewBox="-1 0 102 10" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="5" x2="100" y2="5" stroke="var(--score-unset)" stroke-width="1" />`
+    lineString += scoreNum < 100 ? `<circle cx="100" cy="5" r=".5" fill="var(--score-unset)" />` : `<circle cx="100" cy="5" r=".5" fill="black" />`;
+    if (isNaN(scoreNum)) {
+        scoreNum = 0;
+    }
+    lineString += `
+    <circle cx="0" cy="5" r=".5" fill="black" />
+    <line x1="0" y1="5" x2="${scoreNum}" y2="5" stroke="black" stroke-width="1" />
+    <circle class="lineGraphDot"  cx="${scoreNum}" cy="5" r="1.1" fill="black" />
+    <text x="${scoreNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${score}</text>
+    `;
+
+    if (colourMe) {
+        // if colour me is true, we want to colour the line and the circle
+        // this should set the colours to the floor(score/rating * 100 / 10),
+        // so that we can user that in a css variable to colour the line and circle
+        const colour = Math.floor(scoreNum / 10);
+        if (typeof scoreNum != "number") color = "unset";
+        lineString = lineString.replaceAll("black", `var(--score-${colour})`);
+    }
+    if (averageScore) {
+        const averageScoreNum = (averageScore / outOf) * 100;
+        lineString += `<circle class="lineGraphDot" cx="${averageScoreNum}" cy="5" r="1.1" fill="black" />`;
+        lineString += `<text x="${averageScoreNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${averageScore}</text>`;
+    }
+    if (extraInfo) {
+        //lineString += `<text x="100" y="5" fill="black" font-size="0.2em" text-anchor="end">${extraInfo}</text>`;
+    }
+    if (threshold) {
+        const thresholdNum = (threshold / outOf) * 100;
+        lineString += `<circle class="lineGraphDot" cx="${thresholdNum}" cy="5" r="1.1" fill="white" stroke="black" stroke-width=".5" />`;
+        lineString += `<text x="${thresholdNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${threshold}</text>`;
+    }
+    label = labelOverride ? labelOverride : outOf;
+    lineString += `</svg>
+    <p class="score" style="--outOf:'/${label}';">${score.toString().replace(/.0$/, "")}</p>
+    </div>`;
+    if (addKey) {
+        // Add a key to the line graph, this is a div with a span each item
+        // addKey should be a list of tuples, each tuple should be [label, data-i18n], 
+        // the label is the text that is displayed and the data-i18n is the translation key
+        // the order of the tuples is the order of the keys, from average, to threshold. No need to include the score
+        // but we do need a circle that represents the things we are keying, that corresponds to the order of the keys
+        let keyString = `<ol class="lineGraphKey">`;
+        for (const key in addKey) {
+            keyString += `<li><span class="lineGraphKeyCircle"></span>${addKey[key][0]}</li>`;
+        }
+        keyString += `</ol>`;
+        lineString += keyString
+    }
+    return lineString;
+}
+
+function dotGridChartString(title, score, outOf, colourMe = false, numberOfDotsWide = 5, averageScore = false, extraClass = false) {
+    // Create a dot grid chart, this is a grid of dots that are coloured based on the score
+    // the dots are placed in a grid that is numberOfDotWide by 5
+    // the dots are coloured based on the score, if colourMe is true using our colour scheme
+    // if the dots are uncoloured they are grey, all dots up to the score are coloured
+    // if averageScore is true, then the dot representing the average score is given a stroke
+
+    let scoreNum = (score / outOf) * 100;
+    if (typeof scoreNum != "number") scoreNum = 0;
+    const viewBoxDimentions = numberOfDotsWide * 13;
+    const numberOfDots = numberOfDotsWide * 5;
+    const adjustedScoreColor = Math.floor((score / outOf) * 10);
+    const classString = extraClass ? `class="${extraClass} dotGridChart"` : 'class="dotGridChart"';
+    let dotString = `<div ${classString}>
+    <p class="score" style="--outOf:'/${outOf}';">${score}</p>
+    <svg viewBox="-12 -12 ${viewBoxDimentions} 65" xmlns="http://www.w3.org/2000/svg">`;
+    for (let i = 0; i < numberOfDots; i++) {
+        // we want to place the dots in a grid, so we need to calculate the x and y
+        const x = (i % numberOfDotsWide) * 12;
+        const y = Math.floor(i / numberOfDotsWide) * 12;
+        const adjustedScore = (i / numberOfDots) * 100;
+        let fill = (adjustedScore < scoreNum) ? "black" : "var(--score-unset)";
+        if (colourMe) {
+            //let colour = Math.floor(adjustedScore / 10);
+            fill = fill.replace("black", `var(--score-${adjustedScoreColor})`);
+        }
+        dotString += averageScore && i == Math.floor((averageScore / outOf) * numberOfDots) ? `<circle cx="${x}" cy="${y}" r="4" fill="black"/>` : `<circle cx="${x}" cy="${y}" r="4" fill="${fill}" />`;
+    }
+    dotString += `</svg></div>`;
+    return dotString;
+}
+
+function segmentedArcString(title, score, outOf, colourMe = false, segments = 5, averageScore = false, preciseDots = false, showRatingText = true, labelOverride = false) {
+    // Create a segmented arc chart, this is an arc from 0 to 180deg that is segmented into a number of segments
+    // we can make 2 lines, one grey and one black that represent the arc. Then simulate the segments
+    // by masking off the segments with a white line that is the same width as the arc, angled to the segment.
+    // we then colour the segments based on the score, if colourMe is true we use our colour scheme
+    // if averageScore is true, then the segment representing the average score is given a stroke
+    // if preciseDots is true, then we add a dot on the arc that represents the score
+    // if showRatingText is true, then we add the score as text below the arc
+    if (typeof score != "number") score = 0;
+    let scoreNum = (score / outOf) * 100;
+    if (typeof scoreNum != "number") scoreNum = 0;
+    // figure out which segment the score is in
+    const scoreSegment = Math.floor((score / outOf) * segments);
+    const adjustedScoreColor = 10 - Math.floor(scoreNum / 10);
+    let arcString = `<div class="segmentedArcChart">
+    <span class="chartInner">
+    <svg width = "142" height = "72" viewBox = "10 7 122 65" style = "transform:scaleX(-1);" fill = "none" xmlns = "http://www.w3.org/2000/svg" >`;
+    const segmentAngle = 180 / segments;
+    let scoreColour = (colourMe) ? `var(--score-${adjustedScoreColor})` : "black";
+
+    const gapAngle = 3;
+    const roundedSegments = true;
+    const outer = 60;
+    const inner = 50;
+    for (let i = 0; i < segments; i++) {
+        const startAngle = segmentAngle * i;
+        const endAngle = i == segments - 1 ? segmentAngle * (i + 1) : segmentAngle * (i + 1) - gapAngle;
+        const startAngleRad = (startAngle * Math.PI) / 180;
+        const endAngleRad = (endAngle * Math.PI) / 180;
+        const startXMultiplier = Math.cos(startAngleRad);
+        const startYMultiplier = Math.sin(startAngleRad);
+        const endXMultiplier = Math.cos(endAngleRad);
+        const endYMultiplier = Math.sin(endAngleRad);
+
+        const x1 = 71 + outer * startXMultiplier;
+        const y1 = 71 - outer * startYMultiplier;
+        const x2 = 71 + outer * endXMultiplier;
+        const y2 = 71 - outer * endYMultiplier;
+
+        const x3 = 71 + inner * startXMultiplier;
+        const y3 = 71 - inner * startYMultiplier;
+        const x4 = 71 + inner * endXMultiplier;
+        const y4 = 71 - inner * endYMultiplier;
+
+        if (i >= scoreSegment) {
+            scoreColour = "var(--score-unset)";
+        }
+
+        const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+        if (roundedSegments) {
+            // if roundedSegments is true, we want to round off the segment corners by 
+            // adding another 2 lines that are curved to the segment
+            const startCurveAngleRad = ((startAngle + gapAngle) * Math.PI) / 180;
+            const endCurveAngleRad = ((endAngle - gapAngle) * Math.PI) / 180;
+            const startCurveXMultiplier = Math.cos(startCurveAngleRad);
+            const startCurveYMultiplier = Math.sin(startCurveAngleRad);
+            const endCurveXMultiplier = Math.cos(endCurveAngleRad);
+            const endCurveYMultiplier = Math.sin(endCurveAngleRad);
+
+            const x5 = 71 + (outer + gapAngle) * startCurveXMultiplier;
+            const y5 = 71 - (outer + gapAngle) * startCurveYMultiplier;
+            const x6 = 71 + (outer + gapAngle) * endCurveXMultiplier;
+            const y6 = 71 - (outer + gapAngle) * endCurveYMultiplier;
+
+            const x7 = 71 + (inner - gapAngle) * startCurveXMultiplier;
+            const y7 = 71 - (inner - gapAngle) * startCurveYMultiplier;
+            const x8 = 71 + (inner - gapAngle) * endCurveXMultiplier;
+            const y8 = 71 - (inner - gapAngle) * endCurveYMultiplier;
+
+            arcString += `<path d="M${x1},${y1} A7,7 0 0,0 ${x5},${y5} A${outer},${outer} 0 0,0 ${x6},${y6} A7,7 0 0,0 ${x2},${y2} L${x4},${y4} 
+                            A7,7 0 0,0 ${x8},${y8} A${inner},${inner} 0 0,1 ${x7},${y7} A7,7 0 0,0 ${x3},${y3}
+                            Z" fill="${scoreColour}"/>`;
+        } else {
+            arcString += `<path d="M${x1},${y1} A70,70 0 ${largeArcFlag},0 ${x2},${y2} L${x4},${y4} A50,50 0 ${largeArcFlag},1 ${x3},${y3} Z" fill="${scoreColour}"/>`;
+        }
+    }
+    if (preciseDots) {
+        const x = 10 * Math.sin((scoreNum * Math.PI) / 180);
+        const y = 10 * Math.cos((scoreNum * Math.PI) / 180);
+        arcString += `<circle cx="${x}" cy="${y}" r=".5" fill="black" />`;
+        if (averageScore) {
+            const averageScoreNum = (averageScore / outOf) * 100;
+            const x = 10 * Math.sin((averageScoreNum * Math.PI) / 180);
+            const y = 10 * Math.cos((averageScoreNum * Math.PI) / 180);
+            arcString += `<circle cx="${x}" cy="${y}" r=".5" fill="black" />`;
+        }
+    }
+    arcString += `</svg>`;
+    label = labelOverride ? labelOverride : outOf;
+    if (showRatingText) {
+        arcString += `<p class="score" style="--outOf:'/${label}';">${score}</p>`;
+        // if segments are 5 we also wants a "risk" label, this should be translated
+        // HIGH, MEDIUM, LOW, NEGLIGIBLE, SEVERE
+        if (segments == 5) {
+            riskArray = ["negligible", "low", "medium", "high", "severe"];
+            arcString += `<p class="risk" data-i18n="esg.${riskArray[scoreSegment]}">
+            ${riskArray[scoreSegment]}</p>`;
+        }
+    }
+    arcString += `</span></div>`;
+    return arcString;
+}
+
+function thickLineGraphString(title, score, outOf, colourMe = false, averageScore = false, labelOverride = false) {
+    // Create a thick line graph, this is a line that is thicker than the line graph
+    // we dont use a circle to represent the score, but we colour the line up to the score
+    // if averageScore is true, then we add a line at that point
+    // we should add the relevent circles to the ends of the line
+    let scoreNum = (score / outOf) * 100;
+    if (typeof scoreNum != "number") scoreNum = 0;
+
+    let lineString = `<div class="thickLineGraph">
+    <svg viewBox="-2 0 104 10" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="5" x2="100" y2="5" stroke="var(--score-unset)" stroke-width="3" />`;
+    if (scoreNum < 100) {
+        lineString += `<line x1="${scoreNum}" y1="5" x2="100" y2="5" stroke="var(--score-unset)" stroke-width="3" />
+        <circle cx="100" cy="5" r="1.5" fill="var(--score-unset)" />`;
+    }
+    lineString += `<line x1="0" y1="5" x2="${scoreNum}" y2="5" stroke="black" stroke-width="3" />
+        <circle cx="0" cy="5" r="1.5" fill="black" />`;
+    if (scoreNum = 100) {
+        lineString += `<circle cx="0" cy="5" r="1.5" fill="black" />`;
+    }
+    if (averageScore) {
+        const averageScoreNum = (averageScore / outOf) * 100;
+        lineString += `<line x1="${averageScoreNum}" y1="5" x2="${averageScoreNum}" y2="5" stroke="black" stroke-width="3" />`;
+    }
+    if (colourMe) {
+        const colour = Math.floor(scoreNum / 10);
+        if (typeof scoreNum != "number") color = "unset";
+        lineString = lineString.replaceAll("black", `var(--score-${colour})`);
+    }
+    label = labelOverride ? labelOverride : outOf;
+    lineString += `</svg>
+    <p class="score" style="--outOf:'/${label}';">${score.toString().replace(".0", "")}</p>
+    </div>`;
+    return lineString;
+
+}
+
+function pieChartCardString(data, valuePrepend = false, valueAppend = false, title = false, displayPercent = false, displayTotal = false) {
+    // create a card that has a pie chart in it, it should take in data that is formatted like this
+    // [[label, translation, value, colour], ...], where the colour is a css variable name
+    // valuePrepend and valueAppend are strings that are added to the value
+    // title is a string that is added to the title of the card
+    // we also want to add a key to the card, this should be made from the same data as the pie chart
+    // if displayPercent is true, then we should display the percentage of the total that each slice is
+    // by adding it to the key in brackets, inside the style attribute of the span
+    // if displayTotal is true, then we should display the total of all the values next to the title
+    let pieString = `<div class="pieChartCard">`;
+    let keyString = `<ol class="pieChartKey">`;
+    if (title) {
+        pieString += `<h3>${title}</h3>`;
+    }
+    let total = 0;
+    for (const [label, translation, value, colour] of data) {
+        total += parseFloat(value);
+    }
+    if (displayTotal) {
+        var newValue = total
+        if (["$", "£", "€"].includes(valuePrepend)) {
+            // if the value is a currency, we want to add a comma every 3 digits
+            newValue = valuePrepend + newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        } else {
+            if (valuePrepend) newValue = valuePrepend + newValue;
+        }
+        pieString += `<p class="total" data-i18n="total">${newValue}</p>`;
+    }
+    pieString += `<svg viewBox="-50 -50 100 100" xmlns="http://www.w3.org/2000/svg">`;
+    // we should sort the data so that the highest value is first
+    data.sort((a, b) => b[2] - a[2]);
+    var outerRadius = 50;
+    var innerRadius = 10;
+    var currentRelCoords = [];
+    for (const [label, translation, value, colour] of data) {
+        var newValue = value
+        if (["$", "£", "€"].includes(valuePrepend)) {
+            // if the value is a currency, we want to add a comma every 3 digits
+            newValue = newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        if (valuePrepend) newValue = valuePrepend + newValue;
+        if (valueAppend) newValue = newValue + valueAppend;
+        const percent = (value / total) * 100;
+        const percentTag = displayPercent ? `style="--percent:'(${percent.toFixed(1)}%)';"` : '';
+        keyString += `<li><span class="pieChartKeyCircle" style="--c:var(--${colour});"></span>
+                         <span class="pieChartKeyLabel" data-i18n="${translation}">${label}</span>
+                         <span class="pieChartKeyValue" ${percentTag}>${newValue}</span></li>`;
+        // we need to draw the arc as a path using M, A, L and Z. 
+        // We are offsetting the points by -50
+        // since our viewBox is -50 to 50, so the centre of the circle is at 0,0
+        // we need to draw the outer arc first, then the edge of the slice, then the inner arc
+        // we need to close the path by drawing a line to the starting point
+        // we also need to add the fill colour to the slice
+
+        if (value == 0) continue;
+        // if percent is 100, we want to draw a full circle
+        if (percent == 100) {
+            pieString += `<circle cx="0" cy="0" r="${outerRadius}" fill="var(--${colour})" />
+                          <circle cx="0" cy="0" r="${innerRadius}" fill="var(--s-primary)" />`;
+            continue;
+        }
+        const startAngle = currentRelCoords.length == 0 ? 270 : currentRelCoords[currentRelCoords.length - 1];
+        const endAngle = startAngle + (value / total) * 360;
+        const startAngleRad = (startAngle * Math.PI) / 180;
+        const endAngleRad = (endAngle * Math.PI) / 180;
+        const startX = outerRadius * Math.cos(startAngleRad);
+        const startY = outerRadius * Math.sin(startAngleRad);
+        const endX = outerRadius * Math.cos(endAngleRad);
+        const endY = outerRadius * Math.sin(endAngleRad);
+        const innerStartX = innerRadius * Math.cos(endAngleRad);
+        const innerStartY = innerRadius * Math.sin(endAngleRad);
+        const innerEndX = innerRadius * Math.cos(startAngleRad);
+        const innerEndY = innerRadius * Math.sin(startAngleRad);
+        currentRelCoords.push(endAngle);
+        pieString += `<path d="M0,0
+                     L${startX},${startY}
+                       A${outerRadius},${outerRadius} 0 ${endAngle - startAngle > 180 ? 1 : 0},1 ${endX},${endY} 
+                       L${innerStartX},${innerStartY} 
+                       A${innerRadius},${innerRadius} 0 ${endAngle - startAngle > 180 ? 1 : 0},0 ${innerEndX},${innerEndY} Z" fill="var(--${colour})" 
+                       stroke="var(--s-primary)" stroke-width="2"
+                       />`;
+    }
+    keyString += `</ol>`;
+    pieString += `</svg>${keyString}</div>`;
+    return pieString;
+}
+
+function verticalBarChartString(data, keys, title, displayTotals = false, displayKey = true) {
+    // create a vertical bar chart, this is a chart that has bars placed along an axis
+    // the bars are coloured based on the data, 
+    // the data should be formatted like this: {$axisLabel: [value1, value2 ...], axisLabel2: [value1, value2 ...]...}
+    // each axisLabel should have a list of values, all values should be used as bars and should be displayed over each other
+    // the keys should be an array of the keys for the values in the data like {axisLabel1: color1, axisLabel2: color2 ...}
+    // the title is a string that is added to the title of the card
+    // if displayTotals is true, then we should display the total of each axisLabel under the bar
+    // if displayKey is true, then we should display a key for the chart
+    let barString = `<div class="verticalBarChart">`;
+    if (title) {
+        barString += `<h3>${title}</h3>`;
+    }
+    barString += `<svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">`;
+    const axisLabels = Object.keys(data);
+    const axisValues = Object.values(data);
+    const axisKeys = Object.keys(keys);
+    const axisColors = Object.values(keys);
+    const axisCount = axisLabels.length;
+    const barWidth = 100 / axisCount;
+    const barGap = 1;
+    const barWidthMinusGap = barWidth - barGap;
+    const barHeight = 80;
+    const barMax = Math.max(...axisValues.flat());
+
+    for (let i = 0; i < axisCount; i++) {
+        const axisLabel = axisLabels[i];
+        const axisValue = axisValues[i];
+        const axisKey = axisKeys[i];
+        const barX = i * barWidth;
+        for (let j = 0; j < axisValue.length; j++) {
+            const barHeightPercent = (axisValue[j] / barMax) * 100;
+            const axisColor = axisColors[j];
+            const barY = 100 - barHeightPercent;
+            barString += `<rect x="${barX}" y="${barY}" width="${barWidthMinusGap}" height="${barHeightPercent}" fill="var(--${axisColor})" class="bar-${j}" />`;
+            // we should add the axisLabel to the bars, and rotate it so that it is readable
+            // to get it on the bar correctly we need to align the end of the text with the end of the bar
+            barString += `<text x="${barX + barWidthMinusGap / 2}" y="105" fill="black" font-size="0.2em" text-anchor="middle" transform="rotate(90 ${barX + barWidthMinusGap / 2} 105)">${axisLabel}</text>`;
+        }
+    }
+
+    barString += `</svg>`;
+    if (displayKey) {
+        barString += `<ol class="verticalBarChartKey">`;
+        for (const key in keys) {
+            barString += `<li><span class="verticalBarChartKeyCircle" style="--c:var(--${keys[key]});"></span>
+                            <span class="verticalBarChartKeyLabel" data-i18n="opensec.${key}">${key}</span></li>`;
+        }
+        barString += `</ol>`;
+    }
+    barString += `</div>`;
+
+    return barString;
+}
+
+function starChartString(score, outOf, colourMe = false, averageScore = false) {
+    // Create a series of stars that represent the score, the stars are coloured based on the score
+    // we allow for divisions of stars so we should create 2 bars, one grey and one black/coloured
+    // then we should put our stars in a mask that is the same width as the bar to then mask off the bar 
+    // if averageScore is true, then we draw a star with a stroke at the star where the average score is
+    // if colourMe is true, then we use our colour scheme to colour the stars
+
+    let scoreNum = (score / outOf) * 100;
+    if (typeof scoreNum != "number") scoreNum = 0;
+    const viewBoxDimentions = 100;
+    const numberOfStars = outOf;
+    const adjustedScoreColor = Math.floor(scoreNum / 10);
+    let averageScoreString = "<path d='";
+    let averageScoreNum = 0;
+    let starString = `<div class="starChart">
+    <svg viewBox="-10 0 ${viewBoxDimentions} 20" xmlns="http://www.w3.org/2000/svg">`;
+    // first the bars
+    let fill = colourMe ? `var(--score-${adjustedScoreColor})` : "black";
+    // then the stars, opening the mask first
+    starString += `<mask id="starMask" x="0" y="0" width="100" height="32">`;
+    if (averageScore) {
+        averageScoreNum = Math.ceil(averageScore / outOf)
+    }
+    const numberOfPoints = 5;
+    const outerRadius = 10;
+    const innerRadius = 4;
+    for (let i = 0; i < numberOfStars; i++) {
+        // we want to place the stars in a row, so we need to calculate the x and y
+        const offsetx = i * 20;
+        const offsety = 10;
+        // we want to draw a star, so we need to calculate the points, we can do this by 
+        // calulating the angle of each point, then using sin and cos to calculate the x and y
+        // then do the same for the inner points
+        // we then draw a line to the next point, and close the path
+        let starPath = `M${offsetx},${offsety - outerRadius}`;
+        if (averageScore && i == averageScoreNum) {
+            averageScoreString += `M${offsetx},${offsety - outerRadius}`;
+        }
+        for (let j = 0; j < numberOfPoints; j++) {
+            const angle = ((j * 2 * Math.PI) / numberOfPoints) - (Math.PI / 2);
+            const x = outerRadius * Math.cos(angle);
+            const y = outerRadius * Math.sin(angle);
+            // then we add the inner point
+            const innerAngle = ((j * 2 * Math.PI) / numberOfPoints) + (Math.PI / numberOfPoints) - (Math.PI / 2);
+            const innerX = innerRadius * Math.cos(innerAngle);
+            const innerY = innerRadius * Math.sin(innerAngle);
+            starPath += ` L${x + offsetx},${y + offsety} L${innerX + offsetx},${innerY + offsety}`;
+            if (averageScore && i == averageScoreNum) {
+                averageScoreString += ` L${x + offsetx},${y + offsety} L${innerX + offsetx},${innerY + offsety}`;
+            }
+        }
+        starPath += ` Z`;
+        starString += `<path d="${starPath}" fill="white" />`;
+        // starString += `<path d="${starPath}" fill="black" />`;
+
+
+    }
+    // the mask is closed and then we add the mask to the bars
+    starString += `</mask>
+    <rect x="-10" y="-10" width="100" height="32" fill="var(--score-unset)" mask="url(#starMask)" />
+    <rect x="-10" y="-10" width="${scoreNum}" height="32" fill="${fill}" mask="url(#starMask)" />`;
+    if (averageScore) {
+        averageScoreString += ` Z' fill="none" stroke="black" stroke-width="1" />`;
+        console.log(averageScoreString)
+        starString += averageScoreString;
+    }
+    starString += `</svg></div>`;
+    return starString;
+}
+
+function singleItemPieChartString(score, outOf, colourMe = false, displayScore = true) {
+    // create a single item pie chart, this is a pie chart with a single slice, but shows
+    // the score as a percentage of the total, the slice is coloured based on the score
+    // and the rest of the circle is grey. The pie chart should be a full circle, but with a 
+    // void in the middle that is masked out, and the score should be displayed in the middle
+    // if it is set to true
+    let scoreNum = (score / outOf) * 360;
+    let innerRadius = 40;
+    let outerRadius = 50;
+    if (typeof scoreNum != "number") scoreNum = 0;
+    const adjustedScoreColor = Math.floor(scoreNum / 36);
+    console.log(adjustedScoreColor)
+    let pieString = `<div class="singleItemPieChart"><svg viewBox="-50 -50 100 100" xmlns="http://www.w3.org/2000/svg">`;
+    // First we should draw the mask, which is just a black circle
+    pieString += `<mask id="pieMask" x="-50" y="-50" width="100" height="100">
+                    <circle cx="0" cy="0" r="1000" fill="white" />
+                    <circle cx="0" cy="0" r="${innerRadius}" fill="black" />
+                    </mask>`;
+    // then the grey circle
+    pieString += `<circle cx="0" cy="0" r="${outerRadius}" fill="var(--score-unset)" mask="url(#pieMask)" />`;
+    // then the coloured arc, starting from the top
+    let endingX = 50 * Math.sin((scoreNum * Math.PI) / 180);
+    let endingY = 50 * Math.cos((scoreNum * Math.PI) / 180);
+    if (scoreNum === 180) {
+        endingX = 0;
+        endingY = 50;
+    }
+    if (scoreNum === 360) {
+        pieString += `<circle cx="0" cy="0" r="50" fill="var(--score-${adjustedScoreColor})" mask="url(#pieMask)"/>`;
+    } else {
+        pieString += `<path d="M0,-50 A50,50 0 0,1 ${endingX},${endingY} L0,0 Z" fill="var(--score-${adjustedScoreColor})" mask="url(#pieMask)" />`;
+    }
+
+    pieString += `</svg>`
+    // then the score in the middle
+    if (displayScore) {
+        pieString += `<span style="--score:'${score}';--outOf:'/ ${outOf}';" class="score">
+        ${score}</span>`;
+    }
+    pieString += `</div>`;
+    return pieString;
+
+}
+
 
 function addToolsSection() {
     titleBar.innerHTML += buttonTemplate("backButton", "justSendBack");
     titleBar.innerHTML += buttonTemplate("settingsButton", "loadSettings");
     titleBar.innerHTML += buttonTemplate("closeButton", "closeIV");
+    titleBar.innerHTML += buttonTemplate("userButton", "loginButtonAction");
+    titleBar.innerHTML += buttonTemplate("optionsButton", "loadSettings");
     const currentDomain = document.getElementsByClassName("co-name")[0].innerText;
-    if (!isSpeedcam) {
-        body.innerHTML += `
-        <section id="Invisible-interaction" class="hideInSmall hide">
-            <section id="Invisible-like" onclick="vote('up')" style="--count:'0';" data-i18n="vote.like">Like</section>
-            <section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike</section>
-            <section id="Invisible-boycott" onclick="boycott()" data-i18n="vote.boycott">Boycott</section>
-        </section>
-    `;
-    }
     backButton = document.getElementById('backButton');
     closeButton = document.getElementById('closeButton');
     settingsButton = document.getElementById('settingsButton');
-    const voteButtons = document.getElementById('Invisible-interaction');
 
     if (isSpeedcam || Url.get.exhibit) {
         body.parentNode.setAttribute("style", "--scroll-width: 0px; ");
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content > .contentSection').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.top = 'calc(100vh - 190px)';
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#disclaimer').style.position = 'sticky';
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backdropFilter = blur;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backdropFilter = blur;
         closeButton.style.visibility = "hidden";
@@ -846,10 +1535,13 @@ function addToolsSection() {
     }
     if (Url.get.app || isSpeedcam || /Mobile/i.test(navigator.userAgent)) {
         debugLogging("phone mode");
-        document.getElementById("content").classList.add("mobile");
         body.classList.add("mobile");
         closeButton.style.visibility = "hidden";
     }
+    if (!isSpeedcam && (/Mobile/i.test(navigator.userAgent) || Url.get.app)) {
+        body.classList.add("optionsMode");
+    }
+
     if (!Url.get.app || !isSpeedcam) {
         backButton.classList.add("show");
         closeButton.classList.add("closeExtention");
@@ -857,119 +1549,167 @@ function addToolsSection() {
         body.classList.add("desktop");
     }
 
-    if (Url.get.vote == 'true') {
-        body.classList.add("topBar");
-        voteButtons.classList.toggle("hide");
-    } else {
-        voteButtons.style.visibility = "hidden";
+    if (!(Url.get.expanded && Url.get.app)) {
+        return;
     }
-    if (Url.get.expanded && Url.get.app) {
-        document.getElementById(Url.get.expanded).classList.add("expanded");
-        body.classList.add('somethingIsOpen');
-        explode();
+    document.getElementById(Url.get.expanded).classList.add("expanded");
+    body.classList.add('somethingIsOpen');
+    explode();
+}
+
+function addToModulePreview(moduleId, previewString, miniMode = false) {
+    if (miniMode) {
+        if (currentMiniState[moduleId]._miniPreview == undefined) {
+            currentMiniState[moduleId]._miniPreview = previewString;
+            return
+        } else if (typeof currentMiniState[moduleId]._miniPreview == "string") {
+            currentMiniState[moduleId]._miniPreview = [currentMiniState[moduleId]._miniPreview, previewString];
+            return
+        } else if (typeof currentMiniState[moduleId]._miniPreview == "object") {
+            currentMiniState[moduleId]._miniPreview.push(previewString);
+            return
+        }
+        return;
+    }
+    if (currentModuleState[moduleId]._preview == undefined) {
+        currentModuleState[moduleId]._preview = previewString;
+        return
+    } else if (typeof currentModuleState[moduleId]._preview == "string") {
+        currentModuleState[moduleId]._preview = [currentModuleState[moduleId]._preview, previewString];
+        return
+    } else if (typeof currentModuleState[moduleId]._preview == "object") {
+        currentModuleState[moduleId]._preview.push(previewString);
+        return
     }
 }
 
-function moduleSocial(data, typeId, typeTranslate, typeLabel, subname = false) {
-    let tableString = ''
+function checkAndSetModuleStateData(moduleId, label, data, miniMode = false) {
+    if (miniMode) {
+        if (currentMiniState[moduleId] == undefined) currentMiniState[moduleId] = {};
+        currentMiniState[moduleId][label] = data;
+    } else {
+        if (currentModuleState[moduleId] == undefined) currentModuleState[moduleId] = {};
+        currentModuleState[moduleId][label] = data;
+    }
+}
+
+
+function moduleSocial(data, typeId, typeTranslate, typeLabel, subname = false, miniMode = false) {
     let linkCount = 0;
-    if (currentModuleState[typeId] == undefined) currentModuleState[typeId] = {};
-    currentModuleState[typeId][typeLabel] = data;
+    checkAndSetModuleStateData(typeId, typeLabel, data, miniMode);
+    let dataForTable = [];
+    let countOfEachType = {};
     for (const label in data) {
         for (const item in data[label]) {
             linkCount++;
+            countOfEachType[label] = countOfEachType[label] ? countOfEachType[label] + 1 : 1;
             const cleanLabel = label.replaceAll(" id", "").replaceAll(" username", "");
             const labelUrl = data[label][item].url;
-            tableString += `<tr><th>${cleanLabel}</th>
-                <td><a class="spacelinks" href="${labelUrl}">${labelUrl}</a>
-                ${miniSource("https://wikidata.org")}</td>
-            </tr>`;
+            dataForTable.push([cleanLabel, label.replaceAll(" ", "_"), labelUrl]);
         }
     }
-    return `${moduleString(typeId, typeTranslate, typeLabel, subname)} 
-        <section id="social-wikidata-links" class="fullBleed"><details>
-        <summary><div>${linkCount} <div class="detailsSubString">Social Media Links</div></div></summary>
-        <table>${tableString}</table></details></section></section>`;
+    const sourceUrl = `https://wikidata.org/wiki/${data.id}`;
+    let previewTemplate = `<div class='previewScore previewSocial' data-source-url="${sourceUrl}" style="--number:'${linkCount}';" data-i18n="wikidata.socialmedia">`
+    // for each type of link we want to add a logo to the preview, this will be done with css
+    for (const type in countOfEachType) {
+        if (countOfEachType[type] == 1) {
+            previewTemplate += `<span class="socialIcon ${type.replaceAll(" ", "_").toLowerCase()}">
+        ${type[0]}</span>`;
+
+        } else {
+            previewTemplate += `<span class="socialIcon ${type.replaceAll(" ", "_").toLowerCase()}" style="--count:'${countOfEachType[type]}';">
+        ${type[0]}</span>`;
+        }
+    }
+    previewTemplate += `</div>`;
+
+    if (miniMode) {
+        currentMiniState[typeId]._miniPreview = previewTemplate;
+    } else {
+        currentModuleState[typeId]._preview = previewTemplate;
+    }
+    return `${moduleStartString(typeId, typeTranslate, typeLabel, subname, false, "detailsSubString")} 
+        ${dataToTable(dataForTable, false, "wikidata", true)}
+        ${moduleCloseString(false, "social")}`;
 }
 
-function modulePolitical(data) {
+function modulePolitical(data, miniMode = false) {
     const lang = "enlabel";
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf ratingText">@</span></div>`;
+    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="https://wikidata.org" style="--subname:'&'"><span class="ratingOutOf ratingText">@</span></div>`;
     return Object.keys(data).filter(label => data[label].length > 0).map(label => {
         const labelId = (label == "polalignment") ? "political-wikidata" : "politicali-wikidata";
         const actLabel = (label == "polalignment") ? "Political Alignments" : "Political Ideologies";
 
-        if (currentModuleState[labelId] == undefined) currentModuleState[labelId] = {};
-        currentModuleState[labelId][label] = data[label];
+        checkAndSetModuleStateData(labelId, label, data[label], miniMode);
 
-        let itemString = `${moduleString(labelId, `wikidata.${label}`, actLabel, false, " ", "fullBleed")}<div><ul>`;
+        let itemString = `${moduleStartString(labelId, `wikidata.${label}`, actLabel, false, " ", "fullBleed")}<div><ul>`;
         data[label].forEach(itemObj => {
             const itemLabel = itemObj.data[lang];
             const dataId = itemObj.dataId;
             const sourceLabel = itemObj.sourceLabels[lang];
             const miniSourceHref = `https://wikidata.org/wiki/${dataId}`;
-            currentModuleState[labelId][label]["_preview"] = previewTemplate.replace("@", itemLabel).replace("&", sourceLabel);
+            if (miniMode) {
+                currentMiniState[labelId][label]._miniPreview = previewTemplate.replace("@", itemLabel).replace("&", sourceLabel);
+            } else {
+                currentModuleState[labelId][label]._preview = previewTemplate.replace("@", itemLabel).replace("&", sourceLabel);
+            }
             itemString += `<li><h3>${itemObj.sourceLabels[lang]} <a class="spacelinks" href="${miniSourceHref}">${itemLabel}</a></h3>${miniSource(miniSourceHref)}</li>`;
         });
-        itemString += `</ul>${sourceStringClose(`https://wikidata.org/wiki/${data[label][0].dataId}`, "WIKIDATA")}</section>`;
+        itemString += `
+        </ul> ${moduleCloseString(false, "political")} </section>
+        `;
         return itemString;
     })
 }
 
-function modulePost(data, typeId, typeTranslate, typeLabel, dataURL, subname = false) {
+function modulePost(data, typeId, typeTranslate, typeLabel, dataURL, subname = false, miniMode = false) {
     const postContent = data.content;
     const dataLocationString = (data.uid) ? data.uid : false;
-    if (currentModuleState[typeId] == undefined) currentModuleState[typeId] = {};
-    currentModuleState[typeId][dataLocationString] = data;
+    checkAndSetModuleStateData(typeId, typeLabel, data, miniMode);
     knownPosts[dataLocationString] = data;
     knownPostsByLocation[data.location] = data;
+    // ${voteBox(data.uid, data, "smallVoteBox bottomLeftOfModule hideInSmall")}
+    // ${moduleCloseString(true, true, "https://assets.reveb.la/#user", data.author)}
     return `
-        ${moduleString(id = typeId, i18n = typeTranslate, label = typeLabel, subname = subname, scoreText = false, scoreClass = false, dataLoc = dataLocationString, tab = false)}
+        ${moduleStartString(id = typeId, i18n = typeTranslate, label = typeLabel, subname = subname, scoreText = false, scoreClass = false, dataLoc = dataLocationString, tab = false)}
         <div class="postContent hideInSmall">${postContent}
-             ${sourceStringClose("https://assets.reveb.la/#user", data.author)}
-             ${voteBox(data.uid, data, "smallVoteBox bottomLeftOfModule hideInSmall")}
+        ${moduleCloseString(true, "post")}
         </section>`;
 }
 
-
-function voteBox(location_str, dataObj, styles = false) {
-    classString = styles ? `class="${styles}"` : '';
-    const { voteStatus, up_total, down_total, comment_total } = dataObj;
-    return `<ul ${classString}>
-				<li><a target="_blank" data-i18n="vote.like" onclick="postalVote('up','${location_str}', '${voteStatus}')" >Up</a><div>(${up_total})</div></li>
-				<li><a target="_blank" data-i18n="vote.dislike" onclick="postalVote('down','${location_str}', '${voteStatus}')" >Down</a><div>(${down_total})</div></li>
-            	<li><a target="_blank" data-i18n="vote.comment" onclick="postalVote('comment','${location_str}', '${voteStatus}')" >Comment</a><div>(${comment_total})</div></li>
-            </ul>`
-}
-
-function toTitleCase(str) {
-    return str.replace(
-        /\w\S*/g,
-        (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    );
-}
-
-const boldP = (bold, text, styles = false) => {
-    const classString = styles ? `class="${styles}"` : '';
-    return `<p ${classString}><b>${bold}</b> ${text}</p>`;
-};
-
-function moduleOpensecrets(data) {
+function moduleOpensecrets(data, noClose = false, miniMode = false) {
     const { cycle_year, contributions_rank, contributions_amount, lobbying_rank, bars, charts, osid, lobbycards, bill_most_code, bill_most_heading, bill_most_title, bill_most_url } = data;
     let htmlString = '';
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf ratingText">@</span></div>`;
-    if (currentModuleState["opensec"]["_preview"] == undefined) currentModuleState["opensec"]["_preview"] = '';
-    htmlString += `<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">`;
-    if (bill_most_heading) {
-        const flavourText = `${bill_most_heading} (${bill_most_code})`
-        htmlString += `${boldP(bill_most_heading, '', "flavourText heading")}
-            <p class="flavourText flavourContent"><a href='${bill_most_url}'>${flavourText}</a></p>`;
+    const sourceUrl = `https://www.opensecrets.org/orgs/name/summary?id=${osid}`;
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"><span class="ratingOutOf ratingText">${cycle_year}</span></div>`;
+    addToModulePreview("opensec", previewTemplate, miniMode)
+    htmlString += '<p class="centeredRow" data-i18n="os.disclaimer"></p>';
 
-        currentModuleState["opensec"]["_preview"] += previewTemplate.replace("@", flavourText).replace("&", data.source);
+    const idToColour = {
+        "Lobbyistingov": "network-8",
+        "Lobbyistnotingov": "network-5",
+        "candidates": "network-10",
+        "party_committees": "network-1",
+        "leadership_pacs": "network-2",
+        "outside_groups": "network-7",
+        "527_groups": "network-4",
+        "individuals": "network-6",
+        "organizations": "network-5",
+        "pacs": "network-2",
     }
-    htmlString += '<div class="fullBleed"><div><p data-i18n="os.disclaimer"></p><br>';
+    if (lobbycards.length > 0) {
+        htmlString += "<h3 data-i18n='opensec.lobbying'> Lobbying </h3>"
+        for (card of lobbycards) {
+            htmlString += pieChartCardString([["Lobbyists who worked in government", "opensec.Lobbyistingov", card.held.count, idToColour["Lobbyistingov"]],
+            ["Lobbyists who didnt work in government", "opensec.Lobbyistnotingov", card.notheld.count, idToColour["Lobbyistnotingov"]]], false, false, card.year, true, true);
+        }
+    }
+    if (bill_most_heading) {
+        const flavourText = `${bill_most_title} (${bill_most_code})`
+        htmlString += `<p class="gRow"><span class="openSecBill">${bill_most_heading}</span><a href='${bill_most_url}'>${flavourText}</a></p>`;
+    }
     if (cycle_year) {
-        htmlString += `<p>Data is true of the ${cycle_year} cycle</p> <table>`;
+        htmlString += `<p class="centeredRow">Data is true of the ${cycle_year} cycle</p> <table>`;
         const ranks = ["contributions_rank", "contributions_amount", "lobbying_rank"];
 
         for (const rank in ranks)
@@ -986,106 +1726,47 @@ function moduleOpensecrets(data) {
             for (const [chartType, chartLabel] of Object.entries(charts)) {
                 const chartData = bars[chartType];
                 if (chartData) {
-                    htmlString += `
-                        <h3 data-i18n="opensec.${chartType}">${chartLabel}</h3>
-                        <table class="charts-css multiple stacked bar show-heading">
-                            <tbody>
-                                <tr>
-                                    ${Object.values(chartData).map(opsTd).join('')}
-                                </tr>
-                            </tbody>
-                        </table>`;
+                    // chartdata is formatted like {"entity": x, "amount": y}
+                    htmlString += pieChartCardString(chartData.map(x => [x.entity,
+                    `opensec.${x.entity.replaceAll(" ", "_").toLowerCase()}`,
+                    x.amount.replaceAll(",", "").replace("$", ""),
+                    `${idToColour[x.entity.replaceAll(" ", "_").toLowerCase()]}`])
+                        , "$", false, chartLabel, true, true);
                 }
             }
         }
         if (charts) {
-            const commonString = `<h4><span style="background-color: rgba(240,50,50,.75)!important;" data-i18n="opensec.republicans">Republicans</span>
-                            <span style="background-color: rgba(90,165,255,.75) !important;" data-i18n="opensec.democrats">Democrats</span></h4>
-                            <table class="charts-css column show-data-axes multiple hide-data show-labels show-primary-axis show-data-on-hover" style="--color-2: var(--color-5);">
-                            <thead>
-                                <tr>
-                                <th data-i18n="opensec.year"        scope="col">Year</th>
-                                <th data-i18n="opensec.democrats"   scope="col">Democrats</th>
-                                <th data-i18n="opensec.republicans" scope="col">Republicans</th>
-                                </tr>
-                            </thead><tbody>`;
+            // htmlString += `<h4><span style="background-color: rgba(240,50,50,.75)!important;" data-i18n="opensec.republicans">Republicans</span></h4>`;
             for (const chartType in charts) {
                 const house = charts[chartType];
-                if (Object.keys(house) || house == undefined) continue;
-                const houseDems = house.Dems.all_years;
-                const houseRepubs = house.Repubs.all_years;
-                const heightThou = Math.max(...[].concat(houseDems, houseRepubs)) / 1000;
-                if (heightThou > 0) {
-                    htmlString += `<h3 data-i18n="opensec.${chartType.toLowerCase()}">${chartType}</h3>${commonString}`;
-                    for (const year in house.all_data) {
-                        const dataD = house.all_data[year].Dems;
-                        const dataR = house.all_data[year].Repubs;
-                        const tD = dataD / (heightThou * 1000);
-                        const tR = dataR / (heightThou * 1000);
-                        htmlString += `
-                            <tr>
-                                <th scope="row">${year}</th>
-                                <td style="--size:${tR};">
-                                    <span class="data">${dataR}</span>
-                                    <span class="tooltip">$${dataR}</span>
-                                </td>
-                                <td style="--size:${tD};">
-                                    <span class="data">${dataD}</span>
-                                    <span class="tooltip">$${dataD}</span>
-                                </td>
-                            </tr>
-                        `;
-                    }
-                    htmlString += "</tbody></table>";
+                if (!Object.keys(house) || house == undefined) continue;
+                newData = {};
+                for (const year in house.all_data) {
+                    newData[year] = [house.all_data[year].Dems, house.all_data[year].Repubs];
                 }
+
+                htmlString += verticalBarChartString(newData, { "democrats": "network-3t", "republicans": "network-9t" }, chartType, true, true);
             }
-            if (lobbycards.length > 0) {
-                htmlString += "<div class='fullBleed'><h3 data-i18n='opensec.lobbying'> Lobbying </h3>"
-                for (card of lobbycards) {
-                    htmlString += `
-                            <div class="openSecLobbyCardContainer"><h4>${card.year}</h4><h5>${card.dollars}</h5>
-							<table>
-							${tableRow(["opensec.Lobbyistingov", "Lobbyists who worked in government", `${card.held.count} (${card.held.percent})`],
-                        ["opensec.Lobbyistnotingov", "Lobbyists who havent worked in government", `${card.notheld.count} (${card.notheld.percent})`])}
-							</table>
-                            </div>
-                    `
-                }
-                htmlString += "</div>"
-            }
-            htmlString += `${sourceStringClose(`https://www.opensecrets.org/orgs/name/summary?id=${osid}`, "OPENSECRETS")}</div>`
         }
     }
     return htmlString;
 }
 
-function dataToTable(data, ratingOutOf = false, tranlationModuleTag = '') {
-    let tableString = '<table>';
-    let rowClassAndStyleString = (ratingOutOf) ? ` class="ratingOutOf" style="--outOf:'@';"` : '';
-    tableString += Object.values(data).map(([label, translate, value, outOf]) => {
-        outOfString = outOf ? `/ ${outOf}` : '';
-        return `<tr><th data-i18n="${tranlationModuleTag}.${translate}">${label}</th>
-            <td${rowClassAndStyleString.replace("@", outOfString)}>${value}</td></tr>`;
-    }).join('');
-    tableString += '</table>';
-    return tableString;
+function subModuleWbm(data, dataLocationString, miniMode = false) {
+    let htmlString = `<div class='fullBleed'> <div class=''>`;
+    const sourceUrl = "https://worldbenchmarkingalliance.org/research/"
+    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}"style="--subname:'&'">@</span></div>`;
 }
 
-function spanString(label, translation, style = false) {
-    classString = style ? `class="${style}"` : '';
-    return `<span ${classString} data-i18n="${translation}">${label}</span>`
-}
 
-function moduleWbm(data, dataLocationString) {
-    let htmlString = `<div class='fullBleed'><div class=''>`;
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ %'">@</span></div>`;
+function moduleWbm(data, dataLocationString, miniMode = false) {
+    let htmlString = `<div class='fullBleed'> <div class=''>`;
+    const sourceUrl = "https://worldbenchmarkingalliance.org/research/"
     for (const module in data.modules) {
         const { file } = data.modules[module];
         const trans = file.split("_").slice(1).join("-").toLowerCase();
         const year = file.split("_")[0];
         const fileName = file.split("_").slice(1).join(" ");
-        let pieItem = '';
-        if (currentModuleState["wbm"]["_preview"] == undefined) currentModuleState["wbm"]["_preview"] = '';
         const tableData = Object.keys(data.modules[module])
             .filter(item => !["file", "Company Scorecard", "Total Score (Raw)"].includes(item))
             .map(item => {
@@ -1094,9 +1775,10 @@ function moduleWbm(data, dataLocationString) {
                 const outOf = itemOutOf || '';
                 const score = data.modules[module][item];
                 if (item.includes("Total Score") && !item.includes("Raw")) {
-                    const percent = (Number(score) / Number(outOf)) * 100;
-                    currentModuleState["wbm"]["_preview"] += previewTemplate.replace("@", score).replace("%", outOf).replace("&", `${fileName} (${year})`);
-                    pieItem += pieString(score, false, "ratingOutOf", percent, `/ ${outOf}`, false, false, true);
+                    // const percent = (Number(score) / Number(outOf)) * 100;
+                    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}" style="--subname:'${fileName} (${year})'">
+                    ${singleItemPieChartString(score, outOf, true, true)}</div>`;
+                    addToModulePreview("wbm", previewTemplate);
                 }
                 tempScore = Number(score);
                 if (!tempScore)
@@ -1105,39 +1787,16 @@ function moduleWbm(data, dataLocationString) {
             });
 
         htmlString += `<div class='submodule' data-location="${dataLocationString}-${trans}">
-            <h2 class="subModuleTitle">
-                ${spanString(fileName, `wbm.${trans}`, `--year:'${year}';`)}
-                ${hoverTitleString(`wbm-${trans}`)}
-            </h2> 
-            ${dataToTable(tableData, true, "wbm")}
-            ${pieItem}
-            ${miniSource(fileName)}</div>`;
+                    <h2 class="subModuleTitle">
+                        ${spanString(fileName, `wbm.${trans}`, `--year:'${year}';`)}
+                        ${hoverTitleString(`wbm-${trans}`)}
+                    </h2>
+                    ${dataToTable(tableData, true, "wbm")}
+                    </div>`;
     }
-    htmlString += sourceStringClose("https://www.worldbenchmarkingalliance.org/research/", "WBM");
-    if (settingsState.experimentalFeatures) {
-        htmlString += `<button type='button' data-i18n="vote.loadinfo" class='loadInfoButton hideInSmall bottomLeftOfModule' onclick="postLoad(this)"> Load info</button>`;
-    }
-    htmlString += "</section>";
     return htmlString;
 }
 
-async function addLocalModule(type = undefined, data = undefined) {
-    if (!type || !data) return;
-    if (!(type in types)) return;
-
-    const { id, translate, label } = types[type];
-    if (currentModuleState[id] == undefined) currentModuleState[id] = {};
-    switch (type) {
-        case "social":
-            return moduleSocial(data, id, translate, label, false);
-        case "political":
-            return modulePolitical(data, id, translate, label, false);
-        case "post":
-            return modulePost(data, id, translate, label, dataURL, false);
-        default:
-            return '';
-    }
-}
 
 function moduleCta(data) {
     let positiveString = ''
@@ -1167,11 +1826,11 @@ function moduleCta(data) {
     </div>`;
 }
 
-function moduleLobbyEu(data) {
+function moduleLobbyEu(data, miniMode = false) {
     const sourceUrl = `https://lobbyfacts.eu/datacard/org?rid=${data.eu_transparency_id}`;
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf ratingText">@ FTE lobbyists</span></div>`;
-    if (currentModuleState["lobbyeu"]["_preview"] == undefined) currentModuleState["lobbyeu"]["_preview"] = '';
-    currentModuleState["lobbyeu"]["_preview"] += previewTemplate.replace("@", data.lobbyist_fte).replace("&", data.source);
+    const previewTemplate = `<div class='previewScore previewSubname' data-source-url=${sourceUrl} style="--subname:'&'">
+    <span class="ratingOutOf ratingText">@€</span></div>`;
+    addToModulePreview("lobbyeu", previewTemplate.replace("@", data.calculated_cost).replace("&", data.source), miniMode);
     const dataForTable = [
         ["Transparency ID", "transparency_id", data.eu_transparency_id, false],
         ["HQ Country", "hq_countries", data.head_country, false],
@@ -1182,27 +1841,23 @@ function moduleLobbyEu(data) {
         ["Meetings with the EU", "meeting_count", data.meeting_count, false],
         ["Lobbyist Passes Count", "passes_count", data.passes_count, false],
     ]
-    if (data.category != "") {
-        if (industryAverageData["lobbyfacts"]["category"] != undefined) {
-            const averages = industryAverageData["lobbyfacts"]["category"];
-            for (const item in averages) {
-                if (averages[item].hasOwnProperty(data.category)) {
-                    dataForTable.push([`${item} ${data.category}`, "industry_average", averages[item][data.category], false])
-                }
+    if (data.category != "" && industryAverageData.lobbyfacts.category != undefined) {
+        const averages = industryAverageData.lobbyfacts.category;
+        for (const item in averages) {
+            if (averages[item].hasOwnProperty(data.category)) {
+                dataForTable.push([`${item} ${data.category}`, "industry_average", averages[item][data.category], false])
             }
-
         }
+
     }
-    return `<div class="fullBleed"><div>
-            ${dataToTable(dataForTable, false, "lb")}
-            ${sourceStringClose(sourceUrl, "EU Transparency register via LobbyFacts.eu")}`;
+    return `
+            ${dataToTable(dataForTable, false, "lb")}`
 }
 
-function moduleGoodOnYou(data) {
+function moduleGoodOnYou(data, miniMode = false) {
     const sourceUrl = `https://directory.goodonyou.eco/brand/${data.location.split("/")[1]}`;
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 5';">@</span></div>`;
-    if (currentModuleState["goodonyou"]["_preview"] == undefined) currentModuleState["goodonyou"]["_preview"] = '';
-    currentModuleState["goodonyou"]["_preview"] += previewTemplate.replace("@", data.rating).replace("&", data.brand);
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">${thickLineGraphString("Rating", data.rating, 5, true, false, false, 80, "/5", false)}</div>`;
+    addToModulePreview("goodonyou", previewTemplate, miniMode)
     const rating = (data.rating / 5) * 100;
     const lrating = Math.floor(data.labourRating / 4);
     const arating = Math.floor(data.animalRating / 4);
@@ -1214,8 +1869,13 @@ function moduleGoodOnYou(data) {
         ["Environment Rating", "er", erating, 5],
         ["Price", "p", data.price, 4],
     ]
-    if (industryAverageData["goodonyou"]["category"] != undefined) {
-        const averages = industryAverageData["goodonyou"]["category"];
+    // We want to put the data for table in lineGraphString instead of the dataToTable
+    let lineGraphTableString = '';
+    for (const item in dataForTable) {
+        lineGraphTableString += lineGraphString(dataForTable[item][0], dataForTable[item][2], dataForTable[item][3], true, false, false, 80, dataForTable[item][3], false)
+    }
+    if (industryAverageData["goodonyou"].category != undefined && false) {
+        const averages = industryAverageData["goodonyou"].category;
         for (const category in categories) {
             for (const item in averages) {
                 if (averages[item].hasOwnProperty(categories[category])) {
@@ -1225,7 +1885,7 @@ function moduleGoodOnYou(data) {
                         [`Environment Rating Average for ${categories[category]}`, "era", Math.floor(averages_for_category["environmentRating"] / 4), 5],
                         [`Labour Rating Average for ${categories[category]}`, "lra", Math.floor(averages_for_category["labourRating"] / 4), 5],
                         [`Animal Rating Average for ${categories[category]}`, "ara", Math.floor(averages_for_category["animalRating"] / 4), 5],
-                        [`Price Average for ${categories[category]}`, "pa", Math.floor(averages_for_category["price"]), 4]
+                        [`Price Average for ${categories[category]}`, "pa", Math.floor(averages_for_category.price), 4]
                     ]
                     for (const average in formatted_averages_for_category) {
                         dataForTable.push(formatted_averages_for_category[average])
@@ -1234,17 +1894,18 @@ function moduleGoodOnYou(data) {
             }
         }
     }
-    return `${pieString(data.rating, false, "ratingOutOf", rating, '/5', false)}
-            <div class="scoreText"><div>
-            ${dataToTable(dataForTable, true, "g")}
-            ${sourceStringClose(sourceUrl, "GOODONYOU.ECO")}`
+    return `${lineGraphTableString}`
 }
 
-function moduleBcorp(data) {
+function moduleBcorp(data, miniMode = false) {
     const sourceUrl = `https://www.bcorporation.net/en-us/find-a-b-corp/company/${data.slug}`
     const iconUrl = `${dataURL}/icon/bcorp.svg`;
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 140+'">@</span></div>`;
-    if (currentModuleState["bcorp"]["_preview"] == undefined) currentModuleState["bcorp"]["_preview"] = '';
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"> <span class="invert bcorp-logo"><img src="${iconUrl}"></span>`;
+    if (miniMode) {
+        if (currentMiniState.bcorp._miniPreview == undefined) currentMiniState.bcorp._miniPreview = '';
+    } else {
+        if (currentModuleState.bcorp._preview == undefined) currentModuleState.bcorp._preview = '';
+    }
     const dataForTable = [
         ["Governance", "governance", data.Governance, false],
         ["Workers", "workers", data.Workers, false],
@@ -1252,27 +1913,34 @@ function moduleBcorp(data) {
         ["Environment", "environment", data.Environment, false],
         ["Customers", "customers", data.Customers, false],
     ]
-    currentModuleState["bcorp"]["_preview"] += previewTemplate.replace("@", data.score).replace("&", data.slug);
-    if (industryAverageData["bcorp"]["industry"] != undefined) {
-        const averages = industryAverageData["bcorp"]["industry"];
+    let industryAverage = false;
+    if (miniMode) {
+        currentMiniState.bcorp._miniPreview += previewTemplate.replace("&", data.slug);
+    } else {
+        currentModuleState.bcorp._preview += previewTemplate.replace("&", data.slug);
+    }
+    if (industryAverageData.bcorp["industry"] != undefined) {
+        const averages = industryAverageData.bcorp["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.industry)) {
                 dataForTable.push([`${item} ${data.industry}`, "industry_average", averages[item][data.industry], "140+"])
+                industryAverage = averages[item][data.industry];
             }
         }
     }
-    return `${notPieString(data.score, false, "ratingOutOf", iconUrl, "/140+")}
-            <div class="scoreText"><div>
-            ${dataToTable(dataForTable, true, "bcorp")}
-            ${sourceStringClose(sourceUrl, "BCORP")}`
+    const adjustedMax = data.score > 140 ? data.score : 140;
+    ;
+    return `${dataToTable(dataForTable, true, "bcorp")}
+            ${lineGraphString("Total Score", data.score, adjustedMax, true, industryAverage, false, 80, "140+",
+        [[`Average for ${data.industry}`, ""], ["Qualifies for B Corp Certification", "bcorp.certification"]])}`
 }
 
-function moduleYahoo(data) {
+function moduleYahoo(data, miniMode = false) {
     const sourceUrl = `https://finance.yahoo.com/quote/${data.symbol}/sustainability/`
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf">@</span></div>`;
-    if (currentModuleState["yahoo"]["_preview"] == undefined) currentModuleState["yahoo"]["_preview"] = '';
-    if (data.totalEsg > 0) currentModuleState["yahoo"]["_preview"] += previewTemplate.replace("@", data.totalEsg).replace("&", data.symbol);
-
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">
+        ${segmentedArcString("ESG", data.totalEsg, 40, true, 5, false, true, true)}
+    </div>`;
+    addToModulePreview("yahoo", previewTemplate, miniMode)
     const formatting = [
         ["Negligible", "0 - 9.9 "],
         ["Low", "10 - 19.9"],
@@ -1291,42 +1959,36 @@ function moduleYahoo(data) {
         ["Social Risk Score", "social", data.socialScore, "40+"],
         ["Total ESG", "total", data.totalEsg, "40+"],
     ]
-    if (industryAverageData["yahoo"]["industry"] != undefined) {
-        const averages = industryAverageData["yahoo"]["industry"];
+    let averageRating = false;
+    if (industryAverageData.yahoo["industry"] != undefined) {
+        const averages = industryAverageData.yahoo["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.peerGroup)) {
-                dataForTable.push([`${item} ${data.peerGroup}`, "industry_average", averages[item][data.peerGroup], "40+"])
+                // to 2 decimal places
+                averageRating = Math.round(averages[item][data.peerGroup] * 100) / 100;
+                dataForTable.push([`${item} ${data.peerGroup}`, "industry_average", averageRating, "40+"])
             }
         }
     }
-    return `${pieString(data.totalEsg, false, "ratingOutOf", false, '/40+')}
-    <div class="scoreText"><div>
-        ${dataToTable(dataForTable, true, "esg")}
-            </div>
-            </div>
-            ${biasString}
-            </table>
-            ${sourceStringClose(sourceUrl, "SUSTAINALYTICS, INC VIA YAHOOFINACE")}`
+    return `${lineGraphString("Total ESG", data.totalEsg, 40, true, averageRating, false, 80, "40+", false, false, true)}
+        ${dataToTable(dataForTable, true, "esg")}`
 }
 
-function moduleTrustScore(data) {
+function moduleTrustScore(data, miniMode = false) {
     const sourceUrl = `https://trustscam.com/${data.source}`
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 10';">@</span></div>`;
-    if (currentModuleState["trust-scam"]["_preview"] == undefined) currentModuleState["trust-scam"]["_preview"] = '';
-    currentModuleState["trust-scam"]["_preview"] += previewTemplate.replace("@", data.score).replace("&", data.source);
-    return `${pieString(data.score, false, "ratingOutOf", false, false, false, ratingColorArray[data.rating])}
-            <div class="scoreText"><div>
-            <h3>${data.score}</h3>
-            <p data-i18n="trustsc.${data.rating}">${data.rating}</p>
-            ${sourceStringClose(sourceUrl, "TRUSTSCAM")}`
+    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}">
+                            <span class="trustText" style="--outOf:'/ 100';">${data.score}
+                            <span class="trustSymbol ${data.rating}"></span></span>
+                            </div>`;
+    addToModulePreview("trust-scam", previewTemplate, miniMode);
+    return `<h3 class="">${data.score}</h3>`
 }
 
-function moduleMbfc(data) {
+function moduleMbfc(data, miniMode = false) {
     const { questionable, source, bias, popularity, credibility, reporting, description } = data;
     const sourceUrl = `https://mediabiasfactcheck.com/${source}`
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf ratingText">@</span></div>`;
-    if (currentModuleState["mbfc"]["_preview"] == undefined) currentModuleState["mbfc"]["_preview"] = '';
-    currentModuleState["mbfc"]["_preview"] += previewTemplate.replace("@", bias).replace("&", source);
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"><span class="ratingOutOf ratingText" data-i18n="bias.@">@</span></div>`;
+    addToModulePreview("mbfc", previewTemplate.replaceAll("@", bias), miniMode)
     let questionableString = ''
     if (questionable.length > 0) {
         questionableString = '<div><h4 data-i18n="bias.questionable">Reason for Questionable:</h4><div class="questionableContainer"> '
@@ -1341,24 +2003,16 @@ function moduleMbfc(data) {
         ["Credibility", "credibility", credibility, false],
         ["Reporting", "reporting", reporting, false],
     ]
-    return `${pieString(bias, `bias.${bias}`)}
-            <div class="scoreText">
-            <div>
-                <h3 data-i18n="bias.${bias}"></h3>
-                <p>${description}</p>
+    return `<p class="genericText">${description}</p>
                 ${dataToTable(dataForTable, false, "bias")}
-                ${questionableString}
-                ${sourceStringClose(sourceUrl, "MEDIA BIAS FACT CHECK")}`
+                ${questionableString}`
 }
 
-function moduleGlassdoor(data) {
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 5';">@</span></div>`;
-    if (currentModuleState["glassdoor"]["_preview"] == undefined) currentModuleState["glassdoor"]["_preview"] = '';
-    currentModuleState["glassdoor"]["_preview"] += previewTemplate.replace("@", data.glasroom_rating.ratingValue).replace("&", data.source);
-    const percentValue = (parseFloat(data.glasroom_rating.ratingValue) / 5) * 100;
+function moduleGlassdoor(data, miniMode = false) {
+    const score = parseFloat(data.glasroom_rating.ratingValue);
     const typeClean = data.type.toLowerCase().replace(" - ", "_").replace(" ", "_")
-    let dataForTable = [
-        ["Rating Count", "ratingCount", data.glasroom_rating.ratingCount, false],
+    const dataForTable = [
+        //["Rating Count", "ratingCount", data.glasroom_rating.ratingCount, false],
         ["Company Type", "companyt", data.type, false],
         ["Headquarters", "headquarters", data.headquarters, false],
         ["Founded", "founded", data.founded, false],
@@ -1366,42 +2020,67 @@ function moduleGlassdoor(data) {
         ["Revenue", "revenue", data.revenue, false],
         ["Size", "size", data.size, false],
     ]
-
+    let averageRating = false;
     if (industryAverageData["glassdoor"]["industry"] != undefined) {
         const averages = industryAverageData["glassdoor"]["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.industry)) {
                 dataForTable.push([`${item} ${data.industry}`, "industry_average", averages[item][data.industry], false])
+                averageRating = averages[item][data.industry];
             }
         }
     }
-    return `${pieString(data.glasroom_rating.ratingValue, false, "ratingOutOf", percentValue, "/5", data.glasroom_rating.ratingCount)}
-            <div class="scoreText">
-            <div class="">
-            <div class="ratingCount mobileOnly">${data.glasroom_rating.ratingCount} <emphasis data-i18n="glassdoor.reviews"></emphasis></div>
+
+    const previewTemplate = `<div class='previewScore' data-source-url="${data.url}">
+        ${dotGridChartString("glassdoor", score, 5, true, 10, averageRating, "large")}
+        ${dotGridChartString("glassdoor", score, 5, true, 5, averageRating, "small")}
+        </div>`;
+
+    addToModulePreview("glassdoor", previewTemplate, miniMode)
+    totalString = `<div class="centeredRow"><span class="num">${data.glasroom_rating.ratingCount} </span><span data-i18n="common.ratings">Ratings</span> </div>`
+
+    return `${totalString}
             ${dataToTable(dataForTable, false, "glassdoor")}
-            ${sourceStringClose(data.url, "GLASSDOOR")}`;
+            ${lineGraphString("Rating", score, 5, true, averageRating, false, false, false, [[`${data.industry} Average`, "glassdoor.industry_average"]])}`
 }
 
-function moduleTosdr(data) {
+function moduleTosdr(data, miniMode = false) {
     const sourceUrl = `https://tosdr.org/en/service/${data.id}`
-    const previewTemplate = `<div class='previewScore'><span class="ratingOutOf">@</span></div>`;
-    if (currentModuleState["tosdr-link"]["_preview"] == undefined) currentModuleState["tosdr-link"]["_preview"] = '';
-    currentModuleState["tosdr-link"]["_preview"] += previewTemplate.replace("@", data.rated);
-    const rated = data.rated;
-    return `${pieString(rated)}
-            <div class="scoreText">
-            <div class="">
-            <h3><div data-i18n="tos.wordGrade" style="display:inline;">Grade</div> ${rated}</h3>
-            <p class="" data-i18n="tos.${rated.toLowerCase()}"></p>
-            ${sourceStringClose(sourceUrl, "TOS;DR")}`;
+    const ratingsColours = {
+        "A": "--score-10",
+        "B": "--score-8",
+        "C": "--score-5",
+        "D": "--score-2",
+        "E": "--score-0",
+        "X": "--score-unset"
+    }
+    const ratingsTextColour = {
+        "A": "var(--c-primary)",
+        "B": "var(--c-primary)",
+        "C": "var(--c-primary)",
+        "D": "var(--s-primary)",
+        "E": "var(--s-primary)",
+        "X": "var(--s-primary)"
+    }
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">
+                            <span class="previewTos tosScore" style="--t:${ratingsTextColour[data.rated]};--c:var(${ratingsColours[data.rated]});">
+                            ${data.rated}</span></div>`;
+    addToModulePreview("tosdr-link", previewTemplate, miniMode);
+
+    const ratings = ["A", "B", "C", "D", "E", "X"];
+    ratingsString = `<ol class="tosRatings">`
+    for (const rating in ratings) {
+        ratingLetter = ratings[rating]
+        ratingsString += (ratingLetter == data.rated) ? `<li style='--t:${ratingsTextColour[ratingLetter]};' class='tosActive'>` : "<li>"
+        ratingsString += `<span class="tosScore" style="--c:var(${ratingsColours[ratingLetter]});">${ratingLetter}</span>
+                            <span class="tosDesc" data-i18n="tos.${ratingLetter.toLowerCase()}"></span></li>`
+    }
+    ratingsString += `</ol>`
+    return `${ratingsString}`
 }
 
-function moduleTrustpilot(data) {
+function moduleTrustpilot(data, miniMode = false) {
     const sourceUrl = `https://trustpilot.com/review/${data.domain}`
-    const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 5';">@</span></div>`;
-    if (currentModuleState["trust-pilot"]["_preview"] == undefined) currentModuleState["trust-pilot"]["_preview"] = '';
-    currentModuleState["trust-pilot"]["_preview"] += previewTemplate.replace("@", data.score).replace("&", data.domain);
     let starString = ''
     const numberOfStars = Math.floor(data.score);
     const remainingStar = data.score - numberOfStars;
@@ -1410,8 +2089,14 @@ function moduleTrustpilot(data) {
         division = (numberOfStars == i) ? remainingStar : division;
         starString += `<span class="coolStar" style="--division:${division};"></span>`
     }
-    let dataForTable = [
-        ["Total Reviews", "total", data.reviews.total, false],
+    // const previewTemplate = `<div class='previewScore'>
+    //                             <div class="stars" style="--rating:@;">${starString}</div>
+    //                             </div>`;
+    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">${starChartString(data.score, 5, true, false)}</div>`;
+    addToModulePreview("trust-pilot", previewTemplate, miniMode)
+    totalString = `<div class="centeredRow"><span class="num">${data.reviews.total} </span><span data-i18n="common.reviews">Reviews</span> </div>`
+    const dataForTable = [
+        // ["Total Reviews", "total", data.reviews.total, false],
         ["One Star", "one", data.reviews.oneStar, false],
         ["Two Star", "two", data.reviews.twoStars, false],
         ["Three Star", "three", data.reviews.threeStars, false],
@@ -1419,48 +2104,69 @@ function moduleTrustpilot(data) {
         ["Five Star", "five", data.reviews.fiveStars, false],
     ]
     if (industryAverageData["trust-pilot"]) {
-        const averages = industryAverageData["trust-pilot"]["category"];
+        const averages = industryAverageData["trust-pilot"].category;
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.bottomLevelCategory) || averages[item].hasOwnProperty(data.topLevelCategory)) {
-                dataForTable.push([`${item}`, "industry_average", averages[item][data.domain], false])
+                dataForTable.push([item, "industry_average", averages[item][data.domain], false])
             }
         }
     }
-    return `${notPieString(data.score, false, "ratingOutOf", false, '/5', data.reviews.total)}
-            <div class="scoreText">
-            <div>
-            <div class="stars">
-            ${starString}
-            </div>
-            ${dataToTable(dataForTable, false, "trustpilot")}
-            ${sourceStringClose(sourceUrl, "TRUST PILOT")}`;
+    return `${lineGraphString("Reviews", data.score, 5, true, false, extraInfo = `${data.reviews.total} reviews`)}
+            ${totalString}
+            ${dataToTable(dataForTable, false, "trustpilot")}`
 }
 
-function moduleSimilar(data) {
+
+function moduleSimilar(data, miniMode = false) {
     const sourceUrl = `https://similarsites.com/site/${data.domain}`
-    // const previewTemplate = `<div class='previewScore previewSubname' style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'/ 100';">@</span></div>`; 
-    // if (currentModuleState["similar"]["_preview"] == undefined) currentModuleState["similar"]["_preview"] = '';
-    // currentModuleState["similar"]["_preview"] += previewTemplate.replace("@", data.score).replace("&", data.domain);
-    let similarString = ''
+    const previewTemplate = `<div class='previewScore previewSubname previewSimilar' data-source-url="${sourceUrl}" style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'%';">@</span></div>`;
+    let similarString = '<ol>'
+    let currentMostSimilar = [false, false]
     for (site in data.similar) {
         ssite = data.similar[site].s
         p = Math.floor(data.similar[site].p * 100)
-        similarString += `<section class="similar-site">
+        if (currentMostSimilar[1] < p) {
+            currentMostSimilar = [ssite, p]
+        }
+        similarString += `<li class="similar-site">
         <a target="_blank" alt="${ssite}" href="https://${ssite}">
-            ${ssite}</a><div class="percent">${p}</div></section>`;
+            ${ssite}</a><div class="percent">${p}</div></li>`;
     }
+    similarString += `</ol>`
+    addToModulePreview("similar-site-wrapper", previewTemplate.replace("@", currentMostSimilar[1]).replace("&", currentMostSimilar[0]), miniMode);
     return `<div class="fullBleed"><div>
     <section id="similar-sites" class="hideInSmall">
     ${similarString}
-    </section>
-    ${sourceStringClose(sourceUrl, "SIMILARSITES.COM")}`;
+    </section>`
 }
 
-async function addModule(type = undefined, url = undefined, src = undefined) {
+async function addLocalModule(type = undefined, data = undefined, miniMode = false) {
+    if (!type || !data) return;
+    if (!(type in types)) return;
+
+    const { id, translate, label } = types[type];
+    if (miniMode) {
+        if (currentMiniState[id] == undefined) currentMiniState[id] = {};
+    } else {
+        if (currentModuleState[id] == undefined) currentModuleState[id] = {};
+    }
+    switch (type) {
+        case "social":
+            return moduleSocial(data, id, translate, label, false, miniMode);
+        case "political":
+            return modulePolitical(data, id, translate, label, false, miniMode);
+        case "post":
+            return modulePost(data, id, translate, label, dataURL, false, miniMode);
+        default:
+            return '';
+    }
+}
+
+async function addModule(type = undefined, url = undefined, src = undefined, miniMode = false) {
     if (type == undefined || url == undefined) return;
     // needs some mechanic for caching when we switch to graph mode
     const dataLocationString = url.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
-
+    let state = (miniMode) ? currentMiniState : currentModuleState;
     let moduleResponse = false;
     if (dataObjectDictionary[dataLocationString]) {
         moduleResponse = dataObjectDictionary[dataLocationString];
@@ -1474,82 +2180,105 @@ async function addModule(type = undefined, url = undefined, src = undefined) {
 
     if (!(type in types)) { return; }
     const typeDef = types[type]
+    let tab = false;
     // Genericising needed
     const moduleSource = (typeDef.subname) ? moduleResponse.source : false;
-    if (currentModuleState[typeDef.id] == undefined) currentModuleState[typeDef.id] = {};
-    currentModuleState[typeDef.id][dataLocationString] = moduleResponse;
-    if (src) currentModuleState[typeDef.id][dataLocationString].src = src;
-
-    let tab = false;
-    if (tabable.includes(typeDef.id)) {
-        tab = Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length - 1;
+    if (miniMode) {
+        if (currentMiniState[typeDef.id] == undefined) currentMiniState[typeDef.id] = {};
+        currentMiniState[typeDef.id][dataLocationString] = moduleResponse;
+        if (src) currentMiniState[typeDef.id][dataLocationString].src = src;
+    } else {
+        if (currentModuleState[typeDef.id] == undefined) currentModuleState[typeDef.id] = {};
+        currentModuleState[typeDef.id][dataLocationString] = moduleResponse;
+        if (src) currentModuleState[typeDef.id][dataLocationString].src = src;
     }
 
-    htmlString = moduleString(typeDef.id, typeDef.translate, typeDef.label, moduleSource, false, false, dataLocationString, tab)
+    if (tabable.includes(typeDef.id)) {
+        tab = Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length - 1
+    }
 
+    htmlString = moduleStartString(typeDef.id, typeDef.translate, typeDef.label, moduleSource, false, false, dataLocationString, tab, miniMode)
+
+    if (tab == 0) {
+        noClose = false;
+    } else {
+        noClose = true;
+    }
     // Set module state
     switch (type) {
         case "opensecrets":
-            htmlString += moduleOpensecrets(moduleResponse);
+            htmlString += moduleOpensecrets(moduleResponse, noClose, miniMode);
             break;
         case "wbm":
-            htmlString += moduleWbm(moduleResponse, dataLocationString);
+            htmlString += moduleWbm(moduleResponse, dataLocationString, miniMode);
             break;
         case "cta":
-            htmlString += moduleCta(moduleResponse);
+            htmlString += moduleCta(moduleResponse, miniMode);
             break;
         case "lobbyeu":
-            htmlString += moduleLobbyEu(moduleResponse);
+            htmlString += moduleLobbyEu(moduleResponse, miniMode);
             break;
         case "goodonyou":
-            htmlString += moduleGoodOnYou(moduleResponse);
+            htmlString += moduleGoodOnYou(moduleResponse, miniMode);
             break;
         case "bcorp":
-            htmlString += moduleBcorp(moduleResponse);
+            htmlString += moduleBcorp(moduleResponse, miniMode);
             break;
         case "yahoo":
-            htmlString += moduleYahoo(moduleResponse);
+            htmlString += moduleYahoo(moduleResponse, miniMode);
             break;
         case "trustscore":
-            htmlString += moduleTrustScore(moduleResponse);
+            htmlString += moduleTrustScore(moduleResponse, miniMode);
             break;
         case "mbfc":
-            htmlString += moduleMbfc(moduleResponse);
+            htmlString += moduleMbfc(moduleResponse, miniMode);
             break;
         case "glassdoor":
-            htmlString += moduleGlassdoor(moduleResponse);
+            htmlString += moduleGlassdoor(moduleResponse, miniMode);
             break;
         case "tosdr":
-            htmlString += moduleTosdr(moduleResponse);
+            htmlString += moduleTosdr(moduleResponse, miniMode);
             break;
         case "trustpilot":
-            htmlString += moduleTrustpilot(moduleResponse);
+            htmlString += moduleTrustpilot(moduleResponse, miniMode);
             break;
         case "similar":
-            htmlString += moduleSimilar(moduleResponse);
+            htmlString += moduleSimilar(moduleResponse, miniMode);
             break;
 
     }
-    if (type != 'wbm' && !tabable.includes(typeDef.id)) {
-        htmlString += `${buttonString}</section>`
-    }
     if (tabable.includes(typeDef.id)) {
-        if (Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length > 1) {
+        sanity = (miniMode) ? Object.keys(currentMiniState[typeDef.id]).filter(x => !x.startsWith("_")).length
+            : Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length;
+        if (sanity > 1) {
             htmlString += `</div>`
             debugLogging("tabable")
-            if (tab == 0) {
+            if (miniMode) {
+                if (tab == 0) {
+                    mtabbedContent[typeDef.id] = [htmlString]
+                }
+                mtabbedContent[typeDef.id].push(htmlString)
+
+            } else {
+                if (tab == 0) {
+                    tabbedContent[typeDef.id] = [htmlString]
+                }
+                tabbedContent[typeDef.id].push(htmlString)
+
+            }
+        } else {
+            htmlString += `${moduleCloseString(true, type)}</section>`
+            if (miniMode) {
+                mtabbedContent[typeDef.id] = [htmlString]
+            } else {
                 tabbedContent[typeDef.id] = [htmlString]
             }
-            tabbedContent[typeDef.id].push(htmlString)
-
-            return ''
-        } else {
-            htmlString += `</div></div></section>`
-            tabbedContent[typeDef.id] = [htmlString]
             debugLogging("tabableclosed", currentModuleState[typeDef.id])
-            return ""
         }
+        return ""
     }
+    htmlString += `${moduleCloseString(true, type)}</section>`
+
     return htmlString
 }
 
@@ -1620,18 +2349,18 @@ function commentDiagOpen(plocation = pageHash) {
             currentPostContents = currentPost.unformated_content ? currentPost.unformated_content : currentPost.content;
         }
     }
+    const availableStyles = ['bold', 'italic', 'underline', 'strike', 'link', 'code', 'quote']
     floatDiag.innerHTML = `
     <div style="display:none;" id="diag_tag">${plocation}</div><br/>
     <div class="commentBox">
         <div class="commentButtons">
-            <div onclick="commentStyle('bold')" class="commentStyleButton commentBold">Bold</div>
-            <div onclick="commentStyle('italic')" class="commentStyleButton commentItalic">Italic</div>
-            <div onclick="commentStyle('underline')" class="commentStyleButton commentUnderline">Underline</div>
-            <div onclick="commentStyle('strike')" class="commentStyleButton commentStrike">Strike</div>
-            <div onclick="commentStyle('link')" class="commentStyleButton commentLink">Link</div>
-            <div onclick="commentStyle('code')" class="commentStyleButton commentCode">Code</div>
-            <div onclick="commentStyle('quote')" class="commentStyleButton commentQuote">Quote</div>
-        </div>
+        `
+    for (const style of availableStyles) {
+        floatDiag.innerHTML += `<div onclick="commentStyle('${style}')" 
+                                    class="commentStyleButton comment${style.charAt(0).toUpperCase() + style.slice(1)}">
+                                    ${style.charAt(0).toUpperCase() + style.slice(1)}</div>`
+    }
+    floatDiag.innerHTML += `</div>
 		<textarea id="commentBoxInput" name="commentBoxInput" maxlength="512" type="text" oninput="renderBBCode()">${currentPostContents}</textarea>
         <div id="commentPreview"></div>
     </div>
@@ -1675,7 +2404,7 @@ function commentClose(post = false, plocation = false) {
 function loginButtonAction() {
     if (Url.get.username) {
         pageLocation = Url.get.site ? Url.get.site : false;
-        locationString = pageLocation ? `db/${pageLocation}` : hash;
+        locationString = pageLocation ? `db / ${pageLocation} ` : hash;
         if (Object.keys(knownPostsByLocation).includes(locationString)) {
             commentDiagOpen(locationString);
         } else {
@@ -1683,7 +2412,7 @@ function loginButtonAction() {
         }
         return
     }
-    window.open(`${assetsURL}/auth/login`, '_blank').focus()
+    window.open(`${assetsURL} /auth/login`, '_blank').focus()
 }
 
 
@@ -1691,9 +2420,9 @@ function send_message(type, data) {
     const msg = { type, data };
     try {
         parent?.postMessage(msg, "*");
-        console.debug(`Data: ${data}`);
+        console.debug(`Data: ${data} `);
     } catch (e) {
-        console.error(`Failed to send message: ${type}`);
+        console.error(`Failed to send message: ${type} `);
         return;
     }
 }
@@ -1709,47 +2438,16 @@ function forceAllLinksNewTab() {
 let noOpen = false;
 const titleBar = document.getElementById('titlebar');
 const body = document.body;
-let buttonString = ''
+const buttonString = ''
 const settingsOffset = settings.firstElementChild.clientHeight;
 
 function setBack(x = false) {
-    const networkGraph = document.getElementById('graph-container');
-    const backButton = document.getElementById('backButton');
-    console.log(`setBack(${x})`)
-    if (x == false) {
-        backButton.style.backgroundColor = '';
-        backButton.style.borderColor = '';
-        closeButton.style.display = "";
-
-        settings.firstElementChild.style.top = `-${settingsOffset}`;
-        settings.style.bottom = "200vh";
-        settings.style.top = "";
-
-        settingsButton.style.display = 'block';
-
-        titleBar.style.backgroundColor =
-            titleBar.style.display =
-            titleBar.style.position =
-            titleBar.style.top = "";
-        recalculateList();
-    }
-
-    if (networkGraph != null && x != "closeNetworkGraph()") networkGraph.style.visibility = 'hidden';
-    if (isSpeedcam || Url.get.app) backButton.classList.remove("show");
-    backAction = (x == false) ? "justSendBack()" : x;
-    if (x != false) {
-        backButton.classList.add("show");
-        settingsButton.style.display = 'none';
-        if (settingsState.experimentalFeatures)
-            document.getElementById("loginButton").style.display = 'none';
-    }
-    backButton.setAttribute("onclick", backAction);
-    window.scrollTo(0, 0);
+    return
 }
 
 function toggleButton(buttonId) {
     buttonState[buttonId] = !buttonState[buttonId];
-    const label = document.getElementById(`label-${buttonId}`);
+    const label = document.getElementById(`label - ${buttonId} `);
     label.classList.toggle("pushedButton");
 }
 
@@ -1769,9 +2467,9 @@ function notificationDialog(el) {
     floatDiag = document.createElement("div");
     floatDiag.id = "floatDiag"
     if (defaults.type == "range") {
-        floatDiag.textContent = `${id} min:${defaults.min} max:${defaults.max}`
+        floatDiag.textContent = `${id} min:${defaults.min} max:${defaults.max} `
         floatDiag.innerHTML = `
-        <div id="diag_type">${defaults.type}</div><br/>
+        <div id = "diag_type" > ${defaults.type}</div><br/>
         <div id="diag_tag">${notid}</div><br/>
         <div class="rangeslider">
             <input class="min" name="range_1" type="range" min="${defaults.min}" max="${defaults.max}" value="${userPreferences[notid].min}" />
@@ -1786,21 +2484,21 @@ function notificationDialog(el) {
         defaults.labels.forEach((str) => {
             // Use backticks to create a template string with the button HTML
             if (userPreferences[notid].labels.includes(str)) {
-                htmlString += `<button id="label-${str}" onclick="toggleButton('${str}')" class="pushedButton">${str}</button>`;
+                htmlString += `< button id = "label-${str}" onclick = "toggleButton('${str}')" class="pushedButton" > ${str}</button> `;
                 buttonState[str] = true;
             } else {
-                htmlString += `<button id="label-${str}" onclick="toggleButton('${str}')">${str}</button>`;
+                htmlString += `< button id = "label-${str}" onclick = "toggleButton('${str}')" > ${str}</button> `;
                 buttonState[str] = false;
             }
 
         });
         floatDiag.innerHTML = `
-        <div id="diag_type">${defaults.type}</div><br/>
+        <div id = "diag_type" > ${defaults.type}</div><br/>
         <div id="diag_tag">${notid}</div><br/>
         <div>${id}</div>
         ${htmlString}
-        <div id="floatDiagSave">Save and Close</div>
-        `
+    <div id="floatDiagSave">Save and Close</div>
+    `
     }
     body.appendChild(floatDiag);
     (() => {
@@ -1808,7 +2506,7 @@ function notificationDialog(el) {
             nStr += '';
             const x = nStr.split('.');
             let x1 = x[0];
-            const x2 = x.length > 1 ? `.${x[1]}` : '';
+            const x2 = x.length > 1 ? `.${x[1]} ` : '';
             const rgx = /(\d+)(\d{3})/;
             while (rgx.test(x1)) {
                 x1 = x1.replace(rgx, '$1.$2');
@@ -1872,19 +2570,19 @@ function notificationsDraw() {
     debugLogging("notificationsDraw", settingsState["notifications"])
     if (settingsState["notifications"]) {
         for (const tag of availableNotifications) {
-            if (document.getElementById(`${tag}-bell`) == null) {
+            if (document.getElementById(`${tag} -bell`) == null) {
                 currEl = document.querySelector(`[data-id="${keyconversion[tag]}"]`);
                 toggleContainer = document.createElement("div");
                 toggleContainer.classList.add("tagToggleContainer");
 
-                toggleDialog = `<img id="${tag}-dialog" class="notificationDialog" onclick="notificationDialog(this)">
-                    <div id="${tag}-bell" class="notificationBell">
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider round">
-                            </span>
-                        </label>
-                    </div>`;
+                toggleDialog = `<img id="${tag}-dialog" class="notificationDialog" onclick="notificationDialog(this)" >
+        <div id="${tag}-bell" class="notificationBell">
+            <label class="switch">
+                <input type="checkbox">
+                    <span class="slider round">
+                    </span>
+            </label>
+        </div>`;
                 toggleContainer.innerHTML += toggleDialog;
                 currEl.appendChild(toggleContainer);
             }
@@ -1899,16 +2597,16 @@ function notificationsDraw() {
     document.querySelectorAll(".notificationDialog").forEach(x => x.remove());
 }
 
-function settingTemplate(id, i18n, title, state = "skip") {
+function settingTemplate(id, i18n, title, state = "skip", extraClass = "") {
     const el = document.createElement("div");
     el.id = id
     el.classList.add("switchItem")
     el.innerHTML = `
-        <h2 data-i18n="${i18n}">${title}</h2>
-            <label class="switch">
+        <h2 data-i18n="${i18n}"> ${title}</h2>
+            <label class="switch ${extraClass}">
                 <input type="checkbox">
-            <span class="slider round"></span>
-        </label> `
+                    <span class="slider round"></span>
+            </label> `
     if (state != "skip") {
         el.getElementsByTagName("input")[0].checked = state;
     }
@@ -1918,31 +2616,49 @@ function settingTemplate(id, i18n, title, state = "skip") {
 function addLanguagePicker() {
     const languagePicker = document.createElement("label");
     languagePicker.classList.add("languageSelect")
-    let languagePickerOptions = `<option value="-">-</option>`
+    let languagePickerOptions = `<option value="-"> - </option>`
     for (lang in languages) {
-        languagePickerOptions += `<option value="${languages[lang]}">${languages[lang].toUpperCase()}</option>`
+        languagePickerOptions += `<option value="${languages[lang]}" > ${languages[lang].toUpperCase()}</option> `
     }
-    languagePicker.innerHTML = `<h2 data-i18n="common.language">Language</h2>
-                                <select id="langselect" title="Language Picker">${languagePickerOptions}</select>`
+    languagePicker.innerHTML = `<h2 data-i18n="common.language" > Language</h2>
+        <select id="langselect" title="Language Picker">${languagePickerOptions}</select>`
     return languagePicker
+}
+
+function toggleBodyStyle(style) {
+    body.classList.toggle(style);
 }
 
 
 function addSettings() {
+    // close settings button 
+    settings.appendChild(document.createElement("div")).outerHTML = buttonTemplate("closeSettingsButton", "closeSettings");
+
     // Language Picker
     settings.appendChild(addLanguagePicker())
 
-    settingTemplate("onScreen", "settings.dashboard", "Keep dashboard on screen", settingsState.keepOnScreen)
-    settingTemplate("permaDark", "settings.darkMode", "Dark Mode", settingsState.darkMode)
-    settingTemplate("bobbleDisable", "settings.bobbleDisabled", "Disable Bobble", settingsState.bobbleOverride)
-    settingTemplate("externalPosts-banner", "settings.externalPosts", "Experimental Features", settingsState.experimentalFeatures)
-    settingTemplate("debug-banner", "settings.debugBanner", "Debug Mode", settingsState.debugMode)
-    settingTemplate("allowDisableModules", "settings.allowDisableModules", "Allow Disabling Modules", settingsState.allowDisableModules)
+    // Settings options
+    const availableSettings = [
+        ["onScreen", "Keep dashboard on screen", ''],
+        ["permaDark", "Dark Mode", 'sun'],
+        ["bobbleDisable", "Disable Bobble", ''],
+        ["debug-banner", "Debug Mode", ''],
+        //["allowDisableModules", "Allow Disabling Modules", ''],
+        ["singleColumn", "Single Column Layout", 'grid'],
+        ["monoChrome", "Monochrome", 'color'],
+        //["externalPosts-banner", "Experimental Features"]
+    ]
+    for (const setting in availableSettings) {
+        settingTemplate(availableSettings[setting][0],
+            `settings.${availableSettings[setting][0]}`,
+            availableSettings[setting][1],
+            settingsState[availableSettings[setting][0]], availableSettings[setting][2])
+    }
 
     // Dismissed Notifications
     const dissmissedNotifications = document.createElement("div");
     dissmissedNotifications.id = "dissmissedNotifications";
-    dissmissedNotifications.innerHTML = `<h2>You have dismissed the following</h2>
+    dissmissedNotifications.innerHTML = `<h2> You have dismissed the following</h2>
         <ul style="display:inline;" id="dismissedContainer"></ul>`
     dissmissedNotifications.style.display = "none";
     dissmissedNotifications.classList.add("switchItem");
@@ -1952,10 +2668,10 @@ function addSettings() {
     const notifications = document.createElement("div");
     notifications.id = "notifications-shade";
     notifications.classList.add("switchItem");
-    notifications.innerHTML = `<h2 data-i85n="settings.notifications">Notifications</h2>
+    notifications.innerHTML = `<h2 data-i18n="settings.notifications"> Notifications</h2>
         <div id="notificationsContainer" style="display:flex;">
-        <img id="notificationsCache" style="display:none;width:24px;height:24px;position:relative;transform:translate(-20px,13px);">
-        <label class="switch"><input type="checkbox"><span class="slider round"></span></label></div></div>`
+            <img id="notificationsCache" style="display:none;width:24px;height:24px;position:relative;transform:translate(-20px,13px);">
+                <label class="switch bell"><input type="checkbox"><span class="slider round"></span></label></div></div> `
     settings.appendChild(notifications);
 
     if (settingsState["notifications"]) {
@@ -1970,16 +2686,16 @@ function addSettings() {
     wbmListString = '<details><summary data-i18n="settings.wbm">WorldBenchmark</summary><div id="sortlist-wbm">'
     for (item in translate) {
         if (!item.startsWith("wbm")) {
-            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span></li>`
+            listString += `<li data-id="${item}" ><i class="priority-list-handle"></i><span>${translate[item]}</span></li> `
         } else if (item == "wbm") {
-            wbmListString += `</div></details>`
-            listString += `<li data-id="${item}"><i class="priority-list-handle"></i><span>${translate[item]}</span>${wbmListString}</li>`
+            wbmListString += `</div></details> `
+            listString += `<li data-id="${item}" ><i class="priority-list-handle"></i><span>${translate[item]}</span>${wbmListString}</li> `
         } else {
-            wbmListString += `<div data-id="${item}"><i class="priority-list-handle-wbm"></i><span>${translate[item]}</span></div>`
+            wbmListString += `<div data-id="${item}" ><i class="priority-list-handle-wbm"></i><span>${translate[item]}</span></div> `
         }
     }
     priorityList.innerHTML = `
-     <h2 data-i18n="settings.priorityTitle">Prioritise Modules</h2>
+        <h2 data-i18n="settings.priorityTitle" > Prioritise Modules</h2>
      <div data-i18n="settings.priorityOrder">Drag to re-order modules</div>
        <ul id="sortlist" class="slist">
        ${listString}
@@ -1995,92 +2711,41 @@ function loadSettings(x) {
     if (settings.style.bottom == "0px") {
         closeSettings();
         send_message("IVClicked", "unsettings");
-        setBack();
         return;
     }
     settings.style.bottom = "0";
-    settings.style.top = `${settingsOffset}`;
-    if (isSpeedcam || Url.get.app) {
-        backButton.style.visibility = "visible";
-        backButton.style.display = "inherit";
-        backButton.style.order = "unset";
-    }
+    settings.style.top = `${settingsOffset} `;
     settings.firstElementChild.style.top = "0";
-    backButton.style.backgroundColor = 'var(--c-secondary-background)';
-    backButton.style.borderColor = 'var(--c-light-text)';
     coName.style.opacity = "0%";
     document.documentElement.style.overflow = "hidden";
-
-    settingsButton.classList.add("hide");
-    closeButton.classList.add("hide");
-
     notificationsDraw();
     send_message("IVClicked", "settings");
-    setBack('closeSettings()');
 }
 
 function loadNetworkGraph(x) {
+    toggleBodyStyle("graphOpen");
+    selectANodeCy(x, 1000)
+    return
     const networkGraph = document.getElementById('graph-container');
-    const sigmacontainer = document.getElementById('sigma-container');
-    const graphButtons = document.getElementById('graphButtons');
-    const settingsButton = document.getElementById('settingsButton');
-    const closeButton = document.getElementById('closeButton');
-    const titleBar = document.getElementById('titlebar');
-    backButton.style.borderColor = 'var(--c-border-color)';
-    backButton.style.backgroundColor = 'var(--c-background)';
-    backButton.classList.remove("hide")
+    networkGraph.classList.add("show");
 
-    settingsButton.classList.add("hide")
-    closeButton.classList.add("hide")
-    titleBar.style.width = "calc(100vw - 100px)";
-
-    networkGraph.style.visibility = 'visible';
-    sigmacontainer.style.visibility = 'visible';
-    sigmacontainer.style.width = "100vw";
-    sigmacontainer.style.height = "100vh";
-    sigmacontainer.style.position = "fixed";
-    sigmacontainer.style.zIndex = "4";
-    networkGraph.classList.add("expanded");
-    body.classList.add('somethingIsOpen');
     if (Url.get.app || isSpeedcam) {
         noOpen = true;
+    } else {
+        const titleBar = document.getElementById('titlebar');
+        titleBar.style.transform = "translateY(-100%)";
     }
-    titleBar.style.position = "";
-    titleBar.style.top = "0";
     graphButtons.style.top = "12px";
     window.scrollTo(0, 0);
     send_message("IVClicked", "antwork");
     resetNodeStyles();
-    setBack('closeNetworkGraph()');
     layout.start();
 }
 
-function closeNetworkGraph(x) {
-    const networkGraph = document.getElementById('graph-container');
-    const sigmacontainer = document.getElementById('sigma-container');
-    const graphButtons = document.getElementById('graphButtons');
-    const settingsButton = document.getElementById('settingsButton');
-    const closeButton = document.getElementById('closeButton');
-    const titleBar = document.getElementById('titlebar');
-    networkGraph.style.visibility = 'hidden';
-    body.classList.remove('somethingIsOpen');
-    if (Url.get.app || isSpeedcam) {
-        noOpen = false;
-    }
-
-    titleBar.style.width = "";
-    settingsButton.classList.remove("hide");
-    closeButton.classList.remove("hide");
-    //if (Url.get.exhibit){
-    //	backButton.classList.add("hide")
-    //}
-    sigmacontainer.style.width = "1px";
-    sigmacontainer.style.height = "1px";
-    networkGraph.classList.remove("expanded");
-    graphButtons.style.top = "";
-    send_message("IVClicked", "unwork");
-    setBack();
-    layout.stop();
+function closeNetworkGraph() {
+    toggleBodyStyle("graphOpen");
+    document.getElementById('graph-box').childNodes[0].removeAttribute("open")
+    return
 }
 
 function justSendBack(x) {
@@ -2098,62 +2763,32 @@ function openGenericPage(x) {
     if (noOpen) {
         return;
     }
-    const voteButtons = document.getElementById('Invisible-interaction');
     body.classList.add('somethingIsOpen');
     noOpen = true;
     backButton.style.backgroundColor = 'var(--c-background)';
-    if (x == "wikipage" || x == "infocard") {
-        if (x == "infocard") {
-            const infoCard = document.getElementById('wikipedia-infocard-frame');
-            window.scrollTo(0, 0);
-            send_message("IVClicked", "wikipedia-infocard-frame");
-            infoCard.classList.add('expanded');
-        } else {
-            window.scrollTo(0, 0);
-            const wikipediaPage = document.getElementById('wikipedia-first-frame');
-            wikipediaPage.classList.add('expanded');
-            send_message("IVClicked", "wikipedia-first-frame");
-        }
-    } else {
-        const element = document.getElementById(x);
-        element.classList.add('expanded');
-    }
-    voteButtons.style.visibility = "hidden";
+    const element = document.getElementById(x);
+    element.classList.add('expanded');
     explode();
     setBack(`closeGenericPage("${x}")`);
 }
 
 function closeGenericPage(x) {
-    const voteButtons = document.getElementById('Invisible-interaction');
-    switch (x) {
-        case "wikipage":
-            document.getElementById('wikipedia-first-frame').classList.remove('expanded');
-            break;
-        case "infocard":
-            document.getElementById('wikipedia-infocard-frame').classList.remove('expanded');
-            break;
-        default:
-            document.getElementById(x).classList.remove('expanded');
-            break;
-    }
+    document.getElementById(x).classList.remove('expanded');
     body.classList.remove('somethingIsOpen');
-    voteButtons.style.visibility = "visible";
     noOpen = false;
     unexplode();
     setBack();
 }
 
-function closeSettings(x) {
+function closeSettings() {
     const settingsButton = document.getElementById('settingsButton');
-    const closeButton = document.getElementById('closeButton');
-    body.classList.remove("settingsOpen");
     document.getElementsByClassName('co-name')[0].style.opacity = "100%";
     if (Url.get.app || isSpeedcam) {
         backButton.style.order = "2";
     }
-    settingsButton.classList.remove("hide");
     closeButton.classList.remove("hide");
-
+    settings.style.bottom = "";
+    body.classList.remove("settingsOpen");
     document.documentElement.style.overflow = "";
     setBack();
 }
@@ -2186,6 +2821,11 @@ function notificationBell(ppId) {
     send_message("IVNotificationsTags", tagList);
     settingsState["notificationsTags"] = tagList;
     settingsStateChange()
+}
+
+function interact(el) {
+    console.log(el)
+    closeElement(el);
 }
 
 function slist() {
@@ -2260,24 +2900,30 @@ function toggleToggle(type) {
         toggleNotifications(settingsState["notifications"])
     } else {
         settingsState[type] = !settingsState[type];
-        debugLogging(`setting ${type} ${settingsState[type]}`)
+        debugLogging(`setting ${type} ${settingsState[type]} `)
     }
     settingsStateChange()
 }
 
 // {value: items[it].value, label: items[it].innerHTML}
-const singleColumnModulesDesktop = ["wikipedia-infocard-frame", "graph-box", "networkgraph"];
-const excludeSingleColumnModulesApp = ["carbon"];
-const singleColumnModulesApp = [...defaultOrder.filter(x => !excludeSingleColumnModulesApp.includes(x)), "graph-box", "networkgraph"];
+const singleColumnModulesDesktop = [];
+var excludeSingleColumnModulesApp = [];
+var singleColumnModulesApp = defaultOrder
+let recalculating = false
 function recalculateList() {
+    if (recalculating) return
+    recalculating = true
     debugLogging("recalculateList")
     const propertyOrder = $("#sortlist").sortable('toArray');
 
     currentModules = Object.keys(currentModuleState)
     missingModules = defaultOrder.filter(x => !currentModules.includes(x))
+    singleColumnModulesApp.push("graph-box")
+    // make sure no duplicates are in singleColumnModulesApp
+    singleColumnModulesApp = [...new Set(singleColumnModulesApp)]
 
-    let seenModulesApp = [];
-    let seenModulesDesktop = [];
+    const seenModulesApp = [];
+    const seenModulesDesktop = [];
 
     let gridTemplateAreasDesktop = "";
     let gridAutoRowsDesktop = "";
@@ -2291,25 +2937,38 @@ function recalculateList() {
     let gridAutoRowsSmall = "";
 
     //propertyOrder.forEach((value, index) => {
-    let filteredPropertyOrder = []
+    const filteredPropertyOrder = []
     const content = document.getElementById("content");
 
-    for (let index = 0; index < propertyOrder.length; index++) {
-        value = propertyOrder[index];
+    for (const el of propertyOrder) {
+        value = el;
         if (value == "networkgraph") {
             value = "graph-box"
         }
-        if (document.getElementById(value)) {
+        if (document.getElementById(value) && !filteredPropertyOrder.includes(value)) {
             const el = document.getElementById(value);
             filteredPropertyOrder.push(value)
-            el.onclick = function () {
-                if (content.classList.contains("mobile")) {
-                    openGenericPage(value);
+            const elSummary = $(`#${value} details`)[0];
+            if (elSummary) {
+                if (!elSummary.classList.contains("toggleEnabled")) {
+                    $(`#${value} details`).on('toggle', (e) => {
+                        recalculateList()
+                    })
+                    elSummary.classList.add("toggleEnabled")
+                }
+                if (elSummary.hasAttribute("open") && !excludeSingleColumnModulesApp.includes(value)) {
+                    excludeSingleColumnModulesApp.push(value)
+                } else if (!elSummary.hasAttribute("open") && excludeSingleColumnModulesApp.includes(value)) {
+                    excludeSingleColumnModulesApp.pop(value)
+                    singleColumnModulesApp.push(value)
                 }
             }
-
         }
     }
+
+    // remove excludeSingleColumnModulesApp from singleColumnModulesApp
+    singleColumnModulesApp = singleColumnModulesApp.filter(x => !excludeSingleColumnModulesApp.includes(x))
+
     const contentChildren = content.children;
     const contentChildrenArray = Array.from(contentChildren);
     for (let index = contentChildrenArray.length - 1; index >= 0; index--) {
@@ -2318,18 +2977,15 @@ function recalculateList() {
             element.remove();
         }
     }
-
     for (let index = 0; index < filteredPropertyOrder.length; index++) {
         value = filteredPropertyOrder[index];
-        // console.log(value)
         if (singleColumnModulesDesktop.includes(value)) {
             if (singleColumnModulesDesktop.includes(filteredPropertyOrder[index + 1]) && !seenModulesDesktop.includes(value)) {
                 gridTemplateAreasDesktop += `"${value} ${filteredPropertyOrder[index + 1]}" `;
                 gridAutoRowsDesktop += "120px "
                 seenModulesDesktop.push(filteredPropertyOrder[index + 1])
                 seenModulesDesktop.push(value)
-            } else if (seenModulesDesktop.includes(value)) {
-            } else {
+            } else if (!seenModulesDesktop.includes(value)) {
                 gridTemplateAreasDesktop += `"${value} blank${blanksDesktop}" `
                 gridAutoRowsDesktop += "120px "
                 blanksDesktop++;
@@ -2345,8 +3001,7 @@ function recalculateList() {
                 gridAutoRowsApp += "120px "
                 seenModulesApp.push(filteredPropertyOrder[index + 1])
                 seenModulesApp.push(value)
-            } else if (seenModulesApp.includes(value)) {
-            } else {
+            } else if (!seenModulesApp.includes(value)) {
                 gridTemplateAreasApp += `"${value} blank${blanksApp}" `
                 gridAutoRowsApp += "120px "
                 blanksApp++;
@@ -2358,25 +3013,20 @@ function recalculateList() {
 
         gridAutoRowsSmall += "auto "
         gridTemplateAreasSmall += `"${value}" `
-        document.getElementById(value).style.order = index;
+        //document.getElementById(value).style.order = index;
     }
 
-    debugLogging(`Desktop ${gridTemplateAreasDesktop}`)
-    debugLogging(`App ${gridTemplateAreasApp}`)
+    debugLogging(`Desktop ${gridTemplateAreasDesktop} `)
+    debugLogging(`App ${gridTemplateAreasApp} `)
 
     // create the blanks
     // Count the blanks that are needed between app&desktop then create them
     // If there are no blanks needed, remove all blanks
     // and add the correct gridTemplateAreas and gridAutoRows if there are blanks not included the grid stuff
     let numberOfBlanks = 0;
-    if (blanksDesktop >= blanksApp) {
-        numberOfBlanks = blanksDesktop;
-    } else {
-        numberOfBlanks = blanksApp;
-    }
+    numberOfBlanks = blanksDesktop >= blanksApp ? blanksDesktop : blanksApp;
     // count the number of instances of "blank" in the gridTemplateAreas
     const blankCountDesktop = (gridTemplateAreasDesktop.match(/blank/g) || []).length;
-    const blankCountApp = (gridTemplateAreasApp.match(/blank/g) || []).length;
     const blankCountSmall = (gridTemplateAreasSmall.match(/blank/g) || []).length;
     // if the number of blanks in the gridTemplateAreas is less than the number of blanks needed
     // add the correct number of blanks to the gridTemplateAreas string
@@ -2384,12 +3034,6 @@ function recalculateList() {
         for (let index = blankCountDesktop; index < numberOfBlanks; index++) {
             gridTemplateAreasDesktop += `"blank${index} blank${index}" `;
             gridAutoRowsDesktop += "0px "
-        }
-    }
-    if (blankCountApp < numberOfBlanks) {
-        for (let index = blankCountApp; index < numberOfBlanks; index++) {
-            gridTemplateAreasApp += `"blank${index} blank${index}" `;
-            gridAutoRowsApp += "0px "
         }
     }
     if (blankCountSmall < numberOfBlanks) {
@@ -2402,8 +3046,8 @@ function recalculateList() {
     for (let index = 0; index < numberOfBlanks; index++) {
         const blank = document.createElement("div");
         blank.classList.add("blank");
-        blank.id = `blank${index}`;
-        blank.style = `grid-area: blank${index}`;
+        blank.id = `blank${index} `;
+        blank.style = `grid-area: blank${index} `;
         content.appendChild(blank);
     }
     //document.getElementById("content").style.gridTemplateAreas = gridTemplateAreas;
@@ -2412,29 +3056,28 @@ function recalculateList() {
     if (styleMode) {
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridTemplateAreas = gridTemplateAreasDesktop;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridAutoRows = gridAutoRowsDesktop;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.mobile').style.gridTemplateAreas = gridTemplateAreasApp;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.mobile').style.gridAutoRows = gridAutoRowsApp;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.small').style.gridTemplateAreas = gridTemplateAreasSmall;
         [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.small').style.gridAutoRows = gridAutoRowsSmall;
+    } else if (Object.values(document.lastChild.classList).includes("single-column")) {
+        debugLogging("singleColumn")
+        content.style.gridTemplateAreas = gridTemplateAreasSmall;
+        //content.style.gridAutoRows = gridAutoRowsSmall;
+        content.style.gridAutoColumns = "377px";
+        content.classList.add("single-column")
+        content.classList.remove("two-column")
     } else {
-        if (Object.values(content.classList).includes("small")) {
-            debugLogging("small")
-            content.style.gridTemplateAreas = gridTemplateAreasSmall;
-            content.style.gridAutoRows = gridAutoRowsSmall;
-        } else if (Object.values(content.classList).includes("mobile")) {
-            debugLogging("app")
-            content.style.gridTemplateAreas = gridTemplateAreasApp;
-            content.style.gridAutoRows = gridAutoRowsApp;
-        } else {
-            content.style.gridTemplateAreas = gridTemplateAreasDesktop;
-            content.style.gridAutoRows = gridAutoRowsDesktop;
-            // console.log(gridTemplateAreasDesktop)
-            debugLogging("desktop")
-        }
+        debugLogging("2column")
+        // content.style.gridTemplateAreas = gridTemplateAreasSmall;
+        console.log("2")
+        content.style.gridTemplateAreas = gridTemplateAreasApp;
+        content.style.gridAutoColumns = "184px 184px";
+        content.classList.add("two-column")
+        content.classList.remove("single-column")
+        // content.style.gridAutoRows = gridAutoRowsDesktop;
+        // console.log(gridTemplateAreasDesktop)
     }
 
-    for (let x = 0; x < propertyOrder.length; x++) {
-        const value = propertyOrder[x];
+    for (const value of propertyOrder) {
         const item = $(`[data-id='${value}']`)[0];
         if (item !== undefined) {
             item.getElementsByTagName("span")[0].setAttribute("data-i18n", translate[value]);
@@ -2449,24 +3092,16 @@ function recalculateList() {
                     }
                 }
             }
-            if (value != "networkgraph") {
-                if (document.getElementById(value)) {
-                    thiselement = document.getElementById(value);
-                    if (value != "carbon" && (Url.get.app || isSpeedcam)) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
-                }
+            if (value != "networkgraph" && document.getElementById(value)) {
+                thiselement = document.getElementById(value);
+                if (value != "carbon" && (Url.get.app || isSpeedcam)) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
             }
         }
     };
 
     debugLogging("recalculateList", propertyOrder)
     if (document.getElementById('graph-box') != null) {
-        document.getElementById('graph-box').setAttribute("onclick", "loadNetworkGraph()");
-    }
-    if (document.getElementById("wikipedia-infocard-frame")) {
-        document.getElementById("wikipedia-infocard-frame").setAttribute('onclick', `openGenericPage("infocard")`);
-    }
-    if (document.getElementById("wikipedia-first-frame")) {
-        document.getElementById("wikipedia-first-frame").setAttribute('onclick', `openGenericPage("wikipage")`);
+        document.getElementById('graph-box').classList.add("contentSection")
     }
     const wbmOrder = $("#sortlist-wbm").sortable('toArray');
     for (let x = 0; x < wbmOrder.length; x++) {
@@ -2482,17 +3117,26 @@ function recalculateList() {
         if (node.nodeName == "#text")
             node.remove();
     }
-
+    recalculating = false;
 }
 
 
 const toggles = {
     "bobbleDisable": "bobbleOverride",
-    "externalPosts-banner": "experimentalFeatures",
+    // "externalPosts-banner": "experimentalFeatures",
     "permaDark": "darkMode",
     "onScreen": "keepOnScreen",
     "debug-banner": "debugMode",
+    "singleColumn": "singleColumn",
     "notificationsContainer": "notificationsContainer",
+    "monoChrome": "monoChrome",
+}
+
+function closeElement(el) {
+    el.parentElement.getElementsByTagName("details")[0].open = !el.parentElement.getElementsByTagName("details")[0].open;
+    setTimeout(() => {
+        el.parentElement.scrollIntoView();
+    }, 10);
 }
 
 document.addEventListener('mouseup', (event) => {
@@ -2503,26 +3147,27 @@ document.addEventListener('mouseup', (event) => {
         notificationCloseAndSave()
         return
     };
+    if (event.target.matches(".interactionBar")) {
+        if (event.offsetY > 0) return;
+        closeElement(event.target)
+        return;
+    }
+    if (event.target.matches("#extraDisplay")) {
+        if (event.offsetX > 0) return;
+        toggleBodyStyle("activeExtra")
+        return;
+    }
+
     const tid = event.target.id;
-    debugLogging(`clicked ${tid}`)
+    debugLogging(`clicked ${tid} `)
 
     if (tid == 'indexRefresh') send_message("IVIndexRefresh", "please");
     if (tid == 'notificationsCache') notificationBell("cacheClear")
     if (tid == 'backButton') send_message("IVClicked", event.target.parentElement.id);
-    if (tid == 'wikipedia-first-frame') {
-        send_message("IVClicked", "wikipedia-first-frame");
-        openGenericPage("wikipage");
-        event.target.scrollIntoView();
-    }
 
     if (event.target.classList.contains('invisible-disclaimer-title')) send_message("IVClicked", "disclaimer");
     if (event.target.classList.contains('sectionTitle') || event.target.classList.contains('iconclass') || event.target.classList.contains('scoreText')) {
         send_message("IVClicked", event.target.parentElement.id);
-        if (event.target.parentElement.id == "wikipedia-first-frame") {
-            openGenericPage("wikipage");
-        } else if (event.target.parentElement.id == "wikipedia-infocard-frame") {
-            openGenericPage("infocard")
-        }
         event.target.scrollIntoView();
     }
 
@@ -2565,8 +3210,8 @@ window.addEventListener('message', (e) => {
 
 function postalVote(direction, location, status) {
     direction = (direction == status) ? "un" : direction;
-    let directionType = (direction == "un") ?
-        "IVPostVoteUnvote" : `IVPostVote${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+    const directionType = (direction == "un") ?
+        "IVPostVoteUnvote" : `IVPostVote${direction.charAt(0).toUpperCase() + direction.slice(1)} `;
     if (direction == "comment") {
         commentDiagOpen(location);
         return;
@@ -2597,8 +3242,8 @@ function moduleUpdate(mesg, comment = false) {
         commentBox.classList.add("smallCommentBox")
         commentBox.setAttribute("data-location", mesg.uid)
         commentBox.innerHTML = `
-		<div>${mesg.content}<a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
-        ${voteBox(data.uid, data, "smallerVoteBox hideInSmall")}`
+        <div> ${mesg.content} <a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
+            ${voteBox(data.uid, data, "smallerVoteBox hideInSmall")} `
 
         sVB.parentNode.insertBefore(commentBox, sVB)
         recalculateList()
@@ -2607,11 +3252,7 @@ function moduleUpdate(mesg, comment = false) {
     }
     debugLogging("moduleUpdate", mesg)
     debugLogging("moduleUpdate emnt", elmt)
-    if (location_str.length == 36 && elmt.tagName != "SECTION" && !elmt.classList.contains("tabContent")) {
-        className = "smallerVoteBox hideInSmall"
-    } else {
-        className = "smallVoteBox bottomLeftOfModule hideInSmall"
-    }
+    className = location_str.length == 36 && elmt.tagName != "SECTION" && !elmt.classList.contains("tabContent") ? "smallerVoteBox hideInSmall" : "smallVoteBox bottomLeftOfModule hideInSmall";
     if (elmt.getElementsByClassName("loadInfoButton").length > 0) {
         elmt.getElementsByClassName("loadInfoButton")[0].remove();
     } else {
@@ -2637,11 +3278,11 @@ function vote(direction, thisOne = false) {
 
 async function voteLoad() {
     site = document.getElementsByClassName("co-name")[0].textContent.replace(".", "")
-    debugLogging(`voteLoad: ${pageHash} ${site}`)
+    debugLogging(`voteLoad: ${pageHash} ${site} `)
     send_message("IVVoteStuff", pageHash);
 }
 async function voteRequest(hash, direction) {
-    debugLogging(`vote request: ${hash} ${direction}`);
+    debugLogging(`vote request: ${hash} ${direction} `);
     send_message("IVVoteStuff", direction)
 }
 function voteUpdate(decoded = false) {
@@ -2654,8 +3295,8 @@ function voteUpdate(decoded = false) {
     if (direction == "up") lc = "green";
     if (direction == "down") dc = "green";
 
-    IVLike.setAttribute("style", `--count:'${decoded.utotal.toString()}';color:${lc};`);
-    IVDislike.setAttribute("style", `--count:'${decoded.dtotal.toString()}';color:${dc};`);
+    IVLike.setAttribute("style", `--count: '${decoded.utotal.toString()}'; color:${lc}; `);
+    IVDislike.setAttribute("style", `--count: '${decoded.dtotal.toString()}'; color:${dc}; `);
     lF = (decoded.voteStatus == "up") ? "vote('un')" : "vote('up')";
     dF = (decoded.voteStatus == "down") ? "vote('un')" : "vote('down')";
     IVLike.setAttribute("onclick", lF)
@@ -2683,13 +3324,13 @@ function addPopover(contentString, isDebug = false, actionLink = false) {
     if (isDebug) {
         notification.style.backgroundColor = "red";
     }
-    notification.innerHTML = `<div id="notification-content">${contentString}</div>`;
+    notification.innerHTML = `<div id = "notification-content" > ${contentString}</div> `;
     notification.popover = "manual";
     const existingNotifications = document.getElementsByClassName("notification");
     const offset = existingNotifications.length * 30;
     const popArea = document.getElementById("popArea") || document.body;
     popArea.appendChild(notification);
-    notification.style.top = `${offset}px`;
+    notification.style.top = `${offset} px`;
     notification.showPopover();
     if (actionLink) {
         notification.addEventListener("click", () => {
@@ -2698,7 +3339,7 @@ function addPopover(contentString, isDebug = false, actionLink = false) {
             notification.remove();
             const existingNotifications = document.getElementsByClassName("notification");
             for (let i = 0; i < existingNotifications.length; i++) {
-                existingNotifications[i].style.top = `${i * 30}px`;
+                existingNotifications[i].style.top = `${i * 30} px`;
             }
         })
     }
@@ -2707,9 +3348,9 @@ function addPopover(contentString, isDebug = false, actionLink = false) {
         notification.remove();
         const existingNotifications = document.getElementsByClassName("notification");
         for (let i = 0; i < existingNotifications.length; i++) {
-            existingNotifications[i].style.top = `${i * 30}px`;
+            existingNotifications[i].style.top = `${i * 30} px`;
         }
-    }, 20000);
+    }, 20_000);
 }
 function handleSizeChange(size, removeSize1, removeSize2, target) {
     const content = document.getElementById("content");
@@ -2765,15 +3406,15 @@ function createPopoverOptions() {
                 <button id="loadPageCoreButton" onclick="loadPageCore(document.getElementById('loadPageCoreFeild').value)">Load Page Core</button>
         </div>`;
 
-    let currentModuleLocations = []
-    for (let x in currentModuleState) {
+    const currentModuleLocations = []
+    for (const x in currentModuleState) {
         Object.keys(currentModuleState[x]).forEach((y) => {
             if (y !== '_preview' && y.includes('/'))
                 currentModuleLocations.push(y);
         })
     }
     if (isSpeedcam) {
-        popoverDiv.innerHTML += `<div id="speedCamDebug"><h3> SpeedCam Debug </h3>
+        popoverDiv.innerHTML += `<div id = "speedCamDebug" ><h3> SpeedCam Debug </h3>
             <h4> Current SpeedCam </h4>
             <span id="range_number">0</span>
             <span id="number_number">0</span>
@@ -2783,15 +3424,15 @@ function createPopoverOptions() {
             <button id="speedCamSensorButton" onclick="connectSerial()">Serial Pair</button>
             <button id="speedCamSensorButton" onclick="swapLayout()">Swap Layout</button>
             </div>
-            `
+        `
     }
 
-    popoverDiv.innerHTML += `<div id="popOptionsModuleLocations"><h3> Module Locations </h3>
+    popoverDiv.innerHTML += `<div id = "popOptionsModuleLocations" ><h3> Module Locations </h3>
             <h4> Current Module Locations </h4>
             <ul>
                 ${currentModuleLocations.map(x => `<li>${x}</li>`).join("")}
             </ul>
-        </div>`;
+        </div> `;
 
     createGenericPopoverMenu(popoverDiv.outerHTML, { id: "popOptions", title: "Options", screenLocation: "center", darkenBackground: true, closeButton: true });
 }
@@ -2810,7 +3451,7 @@ function createGenericPopoverMenu(contentString, options = { id: false, title: f
     popoverDiv.classList.add(`popOverMenu-${screenLocation}`)
     if (id) popoverDiv.id = id;
 
-    if (title) popoverDiv.innerHTML += `<h2>${title}</h2>`;
+    if (title) popoverDiv.innerHTML += `<h2> ${title}</h2>`;
     if (contentString) popoverDiv.innerHTML += `<div id="popover-content">${contentString}</div>`;
     const popWidth = "640px"
     popoverDiv.style.paddingInline = "1em";
@@ -2824,13 +3465,13 @@ function createGenericPopoverMenu(contentString, options = { id: false, title: f
             case "left":
                 popoverDiv.style.width = popWidth;
                 popoverDiv.style.height = "100vh";
-                popoverDiv.style.transform = `translateX(calc(${popWidth}/2 - 50vw))`;
+                popoverDiv.style.transform = `translateX(calc(${popWidth} / 2 - 50vw))`;
                 popoverDiv.style.borderLeft = "1px solid";
                 break;
             case "right":
                 popoverDiv.style.width = popWidth;
                 popoverDiv.style.height = "100vh";
-                popoverDiv.style.transform = `translateX(calc(-1 * (${popWidth}/2 - 50vw)))`;
+                popoverDiv.style.transform = `translateX(calc(-1 * (${popWidth} / 2 - 50vw)))`;
                 popoverDiv.style.borderLeft = "1px solid";
                 break;
             case "center":
@@ -2866,6 +3507,14 @@ function createGenericPopoverMenu(contentString, options = { id: false, title: f
     popoverDiv.showPopover();
 }
 
+function showDisclaimer() {
+    toggleBodyStyle("showDisclaimer")
+}
+
+function showInteractions() {
+    toggleBodyStyle("showInteractions")
+}
+
 function unexplode() {
     const content = document.getElementById("content");
     const contentChildren = content.children;
@@ -2886,7 +3535,7 @@ function explode(andRemove = false) {
         child.classList.add("exploading")
         if (child.classList.contains("expanded")) {
             const expandedChild = child.id;
-            content.style = `grid-template-areas: "${expandedChild}"; grid-auto-rows: auto;`;
+            content.style = `grid - template - areas: "${expandedChild}"; grid - auto - rows: auto; `;
             return;
         }
         const childRect = child.getBoundingClientRect();
@@ -2906,7 +3555,7 @@ function explode(andRemove = false) {
         if (andRemove) {
             setTimeout(() => {
                 child.remove();
-                debugLogging(`removed ${child.id}`)
+                debugLogging(`removed ${child.id} `)
             }, 500)
         }
 
@@ -2915,8 +3564,8 @@ function explode(andRemove = false) {
 
 function checkPageSize() {
     const content = document.getElementById("content");
-    const isMobile = content.classList.contains("mobile");
-    const isSmall = content.classList.contains("small");
+    const isMobile = body.classList.contains("mobile");
+    const isSmall = body.classList.contains("small");
     const windowWidth = window.innerWidth;
     if (!isMobile) {
         if (windowWidth <= 161 && !isSmall) {

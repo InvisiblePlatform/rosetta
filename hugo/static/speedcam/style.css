@@ -4,6 +4,11 @@ body {
     background: blue;
 }
 
+:root {
+    touch-action: pan-x pan-y;
+    height: 100%
+}
+
 .noDebug {
     & #photo {
         display: none;
@@ -60,15 +65,18 @@ body {
 }
 
 #video {
+    --blur: 0px;
     box-sizing: border-box;
     position: fixed;
     inset: 0px;
     z-index: -1;
-    transform: translateY(-100%) rotate(90deg);
+    transform: translate(55%, 80%) rotate(-90deg);
     transform-origin: bottom left;
+    filter: blur(var(--blur));
     height: 100vw;
     width: 100vh;
-
+    scale: 1.1;
+    left: -0.9vh;
 }
 
 #video.notRotated {
@@ -199,6 +207,10 @@ iframe {
     transform: translate(0, 100vh);
 }
 
+#contentAreaDiv.offScreen {
+    transform: translate(100vw, 0);
+}
+
 .offScreenUp {
     transform: translate(0, -100vh);
 }
@@ -225,7 +237,7 @@ iframe {
 
     #number_number,
     #speed_number {
-        display: none;
+        display: block;
     }
 
     #output_output {
@@ -310,18 +322,26 @@ iframe {
 
 #content {
     background-color: white;
-    top: 20%;
-    margin: 0 auto;
-    left: 5%;
-    padding: 80px !important;
+    padding: 44px !important;
     grid-area: content;
+    overflow-y: scroll;
+    border-radius: 24px;
 }
 
 body {
     display: grid;
     gap: 40px;
-    grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
     padding: 40px;
+
+    &.speedbody {
+        grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
+        grid-auto-rows: 0px 899px 367px 134px auto;
+    }
+
+    &.speedbodycontented {
+        grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
+        grid-auto-rows: 0px 367px 899px 134px auto;
+    }
 }
 
 #disclaimer {
@@ -330,6 +350,10 @@ body {
     color: black;
     padding: 20px;
     border-radius: 10px;
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
 }
 
 #titlebar {
@@ -338,11 +362,32 @@ body {
     color: black;
     padding: 20px;
     border-radius: 10px;
-    width: 50%;
-    height: 80px;
     place-self: center;
+    height: -webkit-fill-available;
+
+    > :not(.show) {
+        display: none;
+    }
 }
 
 #graph-container {
     grid-area: graph;
+    height: auto;
+    width: auto;
+    visibility: visible;
+    position: relative;
+    border-radius: 24px;
+    overflow: auto;
+}
+
+#sigma-container {
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+}
+
+#Invisible-interaction,
+#settings,
+#popArea,
+body>#graph-box {
+    grid-area: topDisplay !important;
 }

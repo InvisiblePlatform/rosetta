@@ -25,7 +25,129 @@ function removeSectionsWithMatchingId() {
     });
 }
 
+// Initialize Sigma.js
+const container = document.getElementById("sigma-container");
 const graph = new MultiDirectedGraph();
+const renderer = new Sigma(graph, container, initialSettings = {
+    minEdgeThickness: 1,
+    renderEdgeLabels: true,
+    enableEdgeHoverEvents: "debounce",
+    allowInvalidContainer: true,
+    defaultEdgeType: "straight",
+    edgeProgramClasses: {
+        curved: EdgeCurvedArrowProgram,
+        straight: EdgeArrowProgram,
+    },
+    labelColor: { attribute: "labelColorOveride" },
+    edgeLabelColor: { color: "lightgrey" },
+    zIndex: 3,
+    hideLabelsOnMove: true,
+    hideEdgesOnMove: true,
+});
+const layout = new FA2Layout(graph, {
+    settings: {
+        gravity: 0.04,
+        scalingRatio: 1,
+        outboundAttractionDistribution: true,
+        strongGravityMode: false,
+        linlogMode: true,
+        adjustSizes: true,
+        slowDown: 0.1,
+    }
+});
+renderer.camera.ratio = 0.69;
+
+function zoomReset() {
+    renderer.camera.animate({ x: 0.5, y: 0.5, ratio: 0.69 }, { duration: 150 });
+}
+function zoomIn() {
+    renderer.camera.animatedZoom();
+}
+function zoomOut() {
+    renderer.camera.animatedUnzoom();
+}
+
+//addNewFile(connectionsFile, true, 0, 0, wikidataid)
+
+let draggedNode;
+let isDragging = false;
+// On mouse down on a node
+//  - we enable the drag mode
+//  - save in the dragged node in the state
+//  - highlight the node
+//  - disable the camera so its state is not updated
+renderer.on("downNode", (e) => {
+    isDragging = true;
+    draggedNode = e.node;
+    graph.setNodeAttribute(draggedNode, "highlighted", true);
+});
+
+renderer.on("enterNode", ({ node }) => {
+    actualNode = node
+    graph.forEachNode((node) => {
+        if (node != actualNode && !graph.areDirectedNeighbors(actualNode, node)) {
+            graph.mergeNodeAttributes(node, {
+                color: "transparent",
+                size: 0,
+                labelColorOveride: "transparent",
+            });
+        }
+    });
+    graph.forEachEdge(
+        (edge, attributes, source, target, sourceAttributes, targetAttributes) => {
+            graph.mergeEdgeAttributes(edge, {
+                size: (source == actualNode || target == actualNode) ? 1 : 0,
+                color: (source == actualNode || target == actualNode) ? "orangered" : "transparent",
+            })
+        });
+    resetColorOfNode(node, true);
+    layout.stop()
+
+})
+
+renderer.on("leaveNode", ({ node }) => {
+    graph.forEachDirectedEdge(edge => graph.mergeEdgeAttributes(edge, { size: 1, color: "lightgrey" }))
+    resetNodeStyles();
+    layout.start()
+})
+
+
+// On mouse move, if the drag mode is enabled, we change the position of the draggedNode
+renderer.getMouseCaptor().on("mousemovebody", (e) => {
+    if (!isDragging || !draggedNode) return;
+    // Get new position of node
+    const pos = renderer.viewportToGraph(e);
+    graph.setNodeAttribute(draggedNode, "x", pos.x);
+    graph.setNodeAttribute(draggedNode, "y", pos.y);
+    // Prevent sigma to move camera:
+    e.preventSigmaDefault();
+    e.original.preventDefault();
+    e.original.stopPropagation();
+});
+
+// On mouse up, we reset the autoscale and the dragging mode
+renderer.getMouseCaptor().on("mouseup", () => {
+    if (draggedNode) {
+        graph.removeNodeAttribute(draggedNode, "highlighted");
+        const { x, y, defSite, wiki } = graph.getNodeAttributes(draggedNode);
+        debugLogging(`Clicked on ${draggedNode} ${defSite} ${wiki}`)
+        if (defSite == "null" || typeof (defSite) == 'undefined') {
+            wikipediaPanel(draggedNode)
+        } else {
+            getDocumentIndex(defSite, x, y, draggedNode);
+        }
+    }
+    isDragging = false;
+    draggedNode = null;
+    layout.start()
+});
+
+// Disable the autoscale at the first down interaction
+renderer.getMouseCaptor().on("mousedown", () => {
+    if (!renderer.getCustomBBox()) renderer.setCustomBBox(renderer.getBBox());
+    layout.stop()
+});
+
 function blankWikiBoxes() {
     graphBox = document.createElement("section");
     graphBox.id = "graph-box";
@@ -46,12 +168,30 @@ const sort_byg = (field, reverse, primer) => {
     return (a, b) => (a = key(a), b = key(b), reverse * ((a > b) - (b > a)));
 };
 
+
+function getObjectsBySource(sourceValue, connectionList) {
+    return connectionList.filter((connection) => connection.source === sourceValue);
+}
+
+function getNodeById(sourceValue, nodeList) {
+    return nodeList.filter((node) => node.id === sourceValue);
+}
+
 function loadJSON(url, callback) {
     fetch(url)
         .then(response => response.json())
         .then(data => callback(data))
         .catch(error => console.error(error));
 }
+
+function calculateNodeSize(neighborsLength, divisor = 4, minSize = 4) {
+    return minSize + (neighborsLength / divisor);
+};
+
+function changeNodeScale(divisor, minSize = 4) {
+    resetNodeStyles(divisor, minSize);
+}
+
 // var langArray = ["en", "fr", "ar", "es", "eo", "zh", "de", "hi"];
 function getLabel(node, lang = langPref) {
     if (lang === "en") {
@@ -99,6 +239,10 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
     loadJSON(jsonloc, (data) => {
         const { nodes, links } = data;
         // Iterating through nodes
+        const numberOfNodes = nodes.length;
+        const labelColorOveride = (detectDarkMode) ? "#FFF" : "#000";
+        const defSiteColor = (original ? "#FF0000" : "#FF00FF");
+        const defSiteColorAlt = (original ? "#008080" : "#008000");
         const nodesToAdd = []
         nodes.map((node) => {
             const { id, defSite, groups } = node;
@@ -109,14 +253,16 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
             }
             const label = getLabel(node)
             const wiki = getWiki(node)
+            const color = (defSite == 'null' || typeof (defSite) == 'undefined') ? defSiteColorAlt : defSiteColor;
             if (label == 'null' && debug) console.log(`No label for ${id}`)
             nodesToAdd.push({
                 key: id, attributes: {
                     id, original,
-                    x: 1,
-                    y: 1,
+                    x: localX + (Math.random() * numberOfNodes) - numberOfNodes / 4,
+                    y: localY + (Math.random() * numberOfNodes) - numberOfNodes / 4,
                     size: 1,
-                    label, wiki
+                    label, color, labelColorOveride,
+                    defSite, wiki, groups, originalNodeColor: color
                 }
             })
         });
@@ -130,10 +276,21 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
                 return;
             }
             const label = type.replaceAll("_", " ")
-            graph.addDirectedEdge(source, target, {
-                size: 1, label,
-                color: "lightgrey"
-            })
+            const potentialEdge = graph.hasDirectedEdge(source, target);
+            if (potentialEdge) {
+                //     potentialEdge = graph.getDirectedEdgeAttributes(link.source, link.target);
+                //     if (potentialEdge.label != label) {
+                //         graph.addDirectedEdge(link.source, link.target, {
+                //             size: 1, label,
+                //             color: "lightgrey"
+                //         })
+                //     }
+            } else {
+                graph.addDirectedEdge(source, target, {
+                    size: 1, label,
+                    color: "lightgrey"
+                })
+            }
         });
         graph.forEachNode((nodeId) => {
             const neighbors = graph.neighbors(nodeId);
@@ -149,9 +306,68 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
                 })
                 return
             }
+            graph.setNodeAttribute(nodeId, "size", calculateNodeSize(neighbors.length));
+        });
+        settingsReset = forceAtlas2.inferSettings(graph);
+
+        layout.settings = { ...layout.settings, ...settingsReset }
+
+        indexParallelEdgesIndex(graph, {
+            edgeIndexAttribute: "parallelIndex",
+            edgeMinIndexAttribute: "parallelMinIndex",
+            edgeMaxIndexAttribute: "parallelMaxIndex",
+        });
+
+        graph.forEachEdge((edge, { parallelIndex, parallelMinIndex, parallelMaxIndex }) => {
+            let type;
+            if (typeof parallelMinIndex == "number") {
+                type = parallelIndex == 0 ? "straight" : "curved";
+            } else if (typeof parallelIndex == "number") {
+                type = "curved";
+            } else {
+                graph.mergeEdgeAttributes(edge, {
+                    type: "straight",
+                    size: 1,
+                });
+                return
+            }
+            graph.mergeEdgeAttributes(edge, {
+                type,
+                curvature: getCurvature(parallelIndex, parallelMaxIndex),
+                size: 1,
+            });
         });
         getWikipediaPage(wikidataid, fulllist)
     });
+}
+function resetColorOfNode(nodeId, invert = false) {
+    const node = graph.getNodeAttributes(nodeId);
+    const labelColorSwitch = (detectDarkMode) ? !invert : invert;
+    graph.mergeNodeAttributes(nodeId, {
+        color: node.originalNodeColor,
+        labelColorOveride: labelColorSwitch ? "#FFF" : "#000"
+    });
+}
+function resetNodeStyles(divsor = 4, minSize = 4) {
+    graph.forEachNode((nodeId) => {
+        const neighbors = graph.neighbors(nodeId)
+        const originalNodeColor = graph.getNodeAttribute(nodeId, "originalNodeColor");
+        graph.mergeNodeAttributes(nodeId, {
+            size: calculateNodeSize(neighbors.length, divsor, minSize),
+            color: originalNodeColor,
+            labelColorOveride: (detectDarkMode) ? "#FFF" : "#000"
+        });
+    });
+}
+
+function adjustGravity(newGravity) {
+    layout.settings.gravity = newGravity;
+    layout.start();
+}
+
+function adjustLinkLength(newLinkLength) {
+    layout.settings.scalingRatio = newLinkLength;
+    layout.start();
 }
 
 function getWikipediaPage(id, fulllist = false) {
@@ -290,8 +506,7 @@ function getWikipediaPage(id, fulllist = false) {
                 </div>
                 </summary>
                 <div class="${itemArray[3]}"> ${itemArray[4]}</div>
-                <button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>
-                <a href='${fullWikiUrl}' target='_blank' class='source scrollAnchor'>WIKIPEDIA</a></details>`.replace(/<img/g, '<img loading=lazy ');
+                <a href='${fullWikiUrl}' target='_blank' class='source'>WIKIPEDIA</a></details>`.replace(/<img/g, '<img loading=lazy ');
                 if (itemArray[1] == "profile-card" && !skipProfileCard) {
                     wikicardframe.innerHTML = tempEl;
                     content.appendChild(wikicardframe);
@@ -379,12 +594,16 @@ function getWikipediaPage(id, fulllist = false) {
     // Need to add a button to open the graph
     const graphButton = document.createElement("button");
     detailsObject.appendChild(graphButton);
-    graphButton.outerHTML = buttonTemplate("graphButton", `loadNetworkGraph(${wikidataid})`, false, `<div data-i18n="w.openGraph">Open Graph</div>`);
-    graphBox.appendChild(detailsObject);
+    graphButton.outerHTML = buttonTemplate("graphButton", "loadNetworkGraph", false, `<div data-i18n="w.openGraph">Open Graph</div>`);
+
     // we need to add the interactionBar too
     const moduleClose = document.createElement("div");
-    graphBox.appendChild(moduleClose);
-    moduleClose.outerHTML = moduleCloseString(false, "graph-box");
+    detailsObject.appendChild(moduleClose);
+    moduleClose.outerHTML = moduleCloseString(false, true, "https://wikidata.org", "WIKIDATA")
+
+
+
+    graphBox.appendChild(detailsObject);
     recalculateList();
 }
 

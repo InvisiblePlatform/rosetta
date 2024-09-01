@@ -251,22 +251,6 @@ option {
     height: 2.5rem;
 }
 
-.coolStar {
-    --relwidth: calc(var(--cool-star) * var(--division));
-    box-sizing: content-box;
-    content: var(--image-cool-star-in);
-    width: var(--relwidth);
-    filter: brightness(var(--brightness));
-    object-fit: cover;
-    object-position: 0;
-    height: var(--cool-star);
-    background-image: var(--image-cool-star-bg);
-    background-repeat: no-repeat;
-    transition: width 0.5s, padding-right 0.5s;
-    background-size: var(--cool-star) var(--cool-star);
-    padding-right: calc(var(--cool-star) - var(--relwidth));
-    margin: 0 2px;
-}
 
 #settings {
     height: 100%;
@@ -859,71 +843,6 @@ score {
 }
 
 
-.switch {
-    position: relative;
-    display: inline-block;
-    height: 16px;
-    width: 32px;
-    bottom: 12px;
-    right: 16px;
-    align-self: flex-end;
-    margin: 8px;
-
-    input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-}
-
-.slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background-color: var(--c-background);
-    border: var(--c-light-text) solid 1px;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 12px;
-    width: 12px;
-    left: 1px;
-    bottom: 1px;
-    background-color: var(--c-light-text);
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-
-input:focus+.slider {
-    box-shadow: 0 0 1px var(--c-interior-border);
-}
-
-input:checked+.slider:before {
-    -webkit-transform: translateX(16px);
-    -ms-transform: translateX(16px);
-    transform: translateX(16px);
-    background-color: var(--c-main);
-}
-
-
-.switchItem {
-    border-bottom: var(--c-light-text) solid 1px;
-    display: flex;
-    justify-content: space-between;
-
-    h2 {
-        display: inline-block;
-        position: relative;
-        font-weight: 400;
-        font-size: 0.875em;
-        padding: 16px;
-    }
-}
-
 #priority-list {
     border: var(--c-light-text) solid 1px;
     position: relative;
@@ -1179,10 +1098,6 @@ td.biaslink {
     text-align: center;
 }
 
-.slider.round,
-.slider.round:before {
-    border-radius: 8px;
-}
 
 @media screen and (max-width: 160px) {
     #content {
@@ -2016,39 +1931,6 @@ div#content:not(.mobile) {
     font-size: 2em !important;
 }
 
-
-.stars {
-    --percent: calc(var(--rating) / 5 * 100%);
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    justify-content: center;
-    margin: 16px auto;
-    line-height: 1;
-}
-
-.stars::before {
-    letter-spacing: 3px;
-    background: linear-gradient(90deg, var(--star-background) var(--percent), var(--star-color) var(--percent));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.stars .coolStar:nth-child(1) {
-    transition-delay: 1s;
-}
-
-.stars .coolStar:nth-child(2) {
-    transition-delay: 0.75s;
-}
-
-.stars .coolStar:nth-child(3) {
-    transition-delay: 0.5s;
-}
-
-.stars .coolStar:nth-child(4) {
-    transition-delay: 0.25s;
-}
 
 .scoreText {
     display: grid;

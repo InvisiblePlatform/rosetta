@@ -321,7 +321,7 @@ def do_graph(
     main_node: Optional[List[str]] = None,
     file_out: Optional[str] = None,
     collection: Optional[Any] = None,
-    node_depth: int = 2,
+    node_depth: int = 1,
     silent: bool = False,
     skip_to_fancy: bool = False,
 ) -> Dict[str, Any] | bool:
@@ -429,5 +429,6 @@ def do_graph(
 
 if __name__ == "__main__":
     # do_graph(main_node=["Q544293"])
-    do_graph(main_node=["Q5227102"])
+    # do_graph(main_node=["Q5227102"])
     # do_graph(["Q355", "Q380"])
+    do_graph(["Q2283"])

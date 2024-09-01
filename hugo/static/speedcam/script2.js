@@ -1,8 +1,4 @@
-let sampleResponse = null;
-let brandStack = {};
-let brandStackOrder = [];
-let topDisplay = document.getElementById("topDisplay");
-const dbLocationUrl = "https://test.reveb.la/db/"
+const topDisplay = document.getElementById("topDisplay");
 // The width and height of the captured photo. We will set the
 // width to the value defined here, but the height will be
 // calculated based on the aspect ratio of the input stream.
@@ -21,7 +17,6 @@ let streaming = false;
 let video = null;
 let canvas = null;
 let photo = null;
-let saveKeysButton = null;
 let rotatedFeed = true;
 
 let targetInfo = {
@@ -101,11 +96,6 @@ async function connectSerial(initport = null) {
         console.log("Connected to serial port")
         localState.peripherals.serial = true;
         let responseString = "";
-        let allowReset = true;
-        let waitingTimeoutTime = 0;
-        let dataCount = 0;
-        let scanOnce = true
-
         while (true) {
             const { value, done } = await reader.read();
             if (done) break;
@@ -128,40 +118,106 @@ async function connectSerial(initport = null) {
     }
 }
 
+let closeTimeoutObject = null;
+let shotTimeoutObject = null;
+let limitTimeoutObject = null;
 function runOnTargetInfo(targetInfo) {
     // add current time to the waitingTimeoutTime
+    if (!speedcamState.frontend.range_enabled) {
+        return;
+    }
     waitingTimeoutTime = Date.now();
+    closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
     if (document.getElementById("output_output")) {
-        document.getElementById("output_output").textContent = responseString;
         // Parse the JSON object
         document.getElementById("range_number").textContent = targetInfo.target_range;
         document.getElementById("number_number").textContent = targetInfo.target_number;
         document.getElementById("speed_number").textContent = targetInfo.target_speed;
-    }
-    // Adjust the opacity of the blank splash screen
-    lowerThreshold = 1.5;
-    upperThreshold = 3.5;
-    adjustedOpacity = Math.min(1, Math.max(0, (targetInfo.target_range - lowerThreshold) / (upperThreshold - lowerThreshold)));
-    //document.getElementById("blankSplash").style = `--adjust-opacity: ${adjustedOpacity}`;
-    responseString = "";
-    // if target is below threshold
-    if (targetInfo.target_range > upperThreshold && scanOnce) {
-        dataCount = 0;
-        scanOnce = false;
-    }
-    if (targetInfo.target_range < lowerThreshold) {
-        // open IV
-        scanOnce = true;
-    }
-    // set adjust opacity to 1 if we havent seen a new target in 5 seconds
-    setTimeout(() => {
-        if (Date.now() - waitingTimeoutTime > 5000) {
-            //document.getElementById("blankSplash").style = `--adjust-opacity: 1`;
-            dataCount = 0;
+        // set output_placeholder to the frontend options
+        outputPlaceholder = document.getElementById("output_placeholder");
+        if (outputPlaceholder) {
+            outputPlaceholder.innerHTML = "";
+            for (const key in SPEEDCAM_FRONTEND_OPTIONS) {
+                const option = SPEEDCAM_FRONTEND_OPTIONS[key];
+                const optionDiv = document.createElement("div");
+                optionDiv.textContent = `${option.label}: ${speedcamState.frontend[key]}`;
+                outputPlaceholder.appendChild(optionDiv);
+            }
         }
-    }, 5000);
+    }
+
+    // Adjust the blur of the camera feed based on the target range
+    lowerThreshold = speedcamState.frontend.range_open;
+    upperThreshold = speedcamState.frontend.range_fade_end;
+    if (targetInfo.target_range > upperThreshold) {
+        console.log("Above threshold, adjusting blur")
+        adjustedBlur = 0;
+        document.getElementById("video").style = `--blur: ${adjustedBlur}px`;
+    } else {
+        if (targetInfo.target_range < lowerThreshold) {
+            console.log("Below threshold, adjusting blur")
+            // it should blur between 10px and 0px
+            adjustedBlur = 10;
+            document.getElementById("video").style = `--blur: ${adjustedBlur}px`;
+        } else {
+            adjustedBlur = 10 - ((targetInfo.target_range - lowerThreshold) / (upperThreshold - lowerThreshold)) * 10;
+            document.getElementById("video").style = `--blur: ${adjustedBlur}px`;
+        }
+    }
+
+    shotThreshold = speedcamState.frontend.range_shot;
+
+    // if we are below the lower threshold, we should open the IV if it is closed
+    contentAreaDiv = document.getElementById("contentAreaDiv");
+    if (targetInfo.target_range < lowerThreshold && !contentAreaDiv.classList.contains("offScreen")) {
+        console.log("Below threshold, opening IV")
+        // open IV
+        openSpeedCam();
+    }
+    // We should renew the timeout if the target is below the threshold, or create it if it doesn't exist
+    if (targetInfo.target_range < lowerThreshold) {
+        console.log("Below threshold, renewing timeout")
+        if (closeTimeoutObject) {
+            clearTimeout(closeTimeoutObject);
+        }
+        closeTimeoutObject = setTimeout(() => {
+            closeIV();
+            clearTimeout(shotTimeoutObject);
+            shotTimeoutObject = setTimeout(() => {
+                console.log("Not Taking shot, just a wait")
+                clearTimeout(shotTimeoutObject);
+                shotTimeoutObject = null;
+            }, 3000);
+        }, closeTimeoutTime);
+    }
+    // if we are above the shot threshold, we should take a shot, if we havent in the shot timeout window
+    if (targetInfo.target_range < shotThreshold && targetInfo.target_range > lowerThreshold) {
+        if (shotTimeoutObject) {
+            console.log("Skipping shot, already taken")
+        } else {
+            console.log("Above threshold, taking shot")
+            sendRequestForScan(true);
+            shotTimeoutObject = setTimeout(() => {
+                console.log("Taking shot wait over")
+                clearTimeout(shotTimeoutObject);
+                shotTimeoutObject = null;
+            }, speedcamState.frontend.timeout_shot * 1000);
+        }
+    }
 }
 
+function startCam() {
+    navigator.mediaDevices
+        .getUserMedia({ video: { width: 1920, height: 1080 }, audio: false })
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
+            console.log("Camera started")
+        })
+        .catch((err) => {
+            console.error(`An error occurred: ${err}`);
+        });
+}
 
 function startupSpeedCam() {
     // If a port is paired already with the device, connect to it
@@ -179,35 +235,24 @@ function startupSpeedCam() {
     canvas = document.getElementById("canvas");
     photo = document.getElementById("photo");
     contentArea = document.getElementsByClassName("contentArea")[0]
-    navigator.mediaDevices
-        .getUserMedia({ video: { width: 1920, height: 1080 }, audio: false })
-        .then((stream) => {
-            video.srcObject = stream;
-            video.play();
-        })
-        .catch((err) => {
-            console.error(`An error occurred: ${err}`);
-        });
-
+    startCam();
     video.addEventListener(
         "canplay",
         (ev) => {
-            if (!streaming) {
-                height = video.videoHeight / (video.videoWidth / width);
-
-                // Firefox currently has a bug where the height can't be read from
-                // the video, so we will make assumptions if this happens.
-
-                if (isNaN(height)) {
-                    height = width / (9 / 16);
-                }
-
-                video.setAttribute("width", width);
-                video.setAttribute("height", height);
-                canvas.setAttribute("width", height);
-                canvas.setAttribute("height", width);
-                streaming = true;
+            if (streaming) {
+                return;
             }
+            height = video.videoHeight / (video.videoWidth / width);
+            // Firefox currently has a bug where the height can't be read from
+            // the video, so we will make assumptions if this happens.
+            if (isNaN(height)) {
+                height = width / (9 / 16);
+            }
+            video.setAttribute("width", width);
+            video.setAttribute("height", height);
+            canvas.setAttribute("width", height);
+            canvas.setAttribute("height", width);
+            streaming = true;
         },
         false,
     );
@@ -233,11 +278,22 @@ function startupSpeedCam() {
 }
 
 function openSpeedCam(brand = false) {
+    function setVariousElements() {
+        // set backButton onclick to closeIV
+        backButton.setAttribute("onclick", "closeIV()");
+        // override co-name as "Return to gallery"
+        const coName = document.getElementsByClassName('co-name')[0];
+        coName.textContent = "Return to gallery";
+        coName.setAttribute("onclick", "closeIV()");
+        coName.classList.add("show");
+        layout.start()
+        // Send a response to the roundabout server, domainOpen, with brand
+        sendResponseToSSERequest("domainOpen", brand)
+    }
     contentArea = document.getElementById("contentAreaDiv");
     if (brand) {
         contentArea.classList.add("offScreen")
         itsOpen = true;
-        //manualSetup(brand);
     }
     if (!contentArea.classList.contains("offScreen")) {
         // if the content area isnt off screen, then we need to close it
@@ -246,22 +302,31 @@ function openSpeedCam(brand = false) {
         if (currentItem && !brand && currentItem.hasAttribute("data-domain")) {
             contentArea.classList.add("offScreen")
             itsOpen = true;
-            manualSetup(currentItem.getAttribute("data-domain"));
+            brand = currentItem.getAttribute("data-domain");
         }
     }
-    // set backButton onlclick to closeIV
-    backButton.onclick = closeIV;
+    if (brand) {
+        manualSetup(brand);
+        setTimeout(() => {
+            setVariousElements()
+        }, 1000);
+    }
 }
 
 function closeIV() {
-    itsOpen = false;
-    contentArea = document.getElementsByClassName("contentArea")[0]
     contentArea.classList.remove("offScreen")
+    itsOpen = false;
     // we also need to blank out the content div
-    content = document.getElementById("content")
-    content.innerHTML = "";
+    speedContent = document.getElementsByClassName("speedcontent")[0];
+    speedContent.innerHTML = "";
+    speedContent.style = "";
+    sendResponseToSSERequest("domainClose", {})
 }
 
+function swapLayout() {
+    body.classList.toggle("speedbody");
+    body.classList.toggle("speedbodycontented");
+}
 function clearphoto() {
     const context = canvas.getContext("2d");
     context.fillStyle = "#AAA";
@@ -279,13 +344,17 @@ function clearphoto() {
 
 let rotated_once = false;
 function takepicture(rotated = true) {
+    // if video isnt ready dont take a picture
+    if (!streaming) {
+        return;
+    }
     const context = canvas.getContext("2d");
     // Clear the canvas
     if (width && height) {
         if (rotated) {
             if (!rotated_once) {
                 context.translate(canvas.width * 0.5, canvas.height * 0.5);
-                context.rotate(Math.PI / 2);
+                context.rotate(-Math.PI / 2);
                 context.translate(-width * 0.5, -height * 0.5);
                 rotated_once = true;
             }
@@ -372,6 +441,9 @@ function handleResponse(response, location) {
 
 function sendRequestForScan(include_scan = false) {
     takepicture();
+    if (include_scan) {
+        addPopover("Scanning")
+    }
     const data = canvas.toDataURL("image/png");
     //const blob = dataURLtoBlob(data);
     const speedcam_id = window.localStorage.getItem("speedcam_id");
@@ -386,9 +458,11 @@ function sendRequestForScan(include_scan = false) {
 }
 
 placement = 0;
+let shotTimeout = null;
 function updateDisplay() {
     if (Url.get.site && !timerEnabled) {
-        openSpeedCam(Url.get.site);
+        // openSpeedCam(Url.get.site);
+        closeIV();
         setSearchParam("site", null);
     }
     timerEnabled = true;
@@ -410,6 +484,16 @@ function updateDisplay() {
             topDisplay.children[child].classList.remove("offScreen")
             topDisplay.children[child].classList.add("offScreenUp")
         }
+    }
+    // if we havent taken a shot in timeout_shot seconds, take a shot
+    return
+    if (speedcamState.frontend.timeout_shot > 0) {
+        if (shotTimeout) {
+            clearTimeout(shotTimeout);
+        }
+        shotTimeout = setTimeout(() => {
+            sendRequestForScan(true);
+        }, speedcamState.frontend.timeout_shot * 1000);
     }
 }
 
@@ -466,12 +550,13 @@ function addStoryToDisplay(story) {
         // We should clean story.domain incase a normal domain got through
         cleanDomain = story.domain.replace(httpsStrip, "").replace("www.", "").replace(".", "");
         storyDiv.setAttribute("data-domain", cleanDomain);
+        storyInfoDiv.innerHTML += `<img class="logo" src="https://logo.clearbit.com/${story.domain.replace(httpsStrip, "")}"></img>`
     }
     // If story has author or source add it to the storyInfoDiv 
     if (story.hasOwnProperty("author") || story.hasOwnProperty("source")) {
         const authorDiv = document.createElement("div");
         if (story.hasOwnProperty("source")) {
-            if (story.author) {
+            if (story.author && story.author != story.source) {
                 authorDiv.textContent = story.author + " - " + story.source
             } else {
                 authorDiv.textContent = story.source
@@ -642,6 +727,17 @@ function updateState(stateObj) {
         // add new state to local storage
         window.localStorage.setItem("speedcamState", JSON.stringify(speedcamState));
     }
+    // Add frontend value to output_placeholder as text
+    outputPlaceholder = document.getElementById("output_placeholder");
+    if (outputPlaceholder) {
+        outputPlaceholder.innerHTML = "";
+        for (const key in SPEEDCAM_FRONTEND_OPTIONS) {
+            const option = SPEEDCAM_FRONTEND_OPTIONS[key];
+            const optionDiv = document.createElement("div");
+            optionDiv.textContent = `${option.label}: ${stateObj.frontend[key]}`;
+            outputPlaceholder.appendChild(optionDiv);
+        }
+    }
 
 }
 
@@ -671,9 +767,7 @@ function triggerAliveLoop(timeout) {
     if (triggerAliveStarted == "kill") {
         return;
     }
-
     sendResponseToSSERequest("alive", {})
-
     triggerAliveStarted = "started";
     setTimeout(() => {
         triggerAliveLoop(timeout)
@@ -732,11 +826,10 @@ function sse() {
                     sendRequestForScan(false);
                     break;
                 case "scan":
-                    addPopover("Scanning")
                     sendRequestForScan(true);
                     break;
                 case "open":
-                    openIV();
+                    openSpeedCam();
                     break;
                 case "close":
                     closeIV();
