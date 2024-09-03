@@ -80,6 +80,39 @@ let localState = {
         "autoAlive": false,
     }
 }
+
+let viewStateOrder = {
+    1: {
+        "type": "waiting",
+        "label": "Waiting",
+        "color": "blue",
+    },
+    2: {
+        "type": "scanning",
+        "label": "Scanning",
+        "color": "yellow",
+    },
+    3: {
+        "type": "scanned",
+        "label": "Scanned",
+        "color": "green",
+    },
+    4: {
+        "type": "detected",
+        "label": "Detected",
+        "color": "red",
+    },
+    5: {
+        "type": "display",
+        "label": "Display",
+        "color": "purple",
+    },
+    6: {
+        "type": "voiced",
+        "label": "Voiced",
+        "color": "orange",
+    },
+}
 async function connectSerial(initport = null) {
     try {
         let reader;
@@ -275,6 +308,7 @@ function startupSpeedCam() {
     if (window.localStorage.getItem("localState")) {
         localState = JSON.parse(window.localStorage.getItem("localState"));
     }
+
 }
 
 function openSpeedCam(brand = false) {
@@ -306,6 +340,7 @@ function openSpeedCam(brand = false) {
         }
     }
     if (brand) {
+        console.log(`Opening ${brand}`)
         manualSetup(brand);
         setTimeout(() => {
             setVariousElements()
@@ -322,10 +357,32 @@ function closeIV() {
     speedContent.style = "";
     sendResponseToSSERequest("domainClose", {})
 }
+let wordToNumber = {
+    "one": {"number": 1, "word": "one"},
+    "two": {"number": 2, "word": "two"},
+    "three": {"number": 3, "word": "three"},
+    "four": {"number": 4, "word": "four"},
+    "five": {"number": 5, "word": "five"},
+    "six": {"number": 6, "word": "six"},
+}
+const numberToWord = Object.keys(wordToNumber)
 
 function swapLayout() {
-    body.classList.toggle("speedbody");
-    body.classList.toggle("speedbodycontented");
+    bodyClasses = document.body.classList;
+    for (const bodyClass of bodyClasses) {
+        // if the body class is a number, then we should swap it
+        // for the next one and then loop around 
+        if (bodyClass in wordToNumber) {
+            bodyClasses.remove(bodyClass);
+            nextNumber = wordToNumber[bodyClass].number + 1;
+            if (nextNumber > 6) {
+                nextNumber = 1;
+            }
+            bodyClasses.add(numberToWord[nextNumber-1]);
+            console.log(nextNumber)
+            break;
+        }
+    }
 }
 function clearphoto() {
     const context = canvas.getContext("2d");
@@ -605,7 +662,8 @@ document.onkeydown = function (e) {
         canvas.setAttribute("height", currentWidth);
         document.getElementById("video").classList.toggle("notRotated")
     }
-    if (e.key === "s") {
+    if (e.key === "l") {
+        swapLayout();
     }
     if (e.key === "l") {
     }

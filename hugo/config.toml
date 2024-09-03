@@ -5,7 +5,6 @@ plugins_css = ["custom"]
 timeout = "3m"
 disableKinds = ["RSS", "sitemap"]
 ignoreErrors = ["error-remote-getjson"]
-cacheDir = "/home/orange/Projects/invisible-rosetta/hugo/cache"
 paginate = 5000
 [markup.goldmark.renderer]
   unsafe = true

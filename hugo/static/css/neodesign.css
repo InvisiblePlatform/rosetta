@@ -97,11 +97,51 @@ html {
         --score-10: var(--monoChoice);
     }
 
+    &.single-column {
+        --minModWidthClosed: 377px;
+        --minModWidthOpen: 377px;
+
+        .invisible-container {
+            grid-template-columns: 377px;
+        }
+    }
+
+    &.double-column {
+        --minModWidthClosed: 184px;
+        --minModWidthOpen: 377px;
+
+        .invisible-container:not(.masonary) {
+            grid-template-columns: 184px 184px;
+        }
+
+        .invisible-container.masonary {
+            --minModWidthClosed: 377px;
+        }
+    }
+}
+
+.invisible-container {
+    display: grid;
+    /* grid-template-columns: repeat(auto-fill, minmax(377px, 1fr)); */
+    gap: 0.5rem;
+
+    /* padding: 0.5rem; */
+    &.masory:has(.leftColumn) {
+        --minModWidthClosed: 377px;
+        --minModWidthOpen: 377px;
+        width: unset !important;
+        max-width: unset !important;
+
+        .leftColumn,
+        .rightColumn {
+            width: 377px;
+        }
+    }
 }
 
 body {
     display: grid;
-    grid-template-areas: "neograph extraDisplay content settings";
+    grid-template-areas: "neograph extraDisplay content settings" "disclaimer disclaimer disclaimer disclaimer";
     grid-template-columns: 0px 0px 1fr 0px;
     background-color: var(--s-tertiary);
     color: var(--c-primary);
@@ -128,6 +168,10 @@ body {
 
         #root {
             width: 100vw;
+        }
+
+        #Invisible-interaction {
+            transform: translateY(88px);
         }
     }
 
@@ -160,7 +204,7 @@ body {
     --paddingForContent: 0px;
 
     &.showDisclaimer {
-        --paddingForContent: 154px;
+        --paddingForContent: 0px;
 
         #disclaimer {
             display: block;
@@ -178,6 +222,10 @@ body {
 
         #content {
             margin-bottom: calc(var(--paddingForContent) + 88px);
+        }
+
+        #disclaimer {
+            bottom: 88px;
         }
     }
 
@@ -255,6 +303,7 @@ body {
     z-index: 1000;
     flex-direction: row;
     gap: 0.5rem;
+    overflow-x: scroll;
 
     button {
         border: none;
@@ -276,7 +325,7 @@ body {
 
         &::before {
             content: ' ';
-            background-color: black;
+            background-image: var(--iconUrl);
             width: 16px;
             height: 16px;
             margin-left: 8px;
@@ -478,13 +527,10 @@ ol.fakeTable {
             height: 16px;
             width: 16px;
             position: absolute;
-            position-anchor: --relation;
-            top: anchor(top);
-            right: calc(anchor(left) + 4px);
+            inset: auto auto 0 4px;
         }
 
         &[data-rel]::after {
-            anchor-name: --relation;
             content: " " attr(data-rel);
             height: 16px;
             font-size: 16px;
@@ -678,29 +724,28 @@ body.settingsOpen {
 
 
 div#content {
-    anchor-name: --content;
-    display: grid;
     grid-area: content;
     margin: 0 auto;
     margin-top: 108px;
     gap: 0.5rem;
     padding-inline: 11px;
     box-sizing: content-box;
-    max-width: 377px;
     transition: 300ms;
-    grid-auto-rows: min-content;
     padding-bottom: 16px;
+
+    &:not(&.masonry) {
+        max-width: 377px;
+    }
 
 }
 
 .contentSection {
     container: content / inline-size;
     --border-radius: 8px;
-    width: -webkit-fill-available;
     min-height: 156px;
     height: 156px;
-    min-width: 184px;
-    max-width: 704px;
+    min-width: var(--minModWidthClosed);
+    max-width: var(--minModWidthOpen);
     color: var(--c-primary);
     background-color: var(--s-primary);
     border-collapse: collapse;
@@ -708,9 +753,18 @@ div#content {
     box-sizing: border-box;
     position: relative;
     font-family: 'Space Grotesk', sans-serif;
+    clip-path: border-box;
+
+    &:has(details) {
+        min-width: var(--minModWidthClosed);
+        width: var(--minModWidthClosed);
+        max-width: var(--minModWidthClosed);
+    }
 
     &:has(details[open]) {
-        min-width: 377px;
+        min-width: var(--minModWidthOpen);
+        width: var(--minModWidthOpen);
+        max-width: var(--minModWidthOpen);
         z-index: 1;
         overflow: visible;
         height: fit-content;
@@ -734,13 +788,13 @@ div#content {
         min-height: 156px;
     }
 
-    ::marker {
-        content: none;
+    details summary::-webkit-details-marker {
+        display: none;
     }
 
     summary {
         grid-area: summary;
-        background-color: var(--s-primary);
+        background-color: var(--s-secondary);
         border-radius: var(--border-radius) var(--border-radius);
         display: flex;
         flex-direction: column;
@@ -762,7 +816,6 @@ div#content {
         display: none;
         overflow-x: auto;
         padding-inline-start: 0.5rem;
-        position-anchor: --tabContainer;
         position: absolute;
         bottom: anchor(top);
 
@@ -1150,6 +1203,7 @@ div#content {
         justify-items: center;
         height: 72px;
         width: 72px;
+        position: absolute;
 
         span {
             grid-area: pie;
@@ -1240,13 +1294,12 @@ div#content {
         grid-area: interactionBar;
         height: 40px;
         display: none;
-        grid-template-areas: "comment like dislike about source";
         justify-items: normal;
-        grid-template-columns: repeat(4, 48px) auto;
         background-color: var(--s-secondary);
         position: relative;
         margin: calc(32px + var(--real-margin)) 0 0 0;
         border-radius: 0 0 var(--border-radius) var(--border-radius);
+        grid-template-areas: "buttons source";
 
         .interactionButton {
             border: none;
@@ -1268,7 +1321,13 @@ div#content {
             }
         }
 
-        /* &:before {
+        .interactionButtons {
+            display: flex;
+            flex-direction: row;
+            grid-area: buttons;
+        }
+
+        &:before {
             content: " ";
             background-color: var(--s-secondary);
             background-image: var(--image-closeModule);
@@ -1282,7 +1341,7 @@ div#content {
             background-repeat: no-repeat;
             cursor: pointer;
             border-radius: var(--border-radius) var(--border-radius) 0 0;
-        } */
+        }
 
         .commentButton {
             grid-area: comment;
@@ -1435,11 +1494,11 @@ div#content {
     display: grid;
     padding: 0 1rem 1rem 1rem;
     height: 100%;
-    height: -webkit-fill-available;
+    font-size: 36px;
+    font-family: "Space Grotesk", sans-serif;
 
     &::before {
-        anchor-name: --previewContainerBefore;
-        content: var(--subnamePreview);
+        content: '' var(--subnamePreview);
         position: absolute;
         font-size: 12px;
         white-space: nowrap;
@@ -1452,6 +1511,19 @@ div#content {
         color: var(--c-secondary);
     }
 
+    .previeuwTitle {
+        font-size: 24px;
+        font-weight: 300;
+        bottom: 10px;
+        right: 8px;
+        position: absolute;
+
+        &::after {
+            content: '€';
+            font-size: 20px;
+            color: var(--c-secondary);
+        }
+    }
 
     .previewScore {
         display: flex;
@@ -1466,6 +1538,30 @@ div#content {
             font-size: 0.5em;
             font-weight: 700;
         }
+    }
+
+    .previewScore:has(.singleItemPieChart) {
+        height: 80px;
+        position: absolute;
+        left: -16px;
+    }
+
+    .previewPG {
+        font-size: 12px;
+        text-wrap: balance;
+        line-height: 140%;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        height: 68px;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+    }
+
+    .previewSecret {
+        font-size: 24px;
+        text-align: right;
     }
 
     .previewSocial {
@@ -1560,7 +1656,7 @@ div#content {
     .ratingText {
         position: absolute;
         inset: auto 0 0 auto;
-        font-family: "Space Mono", serif;
+        /* font-family: "Space Mono", serif; */
         margin: 1rem;
     }
 
@@ -1623,15 +1719,11 @@ div#content {
 }
 
 .previewContainer::after {
-    position-anchor: --previewContainerBefore;
     content: var(--companyCount);
     position: absolute;
     white-space: nowrap;
     font-size: 12px;
     font-weight: 300;
-    left: anchor(right);
-    bottom: anchor(bottom);
-    top: anchor(top);
     color: var(--c-secondary);
 }
 
@@ -1844,15 +1936,14 @@ a {
 
 #disclaimer {
     display: none;
-    position: fixed;
+    position: relative;
     grid-area: disclaimer;
     padding: 8px 24px;
-    width: 398px;
-    height: 154px;
-    position-anchor: --content;
-    top: anchor(bottom);
-    left: anchor(left);
-    right: anchor(right);
+    /* position-anchor: --content; */
+    /* top: anchor(bottom); */
+    /* left: anchor(left); */
+    /* right: anchor(right); */
+    inset: auto 0 0 0;
     background-color: var(--c-black);
     color: var(--c-white);
     font-size: 10px !important;
@@ -1916,6 +2007,7 @@ a {
         background-image: url('/icon/communications.svg');
     }
 
+
     .Invisible-logo {
         background-image: url('/w/logo-w.svg');
         place-self: start end;
@@ -1924,108 +2016,6 @@ a {
         width: 110px;
         height: 36px;
     }
-}
-
-#bcorp {
-    grid-area: bcorp;
-}
-
-#cta {
-    grid-area: cta;
-}
-
-#glassdoor {
-    grid-area: glassdoor;
-}
-
-#goodonyou {
-    grid-area: goodonyou;
-}
-
-#graph-box {
-    grid-area: graph-box;
-}
-
-#lobbyeu {
-    grid-area: lobbyeu;
-
-    .previewScore .ratingText {
-        font-family: 'Space Grotesk', sans-serif;
-    }
-}
-
-#mbfc {
-    grid-area: mbfc;
-}
-
-#opensec {
-    grid-area: opensec;
-}
-
-#political-wikidata {
-    grid-area: political-wikidata;
-}
-
-#political-wikidatai {
-    grid-area: political-wikidatai;
-}
-
-#post {
-    grid-area: post;
-}
-
-#similar-site-wrapper {
-    grid-area: similar-site-wrapper;
-}
-
-#social-wikidata {
-    grid-area: social-wikidata;
-}
-
-#tosdr-link {
-    grid-area: tosdr-link;
-}
-
-#trust-pilot {
-    grid-area: trust-pilot;
-}
-
-#trust-scam {
-    grid-area: trust-scam;
-}
-
-#wbm {
-    grid-area: wbm;
-}
-
-#wikipedia-infocard-frame {
-    grid-area: wikipedia-infocard-frame;
-
-    .scrollToTop {
-        position-anchor: --wikipedia-infocard-frame;
-    }
-
-    .scrollAnchor {
-        anchor-name: --wikipedia-infocard-frame;
-    }
-}
-
-
-#wikipedia-first-frame {
-    grid-area: wikipedia-first-frame;
-
-    .scrollToTop {
-        position-anchor: --wikipedia-first-frame;
-    }
-
-    .scrollAnchor {
-        anchor-name: --wikipedia-first-frame;
-    }
-
-}
-
-#yahoo {
-    grid-area: yahoo;
 }
 
 .scrollToTop {
@@ -2132,12 +2122,12 @@ a {
     --iconUrl: url('/icon/net/net_owner_of.svg');
 }
 
-.parent_company {
+.parent_company_of {
     --typeColor: var(--network-3);
-    --iconUrl: url('/icon/net/net_parent_company.svg');
+    --iconUrl: url('/icon/net/net_parent_company_of.svg');
 }
 
-.parent_organisation {
+.parent_organisation_of {
     --typeColor: var(--network-5);
     --iconUrl: url('/icon/net/net_parent_organisation.svg');
 }

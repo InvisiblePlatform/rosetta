@@ -1,8 +1,181 @@
 body {
+    --fullwidth: 1000px;
+    --colWidth: calc(100% - 80px);
+    left: 40px;
+    top: 40px;
+    position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
     background: blue;
+    box-sizing: border-box;
+
+    transition: all 0.5s;
+    display: grid;
+
+    gap: 0px;
+    padding: 0px;
+    font-size: 100px;
+    grid-template:
+        "titlebar" 0px
+        "topdisplay" 100%
+        "neograph" 0px
+        "content" 0px
+        "buttons" 0px
+        "disclaimer" 0px /
+        var(--colWidth);
+
+    >* {
+        border-radius: 24px;
+        clip-path: border-box;
+    }
+
+    >#graph-box {
+        display: none;
+    }
+
+    #neoGraphFilterBar,
+    #neoGraphTopBar {
+        grid-area: neograph;
+    }
+
+    #root {
+        grid-area: neograph;
+        height: unset;
+    }
+
+    #disclaimer {
+        grid-area: disclaimer;
+        width: var(--fullwidth);
+    }
+
+    &.one {
+        gap: 0px;
+        padding: 0px;
+
+        #contentAreaDiv {
+            overflow: hidden;
+        }
+    }
+
+    &.two {
+        gap: 0px;
+        padding: 0px;
+
+        &::before {
+            content: "!";
+            font-size: 700px;
+            position: absolute;
+            background: white;
+            width: 520px;
+            height: 520px;
+            text-align: center;
+            place-self: center;
+            border-radius: 1000px;
+            top: 400px;
+        }
+    }
+
+    &.three {
+        gap: 0px;
+        padding: 0px;
+        font-size: 100px;
+
+        &::before {
+            content: "Brand Recognition";
+            font-size: 30px;
+            position: absolute;
+            background: white;
+            width: 960px;
+            height: 520px;
+            text-align: center;
+            place-self: center;
+            border-radius: 1000px;
+            top: 400px;
+        }
+    }
+
+    &.four {
+        gap: 0px;
+        padding: 0px;
+        font-size: 100px;
+
+        &::before {
+            content: "Analysing Data";
+            font-size: 30px;
+            position: absolute;
+            background: white;
+            width: 960px;
+            height: 520px;
+            text-align: center;
+            place-self: center;
+            border-radius: 24px;
+            top: 400px;
+        }
+    }
+
+    &.five {
+        gap: 0px;
+        padding: 0px;
+        font-size: 100px;
+        grid-template:
+            "titlebar" 0px
+            "topdisplay" 100%
+            "neograph" 0px
+            "content" 0px
+            "buttons" 0px
+            "disclaimer" 0px /
+        var(--colWidth);
+
+        &::after {
+            content: "hows about coming closer";
+            font-size: 30px;
+            position: absolute;
+            background: black;
+            color: white;
+            height: 80px;
+            width: 100vw;
+            bottom: 0;
+            left: 0;
+        }
+    }
+
+    &.six,
+    &.six.voice {
+        grid-template:
+            "titlebar" 80px
+            "topdisplay" 0px
+            "neograph" calc(1140px - 80px)
+            "content" 417px
+            "buttons" 104px
+            "disclaimer" auto /
+        var(--colWidth);
+
+        #contentAreaDiv {
+            overflow: hidden;
+        }
+    }
+
+    &.six.map {
+        grid-template:
+            "titlebar" 80px
+            "topdisplay" 0px
+            "neograph" calc(417px - 80px)
+            "content" 1140px
+            "buttons" 104px
+            "disclaimer" auto /
+        var(--colWidth);
+    }
 }
+
+#speedcontent {
+    display: grid;
+    grid-area: content;
+    justify-content: center;
+    z-index: 1000;
+    background-color: #fff;
+    width: var(--fullwidth);
+}
+
 
 :root {
     touch-action: pan-x pan-y;
@@ -28,37 +201,6 @@ body {
         display: none;
     }
 }
-
-#blankSplash {
-    --adjust-opacity: 1;
-    font-size: 10vw;
-    margin: 0 auto;
-    height: 100%;
-    width: 100%;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration-line: underline;
-    text-decoration-thickness: 10px;
-    text-decoration-skip-ink: all;
-    text-decoration-color: green;
-    animation: animatedLine 10s infinite both alternate linear;
-    background-color: #000000;
-    opacity: var(--adjust-opacity);
-    transition: opacity 0.2s;
-}
-
-@keyframes animatedLine {
-    0% {
-        text-underline-offset: -10vw;
-    }
-
-    100% {
-        text-underline-offset: 1vw;
-    }
-}
-
 
 .currentItem {
     z-index: 2;
@@ -87,43 +229,6 @@ body {
     transform-origin: center;
 }
 
-
-.companyPanel {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    display: grid;
-    grid-template-areas: 'text' 'logo';
-    font-family: sans-serif;
-    font-size: 30px;
-    background-color: #ffffffcc;
-    left: 0;
-    top: 0;
-    background-size: cover;
-    box-sizing: border-box;
-    padding: 40px 50px;
-    animation: bkgmove 30s infinite both alternate;
-
-    .companyText {
-        grid-area: text;
-        color: white;
-
-        .title {
-            font-size: 6dvh;
-            font-weight: bold;
-            color: #ffe;
-            -webkit-text-stroke-width: 2px;
-            -webkit-text-stroke-color: black;
-        }
-    }
-
-    .logo {
-        grid-area: logo;
-        margin: auto;
-    }
-}
-
-
 @keyframes bkgmove {
     0% {
         background-position-x: 0%;
@@ -144,18 +249,10 @@ body {
     vertical-align: top;
 }
 
-.contentArea {
+#contentAreaDiv {
+    grid-area: topdisplay;
     font-size: 16px;
     font-family: "Lucida Grande", "Arial", sans-serif;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    top: 0vh;
-    bottom: 0vh;
-    left: 0vw;
-    right: 0vw;
-    transition: top 1s;
     z-index: 100;
 }
 
@@ -201,18 +298,6 @@ iframe {
     height: 40px;
     visibility: hidden;
     background-color: white;
-}
-
-.offScreen {
-    transform: translate(0, 100vh);
-}
-
-#contentAreaDiv.offScreen {
-    transform: translate(100vw, 0);
-}
-
-.offScreenUp {
-    transform: translate(0, -100vh);
 }
 
 .popoverApi {
@@ -263,61 +348,99 @@ iframe {
 }
 
 #topDisplay {
-    display: grid;
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-    grid-area: topDisplay;
+    display: flex;
+    flex-direction: column;
+    grid-area: topdisplay;
+    width: 100vw;
+    height: calc(100vh - 100px);
+    padding: 40px;
+    gap: 40px;
 }
 
 .story {
     font-family: 'Space Grotesk', sans-serif;
-    top: 0;
-    left: 0;
-    position: relative;
     background-size: cover;
-    height: auto;
-    width: auto;
-    grid-area: 1 / 1;
-    margin: 40px;
     border-radius: 22px;
+    max-height: 240px;
+    clip-path: border-box;
+}
 
-    >.storyInfo {
+.storyInfo {
+    box-sizing: border-box;
+    color: black;
+    background-color: #ffff;
+    position: relative;
+    display: grid;
+    grid-template:
+        "logo title" 200px
+        "logo author" 40px
+        "overflow overflow" 0px /
+        240px calc(100% - 240px);
+    height: 240px;
+    margin: 0 auto;
+
+    .title {
+        grid-area: title;
+        font-size: 40px;
+        font-weight: 300;
+        text-wrap: balance;
+    }
+
+    .authorArticle {
+        grid-area: author;
+        font-size: 32px;
+        font-weight: 500;
+        text-align: right;
+        padding: 4px;
+
+        &::before {
+            content: '- ';
+        }
+
+    }
+
+    .logo {
+        grid-area: logo;
+        width: 240px;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        background-color: #000000;
+    }
+}
+
+.story.currentItem {
+    height: 100%;
+    max-height: 100%;
+    display: grid;
+
+    .storyInfo {
         color: black;
-        background-color: white;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
+        background-color: #fffd;
+        height: 350px;
+        margin-bottom: auto;
+        grid-template:
+            "logo title" 310px
+            "logo author" 40px
+            "overflow overflow" 0px /
+            240px calc(100% - 240px);
 
-        width: calc(927px - 80px);
-        height: fit-content;
-        min-height: 14.1%;
-        top: 10%;
-        padding: 80px;
-        margin: 0 auto;
-        border-radius: 11px;
-
-        >.title {
-            font-size: 80px;
-            font-weight: 300;
+        .title {
             text-wrap: balance;
         }
 
-        >.authorArticle {
-            font-size: 48px;
-            font-weight: 500;
-            place-self: flex-end;
+        .authorArticle {}
+
+        .logo {
+            width: 224px;
+            margin: 8px;
         }
-
     }
+}
 
-    >.attribution {
-        position: absolute;
-        float: right;
-        bottom: 3em;
-        right: 3em;
-
-    }
+.attribution {
+    position: absolute;
+    bottom: 3em;
+    right: 3em;
 }
 
 #content {
@@ -328,21 +451,6 @@ iframe {
     border-radius: 24px;
 }
 
-body {
-    display: grid;
-    gap: 40px;
-    padding: 40px;
-
-    &.speedbody {
-        grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
-        grid-auto-rows: 0px 899px 367px 134px auto;
-    }
-
-    &.speedbodycontented {
-        grid-template-areas: 'topDisplay' 'graph' 'content' 'titlebar' 'disclaimer';
-        grid-auto-rows: 0px 367px 899px 134px auto;
-    }
-}
 
 #disclaimer {
     grid-area: disclaimer;
@@ -350,10 +458,8 @@ body {
     color: black;
     padding: 20px;
     border-radius: 10px;
-    position: absolute;
-    bottom: 40px;
-    left: 40px;
-    right: 40px;
+    width: 100vw;
+    height: 377px;
 }
 
 #titlebar {
@@ -362,32 +468,34 @@ body {
     color: black;
     padding: 20px;
     border-radius: 10px;
-    place-self: center;
-    height: -webkit-fill-available;
+    position: relative;
+    width: unset;
+    z-index: 10;
 
     > :not(.show) {
         display: none;
     }
 }
 
-#graph-container {
-    grid-area: graph;
-    height: auto;
-    width: auto;
-    visibility: visible;
-    position: relative;
-    border-radius: 24px;
-    overflow: auto;
-}
-
-#sigma-container {
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-}
-
+#output,
+#photo,
+#graph-container,
+#settings,
+#graph-container,
 #Invisible-interaction,
 #settings,
 #popArea,
 body>#graph-box {
-    grid-area: topDisplay !important;
+    display: none;
+}
+
+#speedcontent .contentSection {
+    min-width: 377px;
+    width: 377px;
+    max-width: 377px;
+}
+
+#speedcontent {
+    overflow-y: scroll;
+    overflow-x: hidden;
 }

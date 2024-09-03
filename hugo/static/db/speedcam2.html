@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en" class="light-theme">
+<html lang="en" class="light-theme masonry">
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link href="https://unpkg.com/@csstools/normalize.css" rel="stylesheet" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+    </style>
     <script>
         document.write('<link href="/css/generic.css?dev=' + Date.now() + '" rel="stylesheet"/>');
-        document.write('<link href="/css/plugin-styles.css?dev=' + Date.now() + '" rel="stylesheet"/>');
+        document.write('<link href="/css/neodesign.css?dev=' + Date.now() + '" rel="stylesheet"/>');
         document.write('<link href="/speedcam/style.css?dev=' + Date.now() + '" rel="stylesheet"/>');
     </script>
 
@@ -26,19 +28,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
         integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
         crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/elkjs@0.7.0/lib/elk.bundled.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cytoscape-elk@2.2.0/dist/cytoscape-elk.min.js"></script>
     <script>
+        document.write('<script src="/js/cy-graph.js?dev=' + Date.now() + '" defer><\/script>');
         document.write('<script src="/js/single-2024.js?dev=' + Date.now() + '" defer><\/script>');
         document.write('<script src="/js/d3-graph.js?dev=' + Date.now() + '" defer><\/script>');
-        document.write('<script src="/js/cy-graph.js?dev=' + Date.now() + '" defer><\/script>');
         document.write('<script src="/speedcam/script2.js?dev=' + Date.now() + '" defer><\/script>');
     </script>
 </head>
 
 
-<body class="speedbody">
+<body class="speedbody six voice">
     <video id="video">Video stream not available.</video>
     <div class="contentArea speedCam" id="contentAreaDiv">
-        <div id="topDisplay"></div>
+        <div id="topDisplay">
+            <div data-image-id="140"
+                data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
+                data-domain="logitechcom" data-date="2013-10-02-00:00" class="story offScreenUp"
+                style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
+                <div class="attribution">
+                    <div>Unsplash</div>
+                    <div></div>
+                </div>
+                <div class="storyInfo">
+                    <div class="title">"How Logitech Protects Its Manufacturing Secrets in China"</div><img class="logo"
+                        src="https://logo.clearbit.com/logitech.com">
+                    <div class="authorArticle">Bloomberg.com</div>
+                </div>
+            </div>
+            <div data-image-id="759" data-url="https://www.reuters.com/article/us-volkswagen-emissions-idUSKBN15G3NX"
+                data-domain="boschcom" data-date="2017-02-01-00:00" class="story currentItem"
+                style="background-image: url(&quot;https://images.unsplash.com/photo-1654035843542-f03b7a6d47fc?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8Nnx8Y2xhaW1zfGVufDB8MXx8fDE3MjIzMzQ2NDZ8MA&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
+                <div class="attribution">
+                    <div>Unsplash</div>
+                    <div></div>
+                </div>
+                <div class="storyInfo">
+                    <div class="title">"VW, Robert Bosch agree to pay $1.55 billion to settle U.S. diesel claims"</div>
+                    <img class="logo" src="https://logo.clearbit.com/www.bosch.com">
+                    <div class="authorArticle">Reuters</div>
+                </div>
+            </div>
+            <div data-image-id="140"
+                data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
+                data-domain="logitech.com" data-date="2013-10-02-00:00" class="story offScreenUp"
+                style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
+                <div class="attribution">
+                    <div>Unsplash</div>
+                    <div></div>
+                </div>
+                <div class="storyInfo">
+                    <div class="title">"How Logitech Protects Its Manufacturing Secrets in China"</div><img class="logo"
+                        src="https://logo.clearbit.com/logitech.com">
+                    <div class="authorArticle">Bloomberg.com</div>
+                </div>
+            </div>
+        </div>
         <canvas id="canvas"></canvas>
         <div class="output">
             <img id="photo" alt="The screen capture will appear in this box." />
@@ -51,7 +98,7 @@
         <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
     </div>
 
-    <div id="content" class="speedcontent"></div>
+    <div id="speedcontent"></div>
     <section id="disclaimer" style="order: 100;">
         <h2>
             <div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div>
@@ -81,11 +128,28 @@
             </button>
         </div>
     </div>
-    <section id="Invisible-interaction" class="hideInSmall hide">
-        <section id="Invisible-like" onclick="vote('up')" style="--count:'0';" data-i18n="vote.like">Like</section>
-        <section id="Invisible-dislike" onclick="vote('down')" style="--count:'0';" data-i18n="vote.dislike">Dislike
-        </section>
-        <section id="Invisible-boycott" onclick="boycott()" data-i18n="vote.boycott">Boycott</section>
+    <div id="extraDisplay"></div>
+    <div id="neoGraphFilterBar"></div>
+    <div id="neoGraphTopBar">
+        <span id="neoGraphControlAnchor">
+            <button type="button" class="squareButton in" onclick="zoomByFactor(1.25)">
+            </button>
+            <button type="button" class="squareButton out" onclick="zoomByFactor(0.75)">
+            </button>
+            <button type="button" class="squareButton fit" onclick="cy.fit()">
+            </button>
+            <button type="button" class="squareButton recalc" onclick="resetNodeInternalsOnTimeoutCy(false, 0, true)">
+            </button>
+        </span>
+        <div id="neoGraphTitle">Network Graph</div>
+        <button type="button" class="squareButton" onclick="closeNetworkGraph()" id="neoGraphClose"></button>
+    </div>
+    <section id="Invisible-interaction" class="">
+        <button class="squareButton" id="Invisible-like" onclick="vote('up')"></button>
+        <button class="squareButton" id="Invisible-dislike" onclick="vote('down')"></button>
+        <button class="squareButton" id="Invisible-boycott" onclick="boycott()"> </button>
+        <button class="squareButton" id="Invisible-communications" onclick="comms()"></button>
+        <div class="Invisible-logo"></div>
     </section>
 </body>
 

@@ -8,12 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="/css/generic.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
     </style>
     <script>
+        document.write('<link href="/css/generic.css?dev=' + Date.now() + '" rel="stylesheet"/>');
         document.write('<link href="/css/neodesign.css?dev=' + Date.now() + '" rel="stylesheet"/>');
     </script>
     <title id="pageTitle"></title>
@@ -59,7 +59,7 @@
         <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
     </div>
 
-    <div id="content">
+    <div id="content" class="">
     </div>
 
     <section id="disclaimer" style="order: 100;">
@@ -74,7 +74,6 @@
         </span>
     </section>
     <section id="popArea"> </section>
-    <section id="graph-box"></section>
     <div id="graph-container">
         <div id="sigma-container"></div>
         <div id="wikipedia-frame" style="display: none">
@@ -113,7 +112,7 @@
         <button class="squareButton" id="Invisible-like" onclick="vote('up')"></button>
         <button class="squareButton" id="Invisible-dislike" onclick="vote('down')"></button>
         <button class="squareButton" id="Invisible-boycott" onclick="boycott()"> </button>
-        <button class="squareButton" id="Invisible-communications" onclick="comms()"></button>
+        <button class="squareButton" id="Invisible-communications" onclick="loginButtonAction()"></button>
         <div class="Invisible-logo"></div>
     </section>
 </body>

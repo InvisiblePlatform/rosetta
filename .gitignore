@@ -91,3 +91,4 @@ tools/mongoscripts/*.json
 tools/mongoscripts/*.csv
 websites.list
 data_collection/ror/data/*.json
+.DS_Store

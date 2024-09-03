@@ -305,7 +305,6 @@ details {
     color: var(--c-light-text);
     height: 200px;
     margin: 0 auto;
-    background-color: var(--c-background);
     z-index: 1001;
     place-self: center;
 
@@ -317,7 +316,6 @@ details {
 }
 
 ::backdrop {
-  background-color: var(--c-backgroundo);
   transition-property: background-color;
   transition-duration: var(--animation-delay);
   transition-behavior: allow-discrete;
@@ -325,7 +323,7 @@ details {
 
 @starting-style {
   ::backdrop {
-    background-color: #00000000;
+    /* background-color: #00000000; */
   }
 }
 

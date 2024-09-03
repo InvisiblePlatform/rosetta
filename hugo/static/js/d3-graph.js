@@ -1,7 +1,6 @@
 if (Url.get.debug == 'true') {
     debug = true;
 }
-let graphBox = document.getElementById("graph-box");
 const langArray = ["en", "fr", "ar", "es", "eo", "zh", "de", "hi"];
 const langPref = localStorage.preferred_language;
 const wikichoice = langArray.indexOf(langPref) ? `https://${langPref}.wikipedia.org` : "https://en.wikipedia.org";
@@ -26,15 +25,6 @@ function removeSectionsWithMatchingId() {
 }
 
 const graph = new MultiDirectedGraph();
-function blankWikiBoxes() {
-    graphBox = document.createElement("section");
-    graphBox.id = "graph-box";
-    graphBox.style.display = "none";
-    graphBox.classList.add("contentSection")
-    graphBox.textContent = "loading..."
-    document.getElementById("content")[0].appendChild(graphBox)
-}
-
 function getDocumentIndex(documentIndex, localX = 0, localY = 0, wikidataid = null) {
     loadPageCore(`/db/${documentIndex}.json`, localX, localY, wikidataid)
 }
@@ -94,7 +84,7 @@ function getCurvature(index, maxIndex) {
 }
 
 //const mistakenGroups = ["Q196600", "Q1186399", "Q1186399", "Q5398426"]
-function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidataid = null, fulllist = null) {
+function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidataid = null, fulllist = null, container = "content") {
     if (debug) console.log(`addNewFile ${jsonloc}`)
     loadJSON(jsonloc, (data) => {
         const { nodes, links } = data;
@@ -150,11 +140,13 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
                 return
             }
         });
-        getWikipediaPage(wikidataid, fulllist)
+        getWikipediaPage(wikidataid, fulllist, container)
     });
 }
+// module data format
+// { "location": "url", "source": "source", "content": "content", "preview": "preview", "sourceUrl": "sourceUrl" }
 
-function getWikipediaPage(id, fulllist = false) {
+function getWikipediaPage(id, fulllist = false, container = "content") {
     let node;
     console.log(`getWikipediaPage ${id} ${fulllist}`);
     try {
@@ -181,126 +173,106 @@ function getWikipediaPage(id, fulllist = false) {
             id = newid;
         }
     }
+    // { "location": "url", "source": "source", "content": "content", "preview": "preview", "sourceUrl": "sourceUrl" }
+
     const wikiPage = node.wiki.split('/').slice(4);
     const rootWiki = node.wiki.split('/').reverse().slice(-3)[0];
     const wikichoice = `https://${rootWiki}`;
     const requestURL = `${wikichoice}/api/rest_v1/page/html/${wikiPage}?redirect=true`;
-    const content = document.getElementById("content");
-
-    if (debug) console.log(node);
+    const content = document.getElementById(container);
+    const wikiPageModuleObject = {
+        location: `wikipage/${wikiPage}`, 
+        source: wikiPage,
+        content: undefined,
+        preview: undefined,
+        sourceUrl: "wikiurl", // full url 
+    }
+    const wikiCardModuleObject = {
+        location: `wikicard/${wikiPage}`, 
+        source: wikiPage, 
+        content: undefined,
+        preview: undefined,
+        sourceUrl: "wikiurl", // full url 
+    }
     if (wikiPage[0]) {
-        const wikicardframe = document.getElementById("wikipedia-infocard-frame") || document.createElement("section");
-        const wikifirstframe = document.getElementById("wikipedia-first-frame") || document.createElement("section");
+        const wikicardframe = document.createElement("section");
+        const wikifirstframe = document.createElement("section");
         if (debug) console.log(wikiPage);
         if (debug) console.log(requestURL);
         fetch(requestURL, {
             headers: { 'Api-User-Agent': "admin@invisible-voice.com" },
             mode: 'cors',
         }).then(response => response.text()).then(data => {
-            wikicardframe.id = "wikipedia-infocard-frame";
-            wikicardframe.classList.add("contentSection");
-            wikifirstframe.id = "wikipedia-first-frame";
-            wikifirstframe.classList.add("contentSection");
             const tempObj = document.createElement("div");
             tempObj.innerHTML = data;
             const tempElement = tempObj.getElementsByClassName("infobox")[0];
-            wikicardframe.innerHTML = "";
             let skipProfileCard = false;
             if (tempElement == undefined) {
                 skipProfileCard = true;
             } else {
                 wikicardframe.appendChild(tempElement);
             }
-            const tagsToRemove = ["link", "meta", "base", "title", "script", "style", "sup", "caption"];
-            tagsToRemove.forEach(tag => {
-                while (tempObj.getElementsByTagName(tag).length > 0) {
-                    tempObj.getElementsByTagName(tag)[0].remove();
-                }
-                if (tempElement != undefined) {
-                    while (tempElement.getElementsByTagName(tag).length > 0) {
-                        tempElement.getElementsByTagName(tag)[0].remove();
-                    }
-                }
-            });
+
+            const pageTitle = tempObj.querySelector("title").innerText
+            //wikiCardModuleObject.source = pageTitle;
+            //wikiPageModuleObject.source = pageTitle;
+            const queriesToRemove = ["link", "meta", "base", "title", "script", "style", "sup", "caption", ".thumb", ".tright", ".tleft", ".hatnote", ".nomobile"].join(", ");
+            tempObj.querySelectorAll(queriesToRemove).forEach((e) => { e.remove() })
+            if (!skipProfileCard) {
+            tempElement.querySelectorAll(queriesToRemove).forEach((e) => { e.remove() })
+            }
             const tagsToRemoveEmpties = ["p", "div"];
-            tagsToRemoveEmpties.forEach(tag => {
-                const elements = tempObj.getElementsByTagName(tag);
-                Array.from(elements).forEach((element) => {
-                    if (element.innerText.trim() === "") element.remove();
-                });
-            });
-
-            const classesToRemove = ["thumb", "tright", "tleft", "hatnote", "nomobile"];
-            classesToRemove.forEach((classToRemove) => {
-                const elements = tempObj.getElementsByClassName(classToRemove);
-                Array.from(elements).forEach((element) => {
-                    element.remove();
-                });
-            });
-
+            tempObj.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove()})
+            if (!skipProfileCard) tempElement.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove()})
             // We need to make all the href's absolute so they work, accounting for ./
             // we have to check via the attributes because the direct hrefs get rewritten
-            const allLinks = tempObj.getElementsByTagName("a");
-            Array.from(allLinks).forEach((link) => {
-                if (link.attributes.href.value.startsWith("/")) {
-                    link.attributes.href.value = `${wikichoice}${link.attributes.href.value}`;
-                }
-                if (link.attributes.href.value.startsWith("./")) {
-                    link.attributes.href.value = `${wikichoice}${link.attributes.href.value.slice(1)}`;
-                }
-            });
 
+            tempObj.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}`})
+            tempObj.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}`})
 
-
-            if (debug) console.log(tempObj);
-            wikifirstframe.innerHTML = "";
+            if (!skipProfileCard) {
+            tempElement.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}`})
+            tempElement.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}`})
+            }
             wikifirstframe.appendChild(tempObj);
 
             let firstHeader = "Company Info";
             let firstContent = "No data available";
-            try {
+            if (!skipProfileCard){
                 // I need to get the data from the first row of infobox
                 const infoboxRows = wikicardframe.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
                 const infoboxData = [];
                 Array.from(infoboxRows).forEach((row) => {
+                    if (infoboxData.length > 0 ) return
                     const rowTitle = row.getElementsByTagName("th")[0];
                     const rowContent = row.getElementsByTagName("td")[0];
                     if (rowTitle && rowContent) {
-                        infoboxData.push([rowTitle.innerText, rowContent.innerText]);
+                        if (!rowContent.children[0].classList.contains("plainlist"))
+                            infoboxData.push([rowTitle.innerText, rowContent.innerText]);
                     }
                 });
 
                 firstHeader = infoboxData[0][0];
                 firstContent = infoboxData[0][1];
-
-            } catch (e) {
-                console.log(e)
             }
 
+            firstFrameFirstP = wikifirstframe.querySelector("section[data-mw-section-id]").children[0].innerText
 
-            wikifirstframe.innerHTML = wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
-            const cardVars = ['w.companyinfo', 'profile-card', "Company Info", 'genericText', wikicardframe.innerHTML, firstHeader, firstContent];
-            const wikiVars = ['w.wikipedia', 'company-info', "Wikipedia", 'genericText', wikifirstframe.innerHTML, firstHeader, firstContent];
             const fullWikiUrl = `${wikichoice}/wiki/${wikiPage}`;
-            [cardVars, wikiVars].forEach((itemArray) => {
-                const tempEl = `<details><summary>
-                <h2 class='sectionTitle' id='${itemArray[1]}' data-i18n='${itemArray[0]}'>${itemArray[2]}</h2>
-                <div class="previewContainer">
-                <div class='previewScore previewScoreWithTitle' style='--title:"${itemArray[5]}";'>${itemArray[6]}</div>
-                </div>
-                </summary>
-                <div class="${itemArray[3]}"> ${itemArray[4]}</div>
-                <button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>
-                <a href='${fullWikiUrl}' target='_blank' class='source scrollAnchor'>WIKIPEDIA</a></details>`.replace(/<img/g, '<img loading=lazy ');
-                if (itemArray[1] == "profile-card" && !skipProfileCard) {
-                    wikicardframe.innerHTML = tempEl;
-                    content.appendChild(wikicardframe);
-                }
-                if (itemArray[1] == "company-info") {
-                    wikifirstframe.innerHTML = tempEl;
-                    content.appendChild(wikifirstframe);
-                }
-            });
+            wikiCardModuleObject.preview =`<div class='previewScore previewScoreWithTitle' style='--title:"${firstHeader}";'>${firstContent}</div>` 
+            wikiCardModuleObject.content = wikicardframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
+            wikiCardModuleObject.sourceUrl = fullWikiUrl
+            wikiCardModuleObject.source = pageTitle
+
+            wikiPageModuleObject.preview =`<div class='previewScore previewPG'>${firstFrameFirstP}</div>` 
+            wikiPageModuleObject.content = wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
+            wikiPageModuleObject.sourceUrl = fullWikiUrl
+            wikiPageModuleObject.source = pageTitle
+
+            wikiCardModuleObject.content +=`<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
+            wikiPageModuleObject.content +=`<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
+            createAndAddGenericModule({ type: "wikipedia-first-frame", data: wikiPageModuleObject, container })
+            createAndAddGenericModule({ type: "wikipedia-infocard-frame", data: wikiCardModuleObject, container })
             removeSectionsWithMatchingId();
             recalculateList();
         }).catch(() => {
@@ -308,12 +280,16 @@ function getWikipediaPage(id, fulllist = false) {
         });
     }
 
+    const graphBoxModuleObject = {
+        location: `graph/${id}`, // Should become graph/wid
+        source: graph.getNodeAttributes(id).label,
+        content: undefined,
+        preview: undefined,
+        sourceUrl: `https://www.wikidata.org/wiki/${id}`, // full url
+    }
     const detailsObject = document.createElement("details");
     const summaryObject = document.createElement("summary");
-    summaryObject.innerHTML = `<h2 class='sectionTitle' id='graph-box-interior'>Network Graph</h2>`;
     detailsObject.appendChild(summaryObject);
-    content.appendChild(graphBox);
-    if (graphBox.style.display == "none") graphBox.style.display = "";
     const l1list = [];
     graph.forEachEdge(id, (edge, attributes, source, target, sourceAttributes, targetAttributes) => {
         if (source == id) {
@@ -336,7 +312,7 @@ function getWikipediaPage(id, fulllist = false) {
             const listItem = document.createElement('span');
             listItem.innerHTML =
                 `<div class="graphListName">${itemData.label}</div>` +
-                `<div class="graphListRel relation ${itemData.type.toLowerCase()}_of">${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</div>`;
+                `<div class="graphListRel relation ${itemData.type.toLowerCase().replace(" ","_")}_of">${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</div>`;
             list.appendChild(listItem);
             l1list_ids.push(itemData.id);
             if (forCoNameRel == '') {
@@ -346,14 +322,14 @@ function getWikipediaPage(id, fulllist = false) {
         }
     }
 
-    summaryObject.appendChild(list);
+    graphBoxModuleObject.preview = list.outerHTML;
+
     // Need a list that includes total number of connections, types of connections, and number of subsidiaries in the graph
     // we are going to reuse the dataToTable function so things need to be formatted [[label, translation, value, outOf]...]
     // since we have no outOf we will just set that false, translation will be labels but with spaces replaced with underscores
     const dataForTable = [];
     const connectionTypes = [];
     const connectionCount = [];
-    const connectionSubs = [];
 
     graph.forEachEdge((edge, attributes, source, target, sourceAttributes, targetAttributes) => {
         const type = attributes.label.replace(" of", "");
@@ -372,19 +348,10 @@ function getWikipediaPage(id, fulllist = false) {
         dataForTable.push([type, type.replaceAll(" ", "_"), connectionCount[index], false]);
     }
     );
-    const tableContainer = document.createElement("div");
-    detailsObject.appendChild(tableContainer);
-    tableContainer.outerHTML = dataToTable(dataForTable, false, "connections");
+    graphBoxModuleObject.content = dataToTable(dataForTable, false, "connections");
+    graphBoxModuleObject.content += buttonTemplate("graphButton", `loadNetworkGraph(${wikidataid})`, false, `<div data-i18n="w.openGraph">Open Graph</div>`);
 
-    // Need to add a button to open the graph
-    const graphButton = document.createElement("button");
-    detailsObject.appendChild(graphButton);
-    graphButton.outerHTML = buttonTemplate("graphButton", `loadNetworkGraph(${wikidataid})`, false, `<div data-i18n="w.openGraph">Open Graph</div>`);
-    graphBox.appendChild(detailsObject);
-    // we need to add the interactionBar too
-    const moduleClose = document.createElement("div");
-    graphBox.appendChild(moduleClose);
-    moduleClose.outerHTML = moduleCloseString(false, "graph-box");
+    createAndAddGenericModule({ type: "graph-box", data: graphBoxModuleObject, container });
     recalculateList();
 }
 

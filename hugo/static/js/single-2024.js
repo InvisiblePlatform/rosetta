@@ -27,6 +27,7 @@ var forCoNameRel = '';
 
 let firstShot = false;
 const localModules = ["political", "social"]
+let disabledModules = ["graph-box"];
 
 const keyconversion = {
     "b": 'bcorp',
@@ -54,18 +55,18 @@ const ratingColorArray = {
 };
 
 const tabable = [
-    "opensec", "mbfc", "glassdoor", "goodonyou", "yahoo", "tosdr-link", "bcorp", "lobbyeu", "wbm",
+    "opensecrets", "mbfc", "glassdoor", "goodonyou", "yahoo", "tosdrlink", "bcorp", "lobbyeu", "wbm",
 ]
 
 const translate = {
     "cta": "cta.title",
     "wikipedia-first-frame": "w.wikipedia",
-    "networkgraph": "graph.title",
+    "graph-box": "graph.title",
     "wikipedia-infocard-frame": "w.companyinfo",
     "mbfc": "mbfc.title",
-    "trust-pilot": "trustpilot.title",
+    "trustpilot": "trustpilot.title",
     "yahoo": "esg.title",
-    "opensec": "os.title",
+    "opensecrets": "os.title",
     "carbon": "carbon.title",
     "lobbyeu": "lb.title",
     "post": "user.moduletitle",
@@ -91,12 +92,14 @@ const translate = {
     "politicali-wikidata": "wikidata.polideology",
     "goodonyou": "goy.section-title",
     "bcorp": "bcorp.title",
-    "tosdr-link": "tos.title",
+    "tosdr": "tos.title",
     "glassdoor": "glassdoor.title",
-    "similar-site-wrapper": "similar.title",
+    "similar": "similar.title",
     "social-wikidata": "w.socialmedia",
-    "trust-scam": "trustsc.title",
+    "trustscore": "trustsc.title",
     "wbm": "wbm.title",
+    "wikipedia-first-frame": "wikipedia.title",
+    "wikipedia-infocard-frame": "wikipedia.infocard",
 };
 
 const industryAverageData = {};
@@ -177,7 +180,7 @@ const industryAverageLookup = {
             "labelAffix": "Average Lobbyists not in Government for"
         },
     ],
-    "trust-pilot": [
+    "trustpilot": [
         {
             "file": "trustpilot_bottom_level_category_averages.json",
             "discriminator": "category",
@@ -231,6 +234,8 @@ const defaultUserPreferences = {
         ]
     },
 };
+
+const splitModules = ["wbm"]
 
 const defaultSettingsState = {
     "preferred_language": "en",
@@ -304,24 +309,25 @@ function setSearchParam(key, value) {
     window.history.replaceState(null, null, url.toString());
 }
 
-function manualSetup(site) {
+function manualSetup(site, container = 'content') {
     backButton.classList.toggle("hide", site === '' || site === undefined);
     setSearchParam("site", site);
-    pageSetup();
+    pageSetup(container);
 }
 
-function pageSetup() {
+function pageSetup(container = 'content') {
     pageLocation = Url.get.site ? Url.get.site : false;
+    if (isSpeedcam) container = 'speedcontent'
     addToolsSection()
-    showDisclaimer()
-    showInteractions()
+    if (!isSpeedcam) showDisclaimer()
+    if (!isSpeedcam) showInteractions()
     resetSettings(false)
     fetchIndustryAverageData()
     if (Url.get.site) {
-        loadPageCore(pageLocation)
+        loadPageCore(pageLocation, false, false, false, container)
         addSettings()
         // if there are settings in local storage, load them
-        if (localStorage.getItem("settingsState")) {
+        if (!isSpeedcam && localStorage.getItem("settingsState")) {
             console.log("loading settings from local storage")
             settingsState = JSON.parse(localStorage.getItem("settingsState"));
             settingsStateApply(settingsState);
@@ -332,7 +338,7 @@ function pageSetup() {
         notificationsDraw();
         forceAllLinksNewTab();
         translator.translatePageTo();
-        recalculateList();
+        recalculateList(container);
         send_message("IVSettingsReq", true);
     }
     translator.translatePageTo();
@@ -465,6 +471,22 @@ function settingsStateChange() {
     settingsStateApply(settingsState)
 }
 
+function moduleRender({ type, container }) {
+    if (splitModules.includes(type)) {
+        for (const item in currentModuleState[container].modules[type]) {
+            if (currentModuleState[container].modules[type][item].content != '') {
+                newData = structuredClone(currentModuleState[container].modules[type][item])
+                newData._split = type
+                createAndAddGenericModule({ type: `${item.replace(/\//g, '_')}`, container, data: newData })
+            }
+        }
+        return
+    }
+    moduleStartString({ type, container })
+    moduleCloseString({ type, container })
+    recalculateList()
+}
+
 function registerLanguageToggle() {
     if (isSpeedcam) return;
     const select = document.getElementById("langselect");
@@ -512,7 +534,7 @@ const scrollIntoPlace = async () => {
 }
 
 const dataObjectDictionary = {};
-const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null) => {
+const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null, container = 'content', skipCY = false) => {
     if (coreFile === false) return;
     coreFile = coreFile.split("?")[0]
     coreFile = coreFile.startsWith("/db/") ? coreFile : `/db/${coreFile}`;
@@ -522,7 +544,8 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
         let wikidataIdList = [];
         debugLogging("loadPageCore", coreFile)
         let appendTimeout = 0;
-        const content = document.getElementById("content");
+        console.log(container)
+        const content = document.getElementById(container);
         if (wikidataid) {
             explode(true)
             appendTimeout = 1000;
@@ -555,10 +578,12 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
                     pageHash = connections.split('/')[2].replace('.json', '');
                     if (Url.get.vote == 'true') voteLoad();
                     if (addNewFilesToGraph) {
-                        addNewFile(`${dataURL}${connections}`, false, localX, localY, wikidataid, fulllist);
+                        addNewFile(`${dataURL}${connections}`, false, localX, localY, wikidataid, fulllist, container);
                     } else {
-                        startCY(`${dataURL}${connections}`, wikidataid);
-                        addNewFile(`${dataURL}${connections}`, true, localX, localY, wikidataid, fulllist);
+                        if (!skipCY) {
+                            startCY(`${dataURL}${connections}`, wikidataid);
+                        }
+                        addNewFile(`${dataURL}${connections}`, true, localX, localY, wikidataid, fulllist, container);
                         addNewFilesToGraph = true;
                     }
                 });
@@ -578,21 +603,17 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
                 core.sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
             }
 
-
+            console.log(core)
             await Promise.all(core.map(async (module) => {
-                if (module.url === 'local') {
-                    const string = await addLocalModule(module.type, module.data);
-                    localString += string;
-                } else {
-                    const string = await addModule(module.type, `${dataURL}/ds/${module.url}`);
-                    localString += string;
-                }
+                const urlString = (module.url === 'local') ? false : `${dataURL}/ds/${module.url}`;
+                await addModule(container, module.type, module.data, urlString);
             }));
 
-            content.innerHTML += localString
-            arrangeForTabs("content", "tabContainer", "tabContent", "tabButtonArea", tabbedContent);
-            arrangePreviews(currentModuleState, "_preview");
+            for (const type in currentModuleState[container].modules) {
+                moduleRender({ type, container })
+            }
 
+            content.innerHTML += localString;
             if (!Url.get.exhibit && !isSpeedcam) {
                 //    content.innerHTML += `
                 //    <section id="carbon" class="contentSection overridden">
@@ -606,7 +627,6 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
             }
             recalculateList()
             translator.translatePageTo()
-            unexplode()
         }, appendTimeout)
     } catch (e) {
         console.error(e)
@@ -639,32 +659,32 @@ function arrangeForTabs(container = "content", tabContainerClass = "tabContainer
 }
 
 const sourceStringLookup = {
-    "cta": "cta.source",
-    "wikipedia-first-frame": "wikipedia.source",
-    "graph-box": "wikidata.source",
-    "wikipedia-infocard-frame": "wikipedia.source",
-    "mbfc": "mbfc.source",
-    "trust-pilot": "trustpilot.source",
-    "yahoo": "esg.source",
-    "opensec": "os.source",
-    "lobbyeu": "lb.source",
+    "cta": "cta.title",
+    "wikipedia-first-frame": "wikipedia.title",
+    "graph-box": "wikidata.title",
+    "wikipedia-infocard-frame": "wikipedia.title",
+    "mbfc": "mbfc.title",
+    "trustpilot": "trustpilot.title",
+    "yahoo": "esg.title",
+    "opensecrets": "os.title",
+    "lobbyeu": "lb.title",
     // "post": false,
-    "political-wikidata": "wikidata.source",
-    "politicali-wikidata": "wikidata.source",
-    "goodonyou": "goy.source",
-    "bcorp": "bcorp.source",
-    "tosdr-link": "tos.source",
-    "glassdoor": "glassdoor.source",
-    "similar-site-wrapper": "similar.source",
-    "social-wikidata": "wikidata.source",
-    "trust-scam": "trustsc.source",
-    "wbm": "wbm.source",
+    "political-wikidata": "wikidata.title",
+    "politicali-wikidata": "wikidata.title",
+    "goodonyou": "goy.title",
+    "bcorp": "bcorp.title",
+    "tosdr": "tos.title",
+    "glassdoor": "glassdoor.title",
+    "similar": "similar.title",
+    "social-wikidata": "wikidata.title",
+    "trustscore": "trustsc.title",
+    "wbm": "wbm.title",
 }
 
 
 function arrangePreviews(state = currentModuleState, previewAccess = "_preview") {
     for (const item in state) {
-        const itemElement = document.getElementById(item)
+        const itemElement = document.querySelector(`[data-module = "${item}"]`)
         if (state[item].hasOwnProperty(previewAccess)) {
             // if the preview is a string, it's a single module, if it's an object, it's a multi module
             // so add each preview seperately and add an id to the div inside, so it can be targeted when switching tabs
@@ -812,6 +832,9 @@ const types = {
     "trustscore": { "id": "trust-scam", "label": "Trust Scam", "translate": "trustsc.title", "subname": true },
     "wbm": { "id": "wbm", "label": "WBM", "translate": "wbm.title", "subname": true },
     "yahoo": { "id": "yahoo", "label": "Esg Rating", "translate": "esg.title", "subname": true },
+    "wikipedia-first-frame": { "id": "wikipedia-first-frame", "label": "Wikipedia", "translate": "w.wikipedia", "subname": true },
+    "wikipedia-infocard-frame": { "id": "wikipedia-infocard-frame", "label": "Wikipedia", "translate": "w.companyinfo", "subname": true },
+    "graph-box": { "id": "graph-box", "label": "Network Graph", "translate": "graph.title", "subname": true },
 }
 
 function tableRow(...lists) {
@@ -832,10 +855,7 @@ function buttonTemplate(id, functionName, interaction = false, replacementDiv = 
     const functionString = functionName.match(/[()]/) ? `${functionName}` : `${functionName}()`;
     return `<button type="button" ${classString} onclick="${functionString}" ${idString} >${replacementDiv}</button>`;
 }
-const opsTd = (r) => `<td style="--size: calc(${r.percent.replace("%", "")}/100);">
-    <span class="data">${r.entity}</span><span class="tooltip">${r.entity}<br>(${r.amount})</span></td>`;
-const hoverTitleString = (trans) => `<div class="squareButton hovertext hideInSmall"><div>?</div></div>
-            <div class="hidetext"><h3 data-i18n="title.${trans}"> </h3><p data-i18n="desc.${trans}"></p></div>`
+
 function voteBox(location_str, dataObj, styles = false) {
     classString = styles ? `class="${styles}"` : '';
     const { voteStatus, up_total, down_total, comment_total } = dataObj;
@@ -861,12 +881,14 @@ const boldP = (bold, text, styles = false) => {
 
 var localString = ''
 
-function tabChange(tab, id) {
-    const tabContent = document.getElementById(id).getElementsByClassName("tabContent");
-    const tabButtons = document.getElementById(id).getElementsByClassName("tabButton");
-    const tabButtonArea = document.getElementById(id).getElementsByClassName("tabButtonArea")[0];
-    const tabPreviewContent = document.getElementById(id).getElementsByClassName("previewScore");
-    const currentlyActive = tabButtonArea.getElementsByClassName("active")[0].getAttribute("data-tab");
+function tabChange(tab, container, type) {
+    const contain = document.getElementById(container)
+    const ourModule = contain.querySelector(`[data-module='${type}']`)
+    const tabContent = ourModule.getElementsByClassName("tabContent");
+    const tabButtons = ourModule.getElementsByClassName("tabButton");
+    const tabButtonArea = ourModule.getElementsByClassName("tabButtonArea")[0];
+    const tabPreviewContent = ourModule.getElementsByClassName("previewScore");
+    const currentlyActive = ourModule.dataset.tab;
 
     for (let i = 0; i < tabContent.length; i++) {
         if (i == tab) {
@@ -887,11 +909,11 @@ function tabChange(tab, id) {
             }
             // we need to set the subname of the previewContainer to the subname of the tabButton, getting the company count from the previewContainer
             const subname = tabButtons[i].innerText;
-            document.getElementById(id).getElementsByClassName("previewContainer")[0].style.setProperty("--subnamePreview", `'(${subname}`);
+            ourModule.getElementsByClassName("previewContainer")[0].style.setProperty("--subnamePreview", `'(${subname}`);
 
             // we need to update the data-location of the main element to the data-location of the tabContent
-            document.getElementById(id).setAttribute("data-location", tabContent[i].getAttribute("data-location"));
-            document.getElementById(id).getElementsByClassName("sourceAnchor")[0].setAttribute("href", tabContent[i].getAttribute("data-source-url"));
+            ourModule.setAttribute("data-location", tabContent[i].getAttribute("data-location"));
+            ourModule.getElementsByClassName("sourceAnchor")[0].setAttribute("href", tabContent[i].getAttribute("data-source-url"));
         } else {
             tabContent[i].style.display = "none";
             tabContent[i].classList.remove("activeRight");
@@ -912,77 +934,174 @@ function tabChange(tab, id) {
     }
 }
 
-function sectionTitleString(i18n, label, id, dataLoc, subname = false, tab = false) {
-    const subnameString = subname ? `<div class='subname'>(${subname})</div>` : '';
-    const previewContainer = `<div class="previewContainer"></div>`;
-    const noTabDataLoc = tab === false ? dataLoc : '';
-    const sectionHeaderString = `<section class="contentSection" ${noTabDataLoc} id='${id}'>
-    <details><summary>
-        <h2 class="sectionTitle" data-i18n="${i18n}">${label}</h2>${previewContainer}`;
 
-    if (tab !== false) {
-        return tab == 0 ? `${sectionHeaderString}${hoverTitleString(id)}<div class="tabButtonArea"></div></summary><div class="tabContainer">
-                <div class="tabContent activeLeft" ${dataLoc} data-tab="0" data-tabLabel="${subname.replace("www.", "")}" style="display: grid;">${buttonString}`
-            : `<div class="tabContent inactiveRight" ${dataLoc} data-tab="${tab}" data-tabLabel="${subname.replace("www.", "")}" style="display: none;">${buttonString}`;
+
+function moduleStartString({ type, container }) {
+    const data = currentModuleState[container].modules[type];
+    let i18n = '';
+    if (types.hasOwnProperty(type)) {
+        i18n = types[type].translate;
+    } else {
+        i18n = data[Object.keys(data)[0]].data.trans
     }
-    return `${sectionHeaderString}${subnameString}${hoverTitleString(id)}`
+    const label = toTitleCase(type);
+    let dataLoc = ''; let subname = ''; let companyCount = 0;
+    if (data) {
+        dataLoc = Object.keys(data)[0];
+        subname = data[Object.keys(data)[0]].data.source;
+        companyCount = (type != "wbm") ? Object.keys(data).length : false;
+    } else {
+        return false; // we dont want to create a section if there is no data
+    }
+    if (Object.keys(data).length > 1) tabbed = true;
+    let contentSection = document.createElement("section");
+    contentSection.classList.add("contentSection");
+    contentSection.setAttribute("data-location", dataLoc);
+    contentSection.setAttribute("data-module", type);
+    if (data[Object.keys(data)[0]]._split != undefined) {
+        contentSection.setAttribute("data-split-from", data[Object.keys(data)[0]]._split);
+    }
+    let details = document.createElement("details");
+    let summary = document.createElement("summary");
+    let h2 = document.createElement("h2");
+    h2.classList.add("sectionTitle");
+    h2.setAttribute("data-i18n", i18n);
+    h2.innerText = label;
+    summary.appendChild(h2);
 
+    let previewContainer = document.createElement("div");
+    previewContainer.classList.add("previewContainer");
+    if (types.hasOwnProperty(type) && types[type].subname) {
+        previewContainer.style.setProperty("--subnamePreview", companyCount > 1 ? `"(${subname}) + ${companyCount}"` : `"(${subname})"`);
+        //previewContainer.style.setProperty("--companyCount", companyCount > 1 ? `") +${companyCount}"` : '")"');
+    } else if (data[Object.keys(data)[0]].data.subname) {
+        previewContainer.style.setProperty("--subnamePreview", `"(${data[Object.keys(data)[0]].data.subname})"`);
+    }
+    for (const preview in data) {
+        previewContainer.innerHTML += data[preview].preview;
+    }
+    summary.appendChild(previewContainer);
+    details.appendChild(summary);
+    let tabbedContentContainer = document.createElement("div");
+    if (companyCount > 1) {
+        let tabButtonArea = document.createElement("div");
+        tabButtonArea.classList.add("tabButtonArea");
+        contentSection.dataset.tab = 0;
+        previewContainer.classList.add("tabbed")
+        currentTab = 0;
+        for (const child of previewContainer.children) {
+            if (currentTab == 0) {
+                child.style.display = "grid";
+                child.classList.add("active");
+                child.classList.add("activeLeft");
+                child.dataset.tab = currentTab;
+            } else {
+                child.style.display = "none";
+                child.classList.add("inactiveRight");
+                child.dataset.tab = currentTab;
+            }
+            let tabButton = document.createElement("button");
+            tabButton.classList.add("tabButton");
+            tabButton.setAttribute("data-tab", currentTab);
+            tabButton.setAttribute("onclick", `tabChange("${currentTab}", "${container}", "${type}")`);
+            if (currentTab == 0) tabButton.classList.add("active")
+            tabButton.innerText = data[Object.keys(data)[currentTab]].data.source;
+            tabButtonArea.appendChild(tabButton);
+
+            let tabContent = document.createElement("div");
+            tabContent.classList.add("tabContent");
+            if (currentTab == 0) {
+                tabContent.classList.add("activeLeft")
+                tabContent.style.setProperty("display", "grid")
+            } else {
+                tabContent.classList.add("inactiveRight")
+                tabContent.style.setProperty("display", "none")
+            }
+
+            tabContent.setAttribute("data-location", Object.keys(data)[currentTab]);
+            if (data[Object.keys(data)[currentTab]].sourceUrl != undefined) {
+                tabContent.setAttribute("data-source-url", data[Object.keys(data)[currentTab]].sourceUrl);
+            } else {
+                sourceUrl = previewContainer.getElementsByClassName("previewScore")[currentTab].getAttribute("data-source-url");
+                tabContent.setAttribute("data-source-url", sourceUrl);
+            }
+            tabContent.innerHTML = data[Object.keys(data)[currentTab]].content;
+            tabContent.dataset.tabLabel = Object.keys(data)[currentTab];
+            tabbedContentContainer.appendChild(tabContent);
+
+            currentTab++;
+        }
+        summary.appendChild(tabButtonArea);
+    } else {
+        let tabbedContent = document.createElement("div");
+        tabbedContent.classList.add("tabContent");
+        tabbedContent.innerHTML = data[Object.keys(data)[0]].content;
+        tabbedContent.setAttribute("data-location", data[Object.keys(data)[0]].dataLocation);
+        tabbedContent.setAttribute("data-source-url", data[Object.keys(data)[0]].sourceUrl);
+        tabbedContentContainer.appendChild(tabbedContent);
+    }
+    details.appendChild(tabbedContentContainer);
+    details.addEventListener("toggle", (ev) => { console.log(ev); recalculateList() });
+    contentSection.appendChild(details);
+    document.getElementById(container).appendChild(contentSection);
+    //let fakeButtonEl = document.createElement("div");
+    //fakeButtonEl.outerHTML = `<div class="squareButton hovertext hideInSmall"><div>?</div></div>
+    //        <div class="hidetext"><h3 data-i18n="title.${type}"> </h3><p data-i18n="desc.${type}"></p></div>`
+    // summary.appendChild(fakeButtonEl);
 }
 
-function moduleStartString(id, i18n, label, subname = false, scoreText = false, scoreClass = false, dataLoc = false, tab = false) {
-    scoreClassString = scoreClass ? `${scoreClass}` : 'scoreText';
-    scoreTextString = scoreText ? `<div class="${scoreClass}">${scoreText}` : '';
-    dataLocationString = dataLoc ? `data-location="${dataLoc}"` : '';
-    return `${sectionTitleString(i18n = i18n, label = label, id = id, dataLoc = dataLocationString, subname = subname, tab = tab)}
-              ${scoreTextString}</summary>`;
+function createAndAddGenericModule({ type, container, data }) {
+    console.log(type, container, data)
+    // This function is used to create a generic module, it will create the module, add the preview and the source
+    // it will also add the module to the currentModuleState object
+    // The data object should be in the following format
+    // { "location": "url", "source": "source", "content": "content", "preview": "preview", "sourceUrl": "sourceUrl" }
+    if (!currentModuleState[container].modules.hasOwnProperty(type)) {
+        currentModuleState[container].modules[type] = {};
+    }
+    if (data.location == undefined) {
+        data.location = data.data.location;
+    }
+    if (data.data !== undefined) {
+        currentModuleState[container].modules[type][data.location] = data
+    } else {
+        currentModuleState[container].modules[type][data.location] = {
+            "data": data, "preview": data.preview, "content": data.content,
+            "sourceUrl": data.sourceUrl
+        };
+    }
+
+    moduleRender({type, container})
+    recalculateList(container)
 }
+
 
 const sourceStringClose = (href, text) => `</div></div><a target="_blank" class="hideInSmall source" href='${href}'>${text}</a>`;
 
-function moduleCloseString(includeInteractions = false, id = false) {
-    const sourceString = `<a target="_blank" class="hideInSmall source sourceAnchor">SOURCE</a>`;
-    const interactionsString = includeInteractions ? `
+function moduleCloseString({ type, container }) {
+    const contentSection = document.getElementById(container).querySelector(`[data-module="${type}"]`);
+    const sourceUrl = currentModuleState[container].modules[type][Object.keys(currentModuleState[container].modules[type])[0]].sourceUrl;
+    const sourceText = sourceStringLookup[type];
+    const interactionBar = document.createElement("div");
+    interactionBar.classList.add("interactionBar");
+    const interactionButtons = document.createElement("div");
+    interactionButtons.classList.add("interactionButtons");
+    interactionButtons.innerHTML = `
         ${buttonTemplate("commentButton", "commentButtonAction", true)}
         ${buttonTemplate("likeButton", "likeModule", true)}
         ${buttonTemplate("dislikeButton", "dislikeModule", true)}
-        ${buttonTemplate("aboutButton", "aboutButtonAction", true)}
-         ` : '';
-    const interactionBar = `
-    <button class='squareButton scrollToTop interactionButton' style="anchor-name:--${id}-interactions;" onclick='interact(this)'></button>
-    <div class="interactionAnchor"style="position-anchor:--${id}-interactions;"></div>
-    <div class="interactionBar" >${interactionsString}${sourceString}</div>`;
-    return `</details>${interactionBar}</section>`;
-}
-
-function notPieString(data, trans = false, scoreClass = false, icon = false, outOf = false, reviews = false) {
-    transString = trans == false ? '' : ` data-i18n="${trans}"`;
-    scoreClassString = scoreClass == false ? 'biaslink' : scoreClass;
-    iconString = icon == false ? '' : `<img class="iconclass" src="${icon}">`;
-    ratingsString = reviews == false ? '' : `<div class="ratingCount">${reviews} <span data-i18n="glassdoor.reviews"></span></div>`;
-    outOfString = outOf == false ? '' : ` style="--outOf:'${outOf}';" `;
-    return `<div class="notPieContainer"><div>${iconString}
-        <score class="${scoreClassString}"${transString}${outOfString}>${data}</score>
-        ${ratingsString}
-        </div>
-		</div>`
-}
-function pieString(data, trans = false, scoreClass = false, percent = false, outOf = false, reviews = false, pieColour = false, inline = false) {
-    transString = trans == false ? '' : ` data-i18n="${trans}"`;
-
-    scoreClassString = scoreClass == false ? 'biaslink' : scoreClass
-    ratingsString = reviews == false ? '' : `<div class="ratingCount">${reviews} <span data-i18n="glassdoor.reviews"></span></div>`;
-    percentString = percent == false ?
-        '' : `<div class="pie animate" style="--c:var(--chart-fore);--p:${percent};"></div>`;
-    outOfString = outOf == false ? '' : ` style="--outOf:'${outOf}';" `;
-    containerClass = (inline) ? "inlinePieContainer" : "pieContainer";
-    pieColourString = pieColour == false ? '' : ` style='--c:${pieColour};'`;
-    return `<div class="${containerClass}"><div>
-        <div class="pie"${pieColourString}></div>
-        ${percentString}
-        <score class="${scoreClassString}"${transString}${outOfString}>${data}</score>
-        ${ratingsString}
-        </div>
-		</div>`
+        ${buttonTemplate("aboutButton", "aboutButtonAction", true)}`
+    interactionBar.appendChild(interactionButtons);
+    const sourceLink = document.createElement("a");
+    sourceLink.classList.add("hideInSmall");
+    sourceLink.classList.add("source");
+    sourceLink.classList.add("sourceAnchor");
+    sourceLink.setAttribute("href", sourceUrl);
+    sourceLink.setAttribute("target", "_blank");
+    sourceLink.setAttribute("data-i18n", sourceStringLookup[type]);
+    sourceLink.innerText = sourceText;
+    interactionBar.appendChild(sourceLink);
+    contentSection.appendChild(interactionBar);
 }
 
 function dataToTable(data, ratingOutOf = false, tranlationModuleTag = '', hyperlink = false) {
@@ -1526,9 +1645,6 @@ function addToolsSection() {
 
     if (isSpeedcam || Url.get.exhibit) {
         body.parentNode.setAttribute("style", "--scroll-width: 0px; ");
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content > .contentSection').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#titlebar').style.backdropFilter = blur;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#carbon').style.backdropFilter = blur;
         closeButton.style.visibility = "hidden";
         settingsButton.style.visibility = "hidden";
         debugLogging("exhibitMode");
@@ -1542,7 +1658,7 @@ function addToolsSection() {
         body.classList.add("optionsMode");
     }
 
-    if (!Url.get.app || !isSpeedcam) {
+    if (!Url.get.app && !isSpeedcam) {
         backButton.classList.add("show");
         closeButton.classList.add("closeExtention");
         document.getElementById("content").classList.add("desktop");
@@ -1557,30 +1673,17 @@ function addToolsSection() {
     explode();
 }
 
-function addToModulePreview(moduleId, previewString, miniMode = false) {
-    if (miniMode) {
-        if (currentMiniState[moduleId]._miniPreview == undefined) {
-            currentMiniState[moduleId]._miniPreview = previewString;
-            return
-        } else if (typeof currentMiniState[moduleId]._miniPreview == "string") {
-            currentMiniState[moduleId]._miniPreview = [currentMiniState[moduleId]._miniPreview, previewString];
-            return
-        } else if (typeof currentMiniState[moduleId]._miniPreview == "object") {
-            currentMiniState[moduleId]._miniPreview.push(previewString);
-            return
-        }
-        return;
+function addToModulePreview(container, moduleId, location, previewString) {
+    try {
+        currentModuleState[container].modules[moduleId][location].preview = previewString;
+    } catch (e) {
+        console.log(container, moduleId, location, previewString);
+        console.log(e);
     }
-    if (currentModuleState[moduleId]._preview == undefined) {
-        currentModuleState[moduleId]._preview = previewString;
-        return
-    } else if (typeof currentModuleState[moduleId]._preview == "string") {
-        currentModuleState[moduleId]._preview = [currentModuleState[moduleId]._preview, previewString];
-        return
-    } else if (typeof currentModuleState[moduleId]._preview == "object") {
-        currentModuleState[moduleId]._preview.push(previewString);
-        return
-    }
+}
+
+function addToModuleContent(container, moduleId, location, contentString) {
+    currentModuleState[container].modules[moduleId][location].content = contentString;
 }
 
 function checkAndSetModuleStateData(moduleId, label, data, miniMode = false) {
@@ -1668,7 +1771,6 @@ function modulePost(data, typeId, typeTranslate, typeLabel, dataURL, subname = f
     checkAndSetModuleStateData(typeId, typeLabel, data, miniMode);
     knownPosts[dataLocationString] = data;
     knownPostsByLocation[data.location] = data;
-    // ${voteBox(data.uid, data, "smallVoteBox bottomLeftOfModule hideInSmall")}
     // ${moduleCloseString(true, true, "https://assets.reveb.la/#user", data.author)}
     return `
         ${moduleStartString(id = typeId, i18n = typeTranslate, label = typeLabel, subname = subname, scoreText = false, scoreClass = false, dataLoc = dataLocationString, tab = false)}
@@ -1677,12 +1779,20 @@ function modulePost(data, typeId, typeTranslate, typeLabel, dataURL, subname = f
         </section>`;
 }
 
-function moduleOpensecrets(data, noClose = false, miniMode = false) {
-    const { cycle_year, contributions_rank, contributions_amount, lobbying_rank, bars, charts, osid, lobbycards, bill_most_code, bill_most_heading, bill_most_title, bill_most_url } = data;
+function moduleOpensecrets(container, data) {
+    const { cycle_year, contributions_rank, lobbying_amounts, contributions_amount, lobbying_rank, bars, charts, osid, lobbycards, bill_most_code, bill_most_heading, bill_most_title, bill_most_url } = data;
     let htmlString = '';
     const sourceUrl = `https://www.opensecrets.org/orgs/name/summary?id=${osid}`;
-    const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"><span class="ratingOutOf ratingText">${cycle_year}</span></div>`;
-    addToModulePreview("opensec", previewTemplate, miniMode)
+
+    let dataToPlace = undefined;
+    if (lobbying_amounts) {
+        dataToPlace = lobbying_amounts.sort((a, b) => b[-1] - a[-1])[0];
+    }
+    if (!dataToPlace) {
+        dataToPlace = cycle_year
+    }
+    const previewTemplate = `<div class='previewScore previewSecret' data-source-url="${sourceUrl}"><span class="ratingOutOf ratingText">${dataToPlace}</span></div>`;
+    addToModulePreview(container, "opensecrets", data.location, previewTemplate);
     htmlString += '<p class="centeredRow" data-i18n="os.disclaimer"></p>';
 
     const idToColour = {
@@ -1749,24 +1859,26 @@ function moduleOpensecrets(data, noClose = false, miniMode = false) {
             }
         }
     }
-    return htmlString;
-}
-
-function subModuleWbm(data, dataLocationString, miniMode = false) {
-    let htmlString = `<div class='fullBleed'> <div class=''>`;
-    const sourceUrl = "https://worldbenchmarkingalliance.org/research/"
-    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}"style="--subname:'&'">@</span></div>`;
+    addToModuleContent(container, "opensecrets", data.location, htmlString);
 }
 
 
-function moduleWbm(data, dataLocationString, miniMode = false) {
-    let htmlString = `<div class='fullBleed'> <div class=''>`;
+function moduleWbm(container, data) {
     const sourceUrl = "https://worldbenchmarkingalliance.org/research/"
     for (const module in data.modules) {
         const { file } = data.modules[module];
         const trans = file.split("_").slice(1).join("-").toLowerCase();
         const year = file.split("_")[0];
         const fileName = file.split("_").slice(1).join(" ");
+        const dataLocationString = data.location + "-" + trans;
+        const tempDataObj = structuredClone(data.modules[module])
+        tempDataObj.source = data.source;
+        tempDataObj.year = year;
+        tempDataObj.location = dataLocationString;
+        tempDataObj.sourceHref = sourceUrl;
+        tempDataObj.subname = year
+        tempDataObj.trans = "wbm." + trans;
+        addModuleToState(container, "wbm", dataLocationString, tempDataObj);
         const tableData = Object.keys(data.modules[module])
             .filter(item => !["file", "Company Scorecard", "Total Score (Raw)"].includes(item))
             .map(item => {
@@ -1776,9 +1888,9 @@ function moduleWbm(data, dataLocationString, miniMode = false) {
                 const score = data.modules[module][item];
                 if (item.includes("Total Score") && !item.includes("Raw")) {
                     // const percent = (Number(score) / Number(outOf)) * 100;
-                    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}" style="--subname:'${fileName} (${year})'">
+                    const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}">
                     ${singleItemPieChartString(score, outOf, true, true)}</div>`;
-                    addToModulePreview("wbm", previewTemplate);
+                    addToModulePreview(container, "wbm", dataLocationString, previewTemplate);
                 }
                 tempScore = Number(score);
                 if (!tempScore)
@@ -1786,15 +1898,9 @@ function moduleWbm(data, dataLocationString, miniMode = false) {
                 return [itemLabel, itemTrans, Number(score).toFixed(1).toString().replace(".0", ''), outOf];
             });
 
-        htmlString += `<div class='submodule' data-location="${dataLocationString}-${trans}">
-                    <h2 class="subModuleTitle">
-                        ${spanString(fileName, `wbm.${trans}`, `--year:'${year}';`)}
-                        ${hoverTitleString(`wbm-${trans}`)}
-                    </h2>
-                    ${dataToTable(tableData, true, "wbm")}
-                    </div>`;
+        const htmlString = `${dataToTable(tableData, true, "wbm")}`
+        addToModuleContent(container, "wbm", dataLocationString, htmlString);
     }
-    return htmlString;
 }
 
 
@@ -1826,11 +1932,10 @@ function moduleCta(data) {
     </div>`;
 }
 
-function moduleLobbyEu(data, miniMode = false) {
+function moduleLobbyEu(container, data) {
     const sourceUrl = `https://lobbyfacts.eu/datacard/org?rid=${data.eu_transparency_id}`;
-    const previewTemplate = `<div class='previewScore previewSubname' data-source-url=${sourceUrl} style="--subname:'&'">
-    <span class="ratingOutOf ratingText">@€</span></div>`;
-    addToModulePreview("lobbyeu", previewTemplate.replace("@", data.calculated_cost).replace("&", data.source), miniMode);
+    const previewTemplate = `<div class='previeuwTitle' data-source-url='${sourceUrl}'>${data.calculated_cost.toLocaleString()}</span></div>`;
+    addToModulePreview(container, "lobbyeu", data.location, previewTemplate);
     const dataForTable = [
         ["Transparency ID", "transparency_id", data.eu_transparency_id, false],
         ["HQ Country", "hq_countries", data.head_country, false],
@@ -1841,7 +1946,7 @@ function moduleLobbyEu(data, miniMode = false) {
         ["Meetings with the EU", "meeting_count", data.meeting_count, false],
         ["Lobbyist Passes Count", "passes_count", data.passes_count, false],
     ]
-    if (data.category != "" && industryAverageData.lobbyfacts.category != undefined) {
+    if (data.category != "" && industryAverageData.lobbyfacts != undefined) {
         const averages = industryAverageData.lobbyfacts.category;
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.category)) {
@@ -1850,14 +1955,13 @@ function moduleLobbyEu(data, miniMode = false) {
         }
 
     }
-    return `
-            ${dataToTable(dataForTable, false, "lb")}`
+    addToModuleContent(container, "lobbyeu", data.location, dataToTable(dataForTable, false, "lb"))
 }
 
-function moduleGoodOnYou(data, miniMode = false) {
+function moduleGoodOnYou(container, data) {
     const sourceUrl = `https://directory.goodonyou.eco/brand/${data.location.split("/")[1]}`;
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">${thickLineGraphString("Rating", data.rating, 5, true, false, false, 80, "/5", false)}</div>`;
-    addToModulePreview("goodonyou", previewTemplate, miniMode)
+    addToModulePreview(container, "goodonyou", data.location, previewTemplate);
     const rating = (data.rating / 5) * 100;
     const lrating = Math.floor(data.labourRating / 4);
     const arating = Math.floor(data.animalRating / 4);
@@ -1894,18 +1998,13 @@ function moduleGoodOnYou(data, miniMode = false) {
             }
         }
     }
-    return `${lineGraphTableString}`
+    addToModuleContent(container, "goodonyou", data.location, lineGraphTableString)
 }
 
-function moduleBcorp(data, miniMode = false) {
+function moduleBcorp(container, data) {
     const sourceUrl = `https://www.bcorporation.net/en-us/find-a-b-corp/company/${data.slug}`
     const iconUrl = `${dataURL}/icon/bcorp.svg`;
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"> <span class="invert bcorp-logo"><img src="${iconUrl}"></span>`;
-    if (miniMode) {
-        if (currentMiniState.bcorp._miniPreview == undefined) currentMiniState.bcorp._miniPreview = '';
-    } else {
-        if (currentModuleState.bcorp._preview == undefined) currentModuleState.bcorp._preview = '';
-    }
     const dataForTable = [
         ["Governance", "governance", data.Governance, false],
         ["Workers", "workers", data.Workers, false],
@@ -1914,12 +2013,8 @@ function moduleBcorp(data, miniMode = false) {
         ["Customers", "customers", data.Customers, false],
     ]
     let industryAverage = false;
-    if (miniMode) {
-        currentMiniState.bcorp._miniPreview += previewTemplate.replace("&", data.slug);
-    } else {
-        currentModuleState.bcorp._preview += previewTemplate.replace("&", data.slug);
-    }
-    if (industryAverageData.bcorp["industry"] != undefined) {
+    addToModulePreview(container, "bcorp", data.location, previewTemplate);
+    if (industryAverageData.bcorp) {
         const averages = industryAverageData.bcorp["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.industry)) {
@@ -1929,18 +2024,19 @@ function moduleBcorp(data, miniMode = false) {
         }
     }
     const adjustedMax = data.score > 140 ? data.score : 140;
-    ;
-    return `${dataToTable(dataForTable, true, "bcorp")}
+    const htmlString = `${dataToTable(dataForTable, true, "bcorp")}
             ${lineGraphString("Total Score", data.score, adjustedMax, true, industryAverage, false, 80, "140+",
         [[`Average for ${data.industry}`, ""], ["Qualifies for B Corp Certification", "bcorp.certification"]])}`
+
+    addToModuleContent(container, "bcorp", data.location, htmlString);
 }
 
-function moduleYahoo(data, miniMode = false) {
+function moduleYahoo(container, data) {
     const sourceUrl = `https://finance.yahoo.com/quote/${data.symbol}/sustainability/`
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">
         ${segmentedArcString("ESG", data.totalEsg, 40, true, 5, false, true, true)}
     </div>`;
-    addToModulePreview("yahoo", previewTemplate, miniMode)
+    addToModulePreview(container, "yahoo", data.location, previewTemplate);
     const formatting = [
         ["Negligible", "0 - 9.9 "],
         ["Low", "10 - 19.9"],
@@ -1960,7 +2056,7 @@ function moduleYahoo(data, miniMode = false) {
         ["Total ESG", "total", data.totalEsg, "40+"],
     ]
     let averageRating = false;
-    if (industryAverageData.yahoo["industry"] != undefined) {
+    if (industryAverageData["yahoo"] != undefined) {
         const averages = industryAverageData.yahoo["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.peerGroup)) {
@@ -1970,25 +2066,28 @@ function moduleYahoo(data, miniMode = false) {
             }
         }
     }
-    return `${lineGraphString("Total ESG", data.totalEsg, 40, true, averageRating, false, 80, "40+", false, false, true)}
+    const htmlString = `${lineGraphString("Total ESG", data.totalEsg, 40, true, averageRating, false, 80, "40+", false, false, true)}
         ${dataToTable(dataForTable, true, "esg")}`
+
+    addToModuleContent(container, "yahoo", data.location, htmlString);
 }
 
-function moduleTrustScore(data, miniMode = false) {
+function moduleTrustScore(container, data) {
     const sourceUrl = `https://trustscam.com/${data.source}`
     const previewTemplate = `<div class='previewScore previewSubname' data-source-url="${sourceUrl}">
                             <span class="trustText" style="--outOf:'/ 100';">${data.score}
                             <span class="trustSymbol ${data.rating}"></span></span>
                             </div>`;
-    addToModulePreview("trust-scam", previewTemplate, miniMode);
-    return `<h3 class="">${data.score}</h3>`
+    addToModulePreview(container, "trustscore", data.location, previewTemplate);
+    addToModuleContent(container, "trustscore", data.location, false);
+
 }
 
-function moduleMbfc(data, miniMode = false) {
+function moduleMbfc(container, data) {
     const { questionable, source, bias, popularity, credibility, reporting, description } = data;
     const sourceUrl = `https://mediabiasfactcheck.com/${source}`
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}"><span class="ratingOutOf ratingText" data-i18n="bias.@">@</span></div>`;
-    addToModulePreview("mbfc", previewTemplate.replaceAll("@", bias), miniMode)
+    addToModulePreview(container, "mbfc", data.location, previewTemplate.replaceAll("@", bias))
     let questionableString = ''
     if (questionable.length > 0) {
         questionableString = '<div><h4 data-i18n="bias.questionable">Reason for Questionable:</h4><div class="questionableContainer"> '
@@ -2003,14 +2102,14 @@ function moduleMbfc(data, miniMode = false) {
         ["Credibility", "credibility", credibility, false],
         ["Reporting", "reporting", reporting, false],
     ]
-    return `<p class="genericText">${description}</p>
+    const htmlString = `<p class="genericText">${description}</p>
                 ${dataToTable(dataForTable, false, "bias")}
                 ${questionableString}`
+    addToModuleContent(container, "mbfc", data.location, htmlString);
 }
 
-function moduleGlassdoor(data, miniMode = false) {
+function moduleGlassdoor(container, data) {
     const score = parseFloat(data.glasroom_rating.ratingValue);
-    const typeClean = data.type.toLowerCase().replace(" - ", "_").replace(" ", "_")
     const dataForTable = [
         //["Rating Count", "ratingCount", data.glasroom_rating.ratingCount, false],
         ["Company Type", "companyt", data.type, false],
@@ -2021,7 +2120,7 @@ function moduleGlassdoor(data, miniMode = false) {
         ["Size", "size", data.size, false],
     ]
     let averageRating = false;
-    if (industryAverageData["glassdoor"]["industry"] != undefined) {
+    if (industryAverageData["glassdoor"] != undefined) {
         const averages = industryAverageData["glassdoor"]["industry"];
         for (const item in averages) {
             if (averages[item].hasOwnProperty(data.industry)) {
@@ -2036,15 +2135,17 @@ function moduleGlassdoor(data, miniMode = false) {
         ${dotGridChartString("glassdoor", score, 5, true, 5, averageRating, "small")}
         </div>`;
 
-    addToModulePreview("glassdoor", previewTemplate, miniMode)
+    addToModulePreview(container, "glassdoor", data.location, previewTemplate)
     totalString = `<div class="centeredRow"><span class="num">${data.glasroom_rating.ratingCount} </span><span data-i18n="common.ratings">Ratings</span> </div>`
 
-    return `${totalString}
+    const htmlString = `${totalString}
             ${dataToTable(dataForTable, false, "glassdoor")}
             ${lineGraphString("Rating", score, 5, true, averageRating, false, false, false, [[`${data.industry} Average`, "glassdoor.industry_average"]])}`
+
+    addToModuleContent(container, "glassdoor", data.location, htmlString);
 }
 
-function moduleTosdr(data, miniMode = false) {
+function moduleTosdr(container, data) {
     const sourceUrl = `https://tosdr.org/en/service/${data.id}`
     const ratingsColours = {
         "A": "--score-10",
@@ -2062,13 +2163,12 @@ function moduleTosdr(data, miniMode = false) {
         "E": "var(--s-primary)",
         "X": "var(--s-primary)"
     }
+    const ratings = ["A", "B", "C", "D", "E", "X"];
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">
                             <span class="previewTos tosScore" style="--t:${ratingsTextColour[data.rated]};--c:var(${ratingsColours[data.rated]});">
                             ${data.rated}</span></div>`;
-    addToModulePreview("tosdr-link", previewTemplate, miniMode);
-
-    const ratings = ["A", "B", "C", "D", "E", "X"];
-    ratingsString = `<ol class="tosRatings">`
+    addToModulePreview(container, "tosdr", data.location, previewTemplate);
+    let ratingsString = `<ol class="tosRatings">`
     for (const rating in ratings) {
         ratingLetter = ratings[rating]
         ratingsString += (ratingLetter == data.rated) ? `<li style='--t:${ratingsTextColour[ratingLetter]};' class='tosActive'>` : "<li>"
@@ -2076,10 +2176,10 @@ function moduleTosdr(data, miniMode = false) {
                             <span class="tosDesc" data-i18n="tos.${ratingLetter.toLowerCase()}"></span></li>`
     }
     ratingsString += `</ol>`
-    return `${ratingsString}`
+    addToModuleContent(container, "tosdr", data.location, ratingsString);
 }
 
-function moduleTrustpilot(data, miniMode = false) {
+function moduleTrustpilot(container, data) {
     const sourceUrl = `https://trustpilot.com/review/${data.domain}`
     let starString = ''
     const numberOfStars = Math.floor(data.score);
@@ -2093,7 +2193,7 @@ function moduleTrustpilot(data, miniMode = false) {
     //                             <div class="stars" style="--rating:@;">${starString}</div>
     //                             </div>`;
     const previewTemplate = `<div class='previewScore' data-source-url="${sourceUrl}">${starChartString(data.score, 5, true, false)}</div>`;
-    addToModulePreview("trust-pilot", previewTemplate, miniMode)
+    addToModulePreview(container, "trustpilot", data.location, previewTemplate)
     totalString = `<div class="centeredRow"><span class="num">${data.reviews.total} </span><span data-i18n="common.reviews">Reviews</span> </div>`
     const dataForTable = [
         // ["Total Reviews", "total", data.reviews.total, false],
@@ -2111,15 +2211,16 @@ function moduleTrustpilot(data, miniMode = false) {
             }
         }
     }
-    return `${lineGraphString("Reviews", data.score, 5, true, false, extraInfo = `${data.reviews.total} reviews`)}
+    const htmlString = `${lineGraphString("Reviews", data.score, 5, true, false, extraInfo = `${data.reviews.total} reviews`)}
             ${totalString}
             ${dataToTable(dataForTable, false, "trustpilot")}`
+
+    addToModuleContent(container, "trustpilot", data.location, htmlString);
 }
 
 
-function moduleSimilar(data, miniMode = false) {
+function moduleSimilar(container, data) {
     const sourceUrl = `https://similarsites.com/site/${data.domain}`
-    const previewTemplate = `<div class='previewScore previewSubname previewSimilar' data-source-url="${sourceUrl}" style="--subname:'&'"><span class="ratingOutOf" style="--outOf:'%';">@</span></div>`;
     let similarString = '<ol>'
     let currentMostSimilar = [false, false]
     for (site in data.similar) {
@@ -2133,23 +2234,22 @@ function moduleSimilar(data, miniMode = false) {
             ${ssite}</a><div class="percent">${p}</div></li>`;
     }
     similarString += `</ol>`
-    addToModulePreview("similar-site-wrapper", previewTemplate.replace("@", currentMostSimilar[1]).replace("&", currentMostSimilar[0]), miniMode);
-    return `<div class="fullBleed"><div>
+    const previewTemplate = `<div class='previewScore previewSubname previewSimilar' data-source-url="${sourceUrl}" style="--subname:'${currentMostSimilar[0]}'"><span class="ratingOutOf" style="--outOf:'%';">${currentMostSimilar[1]}</span></div>`;
+    addToModulePreview(container, "similar", data.location, previewTemplate)
+    htmlString = `<div class="fullBleed"><div>
     <section id="similar-sites" class="hideInSmall">
     ${similarString}
     </section>`
+    addToModuleContent(container, "similar", data.location, htmlString);
 }
 
-async function addLocalModule(type = undefined, data = undefined, miniMode = false) {
+async function addLocalModule(container = undefined, type = undefined, data = undefined) {
+    return
     if (!type || !data) return;
     if (!(type in types)) return;
 
     const { id, translate, label } = types[type];
-    if (miniMode) {
-        if (currentMiniState[id] == undefined) currentMiniState[id] = {};
-    } else {
-        if (currentModuleState[id] == undefined) currentModuleState[id] = {};
-    }
+    if (currentModuleState[id] == undefined) currentModuleState[id] = {};
     switch (type) {
         case "social":
             return moduleSocial(data, id, translate, label, false, miniMode);
@@ -2162,124 +2262,56 @@ async function addLocalModule(type = undefined, data = undefined, miniMode = fal
     }
 }
 
-async function addModule(type = undefined, url = undefined, src = undefined, miniMode = false) {
-    if (type == undefined || url == undefined) return;
+function addModuleToState(container, type, location, data) {
+    if (currentModuleState[container] == undefined) currentModuleState[container] = { "modules": {} };
+    if (currentModuleState[container].modules[type] == undefined) currentModuleState[container].modules[type] = {};
+    currentModuleState[container].modules[type][location] = {
+        data,
+        content: '',
+        source: data.source || '',
+        preview: '',
+        sourceHref: data.sourceHref || '',
+    }
+}
+async function addModule(container = undefined, type = undefined, data = undefined, urlString = undefined) {
+    if (type == undefined || urlString == undefined) return;
+    if (!urlString) {
+        addLocalModule(container, data, type);
+        return
+    }
     // needs some mechanic for caching when we switch to graph mode
-    const dataLocationString = url.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
-    let state = (miniMode) ? currentMiniState : currentModuleState;
+    const dataLocationString = urlString.replace(dataURL, "").replace("/ds/", "").replace(".json", "");
     let moduleResponse = false;
     if (dataObjectDictionary[dataLocationString]) {
         moduleResponse = dataObjectDictionary[dataLocationString];
     } else {
-        const moduleData = await fetch(url);
+        const moduleData = await fetch(urlString);
         moduleResponse = await moduleData.json()
         dataObjectDictionary[dataLocationString] = moduleResponse;
     }
     if (moduleResponse == undefined) return;
     if (moduleResponse.error) return;
-
     if (!(type in types)) { return; }
     const typeDef = types[type]
     let tab = false;
     // Genericising needed
-    const moduleSource = (typeDef.subname) ? moduleResponse.source : false;
-    if (miniMode) {
-        if (currentMiniState[typeDef.id] == undefined) currentMiniState[typeDef.id] = {};
-        currentMiniState[typeDef.id][dataLocationString] = moduleResponse;
-        if (src) currentMiniState[typeDef.id][dataLocationString].src = src;
-    } else {
-        if (currentModuleState[typeDef.id] == undefined) currentModuleState[typeDef.id] = {};
-        currentModuleState[typeDef.id][dataLocationString] = moduleResponse;
-        if (src) currentModuleState[typeDef.id][dataLocationString].src = src;
+    addModuleToState(container, type, moduleResponse.location, moduleResponse);
+    functionDict = {
+        "tosdr": moduleTosdr,
+        "opensecrets": moduleOpensecrets,
+        "wbm": moduleWbm,
+        "cta": moduleCta,
+        "lobbyeu": moduleLobbyEu,
+        "goodonyou": moduleGoodOnYou,
+        "bcorp": moduleBcorp,
+        "yahoo": moduleYahoo,
+        "trustscore": moduleTrustScore,
+        "mbfc": moduleMbfc,
+        "glassdoor": moduleGlassdoor,
+        "trustpilot": moduleTrustpilot,
+        "similar": moduleSimilar,
     }
-
-    if (tabable.includes(typeDef.id)) {
-        tab = Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length - 1
-    }
-
-    htmlString = moduleStartString(typeDef.id, typeDef.translate, typeDef.label, moduleSource, false, false, dataLocationString, tab, miniMode)
-
-    if (tab == 0) {
-        noClose = false;
-    } else {
-        noClose = true;
-    }
-    // Set module state
-    switch (type) {
-        case "opensecrets":
-            htmlString += moduleOpensecrets(moduleResponse, noClose, miniMode);
-            break;
-        case "wbm":
-            htmlString += moduleWbm(moduleResponse, dataLocationString, miniMode);
-            break;
-        case "cta":
-            htmlString += moduleCta(moduleResponse, miniMode);
-            break;
-        case "lobbyeu":
-            htmlString += moduleLobbyEu(moduleResponse, miniMode);
-            break;
-        case "goodonyou":
-            htmlString += moduleGoodOnYou(moduleResponse, miniMode);
-            break;
-        case "bcorp":
-            htmlString += moduleBcorp(moduleResponse, miniMode);
-            break;
-        case "yahoo":
-            htmlString += moduleYahoo(moduleResponse, miniMode);
-            break;
-        case "trustscore":
-            htmlString += moduleTrustScore(moduleResponse, miniMode);
-            break;
-        case "mbfc":
-            htmlString += moduleMbfc(moduleResponse, miniMode);
-            break;
-        case "glassdoor":
-            htmlString += moduleGlassdoor(moduleResponse, miniMode);
-            break;
-        case "tosdr":
-            htmlString += moduleTosdr(moduleResponse, miniMode);
-            break;
-        case "trustpilot":
-            htmlString += moduleTrustpilot(moduleResponse, miniMode);
-            break;
-        case "similar":
-            htmlString += moduleSimilar(moduleResponse, miniMode);
-            break;
-
-    }
-    if (tabable.includes(typeDef.id)) {
-        sanity = (miniMode) ? Object.keys(currentMiniState[typeDef.id]).filter(x => !x.startsWith("_")).length
-            : Object.keys(currentModuleState[typeDef.id]).filter(x => !x.startsWith("_")).length;
-        if (sanity > 1) {
-            htmlString += `</div>`
-            debugLogging("tabable")
-            if (miniMode) {
-                if (tab == 0) {
-                    mtabbedContent[typeDef.id] = [htmlString]
-                }
-                mtabbedContent[typeDef.id].push(htmlString)
-
-            } else {
-                if (tab == 0) {
-                    tabbedContent[typeDef.id] = [htmlString]
-                }
-                tabbedContent[typeDef.id].push(htmlString)
-
-            }
-        } else {
-            htmlString += `${moduleCloseString(true, type)}</section>`
-            if (miniMode) {
-                mtabbedContent[typeDef.id] = [htmlString]
-            } else {
-                tabbedContent[typeDef.id] = [htmlString]
-            }
-            debugLogging("tabableclosed", currentModuleState[typeDef.id])
-        }
-        return ""
-    }
-    htmlString += `${moduleCloseString(true, type)}</section>`
-
-    return htmlString
+    functionDict[type](container, moduleResponse);
 }
 
 function commentStyle(style) {
@@ -2324,10 +2356,8 @@ function renderBBCode() {
     const commentBox = document.getElementById("commentBoxInput");
     const commentPreview = document.getElementById("commentPreview");
     if (commentBox.value == "") return;
-
     const bbcodeContent = commentBox.value;
     const html = new bbcode.Parser().toHTML(bbcodeContent);
-
     commentPreview.innerHTML = html;
 }
 
@@ -2412,7 +2442,7 @@ function loginButtonAction() {
         }
         return
     }
-    window.open(`${assetsURL} /auth/login`, '_blank').focus()
+    window.open(`${assetsURL}/auth/login`, '_blank').focus()
 }
 
 
@@ -2567,6 +2597,7 @@ function notificationCloseAndSave(save = true) {
 }
 
 function notificationsDraw() {
+    return
     debugLogging("notificationsDraw", settingsState["notifications"])
     if (settingsState["notifications"]) {
         for (const tag of availableNotifications) {
@@ -2905,219 +2936,221 @@ function toggleToggle(type) {
     settingsStateChange()
 }
 
+
 // {value: items[it].value, label: items[it].innerHTML}
 const singleColumnModulesDesktop = [];
 var excludeSingleColumnModulesApp = [];
 var singleColumnModulesApp = defaultOrder
 let recalculating = false
-function recalculateList() {
+function recalculateList(selector = undefined) {
+    console.log("recalc")
     if (recalculating) return
     recalculating = true
+    masonry = false;
+    console.log("recalc")
     debugLogging("recalculateList")
-    const propertyOrder = $("#sortlist").sortable('toArray');
+    if (selector == undefined) {
+        selector = "content"
+        if (isSpeedcam) {
+            selector = "speedcontent"
+        }
+    }
+    // remove all the blanks
+    const container = document.getElementById(selector);
+    container.querySelectorAll(".blank").forEach(x => x.remove());
+    container.classList.add("invisible-container");
+    let currentModules;
+    // get the current modules
+    currentModules = Array.from(container.children).map(x => x.dataset.module);
+    if (container.classList.contains("masonary")) {
+        masonry = true;
+        currentModules += Array.from(container.querySelectorAll(".leftColumn .contentSection, .rightColumn .contentSection")).map(x => x.dataset.module)
+    }
+    // get if any of the current modules are open
+    openModules = Array.from(container.querySelectorAll(".contentSection")).filter(x => x.firstChild.open).map(x => x.dataset.module);
+    let propertyOrder = defaultOrder;
+    try {
+        propertyOrder = $("#sortlist").sortable('toArray');
+    } catch {
+    }
+    let wbmOrder = defaultOrderWbm;
+    try {
+        wbmOrder = $("#sortlist-wbm").sortable('toArray');
+    } catch {
+    }
 
-    currentModules = Object.keys(currentModuleState)
     missingModules = defaultOrder.filter(x => !currentModules.includes(x))
-    singleColumnModulesApp.push("graph-box")
-    // make sure no duplicates are in singleColumnModulesApp
-    singleColumnModulesApp = [...new Set(singleColumnModulesApp)]
+    extraModules = currentModules.filter(x => !defaultOrder.includes(x))
 
-    const seenModulesApp = [];
-    const seenModulesDesktop = [];
+    // we need to make 2 sets of lists one that is 1 column and one that is 2 column
+    // we need to make sure that both lists keep the same order as propertyOrder
+    // theses lists will be used as the grid-template-areas for the css
+    // we need to make sure that the lists are the same length
+    // current state has the modules that are currently in the container 
 
-    let gridTemplateAreasDesktop = "";
-    let gridAutoRowsDesktop = "";
-    let blanksDesktop = 0;
+    orderedModules = []
+    // since we might have extra modules we need to add those to the 
+    // ordering list too, but we should spread them out evenly.
 
-    let gridTemplateAreasApp = "";
-    let gridAutoRowsApp = "";
-    let blanksApp = 0;
-
-    let gridTemplateAreasSmall = "";
-    let gridAutoRowsSmall = "";
-
-    //propertyOrder.forEach((value, index) => {
-    const filteredPropertyOrder = []
-    const content = document.getElementById("content");
-
-    for (const el of propertyOrder) {
-        value = el;
-        if (value == "networkgraph") {
-            value = "graph-box"
+    if (extraModules.length > 0) {
+        // insert the extra modules into the propertyOrder
+        for (const module of extraModules) {
+            propertyOrder.splice(propertyOrder.indexOf(module), 0, module)
         }
-        if (document.getElementById(value) && !filteredPropertyOrder.includes(value)) {
-            const el = document.getElementById(value);
-            filteredPropertyOrder.push(value)
-            const elSummary = $(`#${value} details`)[0];
-            if (elSummary) {
-                if (!elSummary.classList.contains("toggleEnabled")) {
-                    $(`#${value} details`).on('toggle', (e) => {
-                        recalculateList()
-                    })
-                    elSummary.classList.add("toggleEnabled")
-                }
-                if (elSummary.hasAttribute("open") && !excludeSingleColumnModulesApp.includes(value)) {
-                    excludeSingleColumnModulesApp.push(value)
-                } else if (!elSummary.hasAttribute("open") && excludeSingleColumnModulesApp.includes(value)) {
-                    excludeSingleColumnModulesApp.pop(value)
-                    singleColumnModulesApp.push(value)
-                }
+    }
+    // we also need a css rule for each module so we can set the grid-area
+    // we can mark off if it has been added by checking agains the currentModuleState
+    if (currentModuleState[selector] !== undefined) {
+        for (const type of Object.keys(currentModuleState[selector].modules)) {
+            if (currentModuleState[selector].cssRules == undefined) {
+                currentModuleState[selector].cssRules = []
             }
+            if (currentModuleState[selector].cssRules.includes(type)) {
+                continue
+            }
+            if (document.getElementById("dynamicStyling") == null) {
+                let style = document.createElement("style")
+                style.id = "dynamicStyling"
+                document.head.appendChild(style)
+            }
+            let style = document.getElementById("dynamicStyling")
+            if (disabledModules.includes(type)){
+                style.innerHTML += `.contentSection[data-module="${type}"] { display:none!important; }`
+            } else {
+            style.innerHTML += `.contentSection[data-module="${type}"] { grid-area: ${type}; }`
+            }
+            currentModuleState[selector].cssRules.push(type)
         }
     }
 
-    // remove excludeSingleColumnModulesApp from singleColumnModulesApp
-    singleColumnModulesApp = singleColumnModulesApp.filter(x => !excludeSingleColumnModulesApp.includes(x))
-
-    const contentChildren = content.children;
-    const contentChildrenArray = Array.from(contentChildren);
-    for (let index = contentChildrenArray.length - 1; index >= 0; index--) {
-        const element = contentChildrenArray[index];
-        if (element.classList.contains("blank")) {
-            element.remove();
+    for (const module of propertyOrder) {
+        if (currentModules.includes(module) && !disabledModules.includes(module)) {
+            orderedModules.push(module)
         }
     }
-    for (let index = 0; index < filteredPropertyOrder.length; index++) {
-        value = filteredPropertyOrder[index];
-        if (singleColumnModulesDesktop.includes(value)) {
-            if (singleColumnModulesDesktop.includes(filteredPropertyOrder[index + 1]) && !seenModulesDesktop.includes(value)) {
-                gridTemplateAreasDesktop += `"${value} ${filteredPropertyOrder[index + 1]}" `;
-                gridAutoRowsDesktop += "120px "
-                seenModulesDesktop.push(filteredPropertyOrder[index + 1])
-                seenModulesDesktop.push(value)
-            } else if (!seenModulesDesktop.includes(value)) {
-                gridTemplateAreasDesktop += `"${value} blank${blanksDesktop}" `
-                gridAutoRowsDesktop += "120px "
-                blanksDesktop++;
-            }
+
+
+    // filter out any disabled modules from the property order
+    // and set them to display: none;
+
+
+
+    singleColumnListString = '"' + orderedModules.join(" ").replace(/ /g, '" "') + '"'
+    doubleColumnListString = ''
+
+    // split the list into 2 columns
+    cols = [[], []]
+    for (const module of orderedModules) {
+        if (cols[0].length > cols[1].length) {
+            cols[1].push(module)
         } else {
-            gridTemplateAreasDesktop += `"${value} ${value}" `
-            gridAutoRowsDesktop += "auto "
-        }
-
-        if (singleColumnModulesApp.includes(value)) {
-            if (singleColumnModulesApp.includes(filteredPropertyOrder[index + 1]) && !seenModulesApp.includes(value)) {
-                gridTemplateAreasApp += `"${value} ${filteredPropertyOrder[index + 1]}" `;
-                gridAutoRowsApp += "120px "
-                seenModulesApp.push(filteredPropertyOrder[index + 1])
-                seenModulesApp.push(value)
-            } else if (!seenModulesApp.includes(value)) {
-                gridTemplateAreasApp += `"${value} blank${blanksApp}" `
-                gridAutoRowsApp += "120px "
-                blanksApp++;
-            }
-        } else {
-            gridTemplateAreasApp += `"${value} ${value}" `
-            gridAutoRowsApp += "auto "
-        }
-
-        gridAutoRowsSmall += "auto "
-        gridTemplateAreasSmall += `"${value}" `
-        //document.getElementById(value).style.order = index;
-    }
-
-    debugLogging(`Desktop ${gridTemplateAreasDesktop} `)
-    debugLogging(`App ${gridTemplateAreasApp} `)
-
-    // create the blanks
-    // Count the blanks that are needed between app&desktop then create them
-    // If there are no blanks needed, remove all blanks
-    // and add the correct gridTemplateAreas and gridAutoRows if there are blanks not included the grid stuff
-    let numberOfBlanks = 0;
-    numberOfBlanks = blanksDesktop >= blanksApp ? blanksDesktop : blanksApp;
-    // count the number of instances of "blank" in the gridTemplateAreas
-    const blankCountDesktop = (gridTemplateAreasDesktop.match(/blank/g) || []).length;
-    const blankCountSmall = (gridTemplateAreasSmall.match(/blank/g) || []).length;
-    // if the number of blanks in the gridTemplateAreas is less than the number of blanks needed
-    // add the correct number of blanks to the gridTemplateAreas string
-    if (blankCountDesktop < numberOfBlanks) {
-        for (let index = blankCountDesktop; index < numberOfBlanks; index++) {
-            gridTemplateAreasDesktop += `"blank${index} blank${index}" `;
-            gridAutoRowsDesktop += "0px "
-        }
-    }
-    if (blankCountSmall < numberOfBlanks) {
-        for (let index = blankCountSmall; index < numberOfBlanks; index++) {
-            gridTemplateAreasSmall += `"blank${index}" `;
-            gridAutoRowsSmall += "0px "
+            cols[0].push(module)
         }
     }
 
-    for (let index = 0; index < numberOfBlanks; index++) {
-        const blank = document.createElement("div");
-        blank.classList.add("blank");
-        blank.id = `blank${index} `;
-        blank.style = `grid-area: blank${index} `;
-        content.appendChild(blank);
+        console.log(openModules)
+    for (const col in cols[0]) {
+        firstItem = cols[0][col]
+        secondItem = cols[1][col]
+        if (secondItem == undefined) {
+            doubleColumnListString += `"${cols[0][col]} blank${col}" `
+            console.log("hi")
+            continue
+        }
+
+        blanks = [];
+        // if the module is open then we add a blank space where 
+        // it was supposed to be, and then add the module on its 
+        // own line
+        if (openModules.includes(cols[0][col]) && openModules.includes(cols[1][col])) {
+            doubleColumnListString += `"${firstItem} ${firstItem}" `
+            doubleColumnListString += `"${secondItem} ${secondItem}" `
+            continue
+        } else if (openModules.includes(cols[0][col])) {
+            blanks.push(`blank${col}`)
+            doubleColumnListString += `"${firstItem} ${firstItem}" `
+            doubleColumnListString += `"${secondItem} blank${col}" `
+            continue
+        } else if (openModules.includes(cols[1][col])) {
+            blanks.push(`blank${col}`)
+            doubleColumnListString += `"${secondItem} ${secondItem}" `
+            doubleColumnListString += `"${firstItem} blank${col}" `
+            continue
+        }
+
+        for (const blank of blanks){
+            let blankobj = document.createElement("div")
+            blankobj.style.setProperty("display", "none")
+            blankobj.style.setProperty("grid-area", blank)
+            blankobj.classList.add("blank")
+            container.appendChild(blankobj)
+        }
+
+
+        doubleColumnListString += `"${cols[0][col]} ${cols[1][col]}" `
     }
-    //document.getElementById("content").style.gridTemplateAreas = gridTemplateAreas;
-    //document.getElementById("content").style.gridAutoRows = gridAutoRows;
-    const styleMode = false;
-    if (styleMode) {
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridTemplateAreas = gridTemplateAreasDesktop;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content').style.gridAutoRows = gridAutoRowsDesktop;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.small').style.gridTemplateAreas = gridTemplateAreasSmall;
-        [...document.styleSheets[3].cssRules].find(y => y.selectorText == '#content.small').style.gridAutoRows = gridAutoRowsSmall;
-    } else if (Object.values(document.lastChild.classList).includes("single-column")) {
-        debugLogging("singleColumn")
-        content.style.gridTemplateAreas = gridTemplateAreasSmall;
-        //content.style.gridAutoRows = gridAutoRowsSmall;
-        content.style.gridAutoColumns = "377px";
-        content.classList.add("single-column")
-        content.classList.remove("two-column")
+
+    console.log(singleColumnListString)
+    // check if html has class of single or two column
+    // then we style the container with the correct grid-template-areas
+    if (settingsState["singleColumn"]) {
+        document.lastChild.classList.add("single-column")
+        document.lastChild.classList.remove("double-column")
+        container.setAttribute("style", `grid-template-areas: ${singleColumnListString}`)
     } else {
-        debugLogging("2column")
-        // content.style.gridTemplateAreas = gridTemplateAreasSmall;
-        console.log("2")
-        content.style.gridTemplateAreas = gridTemplateAreasApp;
-        content.style.gridAutoColumns = "184px 184px";
-        content.classList.add("two-column")
-        content.classList.remove("single-column")
-        // content.style.gridAutoRows = gridAutoRowsDesktop;
-        // console.log(gridTemplateAreasDesktop)
+        document.lastChild.classList.add("double-column")
+        document.lastChild.classList.remove("single-column")
+        container.setAttribute("style", `grid-template-areas: ${doubleColumnListString}`)
+    }
+    if (isSpeedcam) {
+        container.setAttribute("style", `grid-template-areas: ${doubleColumnListString}`)
     }
 
-    for (const value of propertyOrder) {
-        const item = $(`[data-id='${value}']`)[0];
-        if (item !== undefined) {
-            item.getElementsByTagName("span")[0].setAttribute("data-i18n", translate[value]);
-            item.setAttribute("data-id", value);
-            if (value == "wbm") {
-                wbmlist = document.getElementById("sortlist-wbm").children;
-                for (child in wbmlist) {
-                    const currentChild = wbmlist[child]
-                    if (typeof (currentChild) === 'object') {
-                        const childValue = currentChild.getAttribute("data-id");
-                        currentChild.getElementsByTagName("span")[0].setAttribute("data-i18n", translate[childValue]);
-                    }
-                }
-            }
-            if (value != "networkgraph" && document.getElementById(value)) {
-                thiselement = document.getElementById(value);
-                if (value != "carbon" && (Url.get.app || isSpeedcam)) thiselement.setAttribute('onclick', `openGenericPage("${value}")`);
-            }
+    // if masonry is enabled then we need to split up the modules into 2 columns
+    // and then we need to add the correct grid-template-areas to the container
+    // if the splitting has already been done then we can just make sure they are
+    // in the correct order and then we can just add the correct grid-template-areas
+    if (masonry && cols[0][0] !== undefined ){
+        // we need to split the modules into 2 columns
+        if (!container.dataset.masonry) {
+            leftColumn = document.createElement("div")
+            rightColumn = document.createElement("div")
+            leftColumn.classList.add("leftColumn")
+            rightColumn.classList.add("rightColumn")
+            container.appendChild(leftColumn)
+            container.appendChild(rightColumn)
+            container.dataset.masonry = true
         }
-    };
+        leftColumn = container.getElementsByClassName("leftColumn")[0]
+        rightColumn = container.getElementsByClassName("rightColumn")[0]
 
-    debugLogging("recalculateList", propertyOrder)
-    if (document.getElementById('graph-box') != null) {
-        document.getElementById('graph-box').classList.add("contentSection")
+        gridAreasLeft = '"' + cols[0].join('" "') + '"'
+        gridAreasRight = '"' + cols[1].join('" "') + '"'
+        // we can reoranise the cols[] array so that we can just loop over it
+        // and add the modules to the correct column
+        leftColumn.setAttribute("style", `grid-template-areas: ${gridAreasLeft}`)
+        rightColumn.setAttribute("style", `grid-template-areas: ${gridAreasRight}`)
+
+        // for (const modItem of orderedModules){
+        //     const item = container.querySelector(`.contentSection[data-module="${modItem}"]`)
+        //     if (item){
+        //     if (cols[0].includes(modItem)){
+        //         leftColumn.appendChild(item)
+        //     } else {
+        //         rightColumn.appendChild(item)
+        //     }}
+        // }
     }
-    const wbmOrder = $("#sortlist-wbm").sortable('toArray');
-    for (let x = 0; x < wbmOrder.length; x++) {
-        const value = String(wbmOrder[x]);
-        const item = $(`[data-location$="${value.replace("wbm-", "")}"]`)[0]
-        if (item !== undefined) {
-            item.style.order = x;
+
+    for (const details of document.querySelectorAll("details")) {
+        if (!details.ontoggle){
+            details.ontoggle = function(){
+                recalculateList()
+            }
         }
     }
-    // TODO: Figure out why these nodes are happening and fix it properly
-    const contentChildNodes = content.childNodes;
-    for (const node of contentChildNodes) {
-        if (node.nodeName == "#text")
-            node.remove();
-    }
-    recalculating = false;
+    translator.translatePageTo()
+    recalculating = false
 }
 
 
@@ -3152,6 +3185,10 @@ document.addEventListener('mouseup', (event) => {
         closeElement(event.target)
         return;
     }
+    if (event.target.matches("summary")) {
+        recalculateList("#" + event.target.parentElement.parentElement.id)
+    }
+
     if (event.target.matches("#extraDisplay")) {
         if (event.offsetX > 0) return;
         toggleBodyStyle("activeExtra")
@@ -3221,50 +3258,17 @@ function postalVote(direction, location, status) {
 }
 
 function moduleUpdate(mesg, comment = false) {
-    location_str = mesg.location;
-    let elmt = $(`[data-location='${location_str}']`)[0];
-    if (typeof (elmt) == 'undefined') {
-        elmt = $(`[data-location='${mesg.uid}']`)[0];
-    }
     if (typeof (elmt) == 'undefined') {
         debugLogging("moduleUpdate undefined element", mesg)
         return
     }
     if (comment) {
-        data = mesg
-        sVB = elmt.getElementsByClassName("smallVoteBox")[0]
-        if (typeof (sVB) == 'undefined') return
-        debugLogging("moduleUpdate comment", mesg.content)
-        if (elmt.getElementsByClassName("smallCommentBox").length > 0) {
-            elmt.getElementsByClassName("smallCommentBox")[0].remove()
-        }
-        commentBox = document.createElement("div")
-        commentBox.classList.add("smallCommentBox")
-        commentBox.setAttribute("data-location", mesg.uid)
-        commentBox.innerHTML = `
-        <div> ${mesg.content} <a class="tinysource" target="_blank" href="https://assets.reveb.la/#user" >${data.author}</a></div>
-            ${voteBox(data.uid, data, "smallerVoteBox hideInSmall")} `
-
-        sVB.parentNode.insertBefore(commentBox, sVB)
         recalculateList()
         translator.translatePageTo()
+        console.log("comment")
         return
     }
-    debugLogging("moduleUpdate", mesg)
-    debugLogging("moduleUpdate emnt", elmt)
-    className = location_str.length == 36 && elmt.tagName != "SECTION" && !elmt.classList.contains("tabContent") ? "smallerVoteBox hideInSmall" : "smallVoteBox bottomLeftOfModule hideInSmall";
-    if (elmt.getElementsByClassName("loadInfoButton").length > 0) {
-        elmt.getElementsByClassName("loadInfoButton")[0].remove();
-    } else {
-        elmt.getElementsByClassName(className.split(" ")[0])[0].remove();
-    }
-
-
-    elmt.innerHTML += voteBox(location_str, mesg, className)
-
-    if (mesg.comment_total > 0) {
-        send_message("IVGetPost", mesg.top_comment)
-    }
+    console.log("not comment")
     recalculateList()
     translator.translatePageTo()
 }
@@ -3389,6 +3393,18 @@ function createPopoverOptions() {
                 <label for="mobileSize">Mobile Size</label>
                 </br></form>
         </div>
+        <div> <h3> Body Options </h3> <form>
+                <input type="button" id="optionsModeBodyToggle" name="optionsModeBodyToggle" onclick='toggleBodyStyle("optionsMode")'>
+                <label for="optionsModeBodyToggle">Options Mode</label></br>
+                <input type="button" id="showDisclaimerBodyToggle" name="showDisclaimerBodyToggle" onclick='toggleBodyStyle("showDisclaimer")'>
+                <label for="showDisclaimerBodyToggle">Show Disclaimer</label></br>
+                <input type="button" id="showInteractionsBodyToggle" name="showInteractionsBodyToggle" onclick='toggleBodyStyle("showInteractions")'>
+                <label for="showInteractionsBodyToggle">Show Interactions</label></br>
+                <input type="button" id="showMobileBodyToggle" name="showMobileBodyToggle" onclick='toggleBodyStyle("mobile")'>
+                <label for="showMobileBodyToggle">Show Mobile</label></br>
+            </form>
+        </div>
+
         <div> <h3> Graph Options </h3>
             <h4> Graph Gravity </h4><form>
                     <label for="gravity">Gravity</label>
@@ -3516,6 +3532,7 @@ function showInteractions() {
 }
 
 function unexplode() {
+    return
     const content = document.getElementById("content");
     const contentChildren = content.children;
     content.style = "";
@@ -3529,6 +3546,7 @@ function unexplode() {
 }
 
 function explode(andRemove = false) {
+    return
     const content = document.getElementById("content");
     const contentChildren = Array.from(content.children);
     contentChildren.forEach((child, i) => {
@@ -3610,6 +3628,7 @@ window.addEventListener('resize', () => {
 window.addEventListener('load', () => {
     checkPageSize();
 });
+
 // class Module {
 //     constructor(type, url) {
 //         this.type = type;
@@ -3642,4 +3661,7 @@ window.addEventListener('load', () => {
 //     }
 // 
 // }
+
+// I want to listen for the toggling of any details element that 
+// is a child of the contentSection elements and then recalculate the list
 pageSetup();

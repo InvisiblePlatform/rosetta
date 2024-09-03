@@ -2,7 +2,6 @@
 const root = document.createElement('div')
 root.id = 'root'
 document.body.appendChild(root)
-root.style.height = '100vh'
 let cy;
 let currentStateOfNodes = {}
 let currentChangeSet = []
@@ -200,6 +199,7 @@ for (const type in edgeTypeMappings) {
     typeButton.classList.add('filterButton')
     typeButton.innerHTML = `<span>${edgeTypeMappings[type].label.replace(/ of$/, '')}</span>`
     typeButton.setAttribute('data-type', type)
+    typeButton.classList.add(type)
     typeButton.onclick = function (evt) {
         // we want to toggle a class on this button
         // and then show or hide the edges of this type
@@ -238,7 +238,6 @@ for (const type in edgeTypeMappings) {
                 'text-background-shape': 'roundrectangle',
                 'text-background-padding': 5,
                 'text-background-opacity': 1,
-                'text-background-outline-opacity': 0,
                 'text-border-opacity': 0,
                 'text-outline-opacity': 0,
             }
@@ -388,8 +387,9 @@ function startCY(url, wikidataid) {
                 elements,
                 layout: layoutTest,
                 nodeDimensionsIncludeLabels: true,
-                textureOnViewport: true,
-                hideEdgesOnViewport: true,
+                // textureOnViewport: true,
+                // hideEdgesOnViewport: true,
+                animate: true,
                 maxZoom: 1,
                 minZoom: 0.1,
                 style: [
@@ -422,9 +422,9 @@ function startCY(url, wikidataid) {
                         style: { 'opacity': 0 }
                     },
                     {
-                        selector: 'edge[label]:selected, edge[source:selected], edge[target:selected]',
+                        selector: 'edge[label]:selected',
                         style: {
-                            'source-label': 'data(label)',
+                            'source-label': 'data(source-label)',
                             // 'edge-text-rotation': 'autorotate',
                             'text-background-color': 'white',
                             'text-background-shape': 'roundrectangle',
@@ -458,7 +458,6 @@ function startCY(url, wikidataid) {
                             'z-index': 10,
                             'z-index-compare': 'manual',
                             'z-compound-depth': 'top',
-                            'min-height': 'label'
                         },
                         selector: 'node.realNode',
                     },
@@ -486,8 +485,8 @@ function startCY(url, wikidataid) {
                     {
                         selector: '.faded',
                         style: {
-                            'line-color': '#ddd!important',
-                            'target-arrow-color': '#ddd!important',
+                            'line-color': '#ddd',
+                            'target-arrow-color': '#ddd',
                             'z-index-compare': 'manual',
                             'z-index': -2,
                             'opacity': 0.5,
@@ -510,7 +509,6 @@ function startCY(url, wikidataid) {
                             "text-background-shape": "round-rectangle",
                             "corner-radius": 1000,
                             'min-width': 'data(labelSize)',
-                            'min-height': 'label',
                             'border-color': 'black',
                             'border-width': 6,
                         }
@@ -760,19 +758,7 @@ function putNodeInfoInExtraDisplay(nodeId) {
         }
     }
     extraDisplay.innerHTML += `</ol><section id="miniModules"></section>`
-    miniModulesEl = document.getElementById('miniModules')
-    for (const module of miniModules) {
-        console.log(module)
-        if (module.url === 'local') {
-            addLocalModule(module.type, module.data, miniMode = true).then(
-                (string) => { miniModulesEl.innerHTML += string; }
-            )
-        } else {
-            addModule(module.type, `${dataURL}/ds/${module.url}`, miniMode = true).then(
-                (string) => { miniModulesEl.innerHTML += string; }
-            )
-        }
-    }
+    loadPageCore(data.defSite, false, false, false, "miniModules", true)
     //arrangeForTabs("miniModules", "tabContainer", "tabContent", "tabButtonArea", mtabbedContent);
     //arrangePreviews(currentMiniState, "_minipreview");
 }
