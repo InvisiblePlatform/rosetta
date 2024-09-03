@@ -303,7 +303,7 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
     sortedl1list = l1list.sort(sort_byg("id", true, String));
     const l1list_ids = [];
     const list = document.createElement('div');
-    list.setAttribute('class', 'previewContainer previewGraph');
+    list.setAttribute('class', 'previewGraph');
     const listNameLimit = '5';
     for (let i = 0; i < listNameLimit; i++) {
         const itemData = sortedl1list[i];

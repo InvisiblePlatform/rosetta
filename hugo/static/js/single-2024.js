@@ -27,7 +27,7 @@ var forCoNameRel = '';
 
 let firstShot = false;
 const localModules = ["political", "social"]
-let disabledModules = ["graph-box"];
+let disabledModules = [];
 
 const keyconversion = {
     "b": 'bcorp',
@@ -310,7 +310,7 @@ function setSearchParam(key, value) {
 }
 
 function manualSetup(site, container = 'content') {
-    backButton.classList.toggle("hide", site === '' || site === undefined);
+    if (!isSpeedcam) backButton.classList.toggle("hide", site === '' || site === undefined);
     setSearchParam("site", site);
     pageSetup(container);
 }
@@ -1019,12 +1019,29 @@ function moduleStartString({ type, container }) {
             }
 
             tabContent.setAttribute("data-location", Object.keys(data)[currentTab]);
+            let sourceUrl = undefined;
             if (data[Object.keys(data)[currentTab]].sourceUrl != undefined) {
                 tabContent.setAttribute("data-source-url", data[Object.keys(data)[currentTab]].sourceUrl);
-            } else {
-                sourceUrl = previewContainer.getElementsByClassName("previewScore")[currentTab].getAttribute("data-source-url");
-                tabContent.setAttribute("data-source-url", sourceUrl);
+                sourceUrl = data[Object.keys(data)[currentTab]].sourceUrl;
             }
+            if (sourceUrl == undefined) {
+                try {
+                    sourceUrl = previewContainer.getElementsByClassName("previewScore")[currentTab].getAttribute("data-source-url");
+                    tabContent.setAttribute("data-source-url", sourceUrl);
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+
+            if (sourceUrl == undefined) {
+                try {
+
+                    sourceUrl = data[Object.keys(data)[currentTab]].sourceHref;
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+
             tabContent.innerHTML = data[Object.keys(data)[currentTab]].content;
             tabContent.dataset.tabLabel = Object.keys(data)[currentTab];
             tabbedContentContainer.appendChild(tabContent);
@@ -1071,7 +1088,7 @@ function createAndAddGenericModule({ type, container, data }) {
         };
     }
 
-    moduleRender({type, container})
+    moduleRender({ type, container })
     recalculateList(container)
 }
 
@@ -1614,10 +1631,11 @@ function singleItemPieChartString(score, outOf, colourMe = false, displayScore =
         endingX = 0;
         endingY = 50;
     }
+    bigArc = scoreNum > 180 ? 1 : 0;
     if (scoreNum === 360) {
         pieString += `<circle cx="0" cy="0" r="50" fill="var(--score-${adjustedScoreColor})" mask="url(#pieMask)"/>`;
     } else {
-        pieString += `<path d="M0,-50 A50,50 0 0,1 ${endingX},${endingY} L0,0 Z" fill="var(--score-${adjustedScoreColor})" mask="url(#pieMask)" />`;
+        pieString += `<path d="M0,-50 A50,50 0 ${bigArc},1 ${endingX},${endingY} L0,0 Z" fill="var(--score-${adjustedScoreColor})" mask="url(#pieMask)" />`;
     }
 
     pieString += `</svg>`
@@ -1633,23 +1651,19 @@ function singleItemPieChartString(score, outOf, colourMe = false, displayScore =
 
 
 function addToolsSection() {
-    titleBar.innerHTML += buttonTemplate("backButton", "justSendBack");
-    titleBar.innerHTML += buttonTemplate("settingsButton", "loadSettings");
-    titleBar.innerHTML += buttonTemplate("closeButton", "closeIV");
-    titleBar.innerHTML += buttonTemplate("userButton", "loginButtonAction");
-    titleBar.innerHTML += buttonTemplate("optionsButton", "loadSettings");
+    if (!isSpeedcam) {
+        titleBar.innerHTML += buttonTemplate("backButton", "justSendBack");
+        titleBar.innerHTML += buttonTemplate("settingsButton", "loadSettings");
+        titleBar.innerHTML += buttonTemplate("closeButton", "closeIV");
+        titleBar.innerHTML += buttonTemplate("userButton", "loginButtonAction");
+        titleBar.innerHTML += buttonTemplate("optionsButton", "loadSettings");
+    }
     const currentDomain = document.getElementsByClassName("co-name")[0].innerText;
     backButton = document.getElementById('backButton');
     closeButton = document.getElementById('closeButton');
     settingsButton = document.getElementById('settingsButton');
 
-    if (isSpeedcam || Url.get.exhibit) {
-        body.parentNode.setAttribute("style", "--scroll-width: 0px; ");
-        closeButton.style.visibility = "hidden";
-        settingsButton.style.visibility = "hidden";
-        debugLogging("exhibitMode");
-    }
-    if (Url.get.app || isSpeedcam || /Mobile/i.test(navigator.userAgent)) {
+    if (Url.get.app || /Mobile/i.test(navigator.userAgent)) {
         debugLogging("phone mode");
         body.classList.add("mobile");
         closeButton.style.visibility = "hidden";
@@ -1669,8 +1683,6 @@ function addToolsSection() {
         return;
     }
     document.getElementById(Url.get.expanded).classList.add("expanded");
-    body.classList.add('somethingIsOpen');
-    explode();
 }
 
 function addToModulePreview(container, moduleId, location, previewString) {
@@ -1934,7 +1946,7 @@ function moduleCta(data) {
 
 function moduleLobbyEu(container, data) {
     const sourceUrl = `https://lobbyfacts.eu/datacard/org?rid=${data.eu_transparency_id}`;
-    const previewTemplate = `<div class='previeuwTitle' data-source-url='${sourceUrl}'>${data.calculated_cost.toLocaleString()}</span></div>`;
+    const previewTemplate = `<div class='previewCont' ><span class='previeuwTitle' data-source-url='${sourceUrl}'>${data.calculated_cost.toLocaleString()}</span></div>`
     addToModulePreview(container, "lobbyeu", data.location, previewTemplate);
     const dataForTable = [
         ["Transparency ID", "transparency_id", data.eu_transparency_id, false],
@@ -2078,8 +2090,41 @@ function moduleTrustScore(container, data) {
                             <span class="trustText" style="--outOf:'/ 100';">${data.score}
                             <span class="trustSymbol ${data.rating}"></span></span>
                             </div>`;
+    const trustText = {
+        "success": { "text": "This website is considered SAFE", 
+                    "colour": "--score-10", 
+                    "i18n": "trust.safe", 
+                    "chosen": false,
+                    "i18ndesc": "trust.safedesc" },
+        "neutral": { "text": "This website is considered NEUTRAL",
+                    "colour": "--score-unset", 
+                    "i18n": "trust.neutral", 
+                    "chosen": false,
+                    "i18ndesc": "trust.neutraldesc" },
+        "warning": { "text": "This website is flagged with a WARNING", 
+                    "colour": "--score-2",
+                    "i18n": "trust.warning", 
+                    "chosen": false,
+                    "i18ndesc": "trust.warningdesc" },
+        "danger": { "text": "This website is deemed DANGEROUS", 
+                    "colour": "--score-10",
+                    "i18n": "trust.dangerous", 
+                    "chosen": false,
+                    "i18ndesc": "trust.dangerousdesc" },
+    }
+    // we will do this a bit like moduleTosdr where we have a list of ratings and then we will add the text
+    // to the module content
+    trustText[data.rating].chosen = true;
+    const htmlString = Object.keys(trustText).map(rating => {
+        return `<div class="trustRating ${trustText[rating].chosen ? "chosen" : ""}" style="--t:var(${trustText[rating].colour});">
+            <span class="trustSymbol ${rating}"></span>
+            <p data-i18n="${trustText[rating].i18ndesc}">${trustText[rating].text}</p>
+        </div>`
+    }).join("");
+
+
     addToModulePreview(container, "trustscore", data.location, previewTemplate);
-    addToModuleContent(container, "trustscore", data.location, false);
+    addToModuleContent(container, "trustscore", data.location, htmlString);
 
 }
 
@@ -3014,10 +3059,10 @@ function recalculateList(selector = undefined) {
                 document.head.appendChild(style)
             }
             let style = document.getElementById("dynamicStyling")
-            if (disabledModules.includes(type)){
+            if (disabledModules.includes(type)) {
                 style.innerHTML += `.contentSection[data-module="${type}"] { display:none!important; }`
             } else {
-            style.innerHTML += `.contentSection[data-module="${type}"] { grid-area: ${type}; }`
+                style.innerHTML += `.contentSection[data-module="${type}"] { grid-area: ${type}; }`
             }
             currentModuleState[selector].cssRules.push(type)
         }
@@ -3048,7 +3093,7 @@ function recalculateList(selector = undefined) {
         }
     }
 
-        console.log(openModules)
+    console.log(openModules)
     for (const col in cols[0]) {
         firstItem = cols[0][col]
         secondItem = cols[1][col]
@@ -3078,7 +3123,7 @@ function recalculateList(selector = undefined) {
             continue
         }
 
-        for (const blank of blanks){
+        for (const blank of blanks) {
             let blankobj = document.createElement("div")
             blankobj.style.setProperty("display", "none")
             blankobj.style.setProperty("grid-area", blank)
@@ -3110,7 +3155,7 @@ function recalculateList(selector = undefined) {
     // and then we need to add the correct grid-template-areas to the container
     // if the splitting has already been done then we can just make sure they are
     // in the correct order and then we can just add the correct grid-template-areas
-    if (masonry && cols[0][0] !== undefined ){
+    if (masonry && cols[0][0] !== undefined) {
         // we need to split the modules into 2 columns
         if (!container.dataset.masonry) {
             leftColumn = document.createElement("div")
@@ -3143,8 +3188,8 @@ function recalculateList(selector = undefined) {
     }
 
     for (const details of document.querySelectorAll("details")) {
-        if (!details.ontoggle){
-            details.ontoggle = function(){
+        if (!details.ontoggle) {
+            details.ontoggle = function () {
                 recalculateList()
             }
         }

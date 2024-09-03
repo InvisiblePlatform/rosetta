@@ -296,9 +296,6 @@ function startupSpeedCam() {
     }
 
     clearphoto();
-    document.getElementById("topDisplay").addEventListener("click", e => {
-        openSpeedCam();
-    })
 
     // check for the speedcamState in local storage
     if (window.localStorage.getItem("speedcamState")) {
@@ -308,20 +305,29 @@ function startupSpeedCam() {
     if (window.localStorage.getItem("localState")) {
         localState = JSON.parse(window.localStorage.getItem("localState"));
     }
+    const topDisplay = document.getElementById("topDisplay");
+    topDisplay.addEventListener("click", (event) => {
+        console.log(event.target)
+        if (event.target.hasAttribute("data-domain")) {
+            openSpeedCam(event.target.getAttribute("data-domain"));
+            swapLayout()
+        }
+    })
 
 }
 
 function openSpeedCam(brand = false) {
+    swapLayout("six")
     function setVariousElements() {
-        // set backButton onclick to closeIV
-        backButton.setAttribute("onclick", "closeIV()");
-        // override co-name as "Return to gallery"
-        const coName = document.getElementsByClassName('co-name')[0];
-        coName.textContent = "Return to gallery";
-        coName.setAttribute("onclick", "closeIV()");
-        coName.classList.add("show");
-        layout.start()
-        // Send a response to the roundabout server, domainOpen, with brand
+        //// set backButton onclick to closeIV
+        //backButton.setAttribute("onclick", "closeIV()");
+        //// override co-name as "Return to gallery"
+        //const coName = document.getElementsByClassName('co-name')[0];
+        //coName.textContent = "Return to gallery";
+        //coName.setAttribute("onclick", "closeIV()");
+        //coName.classList.add("show");
+        //layout.start()
+        //// Send a response to the roundabout server, domainOpen, with brand
         sendResponseToSSERequest("domainOpen", brand)
     }
     contentArea = document.getElementById("contentAreaDiv");
@@ -358,16 +364,24 @@ function closeIV() {
     sendResponseToSSERequest("domainClose", {})
 }
 let wordToNumber = {
-    "one": {"number": 1, "word": "one"},
-    "two": {"number": 2, "word": "two"},
-    "three": {"number": 3, "word": "three"},
-    "four": {"number": 4, "word": "four"},
-    "five": {"number": 5, "word": "five"},
-    "six": {"number": 6, "word": "six"},
+    "one": { "number": 1, "word": "one", "state": "waiting" },
+    "two": { "number": 2, "word": "two", "state": "scanning" },
+    "three": { "number": 3, "word": "three", "state": "scanned" },
+    "four": { "number": 4, "word": "four", "state": "detected" },
+    "five": { "number": 5, "word": "five", "state": "display" },
+    "six": { "number": 6, "word": "six", "state": "voiced" },
 }
 const numberToWord = Object.keys(wordToNumber)
 
-function swapLayout() {
+function swapLayout(transition_to = null) {
+    if (transition_to) {
+        for (const word in wordToNumber) {
+            document.body.classList.remove(word);
+        }
+        document.body.classList.add(transition_to);
+        return;
+    }
+
     bodyClasses = document.body.classList;
     for (const bodyClass of bodyClasses) {
         // if the body class is a number, then we should swap it
@@ -378,7 +392,7 @@ function swapLayout() {
             if (nextNumber > 6) {
                 nextNumber = 1;
             }
-            bodyClasses.add(numberToWord[nextNumber-1]);
+            bodyClasses.add(numberToWord[nextNumber - 1]);
             console.log(nextNumber)
             break;
         }
@@ -401,6 +415,7 @@ function clearphoto() {
 
 let rotated_once = false;
 function takepicture(rotated = true) {
+    swapLayout("two");
     // if video isnt ready dont take a picture
     if (!streaming) {
         return;
@@ -425,6 +440,7 @@ function takepicture(rotated = true) {
         clearphoto();
     }
 }
+
 
 function dataURLtoBlob(dataURL) {
     let array, binary, i, len;
@@ -512,6 +528,7 @@ function sendRequestForScan(include_scan = false) {
         requestObject.scan = 1;
     }
     roundaboutRequest(requestObject, location);
+    swapLayout("three");
 }
 
 placement = 0;
@@ -529,17 +546,17 @@ function updateDisplay() {
     }
     for (const child in [...Array(numberOfItems).keys()]) {
         if (child == placement) {
-            topDisplay.children[child].classList.remove("offScreen")
-            topDisplay.children[child].classList.remove("offScreenUp")
+            topDisplay.children[child].classList.remove("lastItem")
             topDisplay.children[child].classList.add("currentItem")
-        } else if (child > placement) {
+            topDisplay.children[child].classList.remove("nextItem")
+        } else if (child == (placement - 1) || (placement == 0 && child == numberOfItems - 1)) {
+            topDisplay.children[child].classList.add("lastItem")
             topDisplay.children[child].classList.remove("currentItem")
-            topDisplay.children[child].classList.add("offScreen")
-            topDisplay.children[child].classList.remove("offScreenUp")
+            topDisplay.children[child].classList.remove("nextItem")
         } else {
+            topDisplay.children[child].classList.remove("lastItem")
             topDisplay.children[child].classList.remove("currentItem")
-            topDisplay.children[child].classList.remove("offScreen")
-            topDisplay.children[child].classList.add("offScreenUp")
+            topDisplay.children[child].classList.add("nextItem")
         }
     }
     // if we havent taken a shot in timeout_shot seconds, take a shot
@@ -555,6 +572,7 @@ function updateDisplay() {
 }
 
 function addStoryToDisplay(story) {
+    swapLayout("five");
     const storyDiv = document.createElement("div");
     const imageAttributionDiv = document.createElement("div");
     const storyInfoDiv = document.createElement("div");
@@ -893,6 +911,7 @@ function sse() {
                     closeIV();
                     break;
                 case "sendState":
+                    swapLayout("four");
                     updateState(data.state)
                     updateDisplay();
                     break;
@@ -932,3 +951,16 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
     // Attempt to connect to the stream
     sse();
 }
+
+const returnButton = document.querySelector("#speedReturn")
+const speedCloseButton = document.querySelector("#speedClose")
+
+returnButton.addEventListener("click", () => {
+    //    closeIV();
+    swapLayout("five");
+})
+
+speedCloseButton.addEventListener("click", () => {
+    // closeIV();
+    swapLayout("one");
+})

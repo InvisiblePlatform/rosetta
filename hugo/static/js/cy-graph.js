@@ -197,27 +197,43 @@ const filterBar = document.getElementById('neoGraphFilterBar')
 for (const type in edgeTypeMappings) {
     const typeButton = document.createElement('button')
     typeButton.classList.add('filterButton')
-    typeButton.innerHTML = `<span>${edgeTypeMappings[type].label.replace(/ of$/, '')}</span>`
+    typeButton.innerHTML = `${edgeTypeMappings[type].label.replace(/ of$/, '')}`
     typeButton.setAttribute('data-type', type)
+    typeButton.type = 'checkbox'
     typeButton.classList.add(type)
     typeButton.onclick = function (evt) {
-        // we want to toggle a class on this button
-        // and then show or hide the edges of this type
-        const type = evt.target.getAttribute('data-type')
-        const edges = cy.elements(`edge.${type}`)
-        if (edges.length > 0) {
-            if (edges.hasClass('faded')) {
-                edges.removeClass('faded')
-            } else {
-                edges.addClass('faded')
-            }
+        // all of the buttons should start active
+        // when we click for the first time we should deactivate all other buttons
+        // and then activate this button
+        var activeButtons = document.querySelectorAll('.filterButton:checked')
+        if (activeButtons.length === filterBar.children.length) {
+            activeButtons.forEach(button => {
+                button.toggleAttribute('checked')
+            })
         }
-        evt.target.classList.toggle('active')
+        evt.target.toggleAttribute('checked')
+
+        // we then go through all the buttons to see which ones are active
+        // and we can then filter the edges based on the active buttons
+        const activeTypes = []
+        activeButtons = document.querySelectorAll('.filterButton:checked')
+        activeButtons.forEach(button => {
+            activeTypes.push(button.getAttribute('data-type'))
+        })
+        cy.startBatch()
+        cy.elements().edges().forEach(edge => {
+            if (activeTypes.includes(edge.data().edgeType)) {
+                edge.removeClass('faded')
+            } else {
+                edge.addClass('faded')
+            }
+        })
+        cy.endBatch()
     }
 
-    typeButton.style.backgroundColor = networkColours[edgeTypeMappings[type].colour]
+    // typeButton.style.backgroundColor = networkColours[edgeTypeMappings[type].colour]
     filterBar.appendChild(typeButton)
-
+    typeButton.toggleAttribute('checked')
     edgeMappings.push(
         {
             selector: `edge.${type}`,
