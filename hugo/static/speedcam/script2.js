@@ -368,8 +368,8 @@ function startupSpeedCam() {
         speedcamState = JSON.parse(window.localStorage.getItem("speedcamState"));
     }
 }
-function openSpeedCam(brand = false) {
-    if (brand) {
+function openSpeedCam(branda = false) {
+    if (branda) {
         changeLayout("voice")
         itsOpen = true;
     }
@@ -379,14 +379,14 @@ function openSpeedCam(brand = false) {
         currentItem = document.querySelector(".currentItem");
         if (currentItem && !brand && currentItem.hasAttribute("data-domain")) {
             itsOpen = true;
-            brand = currentItem.getAttribute("data-domain");
+            branda = currentItem.getAttribute("data-domain");
         }
     }
-    if (brand) {
-        console.log(`Opening ${brand}`)
+    if (branda) {
+        console.log(`Opening ${branda}`)
         manualSetup(brand);
         setTimeout(() => {
-            sendResponseToSSERequest("domainOpen", brand)
+            sendResponseToSSERequest("domainOpen", branda)
         }, 1000);
     }
 }
