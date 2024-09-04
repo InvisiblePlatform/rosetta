@@ -582,7 +582,7 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
                     if (addNewFilesToGraph) {
                         addNewFile(`${dataURL}${connections}`, false, localX, localY, wikidataid, fulllist, container);
                     } else {
-                        if (!skipCY) {
+                        if (!cy || cy.destroyed()) {
                             startCY(`${dataURL}${connections}`, wikidataid);
                         }
                         addNewFile(`${dataURL}${connections}`, true, localX, localY, wikidataid, fulllist, container);

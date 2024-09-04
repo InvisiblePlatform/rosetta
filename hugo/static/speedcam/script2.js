@@ -434,7 +434,6 @@ function startupSpeedCam() {
 }
 function openSpeedCam(brand = false) {
     changeLayout("voice")
-    c
     if (brand) {
         itsOpen = true;
     }
@@ -462,6 +461,7 @@ function closeIV() {
     // we also need to blank out the content div
     speedContent.innerHTML = "";
     speedContent.style = "";
+    cy.destroy();
     sendResponseToSSERequest("domainClose", {})
 }
 
