@@ -216,6 +216,7 @@ let readCounter = 0;
 function runOnTargetInfo(targetInfo) {
     waitingTimeoutTime = Date.now();
     closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
+    console.log(targetInfo)
 
     // every 40 reads we should send a response to the server
     readCounter += 1;
