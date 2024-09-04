@@ -172,7 +172,6 @@ let speedcamState = {
         "timeout_limit": 0,
     },
 }
-
 async function connectSerial(initport = null) {
     try {
         let reader;
@@ -213,9 +212,20 @@ async function connectSerial(initport = null) {
 let closeTimeoutObject = null;
 let shotTimeoutObject = null;
 let limitTimeoutObject = null;
+let readCounter = 0;
 function runOnTargetInfo(targetInfo) {
     waitingTimeoutTime = Date.now();
     closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
+
+    // every 40 reads we should send a response to the server
+    readCounter += 1;
+    if (readCounter > 40) {
+        sendResponseToSSERequest("read", targetInfo)
+        readCounter = 0;
+    }
+
+
+
     if (document.getElementById("output_output")) {
         // Parse the JSON object
         document.getElementById("range_number").textContent = targetInfo.target_range;
