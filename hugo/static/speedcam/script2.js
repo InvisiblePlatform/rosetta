@@ -294,6 +294,7 @@ function runOnTargetInfo(targetInfo) {
             console.log("Skipping shot, already taken")
         } else {
             console.log("Above threshold, taking shot")
+            doChain();
             sendRequestForScan(true);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
@@ -530,6 +531,7 @@ function sendRequestForScan(include_scan = false) {
         requestObject.scan = 1;
     }
     roundaboutRequest(requestObject, location);
+
 }
 
 placement = 0;
@@ -903,13 +905,11 @@ function sse() {
                 return;
             }
             console.log(data.text);
-            addPopover(data.text)
         }
         if (data.hasOwnProperty("command")) {
             console.log(data.command);
             switch (data.command) {
                 case "shot":
-                    addPopover("Shot")
                     sendRequestForScan(false);
                     break;
                 case "scan":
@@ -928,6 +928,7 @@ function sse() {
                     break;
                 case "getState":
                     console.log(data.state)
+                    changeLayout("ready")
                     break;
                 case "setDomain":
 
@@ -935,13 +936,13 @@ function sse() {
                     break;
                 case "pause":
                     console.log(data)
-                    changeLayout();
+                    changeLayout("subvert", true);
                     break;
                 case "resume":
+                    changeLayout("subvert")
                     console.log(data)
                     break;
                 case "error":
-                    addPopover(data.error)
                     console.log(data.error)
                     break;
                 case "alive":
@@ -978,19 +979,6 @@ document.onkeydown = function (e) {
     if (e.key === "a") {
         createPopoverApiKey()
     }
-    if (e.key === " ") {
-        //takepicture();
-        addPopover("Rotated")
-        rotatedFeed = !rotatedFeed;
-        canvas = document.getElementById("canvas");
-        currentWidth = canvas.width
-        currentHeight = canvas.height
-        canvas.width = currentHeight
-        canvas.height = currentWidth
-        canvas.setAttribute("width", currentHeight);
-        canvas.setAttribute("height", currentWidth);
-        document.getElementById("video").classList.toggle("notRotated")
-    }
 };
 // Set up our event listener to run the startup process
 // once loading is complete.
@@ -1012,6 +1000,40 @@ bottomBar.addEventListener("click", (event) => {
         createPopoverOptions()
     }
 })
+
+function doChain() {
+    if (!systemCheck()) {
+        return;
+    }
+
+    if (stateObj.classList.contains("camera")) {
+        changeStateObj("setupComplete")
+        changeLayout("ready")
+        return
+    }
+
+    changeStateObj("brand")
+    if (stateObj.classList.contains("brand")) {
+        setTimeout(() => {
+            changeStateObj("analyse")
+        }, 1000);
+    }
+
+    if (stateObj.classList.contains("analyse")) {
+        setTimeout(() => {
+            changeStateObj("assess")
+        }, 2000);
+    }
+
+
+    if (!isCurrentLayout("subvertisments")) {
+        setTimeout(() => {
+            changeStateObj("subvert")
+        }, 3000);
+    }
+
+
+}
 
 stateObj.addEventListener("click", (event) => {
     if (stateObj.classList.contains("noSensor")) {
