@@ -105,7 +105,7 @@ function stateController() {
 function setBottomBarBrand(brand, reset = false) {
     // we should ignore this function if the layout is voice
     // or ready or no layout is set
-    if (!isCurrentLayout("subvert")) {
+    if (!isCurrentLayout("subvert") && brand) {
         return
     }
 
@@ -432,9 +432,9 @@ function startupSpeedCam() {
         speedcamState = JSON.parse(window.localStorage.getItem("speedcamState"));
     }
 }
-function openSpeedCam(branda = false) {
+function openSpeedCam(brand = false) {
     changeLayout("voice")
-    if (branda) {
+    if (brand) {
         itsOpen = true;
     }
     if (isCurrentLayout("subvertisments")) {
@@ -446,12 +446,12 @@ function openSpeedCam(branda = false) {
             branda = currentItem.getAttribute("data-domain");
         }
     }
-    if (branda) {
-        console.log(`Opening ${branda}`)
-        manualSetup(branda);
+    if (brand) {
+        console.log(`Opening ${brand}`)
+        manualSetup(brand);
         changeLayout("voice")
         setTimeout(() => {
-            sendResponseToSSERequest("domainOpen", branda)
+            sendResponseToSSERequest("domainOpen", brand)
         }, 1000);
     }
 }
@@ -977,7 +977,9 @@ function sse() {
                     sendRequestForScan(false);
                     break;
                 case "scan":
-                    stateController();
+                    setTimeout(() => {
+                        stateController();
+                    }, 2000);
                     sendRequestForScan(true);
                     break;
                 case "open":

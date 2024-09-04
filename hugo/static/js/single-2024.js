@@ -3208,6 +3208,7 @@ function recalculateList(selector = undefined) {
             }
         }
     }
+
     translator.translatePageTo()
     recalculating = false
 }
