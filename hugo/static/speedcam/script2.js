@@ -437,7 +437,9 @@ function closeIV() {
     // we also need to blank out the content div
     speedContent.innerHTML = "";
     speedContent.style = "";
-    cy.elements().remove();
+    if (cy !== undefined) {
+        cy.elements().remove();
+    }
     sendResponseToSSERequest("domainClose", {})
 }
 
