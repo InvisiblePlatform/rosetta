@@ -501,6 +501,7 @@ iframe {
 
 }
 
+
 .story {
     font-family: 'Space Grotesk', sans-serif;
     background-size: cover;
@@ -551,6 +552,12 @@ iframe {
         object-fit: cover;
         background-color: #000000;
     }
+}
+
+.storyOverlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
 }
 
 .story.nextItem {

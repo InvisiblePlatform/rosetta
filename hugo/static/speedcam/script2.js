@@ -1028,7 +1028,8 @@ function doChain() {
 
     if (!isCurrentLayout("subvertisments")) {
         setTimeout(() => {
-            changeStateObj("subvert")
+            changeLayout("subvert")
+            changeStateObj()
         }, 3000);
     }
 
