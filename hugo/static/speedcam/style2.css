@@ -140,6 +140,18 @@ body {
             --status: "Camera Connected";
         }
 
+        &.connectedToServer {
+            background-color: var(--score-2);
+            --icon: url(/icon/gear.svg);
+            --status: "Connected to Server";
+        }
+
+        &.stateRecieved {
+            background-color: var(--score-3);
+            --icon: url(/icon/gear.svg);
+            --status: "State Recieved";
+        }
+
         &.setupComplete {
             background-color: var(--score-10);
             --icon: url(/icon/tick.svg);
@@ -260,6 +272,7 @@ body {
 
         #popArea {
             display: grid;
+            height: 500px;
         }
     }
 }
@@ -630,7 +643,6 @@ body>#graph-box {
 }
 
 #popArea {
-    grid-area: speed;
     display: none;
 }
 

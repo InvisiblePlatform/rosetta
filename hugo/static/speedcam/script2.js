@@ -77,6 +77,7 @@ function changeLayout(className, dontRoll = false) {
     }
     if (className == "ready") {
         document.body.classList.add("layoutReady")
+        changeStateObj()
     } else if (className == "subvert") {
         document.body.classList.add("layoutSubvertisments")
         if (!dontRoll) {
@@ -213,10 +214,6 @@ let closeTimeoutObject = null;
 let shotTimeoutObject = null;
 let limitTimeoutObject = null;
 function runOnTargetInfo(targetInfo) {
-    // add current time to the waitingTimeoutTime
-    if (!speedcamState.frontend.range_enabled) {
-        return;
-    }
     waitingTimeoutTime = Date.now();
     closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
     if (document.getElementById("output_output")) {
@@ -359,7 +356,6 @@ function startupSpeedCam() {
         speedcamState = JSON.parse(window.localStorage.getItem("speedcamState"));
     }
 }
-
 function openSpeedCam(brand = false) {
     if (brand) {
         changeLayout("voice")
@@ -818,6 +814,32 @@ function triggerAliveLoop(timeout) {
     }, timeout)
 }
 
+function systemCheck() {
+    // Check if the system is still alive
+    // if the last event time is more than 30 seconds ago
+    // then we should change the state to connectionLost
+    // and then we should try to reconnect
+    const current_time = Date.now();
+    const lastEventTime = window.localStorage.getItem("lastEventTime");
+    if (lastEventTime) {
+        if (current_time - lastEventTime > 30000) {
+            changeStateObj("connectionLost");
+        }
+    }
+
+    // Check that the sensor is still connected
+    if (!navigator.serial) {
+        changeStateObj("noSensor");
+    }
+    // Check that the camera is still connected
+    if (!navigator.mediaDevices) {
+        changeStateObj("noCamera");
+        return false
+    }
+    return true
+}
+
+
 function sse() {
     // Create a new EventSource
     // if local storage has a api_session_token, add it to the headers
@@ -846,15 +868,16 @@ function sse() {
         if (triggerAliveStarted == "") {
             // 30 seconds
             triggerAliveLoop(30000)
+            changeStateObj("connectedToServer")
             sendCommandToRoundabout("sendState", {})
         }
 
     });
     source.addEventListener('error', function (e) {
         if (e.readyState == EventSource.CLOSED) {
-            changeStateObj("connectionLost", true);
+            changeStateObj("connectionLost");
         }
-        changeStateObj("connectionLost", true);
+        changeStateObj("connectionLost");
     });
     source.onmessage = function (event) {
         // On event, set a localStorage var to current time
@@ -890,6 +913,7 @@ function sse() {
                 case "sendState":
                     updateState(data.state)
                     updateDisplay();
+                    changeStateObj("stateReceived")
                     break;
                 case "getState":
                     console.log(data.state)
@@ -976,4 +1000,34 @@ bottomBar.addEventListener("click", (event) => {
     } else {
         createPopoverOptions()
     }
+})
+
+stateObj.addEventListener("click", (event) => {
+    if (stateObj.classList.contains("noSensor")) {
+        connectSerial();
+        printOutForLocalMode("Connecting to Sensor")
+        return
+    }
+    if (stateObj.classList.contains("noCamera")) {
+        startCam();
+        printOutForLocalMode("Connecting to Camera")
+        return
+    }
+    if (stateObj.classList.contains("noServer")) {
+        sse();
+        printOutForLocalMode("Connecting to Server")
+        return
+    }
+    if (stateObj.classList.contains("noApiKey")) {
+        createPopoverApiKey();
+        printOutForLocalMode("No API Key")
+        return
+    }
+    if (stateObj.classList.contains("setupComplete")) {
+        changeLayout("ready")
+        printOutForLocalMode("Setup Complete")
+        return
+    }
+    changeStateObj("setupComplete")
+
 })
