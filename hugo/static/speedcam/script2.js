@@ -40,6 +40,15 @@ function changeStateObj(className, retainState = false, genericError = false) {
     if (stateObj.classList.contains("setupComplete")) {
         return;
     }
+    // if there is no layout set then we should allow updating state 
+    // to "analyse" or "assess" or "brand"
+    if (!getCurrentLayout()) {
+        if (className == "analyse" || className == "assess" || className == "brand") {
+            return;
+        }
+    }
+
+
     if (genericError) {
         stateObj.style = `--error: "${genericError}"`;
         retainState = true;
@@ -93,6 +102,12 @@ function stateController() {
 
 
 function setBottomBarBrand(brand, reset = false) {
+    // we should ignore this function if the layout is voice
+    // or ready or no layout is set
+    if (!isCurrentLayout("subvert")) {
+        return
+    }
+
     bottomBar = document.getElementById("bottomBar");
     if (reset) {
         bottomBar.classList.remove("hide")
@@ -1048,41 +1063,6 @@ bottomBar.addEventListener("click", (event) => {
         createPopoverOptions()
     }
 })
-
-function doChain() {
-    if (!systemCheck()) {
-        return;
-    }
-
-    if (stateObj.classList.contains("camera")) {
-        changeStateObj("setupComplete")
-        changeLayout("ready")
-        return
-    }
-
-    changeStateObj("brand")
-    if (stateObj.classList.contains("brand")) {
-        setTimeout(() => {
-            changeStateObj("analyse")
-        }, 1000);
-    }
-
-    if (stateObj.classList.contains("analyse")) {
-        setTimeout(() => {
-            changeStateObj("assess")
-        }, 2000);
-    }
-
-
-    if (!isCurrentLayout("subvertisments")) {
-        setTimeout(() => {
-            changeLayout("subvert")
-            changeStateObj()
-        }, 3000);
-    }
-
-
-}
 
 stateObj.addEventListener("click", (event) => {
     if (stateObj.classList.contains("noSensor")) {
