@@ -38,6 +38,7 @@ function changeStateObj(className, retainState = false, genericError = false) {
     // if the current state object is setupcomplete then we should ignore
     // any changes to the state object
     if (stateObj.classList.contains("setupComplete")) {
+        stateObj.classList.remove("setupComplete");
         return;
     }
     // if there is no layout set then we should allow updating state 
