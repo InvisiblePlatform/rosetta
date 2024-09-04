@@ -309,7 +309,7 @@ function runOnTargetInfo(targetInfo) {
     if (targetInfo.target_range < lowerThreshold && currentLayout == "subvert") {
         console.log("Below threshold, opening IV")
         // open IV
-        openSpeedCam();
+        openSpeedCam(currentItem.getAttribute("data-domain"));
 
     }
     // We should renew the timeout if the target is below the threshold, or create it if it doesn't exist
@@ -340,7 +340,6 @@ function runOnTargetInfo(targetInfo) {
                 console.log("Taking shot wait over")
                 clearTimeout(shotTimeoutObject);
                 shotTimeoutObject = null;
-                stateController();
             }, speedcamState.frontend.timeout_shot * 1000);
         }
     }
@@ -419,7 +418,7 @@ function openSpeedCam(brand = false) {
         currentItem = document.querySelector(".currentItem");
         if (currentItem && !brand && currentItem.hasAttribute("data-domain")) {
             itsOpen = true;
-            branda = currentItem.getAttribute("data-domain");
+            brand = currentItem.getAttribute("data-domain");
         }
     }
     if (brand) {
@@ -795,6 +794,9 @@ function createPopoverApiKey() {
 function updateState(stateObj) {
     updated_keys = []
     stateController();
+    setTimeout(() => {
+        stateController();
+    }, 1000);
     for (const key in stateObj) {
         if (key in speedcamState && speedcamState[key] != stateObj[key]) {
             updated_keys.push(key);
@@ -955,9 +957,6 @@ function sse() {
                     sendRequestForScan(false);
                     break;
                 case "scan":
-                    setTimeout(() => {
-                        stateController();
-                    }, 2000);
                     sendRequestForScan(true);
                     break;
                 case "open":
