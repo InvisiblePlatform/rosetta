@@ -505,6 +505,7 @@ iframe {
     font-family: 'Space Grotesk', sans-serif;
     background-size: cover;
     border-radius: 22px;
+    : width:;
     max-height: 240px;
     clip-path: border-box;
 }
@@ -528,6 +529,7 @@ iframe {
         font-size: 40px;
         font-weight: 300;
         text-wrap: balance;
+        place-self: center;
     }
 
     .authorArticle {
