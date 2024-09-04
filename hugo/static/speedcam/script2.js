@@ -225,8 +225,6 @@ function runOnTargetInfo(targetInfo) {
         readCounter = 0;
     }
 
-
-
     if (document.getElementById("output_output")) {
         // Parse the JSON object
         document.getElementById("range_number").textContent = targetInfo.target_range;
@@ -370,7 +368,6 @@ function startupSpeedCam() {
 }
 function openSpeedCam(branda = false) {
     if (branda) {
-        changeLayout("voice")
         itsOpen = true;
     }
     if (isCurrentLayout("subvertisments")) {
@@ -384,6 +381,7 @@ function openSpeedCam(branda = false) {
     }
     if (branda) {
         console.log(`Opening ${branda}`)
+        changeLayout("voice")
         manualSetup(brand);
         setTimeout(() => {
             sendResponseToSSERequest("domainOpen", branda)
@@ -552,7 +550,8 @@ function updateDisplay() {
             topDisplay.children[child].classList.remove("lastItem")
             topDisplay.children[child].classList.add("currentItem")
             topDisplay.children[child].classList.remove("nextItem")
-            topDisplay.children[child].dataset.domain
+            const ourdomain = topDisplay.children[child].dataset.domain
+            setBottomBarBrand(ourdomain)
         } else if (child == (placement - 1) || (placement == 0 && child == numberOfItems - 1)) {
             topDisplay.children[child].classList.add("lastItem")
             topDisplay.children[child].classList.remove("currentItem")
@@ -924,14 +923,13 @@ function sse() {
                 case "sendState":
                     updateState(data.state)
                     updateDisplay();
-                    changeStateObj("stateReceived")
+                    changeLayout("subvert")
                     break;
                 case "getState":
                     console.log(data.state)
                     changeLayout("ready")
                     break;
                 case "setDomain":
-
                     console.log(data)
                     break;
                 case "pause":
