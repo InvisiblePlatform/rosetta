@@ -103,16 +103,16 @@ function stateController() {
 function setBottomBarBrand(brand, reset = false) {
     // we should ignore this function if the layout is voice
     // or ready or no layout is set
-    if (!isCurrentLayout("subvert") && !reset) {
-        return
-    }
-
     bottomBar = document.getElementById("bottomBar");
     if (reset) {
-        bottomBar.classList.remove("hide")
+        bottomBar.classList.add("hide")
         bottomBar.removeAttribute("data-brand")
         return
     }
+    if (!isCurrentLayout("subvert")) {
+        return
+    }
+
     if (!brand) {
         bottomBar.classList.add("hide")
         bottomBar.removeAttribute("data-brand")
@@ -459,9 +459,7 @@ function closeIV() {
     // we also need to blank out the content div
     speedContent.innerHTML = "";
     speedContent.style = "";
-    if (cy) {
-        cy.destroy();
-    }
+    cy.elements().remove();
     sendResponseToSSERequest("domainClose", {})
 }
 

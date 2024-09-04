@@ -374,6 +374,8 @@ function startCY(url, wikidataid) {
             // the data we collect is organised like {"nodes": [], "edges": []}
             // so we need to convert it to the format that cytoscape expects
             elements = []
+            nodes = {}
+            seenNodes = []
             console.log(data)
             data.nodes.forEach(node => {
                 const retObject = addNodeToNodes(node)
@@ -399,140 +401,145 @@ function startCY(url, wikidataid) {
             const desiredEdgeLength = Math.max(200, Math.min(nodeCount * 20, 600));
             layoutCy.elk["stress.desiredEdgeLength"] = desiredEdgeLength
             // we also need to make a style object
-            cy = cytoscape({
-                container: document.getElementById('root'),
-                elements,
-                layout: layoutTest,
-                nodeDimensionsIncludeLabels: true,
-                // textureOnViewport: true,
-                // hideEdgesOnViewport: true,
-                animate: true,
-                maxZoom: 1,
-                minZoom: 0.1,
-                style: [
-                    {
-                        selector: 'edge',
-                        style: {
-                            'curve-style': 'taxi',
-                            //'curve-style': 'bezier',
-                            'target-arrow-shape': 'triangle',
-                            'arrow-scale': 0.95,
-                            'width': 6,
-                            'z-index-compare': 'manual',
-                            'target-distance-from-node': function (edge) {
-                                if (edge.target().isChild()) {
-                                    offset = edge.target().parent().height() / 2
-                                    return `${offset}px`
+            if (!cy) {
+                cy = cytoscape({
+                    container: document.getElementById('root'),
+                    elements,
+                    layout: layoutTest,
+                    nodeDimensionsIncludeLabels: true,
+                    // textureOnViewport: true,
+                    // hideEdgesOnViewport: true,
+                    animate: true,
+                    maxZoom: 1,
+                    minZoom: 0.1,
+                    style: [
+                        {
+                            selector: 'edge',
+                            style: {
+                                'curve-style': 'taxi',
+                                //'curve-style': 'bezier',
+                                'target-arrow-shape': 'triangle',
+                                'arrow-scale': 0.95,
+                                'width': 6,
+                                'z-index-compare': 'manual',
+                                'target-distance-from-node': function (edge) {
+                                    if (edge.target().isChild()) {
+                                        offset = edge.target().parent().height() / 2
+                                        return `${offset}px`
+                                    }
+                                    return '0px'
+                                },
+                                'source-text-offset': function (edge) {
+                                    if (edge.source().selected()) {
+                                        return `200px`
+                                    }
+                                    return `50px`
                                 }
-                                return '0px'
                             },
-                            'source-text-offset': function (edge) {
-                                if (edge.source().selected()) {
-                                    return `200px`
-                                }
-                                return `50px`
+                        },
+                        {
+                            selector: 'edge.realEdge',
+                            style: { 'opacity': 0 }
+                        },
+                        {
+                            selector: 'edge[label]:selected',
+                            style: {
+                                'source-label': 'data(source-label)',
+                                // 'edge-text-rotation': 'autorotate',
+                                'text-background-color': 'white',
+                                'text-background-shape': 'roundrectangle',
+                                'text-background-opacity': 1,
+                                'text-border-color': 'black',
+                                'text-border-width': 1,
+                                'text-border-opacity': 1,
+                                'font-size': 10,
+                                'height': 20,
                             }
                         },
-                    },
-                    {
-                        selector: 'edge.realEdge',
-                        style: { 'opacity': 0 }
-                    },
-                    {
-                        selector: 'edge[label]:selected',
-                        style: {
-                            'source-label': 'data(source-label)',
-                            // 'edge-text-rotation': 'autorotate',
-                            'text-background-color': 'white',
-                            'text-background-shape': 'roundrectangle',
-                            'text-background-opacity': 1,
-                            'text-border-color': 'black',
-                            'text-border-width': 1,
-                            'text-border-opacity': 1,
-                            'font-size': 10,
-                            'height': 20,
-                        }
-                    },
-                    {
-                        style: {
-                            'background-color': '#313131',
-                            'text-wrap': 'wrap',
-                            'color': 'white',
-                            'label': 'data(label)',
-                            'text-valign': 'center',
-                            'text-halign': 'center',
-                            'font-size': 10,
-                            'shape': 'roundrectangle',
-                            'corner-radius': 200,
-                            'padding': 12,
-                            'border-width': 2,
-                            'border-color': 'black',
-                            'font-size': '20px',
-                            'font-family': ['Space Grotesk', 'sanserif'],
-                            'text-background-padding': 10,
-                            'text-background-shape': 'roundrectangle',
-                            'min-width': 'data(labelSize)',
-                            'z-index': 10,
-                            'z-index-compare': 'manual',
-                            'z-compound-depth': 'top',
+                        {
+                            style: {
+                                'background-color': '#313131',
+                                'text-wrap': 'wrap',
+                                'color': 'white',
+                                'label': 'data(label)',
+                                'text-valign': 'center',
+                                'text-halign': 'center',
+                                'font-size': 10,
+                                'shape': 'roundrectangle',
+                                'corner-radius': 200,
+                                'padding': 12,
+                                'border-width': 2,
+                                'border-color': 'black',
+                                'font-size': '20px',
+                                'font-family': ['Space Grotesk', 'sanserif'],
+                                'text-background-padding': 10,
+                                'text-background-shape': 'roundrectangle',
+                                'min-width': 'data(labelSize)',
+                                'z-index': 10,
+                                'z-index-compare': 'manual',
+                                'z-compound-depth': 'top',
+                            },
+                            selector: 'node.realNode',
                         },
-                        selector: 'node.realNode',
-                    },
-                    {
-                        selector: 'node.aux-node',
-                        style: {
-                            'width': 1,
-                            'height': 1,
-                            'font-size': 0,
-                            'label': ' ',
-                            'padding': 0,
-                            'z-index': 0,
-                            'opacity': 0,
-                            'shape': 'rectangle',
-                        }
-                    },
-                    {
-                        selector: 'node.Q5',
-                        style: {
-                            'border-width': 2,
-                            'border-color': 'black',
-                            'shape': 'rectangle',
-                        }
-                    },
-                    {
-                        selector: '.faded',
-                        style: {
-                            'line-color': '#ddd',
-                            'target-arrow-color': '#ddd',
-                            'z-index-compare': 'manual',
-                            'z-index': -2,
-                            'opacity': 0.5,
-                        }
-                    },
-                    {
-                        selector: 'edge.highlightEdge',
-                        style: {
-                            'line-color': 'red',
-                            'target-arrow-color': 'red',
-                            'z-index-compare': 'manual',
-                            'z-index': 10,
-                            'opacity': 1,
-                        }
-                    },
-                    {
-                        selector: 'node.realNode:selected',
-                        style: {
-                            "shape": "round-rectangle",
-                            "text-background-shape": "round-rectangle",
-                            "corner-radius": 1000,
-                            'min-width': 'data(labelSize)',
-                            'border-color': 'black',
-                            'border-width': 6,
-                        }
-                    },
-                    ...edgeMappings
-                ],
-            })
+                        {
+                            selector: 'node.aux-node',
+                            style: {
+                                'width': 1,
+                                'height': 1,
+                                'font-size': 0,
+                                'label': ' ',
+                                'padding': 0,
+                                'z-index': 0,
+                                'opacity': 0,
+                                'shape': 'rectangle',
+                            }
+                        },
+                        {
+                            selector: 'node.Q5',
+                            style: {
+                                'border-width': 2,
+                                'border-color': 'black',
+                                'shape': 'rectangle',
+                            }
+                        },
+                        {
+                            selector: '.faded',
+                            style: {
+                                'line-color': '#ddd',
+                                'target-arrow-color': '#ddd',
+                                'z-index-compare': 'manual',
+                                'z-index': -2,
+                                'opacity': 0.5,
+                            }
+                        },
+                        {
+                            selector: 'edge.highlightEdge',
+                            style: {
+                                'line-color': 'red',
+                                'target-arrow-color': 'red',
+                                'z-index-compare': 'manual',
+                                'z-index': 10,
+                                'opacity': 1,
+                            }
+                        },
+                        {
+                            selector: 'node.realNode:selected',
+                            style: {
+                                "shape": "round-rectangle",
+                                "text-background-shape": "round-rectangle",
+                                "corner-radius": 1000,
+                                'min-width': 'data(labelSize)',
+                                'border-color': 'black',
+                                'border-width': 6,
+                            }
+                        },
+                        ...edgeMappings
+                    ],
+                })
+            }
+            else {
+                cy.add(elements)
+            }
             // cy.edgeConnections({
             //     maxPasses: 20,
             // }).addEdges(edges);
