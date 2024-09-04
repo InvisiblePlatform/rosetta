@@ -437,7 +437,7 @@ function openSpeedCam(brand = false) {
     if (brand) {
         itsOpen = true;
     }
-    if (isCurrentLayout("subvertisments")) {
+    if (currentLayout == "subvert") {
         // if the content area isnt off screen, then we need to close it
         // then whatever item is set to current item will be opened
         currentItem = document.querySelector(".currentItem");
