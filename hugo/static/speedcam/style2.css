@@ -271,7 +271,7 @@ body {
         }
 
         #popArea {
-            display: grid;
+            display: none;
             height: 500px;
         }
     }
