@@ -28,6 +28,8 @@ body {
     #backToWaiting {
         width: 40px;
         height: 40px;
+        border: none;
+        background-color: transparent;
     }
 
     #contentAreaDiv {
@@ -285,6 +287,8 @@ body {
 #root {
     grid-area: neograph;
     height: unset;
+    border-radius: 20px;
+    clip-path: border-box;
 }
 
 #disclaimer {
@@ -299,6 +303,8 @@ body {
     z-index: 1000;
     background-color: #fff;
     width: var(--fullwidth);
+    border-radius: 20px;
+    clip-path: border-box;
 }
 
 #speedCamButtons {
@@ -330,10 +336,19 @@ body {
     }
 }
 
+#neoGraph {
+    grid-area: neograph;
+    width: 100%;
+    height: 100%;
+    clip-path: border-box;
+    z-index: 1;
+    border-radius: 20px;
+}
+
 
 :root {
     touch-action: pan-x pan-y;
-    height: 100%
+    height: 100%;
 }
 
 .noDebug {

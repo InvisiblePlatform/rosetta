@@ -309,7 +309,7 @@ function runOnTargetInfo(targetInfo) {
     if (targetInfo.target_range < lowerThreshold && currentLayout == "subvert") {
         console.log("Below threshold, opening IV")
         // open IV
-        openSpeedCam(currentItem.getAttribute("data-domain"));
+        openSpeedCam();
 
     }
     // We should renew the timeout if the target is below the threshold, or create it if it doesn't exist
