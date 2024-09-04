@@ -69,7 +69,7 @@ body {
     }
 
     #bottomBar[data-brand] {
-        --status: "Approach the screen to Uncover " attr(data-brand);
+        --status: "Approach the screen to uncover " attr(data-brand);
     }
 
     #stateObj {

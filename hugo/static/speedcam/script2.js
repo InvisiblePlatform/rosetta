@@ -29,10 +29,10 @@ let keepStateObjectStatic = false;
 function changeStateObj(className, retainState = false, genericError = false) {
     // this removes the class from the stateObj
     // and then adds the new class
-    if (isCurrentLayout("voice")) {
+    if (currentLayout == "voice") {
         return
     }
-    if (isCurrentLayout("subvert")) {
+    if (currentLayout == "subvert") {
         return
     }
     // if the current state object is setupcomplete then we should ignore
@@ -41,9 +41,9 @@ function changeStateObj(className, retainState = false, genericError = false) {
         stateObj.classList.remove("setupComplete");
         return;
     }
-    // if there is no layout set then we should allow updating state 
+    // if there is no layout set then we shouldnt allow updating state 
     // to "analyse" or "assess" or "brand"
-    if (!getCurrentLayout()) {
+    if (currentLayout == "") {
         if (className == "analyse" || className == "assess" || className == "brand") {
             return;
         }
@@ -75,11 +75,11 @@ function stateController() {
     // then we should change the layout to subvert.
     // then we start over. this shouldnt be able to be triggered
     // on any layout other than ready.
-    if (isCurrentLayout("voice")) {
+    if (currentLayout == "voice") {
         stateStep = 0;
         return
     }
-    if (isCurrentLayout("subvert")) {
+    if (currentLayout == "subvert") {
         stateStep = 0;
         return
     }
@@ -120,11 +120,11 @@ function setBottomBarBrand(brand, reset = false) {
 }
 
 const staticClassesForBody = ["speedbody"]
-// ["ready", "subvertisments", "voice"]
+// ["ready", "subvert", "voice"]
 function changeLayout(className, dontRoll = false) {
     // this removes the class from the body
     // and then adds the new class
-    currentClassList = document.body.classList;
+    const currentClassList = document.body.classList;
     for (const currentClass of currentClassList) {
         if (staticClassesForBody.includes(currentClass)) {
             continue;
@@ -137,10 +137,10 @@ function changeLayout(className, dontRoll = false) {
         currentLayout = "ready";
     } else if (className == "subvert") {
         document.body.classList.add("layoutSubvertisments")
+        currentLayout = "subvert";
         if (!dontRoll) {
             updateDisplay();
         }
-        currentLayout = "subvert";
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
@@ -156,29 +156,6 @@ function changeLayout(className, dontRoll = false) {
         document.body.classList.add(className);
     }
     printOutForLocalMode(`Layout: ${className}`)
-}
-
-function getCurrentLayout() {
-    currentClassList = document.body.classList;
-    for (const currentClass of currentClassList) {
-        if (staticClassesForBody.includes(currentClass)) {
-            continue;
-        }
-        return currentClass;
-    }
-}
-
-function isCurrentLayout(className) {
-    currentClassList = document.body.classList;
-    for (const currentClass of currentClassList) {
-        if (staticClassesForBody.includes(currentClass)) {
-            continue;
-        }
-        if (currentClass == className) {
-            return true;
-        }
-    }
-    return false;
 }
 
 function printOutForLocalMode(string, object = null) {
@@ -281,11 +258,10 @@ let readCounter = 0;
 function runOnTargetInfo(targetInfo) {
     waitingTimeoutTime = Date.now();
     closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
-    console.log(targetInfo)
 
     // every 40 reads we should send a response to the server
     readCounter += 1;
-    if (readCounter > 40) {
+    if (readCounter > 100) {
         sendResponseToSSERequest("read", targetInfo)
         readCounter = 0;
     }
