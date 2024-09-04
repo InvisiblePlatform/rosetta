@@ -882,7 +882,7 @@ function systemCheck() {
     const lastEventTime = window.localStorage.getItem("lastEventTime");
     if (lastEventTime) {
         if (current_time - lastEventTime > 30000) {
-            changeStateObj("connectionLost");
+            // changeStateObj("connectionLost");
         }
     }
 
@@ -934,9 +934,9 @@ function sse() {
     });
     source.addEventListener('error', function (e) {
         if (e.readyState == EventSource.CLOSED) {
-            changeStateObj("connectionLost");
+            //changeStateObj("connectionLost");
         }
-        changeStateObj("connectionLost");
+        //changeStateObj("connectionLost");
     });
     source.onmessage = function (event) {
         // On event, set a localStorage var to current time
