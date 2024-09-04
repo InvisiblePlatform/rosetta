@@ -29,6 +29,17 @@ let keepStateObjectStatic = false;
 function changeStateObj(className, retainState = false, genericError = false) {
     // this removes the class from the stateObj
     // and then adds the new class
+    if (isCurrentLayout("voice")) {
+        return
+    }
+    if (isCurrentLayout("subvert")) {
+        return
+    }
+    // if the current state object is setupcomplete then we should ignore
+    // any changes to the state object
+    if (stateObj.classList.contains("setupComplete")) {
+        return;
+    }
     if (genericError) {
         stateObj.style = `--error: "${genericError}"`;
         retainState = true;
