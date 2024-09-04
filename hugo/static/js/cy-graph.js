@@ -365,6 +365,7 @@ layoutTest = {
     name: 'null',
 }
 
+
 function startCY(url, wikidataid) {
     console.log(url)
     data = fetch(url)
@@ -717,6 +718,10 @@ function addConnectionsFileToGraph(data, startNodeId) {
 // })
 
 function putNodeInfoInExtraDisplay(nodeId) {
+    if (isSpeedcam) {
+        loadPageCore(data.defSite, false, false, false, "speedcontent", true)
+        return
+    }
     const node = cy.getElementById(nodeId)
     const data = node.data()
     const extraDisplay = document.getElementById('extraDisplay')

@@ -13,7 +13,7 @@
     <script>
         document.write('<link href="/css/generic.css?dev=' + Date.now() + '" rel="stylesheet"/>');
         document.write('<link href="/css/neodesign.css?dev=' + Date.now() + '" rel="stylesheet"/>');
-        document.write('<link href="/speedcam/style.css?dev=' + Date.now() + '" rel="stylesheet"/>');
+        document.write('<link href="/speedcam/style2.css?dev=' + Date.now() + '" rel="stylesheet"/>');
     </script>
 
     <title id="pageTitle"></title>
@@ -40,9 +40,10 @@
 </head>
 
 
-<body class="speedbody one">
+<body class="speedbody one" data-focus="graph">
     <video id="video">Video stream not available.</video>
     <div class="contentArea speedCam" id="contentAreaDiv">
+        <div id="stateObj" class="startup"><span class="icon"></span><span class="status"></span> </div>
         <div id="topDisplay">
             <div data-image-id="759" data-url="https://www.reuters.com/article/us-volkswagen-emissions-idUSKBN15G3NX"
                 data-domain="boschcom" data-date="2017-02-01-00:00" class="story currentItem"
@@ -86,46 +87,37 @@
                 </div>
             </div>
             <div data-image-id="140"
-            data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
-            data-domain="logitechcom" data-date="2013-10-02-00:00" class="story lastItem"
-            style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
-            <div class="attribution">
-                <div>Unsplash</div>
-                <div></div>
+                data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
+                data-domain="logitechcom" data-date="2013-10-02-00:00" class="story lastItem"
+                style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
+                <div class="attribution">
+                    <div>Unsplash</div>
+                    <div></div>
+                </div>
+                <div class="storyInfo">
+                    <div class="title">"How Logitecsdfecrets in China"</div><img class="logo"
+                        src="https://logo.clearbit.com/logitech.com">
+                    <div class="authorArticle">Bloomberg.com</div>
+                </div>
             </div>
-            <div class="storyInfo">
-                <div class="title">"How Logitecsdfecrets in China"</div><img class="logo"
-                    src="https://logo.clearbit.com/logitech.com">
-                <div class="authorArticle">Bloomberg.com</div>
+            <div data-image-id="140"
+                data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
+                data-domain="logitechcom" data-date="2013-10-02-00:00" class="story lastItem"
+                style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
+                <div class="attribution">
+                    <div>Unsplash</div>
+                    <div></div>
+                </div>
+                <div class="storyInfo">
+                    <div class="title">"How Logisdfsdfacturing Secrets in China"</div><img class="logo"
+                        src="https://logo.clearbit.com/logitech.com">
+                    <div class="authorArticle">Bloomberg.com</div>
+                </div>
             </div>
-        </div>
-        <div data-image-id="140"
-        data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
-        data-domain="logitechcom" data-date="2013-10-02-00:00" class="story lastItem"
-        style="background-image: url(&quot;https://plus.unsplash.com/premium_photo-1676468709808-09815f5e321e?crop=entropy&amp;cs=tinysrgb&amp;fit=max&amp;fm=jpg&amp;ixid=M3wxMjA3fDB8MXxzZWFyY2h8OXx8Q2hpbmF8ZW58MHwxfHx8MTcyMjEzODU5Nnww&amp;ixlib=rb-4.0.3&amp;q=80&amp;w=1080&quot;);">
-        <div class="attribution">
-            <div>Unsplash</div>
-            <div></div>
-        </div>
-        <div class="storyInfo">
-            <div class="title">"How Logisdfsdfacturing Secrets in China"</div><img class="logo"
-                src="https://logo.clearbit.com/logitech.com">
-            <div class="authorArticle">Bloomberg.com</div>
-        </div>
-    </div>
         </div>
         <canvas id="canvas"></canvas>
-        <div class="output">
-            <img id="photo" alt="The screen capture will appear in this box." />
-        </div>
+        <img id="photo" alt="The screen capture will appear in this box." />
     </div>
-    <section id="titlebar">
-        <span class="bk-bg co-name hideInSmall" style="order:3;"></span>
-    </section>
-    <div id="settings">
-        <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
-    </div>
-
     <div id="speedcontent"></div>
     <section id="disclaimer" style="order: 100;">
         <h2>
@@ -156,30 +148,37 @@
             </button>
         </div>
     </div>
-    <div id="extraDisplay"></div>
-    <div id="neoGraphFilterBar"></div>
-    <div id="neoGraphTopBar">
-        <span id="neoGraphControlAnchor">
-            <button type="button" class="squareButton in" onclick="zoomByFactor(1.25)">
-            </button>
-            <button type="button" class="squareButton out" onclick="zoomByFactor(0.75)">
-            </button>
-            <button type="button" class="squareButton fit" onclick="cy.fit()">
-            </button>
-            <button type="button" class="squareButton recalc" onclick="resetNodeInternalsOnTimeoutCy(false, 0, true)">
-            </button>
-        </span>
-        <div id="neoGraphTitle">Network Graph</div>
-        <button type="button" class="squareButton" onclick="closeNetworkGraph()" id="neoGraphClose"></button>
+    <div id="neoGraph">
+        <div id="neoGraphFilterBar"></div>
+        <div id="neoGraphTopBar">
+            <span id="neoGraphControlAnchor">
+                <button type="button" class="squareButton in" onclick="zoomByFactor(1.25)">
+                </button>
+                <button type="button" class="squareButton out" onclick="zoomByFactor(0.75)">
+                </button>
+                <button type="button" class="squareButton fit" onclick="cy.fit()">
+                </button>
+                <button type="button" class="squareButton recalc"
+                    onclick="resetNodeInternalsOnTimeoutCy(false, 0, true)">
+                </button>
+            </span>
+            <div id="neoGraphTitle">Network Graph</div>
+            <button type="button" class="squareButton" onclick="closeNetworkGraph()" style="display: none;"
+                id="neoGraphClose"></button>
+        </div>
     </div>
-    <div id="speedCamButtons"><button type="submit" class="roundedAbout" id="speedClose"></button><button id="speedReturn" class="roundedAbout"></button></div>
-    <section id="Invisible-interaction" class="">
-        <button class="squareButton" id="Invisible-like" onclick="vote('up')"></button>
-        <button class="squareButton" id="Invisible-dislike" onclick="vote('down')"></button>
-        <button class="squareButton" id="Invisible-boycott" onclick="boycott()"> </button>
-        <button class="squareButton" id="Invisible-communications" onclick="comms()"></button>
-        <div class="Invisible-logo"></div>
-    </section>
+    <div id="speedCamButtons">
+        <button type="submit" class="roundedAbout" id="speedClose"></button>
+        <button type="submit" class="roundedAbout" id="speedReturn"></button>
+    </div>
+    <div id="bottomBar"></div>
+    <button id="backToWaiting" onclick="changeLayout()"> </button>
+    <!-- Stuff that is needed to shut up the other site -->
+    <div id="settings">
+        <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
+    </div>
+    <div id="extraDisplay"></div>
+    <span class="bk-bg co-name hideInSmall" style="display:none;"></span>
 </body>
 
 </html>

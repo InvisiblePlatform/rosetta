@@ -1,4 +1,7 @@
 const topDisplay = document.getElementById("topDisplay");
+const contentAreaDiv = document.getElementById("contentAreaDiv");
+const speedContent = document.getElementById("speedcontent");
+const neoGraph = document.getElementById("neoGraph");
 // The width and height of the captured photo. We will set the
 // width to the value defined here, but the height will be
 // calculated based on the aspect ratio of the input stream.
@@ -18,6 +21,106 @@ let video = null;
 let canvas = null;
 let photo = null;
 let rotatedFeed = true;
+const stateObj = document.getElementById("stateObj");
+const httpsStrip = /http[s]*:\/\//g
+
+let isLive = false;
+let keepStateObjectStatic = false;
+function changeStateObj(className, retainState = false, genericError = false) {
+    // this removes the class from the stateObj
+    // and then adds the new class
+    if (genericError) {
+        stateObj.style = `--error: "${genericError}"`;
+        retainState = true;
+        className = "genericError";
+    }
+    if (keepStateObjectStatic) {
+        return;
+    }
+    if (retainState) {
+        keepStateObjectStatic = true;
+    }
+    currentClass = stateObj.classList[0];
+    stateObj.classList.remove(currentClass);
+    stateObj.classList.add(className);
+    printOutForLocalMode(`State Object: ${className}`)
+}
+
+function setBottomBarBrand(brand, reset = false) {
+    bottomBar = document.getElementById("bottomBar");
+    if (reset) {
+        bottomBar.classList.remove("hide")
+        bottomBar.removeAttribute("data-brand")
+        return
+    }
+    if (!brand) {
+        bottomBar.classList.add("hide")
+        bottomBar.removeAttribute("data-brand")
+        return
+    }
+    bottomBar.classList.remove("hide")
+    bottomBar.dataset.brand = brand;
+    printOutForLocalMode(`Bottom Bar: ${brand}`)
+}
+
+const staticClassesForBody = ["speedbody"]
+// ["ready", "subvertisments", "voice"]
+function changeLayout(className, dontRoll = false) {
+    // this removes the class from the body
+    // and then adds the new class
+    currentClassList = document.body.classList;
+    for (const currentClass of currentClassList) {
+        if (staticClassesForBody.includes(currentClass)) {
+            continue;
+        }
+        document.body.classList.remove(currentClass);
+    }
+    if (className == "ready") {
+        document.body.classList.add("layoutReady")
+    } else if (className == "subvert") {
+        document.body.classList.add("layoutSubvertisments")
+        if (!dontRoll) {
+            updateDisplay();
+        }
+    } else if (className == "voice") {
+        document.body.classList.add("layoutVoice")
+        //pauseDisplay();
+    } else if (!className) {
+        setBottomBarBrand(false, true)
+    } else {
+        document.body.classList.add(className);
+    }
+}
+
+function getCurrentLayout() {
+    currentClassList = document.body.classList;
+    for (const currentClass of currentClassList) {
+        if (staticClassesForBody.includes(currentClass)) {
+            continue;
+        }
+        return currentClass;
+    }
+}
+
+function isCurrentLayout(className) {
+    currentClassList = document.body.classList;
+    for (const currentClass of currentClassList) {
+        if (staticClassesForBody.includes(currentClass)) {
+            continue;
+        }
+        if (currentClass == className) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function printOutForLocalMode(string, object = null) {
+    console.log(`Local Mode: ${string}`)
+    if (object) {
+        console.log(object)
+    }
+}
 
 let targetInfo = {
     'target_range': 0,
@@ -69,54 +172,9 @@ let speedcamState = {
     },
 }
 
-let localState = {
-    "peripherals": {
-        "stream": false,
-        "serial": false,
-        "camera": false,
-    },
-    "event_state": {
-        "loop": false,
-        "autoAlive": false,
-    }
-}
-
-let viewStateOrder = {
-    1: {
-        "type": "waiting",
-        "label": "Waiting",
-        "color": "blue",
-    },
-    2: {
-        "type": "scanning",
-        "label": "Scanning",
-        "color": "yellow",
-    },
-    3: {
-        "type": "scanned",
-        "label": "Scanned",
-        "color": "green",
-    },
-    4: {
-        "type": "detected",
-        "label": "Detected",
-        "color": "red",
-    },
-    5: {
-        "type": "display",
-        "label": "Display",
-        "color": "purple",
-    },
-    6: {
-        "type": "voiced",
-        "label": "Voiced",
-        "color": "orange",
-    },
-}
 async function connectSerial(initport = null) {
     try {
         let reader;
-        localState.peripherals.serial = false;
         if (initport) {
             const port = initport;
             await port.open({ baudRate: 9600 });
@@ -127,7 +185,6 @@ async function connectSerial(initport = null) {
             reader = port.readable.getReader();
         }
         console.log("Connected to serial port")
-        localState.peripherals.serial = true;
         let responseString = "";
         while (true) {
             const { value, done } = await reader.read();
@@ -148,6 +205,7 @@ async function connectSerial(initport = null) {
         }
     } catch (error) {
         console.error("Error:", error);
+        changeStateObj("noSensor", true);
     }
 }
 
@@ -201,8 +259,7 @@ function runOnTargetInfo(targetInfo) {
     shotThreshold = speedcamState.frontend.range_shot;
 
     // if we are below the lower threshold, we should open the IV if it is closed
-    contentAreaDiv = document.getElementById("contentAreaDiv");
-    if (targetInfo.target_range < lowerThreshold && !contentAreaDiv.classList.contains("offScreen")) {
+    if (targetInfo.target_range < lowerThreshold && isCurrentLayout("subvertisments")) {
         console.log("Below threshold, opening IV")
         // open IV
         openSpeedCam();
@@ -245,10 +302,11 @@ function startCam() {
         .then((stream) => {
             video.srcObject = stream;
             video.play();
-            console.log("Camera started")
+            changeStateObj("camera");
         })
         .catch((err) => {
             console.error(`An error occurred: ${err}`);
+            changeStateObj("noCamera");
         });
 }
 
@@ -261,13 +319,11 @@ function startupSpeedCam() {
             }
         });
     } else {
-        localState.peripherals.serial = false;
+        changeStateObj("noSensor");
     }
-
     video = document.getElementById("video");
     canvas = document.getElementById("canvas");
     photo = document.getElementById("photo");
-    contentArea = document.getElementsByClassName("contentArea")[0]
     startCam();
     video.addEventListener(
         "canplay",
@@ -291,6 +347,7 @@ function startupSpeedCam() {
     );
     if (window.localStorage.getItem("apiKeyRoundabout")) {
         roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
+        changeStateObj("api");
     } else {
         createPopoverApiKey();
     }
@@ -301,46 +358,18 @@ function startupSpeedCam() {
     if (window.localStorage.getItem("speedcamState")) {
         speedcamState = JSON.parse(window.localStorage.getItem("speedcamState"));
     }
-    // check for the localState in local storage
-    if (window.localStorage.getItem("localState")) {
-        localState = JSON.parse(window.localStorage.getItem("localState"));
-    }
-    const topDisplay = document.getElementById("topDisplay");
-    topDisplay.addEventListener("click", (event) => {
-        console.log(event.target)
-        if (event.target.hasAttribute("data-domain")) {
-            openSpeedCam(event.target.getAttribute("data-domain"));
-            swapLayout()
-        }
-    })
-
 }
 
 function openSpeedCam(brand = false) {
-    swapLayout("six")
-    function setVariousElements() {
-        //// set backButton onclick to closeIV
-        //backButton.setAttribute("onclick", "closeIV()");
-        //// override co-name as "Return to gallery"
-        //const coName = document.getElementsByClassName('co-name')[0];
-        //coName.textContent = "Return to gallery";
-        //coName.setAttribute("onclick", "closeIV()");
-        //coName.classList.add("show");
-        //layout.start()
-        //// Send a response to the roundabout server, domainOpen, with brand
-        sendResponseToSSERequest("domainOpen", brand)
-    }
-    contentArea = document.getElementById("contentAreaDiv");
     if (brand) {
-        contentArea.classList.add("offScreen")
+        changeLayout("voice")
         itsOpen = true;
     }
-    if (!contentArea.classList.contains("offScreen")) {
+    if (isCurrentLayout("subvertisments")) {
         // if the content area isnt off screen, then we need to close it
         // then whatever item is set to current item will be opened
         currentItem = document.querySelector(".currentItem");
         if (currentItem && !brand && currentItem.hasAttribute("data-domain")) {
-            contentArea.classList.add("offScreen")
             itsOpen = true;
             brand = currentItem.getAttribute("data-domain");
         }
@@ -349,13 +378,12 @@ function openSpeedCam(brand = false) {
         console.log(`Opening ${brand}`)
         manualSetup(brand);
         setTimeout(() => {
-            setVariousElements()
+            sendResponseToSSERequest("domainOpen", brand)
         }, 1000);
     }
 }
 
 function closeIV() {
-    contentArea.classList.remove("offScreen")
     itsOpen = false;
     // we also need to blank out the content div
     speedContent = document.getElementsByClassName("speedcontent")[0];
@@ -363,41 +391,7 @@ function closeIV() {
     speedContent.style = "";
     sendResponseToSSERequest("domainClose", {})
 }
-let wordToNumber = {
-    "one": { "number": 1, "word": "one", "state": "waiting" },
-    "two": { "number": 2, "word": "two", "state": "scanning" },
-    "three": { "number": 3, "word": "three", "state": "scanned" },
-    "four": { "number": 4, "word": "four", "state": "detected" },
-    "five": { "number": 5, "word": "five", "state": "display" },
-    "six": { "number": 6, "word": "six", "state": "voiced" },
-}
-const numberToWord = Object.keys(wordToNumber)
 
-function swapLayout(transition_to = null) {
-    if (transition_to) {
-        for (const word in wordToNumber) {
-            document.body.classList.remove(word);
-        }
-        document.body.classList.add(transition_to);
-        return;
-    }
-
-    bodyClasses = document.body.classList;
-    for (const bodyClass of bodyClasses) {
-        // if the body class is a number, then we should swap it
-        // for the next one and then loop around 
-        if (bodyClass in wordToNumber) {
-            bodyClasses.remove(bodyClass);
-            nextNumber = wordToNumber[bodyClass].number + 1;
-            if (nextNumber > 6) {
-                nextNumber = 1;
-            }
-            bodyClasses.add(numberToWord[nextNumber - 1]);
-            console.log(nextNumber)
-            break;
-        }
-    }
-}
 function clearphoto() {
     const context = canvas.getContext("2d");
     context.fillStyle = "#AAA";
@@ -415,11 +409,6 @@ function clearphoto() {
 
 let rotated_once = false;
 function takepicture(rotated = true) {
-    swapLayout("two");
-    // if video isnt ready dont take a picture
-    if (!streaming) {
-        return;
-    }
     const context = canvas.getContext("2d");
     // Clear the canvas
     if (width && height) {
@@ -458,6 +447,9 @@ function dataURLtoBlob(dataURL) {
 };
 
 async function roundaboutRequest(requestObject, location) {
+    if (!isLive) {
+        return;
+    }
     const requestUrl = `https://assets.reveb.la/${location}`;
     if ("apiKeyRoundabout" in window.localStorage) {
     } else {
@@ -513,6 +505,9 @@ function handleResponse(response, location) {
 }
 
 function sendRequestForScan(include_scan = false) {
+    if (!isLive) {
+        return;
+    }
     takepicture();
     if (include_scan) {
         addPopover("Scanning")
@@ -528,7 +523,6 @@ function sendRequestForScan(include_scan = false) {
         requestObject.scan = 1;
     }
     roundaboutRequest(requestObject, location);
-    swapLayout("three");
 }
 
 placement = 0;
@@ -549,6 +543,7 @@ function updateDisplay() {
             topDisplay.children[child].classList.remove("lastItem")
             topDisplay.children[child].classList.add("currentItem")
             topDisplay.children[child].classList.remove("nextItem")
+            topDisplay.children[child].dataset.domain
         } else if (child == (placement - 1) || (placement == 0 && child == numberOfItems - 1)) {
             topDisplay.children[child].classList.add("lastItem")
             topDisplay.children[child].classList.remove("currentItem")
@@ -571,8 +566,22 @@ function updateDisplay() {
     }
 }
 
+function pauseDisplay() {
+    timerEnabled = false
+    let itsOpen = false;
+    let timerEnabled = false
+
+    function rollOnDisplay() {
+        if (!itsOpen && timerEnabled) {
+            placement += 1;
+            updateDisplay();
+            console.log("Rolling")
+        }
+    }
+    setInterval(rollOnDisplay, 10000)
+}
+
 function addStoryToDisplay(story) {
-    swapLayout("five");
     const storyDiv = document.createElement("div");
     const imageAttributionDiv = document.createElement("div");
     const storyInfoDiv = document.createElement("div");
@@ -646,49 +655,25 @@ function addStoryToDisplay(story) {
         // add the date to the data-date attribute
         storyDiv.setAttribute("data-date", story.date);
     }
+
+    const storyOverlay = document.createElement("div")
+    storyOverlay.classList.add("storyOverlay")
+    storyOverlay.addEventListener("click", (ev) => {
+        brand = ev.target.parentElement.dataset.domain.replaceAll(".", "");
+        openSpeedCam(brand)
+
+    })
+
     storyDiv.classList.add("story");
     storyInfoDiv.classList.add("storyInfo");
     storyDiv.appendChild(storyInfoDiv);
+    storyDiv.appendChild(storyOverlay);
     topDisplay.appendChild(storyDiv);
     return true;
 }
 
-document.onkeydown = function (e) {
-    if (e.key === "a") {
-        createPopoverApiKey()
-    }
-
-    if (e.key === "p") {
-    }
-    if (e.key === "F14" || e.key === "Enter") {
-        // Enter
-    }
-
-    if (e.key === "F15" || e.key === "Escape") {
-        // Escape
-    }
-    if (e.key === " ") {
-        //takepicture();
-        addPopover("Rotated")
-        rotatedFeed = !rotatedFeed;
-        canvas = document.getElementById("canvas");
-        currentWidth = canvas.width
-        currentHeight = canvas.height
-        canvas.width = currentHeight
-        canvas.height = currentWidth
-        canvas.setAttribute("width", currentHeight);
-        canvas.setAttribute("height", currentWidth);
-        document.getElementById("video").classList.toggle("notRotated")
-    }
-    if (e.key === "l") {
-        swapLayout();
-    }
-    if (e.key === "l") {
-    }
-};
-
 let itsOpen = false;
-let timerEnabled = false
+let timerEnabled = false; // For letting the display roll and change placements
 
 function rollOnDisplay() {
     if (!itsOpen && timerEnabled) {
@@ -698,30 +683,6 @@ function rollOnDisplay() {
     }
 }
 setInterval(rollOnDisplay, 10000)
-
-const httpsStrip = /http[s]*:\/\//g
-
-function eventLoop() {
-    ////// Check system state
-    //// Check the various peripherals
-    // Check the event stream
-    if (window.localStorage.getItem("lastEventTime")) {
-        if (Date.now() - parseInt(window.localStorage.getItem("lastEventTime")) > 30000) {
-            localState.peripherals.stream = false;
-        } else {
-            localState.peripherals.stream = true;
-        }
-    }
-    // Check the serial port for the sensor
-    // Check the camera
-    //// Check 
-    // Check the event loop
-    // Check the autoAlive
-}
-
-// Set up our event listener to run the startup process
-// once loading is complete.
-window.addEventListener("load", startupSpeedCam, false);
 
 function createPopoverApiKey() {
     const popArea = document.getElementById("popArea");
@@ -817,8 +778,11 @@ function updateState(stateObj) {
 
 }
 
-
 function sendResponseToSSERequest(response, data) {
+    if (!isLive) {
+        printOutForLocalMode("sendResponseToSSERequest", { response, data })
+        return;
+    }
     const speedcam_id = window.localStorage.getItem("speedcam_id");
     const location = `speedcam/stream/${speedcam_id}/response`;
     const requestObject = {
@@ -829,6 +793,10 @@ function sendResponseToSSERequest(response, data) {
 }
 
 function sendCommandToRoundabout(command, data) {
+    if (!isLive) {
+        printOutForLocalMode("sendCommandToRoundabout", { command, data })
+        return;
+    }
     const speedcam_id = window.localStorage.getItem("speedcam_id");
     const location = `speedcam/stream/${speedcam_id}/command/${command}`;
     const requestObject = {
@@ -858,6 +826,16 @@ function sse() {
     console.log(`Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`)
     const speedcam_id = window.localStorage.getItem("speedcam_id");
     const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id;
+
+    // if our window is at "test.reveb.la" then we can keep going 
+    // but if it is localhost we should just print out the data
+    if (window.location.hostname == "localhost") {
+        isLive = false;
+        return;
+    } else {
+        isLive = true;
+    }
+
     const source = new EventSource(streamUrl, {
         withCredentials: true,
         headers: {
@@ -865,7 +843,6 @@ function sse() {
         },
     });
     source.addEventListener('open', function (e) {
-        addPopover("Connected")
         if (triggerAliveStarted == "") {
             // 30 seconds
             triggerAliveLoop(30000)
@@ -875,9 +852,9 @@ function sse() {
     });
     source.addEventListener('error', function (e) {
         if (e.readyState == EventSource.CLOSED) {
-            addPopover("Disconnected")
-            console.log("Disconnected")
+            changeStateObj("connectionLost", true);
         }
+        changeStateObj("connectionLost", true);
     });
     source.onmessage = function (event) {
         // On event, set a localStorage var to current time
@@ -911,7 +888,6 @@ function sse() {
                     closeIV();
                     break;
                 case "sendState":
-                    swapLayout("four");
                     updateState(data.state)
                     updateDisplay();
                     break;
@@ -919,10 +895,12 @@ function sse() {
                     console.log(data.state)
                     break;
                 case "setDomain":
+
                     console.log(data)
                     break;
                 case "pause":
                     console.log(data)
+                    changeLayout();
                     break;
                 case "resume":
                     console.log(data)
@@ -947,20 +925,55 @@ function sse() {
 
 }
 
+const returnButton = document.querySelector("#speedReturn")
+const speedCloseButton = document.querySelector("#speedClose")
 if (window.localStorage.getItem("apiKeyRoundabout")) {
-    // Attempt to connect to the stream
     sse();
 }
 
-const returnButton = document.querySelector("#speedReturn")
-const speedCloseButton = document.querySelector("#speedClose")
-
 returnButton.addEventListener("click", () => {
-    //    closeIV();
-    swapLayout("five");
+    changeLayout("subvert", true)
 })
 
 speedCloseButton.addEventListener("click", () => {
-    // closeIV();
-    swapLayout("one");
+    changeLayout("ready")
+})
+
+document.onkeydown = function (e) {
+    if (e.key === "a") {
+        createPopoverApiKey()
+    }
+    if (e.key === " ") {
+        //takepicture();
+        addPopover("Rotated")
+        rotatedFeed = !rotatedFeed;
+        canvas = document.getElementById("canvas");
+        currentWidth = canvas.width
+        currentHeight = canvas.height
+        canvas.width = currentHeight
+        canvas.height = currentWidth
+        canvas.setAttribute("width", currentHeight);
+        canvas.setAttribute("height", currentWidth);
+        document.getElementById("video").classList.toggle("notRotated")
+    }
+};
+// Set up our event listener to run the startup process
+// once loading is complete.
+window.addEventListener("load", startupSpeedCam, false);
+
+speedContent.addEventListener("click", (event) => {
+    document.body.dataset.focus = "voice";
+})
+neoGraph.addEventListener("click", (event) => {
+    document.body.dataset.focus = "graph";
+})
+bottomBar.addEventListener("click", (event) => {
+    if (bottomBar.dataset.brand) {
+        currentItem = document.querySelector(".currentItem");
+        if (currentItem) {
+            openSpeedCam(currentItem.dataset.domain)
+        }
+    } else {
+        createPopoverOptions()
+    }
 })

@@ -534,8 +534,10 @@ const scrollIntoPlace = async () => {
 }
 
 const dataObjectDictionary = {};
-const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null, container = 'content', skipCY = false) => {
+const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid = null, container = false, skipCY = false) => {
     if (coreFile === false) return;
+    if (isSpeedcam) container = "speedcontent";
+    if (container === false) container = "content";
     coreFile = coreFile.split("?")[0]
     coreFile = coreFile.startsWith("/db/") ? coreFile : `/db/${coreFile}`;
     coreFile = coreFile.endsWith(".json") ? coreFile : `${coreFile}.json`;
@@ -2091,26 +2093,34 @@ function moduleTrustScore(container, data) {
                             <span class="trustSymbol ${data.rating}"></span></span>
                             </div>`;
     const trustText = {
-        "success": { "text": "This website is considered SAFE", 
-                    "colour": "--score-10", 
-                    "i18n": "trust.safe", 
-                    "chosen": false,
-                    "i18ndesc": "trust.safedesc" },
-        "neutral": { "text": "This website is considered NEUTRAL",
-                    "colour": "--score-unset", 
-                    "i18n": "trust.neutral", 
-                    "chosen": false,
-                    "i18ndesc": "trust.neutraldesc" },
-        "warning": { "text": "This website is flagged with a WARNING", 
-                    "colour": "--score-2",
-                    "i18n": "trust.warning", 
-                    "chosen": false,
-                    "i18ndesc": "trust.warningdesc" },
-        "danger": { "text": "This website is deemed DANGEROUS", 
-                    "colour": "--score-10",
-                    "i18n": "trust.dangerous", 
-                    "chosen": false,
-                    "i18ndesc": "trust.dangerousdesc" },
+        "success": {
+            "text": "This website is considered SAFE",
+            "colour": "--score-10",
+            "i18n": "trust.safe",
+            "chosen": false,
+            "i18ndesc": "trust.safedesc"
+        },
+        "neutral": {
+            "text": "This website is considered NEUTRAL",
+            "colour": "--score-unset",
+            "i18n": "trust.neutral",
+            "chosen": false,
+            "i18ndesc": "trust.neutraldesc"
+        },
+        "warning": {
+            "text": "This website is flagged with a WARNING",
+            "colour": "--score-2",
+            "i18n": "trust.warning",
+            "chosen": false,
+            "i18ndesc": "trust.warningdesc"
+        },
+        "danger": {
+            "text": "This website is deemed DANGEROUS",
+            "colour": "--score-10",
+            "i18n": "trust.dangerous",
+            "chosen": false,
+            "i18ndesc": "trust.dangerousdesc"
+        },
     }
     // we will do this a bit like moduleTosdr where we have a list of ratings and then we will add the text
     // to the module content
@@ -3036,7 +3046,11 @@ function recalculateList(selector = undefined) {
     orderedModules = []
     // since we might have extra modules we need to add those to the 
     // ordering list too, but we should spread them out evenly.
-
+    // if property order isnt an array just set to defaultOrder
+    if (!Array.isArray(propertyOrder)) {
+        propertyOrder = defaultOrder
+        console.error("propertyOrder is not an array; setting to defaultOrder")
+    }
     if (extraModules.length > 0) {
         // insert the extra modules into the propertyOrder
         for (const module of extraModules) {

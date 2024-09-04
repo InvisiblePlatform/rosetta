@@ -307,7 +307,7 @@ details {
     margin: 0 auto;
     z-index: 1001;
     place-self: center;
-
+    font-size: 24px;
     form {
       display: inline;
     }

@@ -1,0 +1,657 @@
+body {
+    --fullwidth: calc(100vw - 80px);
+    --colWidth: calc(100vw - 80px);
+    --fullHeight: calc(100vh - 80px);
+    position: relative;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    background: var(--network-4);
+    box-sizing: border-box;
+
+    transition: all 0.5s;
+    display: grid;
+    height: 100vh;
+    font-size: 48px;
+
+    gap: 0px;
+    grid-template:
+        "r1 speed l1" calc(100% - 149px) "r2 neograph l2" 0px
+        "r3 content l3" 0px
+        "r4 buttons l4" 0px
+        [bottomrow] "r5 disclaimer l5" 149px /
+        [cr]40px [mid] var(--colWidth) [cl] 40px;
+
+    #popArea {
+        display: grid;
+    }
+
+    #backToWaiting {
+        width: 40px;
+        height: 40px;
+    }
+
+    #contentAreaDiv {
+        grid-area: speed;
+        display: flex;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #disclaimer {
+        grid-area: disclaimer;
+        width: var(--fullwidth);
+    }
+
+    #bottomBar {
+        --status: "setting up";
+        grid-row: bottomrow;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 149px;
+        width: 100vw;
+        color: var(--s-primary);
+        background-color: var(--c-primary);
+
+        &.hide {
+            --status: "";
+            transform: translate(0, 149px);
+        }
+    }
+
+    #bottomBar::before {
+        content: var(--status);
+        width: min-content;
+        white-space: nowrap;
+        background-color: var(--c-primary);
+        padding-inline: 80px;
+    }
+
+    #bottomBar[data-brand] {
+        --status: "Approach the screen to Uncover " attr(data-brand);
+    }
+
+    #stateObj {
+        height: 500px;
+        width: 500px;
+        color: var(--c-primary);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 64px;
+        display: grid;
+        grid-template:
+            "icon" 250px
+            "status" 250px /
+            500px;
+
+        clip-path: border-box;
+        border-radius: 40px;
+        justify-items: center;
+        transition: all 0.5s;
+
+        .icon {
+            width: 144px;
+            height: 144px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            align-self: end;
+            background-image: var(--icon);
+        }
+
+        .status {
+            align-self: start;
+
+        }
+
+        .status::before {
+            content: " " var(--status);
+            text-align: center;
+            display: block;
+        }
+
+        &.brand {
+            background-color: var(--network-7);
+            --icon: url(/icon/brand.svg);
+            --status: "Brand Recognition";
+        }
+
+        &.analyse {
+            background-color: var(--network-4);
+            --icon: url(/icon/analysis.svg);
+            --status: "Analysing Database";
+        }
+
+        &.assess {
+            background-color: var(--network-1);
+            --icon: url(/icon/assess.svg);
+            --status: "Assessing Impact";
+        }
+
+        &.startup {
+            background-color: var(--score-0);
+            --icon: url(/icon/lighthouse.svg);
+            --status: "Connecting";
+        }
+
+        &.camera {
+            background-color: var(--score-1);
+            --icon: url(/icon/gear.svg);
+            --status: "Camera Connected";
+        }
+
+        &.setupComplete {
+            background-color: var(--score-10);
+            --icon: url(/icon/tick.svg);
+
+        }
+
+        &.setupComplete>.status::before {
+            animation: twolinestatus 4s infinite;
+        }
+
+
+        /* Error States */
+        &.genericError,
+        &.noCamera,
+        &.noSensor,
+        &.connectionLost {
+            background-color: var(--score-0);
+            --icon: url(/icon/close.svg);
+        }
+
+        &.genericError {
+            --error: "Error";
+            --status: var(--error);
+        }
+
+        &.noCamera {
+            --status: "No Camera";
+        }
+
+        &.noSensor {
+            --status: "No Sensor";
+        }
+
+        &.connectionLost {
+            --status: "Connection Lost";
+        }
+    }
+
+    &.layoutSubvertisments {
+        #popArea {
+            display: none;
+        }
+
+        #topDisplay {
+            display: grid;
+        }
+
+        #stateObj {
+            display: none;
+        }
+
+        #bottomBar {
+            display: flex;
+        }
+    }
+
+    &.layoutVoice {
+        #topDisplay {
+            display: none;
+        }
+
+        #neoGraphTopBar {
+            display: inline-flex;
+        }
+
+        #neoGraphFilterBar {
+            display: inline-flex;
+            position: absolute;
+            overflow-x: scroll;
+            left: 0;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        #stateObj {
+            display: none;
+        }
+
+        #bottomBar {
+            display: flex;
+        }
+
+        #popArea {
+            display: none;
+        }
+
+        #speedCamButtons {
+            display: grid;
+        }
+
+        &[data-focus="voice"] {
+            grid-template:
+                "r speed l" 0px
+                "r neograph l" 417px "r content l" 1140px
+                "r buttons l" 104px
+                [bottomrow] "r disclaimer l" 149px /
+                [cr]40px [mid] var(--colWidth) [cl] 40px;
+            row-gap: 28px;
+        }
+
+        &[data-focus="graph"] {
+            grid-template:
+                "r speed l" 0px
+                "r neograph l" 1122px "r content l" 376px
+                "r buttons l" 104px
+                [bottomrow] "r disclaimer l" 149px /
+                [cr]40px [mid] var(--colWidth) [cl] 40px;
+            row-gap: 43px;
+        }
+    }
+
+    &.layoutReady {
+        #bottomBar {
+            display: none;
+        }
+
+        #popArea {
+            display: grid;
+        }
+    }
+}
+
+#neoGraphFilterBar,
+#neoGraphTopBar {
+    grid-area: neograph;
+}
+
+#root {
+    grid-area: neograph;
+    height: unset;
+}
+
+#disclaimer {
+    grid-area: disclaimer;
+    width: var(--fullwidth);
+}
+
+#speedcontent {
+    display: grid;
+    grid-area: content;
+    justify-content: center;
+    z-index: 1000;
+    background-color: #fff;
+    width: var(--fullwidth);
+}
+
+#speedCamButtons {
+    grid-area: buttons;
+    display: none;
+    grid-auto-flow: column;
+    justify-content: center;
+    gap: 40px;
+    font-size: 24px;
+    font-family: "Space Grotesk", sans-serif;
+
+    button.roundedAbout {
+        border-radius: 1000px;
+        border-color: transparent;
+        width: 470px;
+        height: 104px;
+
+        &::before {
+            font-size: 24px;
+        }
+    }
+
+    #speedClose::before {
+        content: "Return to Gallery"
+    }
+
+    #speedReturn::before {
+        content: "Return to Subvertisements"
+    }
+}
+
+
+:root {
+    touch-action: pan-x pan-y;
+    height: 100%
+}
+
+.noDebug {
+    & #photo {
+        display: none;
+    }
+
+    & button {
+        display: none;
+    }
+
+    & #apiKeyList {
+        display: none;
+    }
+}
+
+.noLogo {
+    & .logo {
+        display: none;
+    }
+}
+
+.currentItem {
+    z-index: 2;
+}
+
+#video {
+    --blur: 0px;
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0px;
+    z-index: -1;
+    transform: translate(55%, 80%) rotate(-90deg);
+    transform-origin: bottom left;
+    filter: blur(var(--blur));
+    height: 100vw;
+    width: 100vh;
+    scale: 1.1;
+    left: -0.9vh;
+}
+
+#video.notRotated {
+    transform: translateY(0%) rotate(0deg);
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    transform-origin: center;
+}
+
+.output {
+    width: 340px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#contentAreaDiv {
+    font-size: 16px;
+    font-family: "Lucida Grande", "Arial", sans-serif;
+    z-index: 100;
+}
+
+#buttonHolder {
+    display: grid;
+    grid-auto-flow: column;
+    width: 100%;
+}
+
+#apiKeyList {
+    display: flex;
+    flex-direction: column;
+
+    & div {
+        display: inline;
+    }
+}
+
+#outputText {
+    background-color: #FFFFFFAA;
+    backdrop-filter: blur(10px);
+}
+
+iframe {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    box-sizing: border-box;
+    border: 0px;
+    inset: 0px;
+}
+
+#extraBar {
+    display: none;
+    visibility: hidden;
+    position: fixed;
+    width: 100vw;
+    height: 80px;
+}
+
+#returnButton {
+    height: 40px;
+    visibility: hidden;
+    background-color: white;
+}
+
+.popoverApi {
+    display: block;
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+    background-color: #000000AA !important;
+    z-index: 1001;
+    place-self: center;
+    border-radius: 10px;
+    padding: 8px;
+}
+
+#speedCamDebug {
+    #range_number {
+        display: block;
+        font-size: 7em;
+        width: 100%;
+        text-align: center;
+    }
+
+    #number_number,
+    #speed_number {
+        display: block;
+    }
+
+    #output_output {
+        font-size: 0.4em;
+        display: block;
+        width: 100%;
+    }
+}
+
+#popOverMenu {
+    background-color: #FFFFFFCC !important;
+    font-size: 24px;
+}
+
+
+::backdrop {
+    background-color: transparent;
+}
+
+@starting-style {
+    ::backdrop {
+        background-color: transparent;
+    }
+}
+
+#topDisplay {
+    grid-area: topdisplay;
+    display: none;
+    grid-template: "currentItem" 1114px "nextItem" 240px "lastItem" 240px / 952px;
+    gap: 40px;
+    transition: all 0.5s;
+    opacity: 1;
+
+    @starting-style {
+        opacity: 0;
+    }
+
+}
+
+.story {
+    font-family: 'Space Grotesk', sans-serif;
+    background-size: cover;
+    border-radius: 22px;
+    max-height: 240px;
+    clip-path: border-box;
+}
+
+.storyInfo {
+    box-sizing: border-box;
+    color: black;
+    background-color: #ffff;
+    position: relative;
+    display: grid;
+    grid-template:
+        "logo title" 200px
+        "logo author" 40px
+        "overflow overflow" 0px /
+        240px calc(100% - 240px);
+    height: 240px;
+    margin: 0 auto;
+
+    .title {
+        grid-area: title;
+        font-size: 40px;
+        font-weight: 300;
+        text-wrap: balance;
+    }
+
+    .authorArticle {
+        grid-area: author;
+        font-size: 32px;
+        font-weight: 500;
+        text-align: right;
+        padding: 4px;
+
+        &::before {
+            content: '- ';
+        }
+
+    }
+
+    .logo {
+        grid-area: logo;
+        width: 240px;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        background-color: #000000;
+    }
+}
+
+.story.nextItem {
+    grid-area: nextItem;
+}
+
+.story.lastItem {
+    grid-area: lastItem;
+}
+
+.story.currentItem {
+    height: 100%;
+    max-height: 100%;
+    display: grid;
+    grid-area: currentItem;
+
+    .storyInfo {
+        color: black;
+        background-color: #fffd;
+        height: 350px;
+        margin-bottom: auto;
+        grid-template:
+            "logo title" 310px
+            "logo author" 40px
+            "overflow overflow" 0px /
+            240px calc(100% - 240px);
+
+        .title {
+            text-wrap: balance;
+        }
+
+        .authorArticle {}
+
+        .logo {
+            width: 224px;
+            margin: 8px;
+        }
+    }
+}
+
+.attribution {
+    position: absolute;
+    bottom: 3em;
+    right: 3em;
+}
+
+#content {
+    background-color: white;
+    padding: 44px !important;
+    grid-area: content;
+    overflow-y: scroll;
+    border-radius: 24px;
+}
+
+
+#disclaimer {
+    grid-area: disclaimer;
+    background-color: #FFFFFFAA;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 100vw;
+    height: 377px;
+}
+
+#titlebar {
+    grid-area: titlebar;
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    width: unset;
+    z-index: 10;
+
+    > :not(.show) {
+        display: none;
+    }
+}
+
+#canvas,
+#output,
+#photo,
+#graph-container,
+#settings,
+#graph-container,
+#Invisible-interaction,
+#settings,
+body>#graph-box {
+    display: none;
+}
+
+#popArea {
+    grid-area: speed;
+    display: none;
+}
+
+#speedcontent .contentSection {
+    min-width: 377px;
+    width: 377px;
+    max-width: 377px;
+}
+
+#speedcontent {
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+@keyframes twolinestatus {
+    0% {
+        content: "Ready";
+    }
+
+    100% {
+        content: "Touch to Start";
+    }
+
+}
