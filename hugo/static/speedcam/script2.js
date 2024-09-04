@@ -433,6 +433,7 @@ function startupSpeedCam() {
     }
 }
 function openSpeedCam(branda = false) {
+    changeLayout("voice")
     if (branda) {
         itsOpen = true;
     }
@@ -976,10 +977,12 @@ function sse() {
                     sendRequestForScan(false);
                     break;
                 case "scan":
+                    stateController();
                     sendRequestForScan(true);
                     break;
                 case "open":
                     openSpeedCam();
+
                     break;
                 case "close":
                     closeIV();
