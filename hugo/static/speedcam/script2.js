@@ -85,6 +85,8 @@ function changeLayout(className, dontRoll = false) {
         }
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
+        setBottomBarBrand(false, true)
+
         //pauseDisplay();
     } else if (!className) {
         setBottomBarBrand(false, true)
@@ -269,6 +271,7 @@ function runOnTargetInfo(targetInfo) {
         console.log("Below threshold, opening IV")
         // open IV
         openSpeedCam();
+
     }
     // We should renew the timeout if the target is below the threshold, or create it if it doesn't exist
     if (targetInfo.target_range < lowerThreshold) {
@@ -277,7 +280,7 @@ function runOnTargetInfo(targetInfo) {
             clearTimeout(closeTimeoutObject);
         }
         closeTimeoutObject = setTimeout(() => {
-            closeIV();
+            changeLayout("ready")
             clearTimeout(shotTimeoutObject);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Not Taking shot, just a wait")
@@ -292,7 +295,7 @@ function runOnTargetInfo(targetInfo) {
             console.log("Skipping shot, already taken")
         } else {
             console.log("Above threshold, taking shot")
-            doChain();
+            changeStateObj("brand")
             sendRequestForScan(true);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
@@ -381,8 +384,8 @@ function openSpeedCam(branda = false) {
     }
     if (branda) {
         console.log(`Opening ${branda}`)
+        manualSetup(branda);
         changeLayout("voice")
-        manualSetup(brand);
         setTimeout(() => {
             sendResponseToSSERequest("domainOpen", branda)
         }, 1000);
@@ -923,7 +926,6 @@ function sse() {
                 case "sendState":
                     updateState(data.state)
                     updateDisplay();
-                    changeLayout("subvert")
                     break;
                 case "getState":
                     console.log(data.state)
