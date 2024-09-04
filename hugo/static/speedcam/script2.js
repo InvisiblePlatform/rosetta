@@ -460,7 +460,9 @@ function closeIV() {
     // we also need to blank out the content div
     speedContent.innerHTML = "";
     speedContent.style = "";
-    cy.destroy();
+    if (cy) {
+        cy.destroy();
+    }
     sendResponseToSSERequest("domainClose", {})
 }
 
@@ -598,7 +600,7 @@ function sendRequestForScan(include_scan = false) {
 placement = 0;
 let shotTimeout = null;
 function updateDisplay() {
-    if (!timerEnabled) {
+    if (!timerEnabled && !itsOpen) {
         // openSpeedCam(Url.get.site);
         closeIV();
         setSearchParam("site", null);
