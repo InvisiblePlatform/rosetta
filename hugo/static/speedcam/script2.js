@@ -46,6 +46,41 @@ function changeStateObj(className, retainState = false, genericError = false) {
     printOutForLocalMode(`State Object: ${className}`)
 }
 
+let stateStep = 0;
+function stateController() {
+    // each time this function is called, it should check the stateObj
+    // and then run the next step in the chain
+    // first we brand, then analyse, then assess.
+    // then we should change the layout to subvert.
+    // then we start over. this shouldnt be able to be triggered
+    // on any layout other than ready.
+    if (isCurrentLayout("voice")) {
+        stateStep = 0;
+        return
+    }
+    if (isCurrentLayout("subvert")) {
+        stateStep = 0;
+        return
+    }
+    if (stateStep == 0) {
+        changeStateObj("brand")
+        stateStep += 1;
+    } else if (stateStep == 1) {
+        changeStateObj("analyse")
+        stateStep += 1;
+    } else if (stateStep == 2) {
+        changeStateObj("assess")
+        stateStep += 1;
+    } else if (stateStep == 3) {
+        changeStateObj()
+        changeLayout("subvert")
+        stateStep = 0;
+    }
+}
+
+
+
+
 function setBottomBarBrand(brand, reset = false) {
     bottomBar = document.getElementById("bottomBar");
     if (reset) {
@@ -295,12 +330,13 @@ function runOnTargetInfo(targetInfo) {
             console.log("Skipping shot, already taken")
         } else {
             console.log("Above threshold, taking shot")
-            changeStateObj("brand")
+            stateController();
             sendRequestForScan(true);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
                 clearTimeout(shotTimeoutObject);
                 shotTimeoutObject = null;
+                stateController();
             }, speedcamState.frontend.timeout_shot * 1000);
         }
     }
@@ -518,7 +554,7 @@ function sendRequestForScan(include_scan = false) {
         return;
     }
     takepicture();
-    if (include_scan) {
+    if (include_scanV) {
         addPopover("Scanning")
     }
     const data = canvas.toDataURL("image/png");
@@ -755,6 +791,7 @@ function createPopoverApiKey() {
 
 function updateState(stateObj) {
     updated_keys = []
+    stateController();
     for (const key in stateObj) {
         if (key in speedcamState && speedcamState[key] != stateObj[key]) {
             updated_keys.push(key);
