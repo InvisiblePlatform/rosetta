@@ -146,7 +146,7 @@ function changeLayout(className, dontRoll = false) {
             if (currentLayout == "subvert") {
                 changeLayout("ready")
             }
-        }, 30000);
+        }, 3000);
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
