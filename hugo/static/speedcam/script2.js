@@ -1087,6 +1087,7 @@ stateObj.addEventListener("click", (event) => {
     }
     if (stateObj.classList.contains("setupComplete")) {
         changeLayout("ready")
+        changeStateObj()
         printOutForLocalMode("Setup Complete")
         return
     }
