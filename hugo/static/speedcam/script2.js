@@ -142,11 +142,6 @@ function changeLayout(className, dontRoll = false) {
         if (!dontRoll) {
             updateDisplay();
         }
-        setTimeout(() => {
-            if (currentLayout == "subvert") {
-                changeLayout("ready")
-            }
-        }, 3000);
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
