@@ -434,6 +434,7 @@ function startupSpeedCam() {
 }
 function openSpeedCam(brand = false) {
     changeLayout("voice")
+    c
     if (brand) {
         itsOpen = true;
     }
@@ -459,7 +460,6 @@ function openSpeedCam(brand = false) {
 function closeIV() {
     itsOpen = false;
     // we also need to blank out the content div
-    speedContent = document.getElementsByClassName("speedcontent")[0];
     speedContent.innerHTML = "";
     speedContent.style = "";
     sendResponseToSSERequest("domainClose", {})
