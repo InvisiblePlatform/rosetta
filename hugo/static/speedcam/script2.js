@@ -135,12 +135,18 @@ function changeLayout(className, dontRoll = false) {
         document.body.classList.add("layoutReady")
         changeStateObj()
         currentLayout = "ready";
+        timerEnabled = true;
     } else if (className == "subvert") {
         document.body.classList.add("layoutSubvertisments")
         currentLayout = "subvert";
         if (!dontRoll) {
             updateDisplay();
         }
+        setTimeout(() => {
+            if (currentLayout == "subvert") {
+                changeLayout("ready")
+            }
+        }, 30000);
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
@@ -619,8 +625,8 @@ function updateDisplay() {
 
 function pauseDisplay() {
     timerEnabled = false
-    let itsOpen = false;
-    let timerEnabled = false
+    itsOpen = false;
+    timerEnabled = false
 
     function rollOnDisplay() {
         if (!itsOpen && timerEnabled) {
@@ -1080,5 +1086,4 @@ stateObj.addEventListener("click", (event) => {
         return
     }
     changeStateObj("setupComplete")
-
 })
