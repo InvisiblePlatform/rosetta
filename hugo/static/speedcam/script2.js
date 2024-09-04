@@ -144,6 +144,7 @@ function changeLayout(className, dontRoll = false) {
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
+        stop_sensing = true;
         setBottomBarBrand(false, true)
         timerEnabled = false;
         //pauseDisplay();
@@ -250,7 +251,7 @@ async function connectSerial(initport = null) {
         changeStateObj("noSensor", true);
     }
 }
-
+let stop_sensing = false;
 let closeTimeoutObject = null;
 let shotTimeoutObject = null;
 let limitTimeoutObject = null;
@@ -310,6 +311,7 @@ function runOnTargetInfo(targetInfo) {
         console.log("Below threshold, opening IV")
         // open IV
         openSpeedCam();
+        stop_sensing = true;
 
     }
     // We should renew the timeout if the target is below the threshold, or create it if it doesn't exist
@@ -1012,10 +1014,16 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
 
 returnButton.addEventListener("click", () => {
     changeLayout("subvert", true)
+    setTimeout(() => {
+        stop_sensing = false;
+    }, 20000)
 })
 
 speedCloseButton.addEventListener("click", () => {
     changeLayout("ready")
+    setTimeout(() => {
+        stop_sensing = false;
+    }, 20000)
 })
 
 document.onkeydown = function (e) {
