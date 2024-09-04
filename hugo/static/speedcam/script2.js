@@ -99,7 +99,7 @@ function stateController() {
     }
 }
 
-
+let currentLayout = '';
 function setBottomBarBrand(brand, reset = false) {
     // we should ignore this function if the layout is voice
     // or ready or no layout is set
@@ -109,10 +109,6 @@ function setBottomBarBrand(brand, reset = false) {
         bottomBar.removeAttribute("data-brand")
         return
     }
-    if (!isCurrentLayout("subvert")) {
-        return
-    }
-
     if (!brand) {
         bottomBar.classList.add("hide")
         bottomBar.removeAttribute("data-brand")
@@ -138,22 +134,28 @@ function changeLayout(className, dontRoll = false) {
     if (className == "ready") {
         document.body.classList.add("layoutReady")
         changeStateObj()
+        currentLayout = "ready";
     } else if (className == "subvert") {
         document.body.classList.add("layoutSubvertisments")
         if (!dontRoll) {
             updateDisplay();
         }
+        currentLayout = "subvert";
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
         setBottomBarBrand(false, true)
         timerEnabled = false;
         //pauseDisplay();
+        currentLayout = "voice";
     } else if (!className) {
         setBottomBarBrand(false, true)
+        currentLayout = "";
     } else {
+        currentLayout = className;
         document.body.classList.add(className);
     }
+    printOutForLocalMode(`Layout: ${className}`)
 }
 
 function getCurrentLayout() {
@@ -328,7 +330,7 @@ function runOnTargetInfo(targetInfo) {
     shotThreshold = speedcamState.frontend.range_shot;
 
     // if we are below the lower threshold, we should open the IV if it is closed
-    if (targetInfo.target_range < lowerThreshold && isCurrentLayout("subvertisments")) {
+    if (targetInfo.target_range < lowerThreshold && currentLayout == "subvert") {
         console.log("Below threshold, opening IV")
         // open IV
         openSpeedCam();
