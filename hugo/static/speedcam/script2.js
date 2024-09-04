@@ -100,12 +100,10 @@ function stateController() {
 }
 
 
-
-
 function setBottomBarBrand(brand, reset = false) {
     // we should ignore this function if the layout is voice
     // or ready or no layout is set
-    if (!isCurrentLayout("subvert") && brand) {
+    if (!isCurrentLayout("subvert") && !reset) {
         return
     }
 
@@ -147,8 +145,9 @@ function changeLayout(className, dontRoll = false) {
         }
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
+        itsOpen = true;
         setBottomBarBrand(false, true)
-
+        timerEnabled = false;
         //pauseDisplay();
     } else if (!className) {
         setBottomBarBrand(false, true)
@@ -599,7 +598,7 @@ function sendRequestForScan(include_scan = false) {
 placement = 0;
 let shotTimeout = null;
 function updateDisplay() {
-    if (Url.get.site && !timerEnabled) {
+    if (!timerEnabled) {
         // openSpeedCam(Url.get.site);
         closeIV();
         setSearchParam("site", null);
