@@ -432,7 +432,6 @@ function startupSpeedCam() {
     }
 }
 function openSpeedCam(brand = false) {
-    changeLayout("voice")
     if (brand) {
         itsOpen = true;
     }

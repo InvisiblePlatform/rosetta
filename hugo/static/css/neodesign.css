@@ -106,6 +106,7 @@ html {
         }
     }
 
+    body.speedcontent,
     &.double-column {
         --minModWidthClosed: 184px;
         --minModWidthOpen: 377px;
