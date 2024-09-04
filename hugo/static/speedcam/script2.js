@@ -581,9 +581,6 @@ function sendRequestForScan(include_scan = false) {
         return;
     }
     takepicture();
-    if (include_scanV) {
-        addPopover("Scanning")
-    }
     const data = canvas.toDataURL("image/png");
     //const blob = dataURLtoBlob(data);
     const speedcam_id = window.localStorage.getItem("speedcam_id");
