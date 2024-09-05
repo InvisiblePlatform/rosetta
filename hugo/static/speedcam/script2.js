@@ -1049,7 +1049,7 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         justPickTheFirstSpeedcamId = true;
         roundaboutRequest({}, "speedcam/speedcam_endpoint/list").then(() => {
             sse();
-        }
+        })
     } else {
         sse();
     }
