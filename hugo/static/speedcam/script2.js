@@ -550,7 +550,6 @@ async function roundaboutRequest(requestObject, location) {
             response.headers.getSetCookie("api_session_cookie")
         }).catch(err => console.error(err));
 }
-let responseHeaders = null;
 function handleResponse(response, location) {
     if (response.error) {
         console.error(response.error)
@@ -1047,16 +1046,22 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         justPickTheFirstSpeedcamId = true;
     }
 
-    // spawn a new iframe with "https://assets.reveb.la/am-i-logged-in"
-    // to check if the api key is valid
-    iframe = document.createElement("iframe");
-    iframe.src = "https://assets.reveb.la/auth/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
-    iframe.style = "display: none";
-    document.body.appendChild(iframe);
-    iframe.onload = function () {
-        console.log("iframe loaded")
-        console.log(iframe.contentWindow.document.body.innerHTML)
-    }
+    // spawn a new json post to "https://assets.reveb.la/am-i-logged-in",
+    // to check if the api key is still valid
+    reqUrl = "https://assets.reveb.la/auth/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
+    fetch(reqUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => {
+        // This response might contain a cookie that we should 
+        response.json().then(data => {
+            console.log(data)
+        })
+    })
+
+
     roundaboutRequest({}, "speedcam/speedcam_endpoint/list").then(() => {
         sse();
     })
