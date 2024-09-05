@@ -651,8 +651,8 @@ function pauseDisplay() {
     setInterval(rollOnDisplay, 10000)
 }
 
-function openSpeedCamOnStory(target) {
-    brand = target.parentElement.dataset.domain.replaceAll(".", "");
+function openSpeedCamOnStory(ev) {
+    brand = ev.target.parentElement.dataset.domain.replaceAll(".", "");
     openSpeedCam(brand)
 }
 
