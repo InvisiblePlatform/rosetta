@@ -571,7 +571,7 @@ iframe {
         font-size: 40px;
         font-weight: 300;
         text-wrap: balance;
-        place-self: center;
+        padding: 24px;
     }
 
     .authorArticle {
@@ -633,7 +633,9 @@ iframe {
             text-wrap: balance;
         }
 
-        .authorArticle {}
+        .authorArticle {
+            text-align: left;
+        }
 
         .logo {
             width: 224px;
