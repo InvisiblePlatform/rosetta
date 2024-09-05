@@ -547,6 +547,7 @@ async function roundaboutRequest(requestObject, location) {
                 handleResponse(data, location);
             })
             // if response has a session cookie, save it to local storage
+            console.log(response.headers)
             if (response.headers.has("Set-Cookie")) {
                 window.localStorage.setItem("api_session_cookie", response.headers.get("set-cookie"));
             }
