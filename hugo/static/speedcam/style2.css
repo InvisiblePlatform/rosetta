@@ -575,11 +575,15 @@ iframe {
     }
 
     .authorArticle {
-        grid-area: author;
+        bottom: 24px;
         font-size: 32px;
         font-weight: 500;
+        grid-area: author;
+        height: 40px;
+        padding: 24px;
+        position: absolute;
         text-align: right;
-        padding: 4px;
+        width: 100%;
 
         &::before {
             content: '- ';
@@ -593,6 +597,7 @@ iframe {
         aspect-ratio: 1/1;
         object-fit: cover;
         background-color: #000000;
+        place-self: center;
     }
 }
 
@@ -626,11 +631,12 @@ iframe {
         grid-template:
             "a1 logo b1 title" 310px
             "a2 logo b2 author" 40px
-            "a3 overflow b3 overflow" 0px /
-            4p 240px 4px calc(100% - 248px);
+            "overflow overflow overflow overflow" 0px /
+            24px 240px 24px calc(100% - 288px);
 
         .title {
             text-wrap: balance;
+            padding-top: 36px;
         }
 
         .authorArticle {
