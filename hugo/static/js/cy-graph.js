@@ -1,7 +1,13 @@
 //const nestleDataUrl = "https://test.reveb.la/connections/1e9c237af78d1f98d18e4d9e7b001b13.json"
+const cySpeedCamCheck = window.location.href.includes('speedcam2.html')
 const root = document.createElement('div')
 root.id = 'root'
-document.body.appendChild(root)
+
+if (!cySpeedCamCheck) {
+    document.body.appendChild(root)
+} else {
+    document.getElementById('neoGraph').appendChild(root)
+}
 let cy;
 let currentStateOfNodes = {}
 let currentChangeSet = []
@@ -193,33 +199,36 @@ const typeIdToEdgeTypeName = {
 }
 
 let edgeMappings = []
-const filterBar = document.getElementById('neoGraphFilterBar')
-for (const type in edgeTypeMappings) {
-    const typeButton = document.createElement('button')
-    typeButton.classList.add('filterButton')
-    typeButton.innerHTML = `${edgeTypeMappings[type].label.replace(/ of$/, '')}`
-    typeButton.setAttribute('data-type', type)
-    typeButton.type = 'checkbox'
-    typeButton.classList.add(type)
-    typeButton.onclick = function (evt) {
-        // all of the buttons should start active
-        // when we click for the first time we should deactivate all other buttons
-        // and then activate this button
-        var activeButtons = document.querySelectorAll('.filterButton:checked')
-        if (activeButtons.length === filterBar.children.length) {
-            activeButtons.forEach(button => {
-                button.toggleAttribute('checked')
-            })
-        }
-        evt.target.toggleAttribute('checked')
+let availabeRels = []
 
-        // we then go through all the buttons to see which ones are active
-        // and we can then filter the edges based on the active buttons
-        const activeTypes = []
-        activeButtons = document.querySelectorAll('.filterButton:checked')
+function filterEdges(evt) {
+    // all of the buttons should start active
+    // when we click for the first time we should deactivate all other buttons
+    // and then activate this button
+    console.log(evt)
+    if (evt.disabled) return
+    var activeButtons = document.querySelectorAll('.filterButton[value="1"]')
+    if (activeButtons.length === filterBar.children.length) {
         activeButtons.forEach(button => {
-            activeTypes.push(button.getAttribute('data-type'))
+            button.value = "0"
         })
+    }
+    evt.value = evt.value === "1" ? "0" : "1"
+
+    // we then go through all the buttons to see which ones are active
+    // and we can then filter the edges based on the active buttons
+    const activeTypes = []
+    activeButtons = document.querySelectorAll('.filterButton[value="1"]')
+    activeButtons.forEach(button => {
+        activeTypes.push(button.getAttribute('data-type'))
+    })
+
+    // if all buttons are inactive, we should show all edges
+    // and reset the buttons to active
+    if (activeTypes.length === 0) {
+        cy.elements().edges().removeClass('faded')
+        return
+    } else {
         cy.startBatch()
         cy.elements().edges().forEach(edge => {
             if (activeTypes.includes(edge.data().edgeType)) {
@@ -230,10 +239,53 @@ for (const type in edgeTypeMappings) {
         })
         cy.endBatch()
     }
+}
 
-    // typeButton.style.backgroundColor = networkColours[edgeTypeMappings[type].colour]
-    filterBar.appendChild(typeButton)
-    typeButton.toggleAttribute('checked')
+const filterBar = document.getElementById('neoGraphFilterBar')
+function setFilterBar() {
+    defaultValue = "1"
+    activeButtons = document.querySelectorAll('.filterButton[value="1"]')
+    if (activeButtons.length !== filterBar.children.length) {
+        defaultValue = "0"
+    }
+    if (filterBar.children.length == 0) {
+        placeholder = document.createElement("div")
+        placeholder.id = 'placeholder';
+        filterBar.append(placeholder)
+    }
+    for (const type in edgeTypeMappings) {
+        if (filterBar.querySelector(`.${type}`)) {
+            if (type in availabeRels) {
+                button = filterBar.querySelector(`.${type}`)
+                button.value = defaultValue
+                button.disabled = false
+            }
+            continue
+        }
+        const typeButton = document.createElement('button')
+        enabledState = availabeRels.includes(type)
+        disabledstring = 'disabled'
+        if (enabledState) {
+            filterBar.insertBefore(typeButton, filterBar.children[0])
+            disabledstring = ''
+            console.log(`${type} is enabled`)
+        } else {
+            filterBar.appendChild(typeButton)
+            console.log(`${type} is disabled`)
+        }
+
+        if (filterBar.querySelector('#placeholder'))
+            filterBar.querySelector('#placeholder').remove()
+
+        typeButton.outerHTML = `<button onclick="filterEdges(this)" class="filterButton ${type}" data-type="${type}" 
+                                type="button" value=${defaultValue} ${disabledstring}>
+                                ${edgeTypeMappings[type].label.replace(/ of$/, '')}
+                                </button>`
+    }
+}
+
+
+for (const type in edgeTypeMappings) {
     edgeMappings.push(
         {
             selector: `edge.${type}`,
@@ -245,6 +297,7 @@ for (const type in edgeTypeMappings) {
                 'z-index-compare': 'manual',
                 'line-color': networkColours[edgeTypeMappings[type].colour],
                 'target-arrow-color': networkColours[edgeTypeMappings[type].colour],
+                'target-arrow-offset': '40px',
             }
         },
         {
@@ -310,6 +363,8 @@ function convertLinkToEdge(edge) {
     targetInfo = nodes[edge.source]
     sourceInfo = nodes[edge.target]
 
+    if (edge.type in availabeRels) {
+    } else { availabeRels.push(edge.type.toLowerCase()) }
     ourNodes = [edge.source, edge.target]
     ourNodes.forEach((node) => {
         if (nodes[node].ports === undefined) {
@@ -376,6 +431,7 @@ function startCY(url, wikidataid) {
             elements = []
             nodes = {}
             seenNodes = []
+            availabeRels = []
             console.log(data)
             data.nodes.forEach(node => {
                 const retObject = addNodeToNodes(node)
@@ -544,9 +600,12 @@ function startCY(url, wikidataid) {
             //     maxPasses: 20,
             // }).addEdges(edges);
 
+
+
             cy.layout(layoutCy).run()
             selectANodeCy(wikidataid)
             resetNodeInternalsOnTimeoutCy()
+            setFilterBar()
 
             // when a given node is clicked, we want to display the extra information
             cy.on('tap', 'node', function (evt) {
@@ -555,9 +614,12 @@ function startCY(url, wikidataid) {
                     return
                 }
                 const data = node.data()
-
                 if (graphDocDataStoreCache.dbFiles[data.defSite] == undefined) {
                     dbUrl = `${dataURL}/db/${data.defSite}.json`
+                    if (data.defSite === 'null') {
+                        return
+                    }
+
                     fetch(dbUrl).then(response => response.json()).then(dataDb => {
                         graphDocDataStoreCache.dbFiles[data.defSite] = dataDb
                         if (dataDb.connections !== undefined) {
@@ -577,9 +639,7 @@ function startCY(url, wikidataid) {
                     })
                 }
                 rearrangeRelatedNodesToNodeForExtraDisplay(data.id)
-                putNodeInfoInExtraDisplay(data.id)
-
-
+                putNodeInfoInExtraDisplay(data.id, data.defSite)
             })
             // after deselection of a node, rerun resetNodeInternals on its neighbourhood
             // cy.on('unselect', function (evt) {
@@ -724,9 +784,9 @@ function addConnectionsFileToGraph(data, startNodeId) {
 //     }
 // })
 
-function putNodeInfoInExtraDisplay(nodeId) {
+function putNodeInfoInExtraDisplay(nodeId, defSite = false) {
     if (isSpeedcam) {
-        loadPageCore(data.defSite, false, false, false, "speedcontent", true)
+        loadPageCore(defSite, false, false, false, "speedcontent", true)
         return
     }
     const node = cy.getElementById(nodeId)

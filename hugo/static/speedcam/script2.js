@@ -95,6 +95,8 @@ function stateController() {
     } else if (stateStep == 3) {
         changeStateObj()
         changeLayout("subvert")
+        timerEnabled = true;
+        itsOpen = false;
         stateStep = 0;
     }
 }
@@ -363,6 +365,13 @@ function startCam() {
 }
 
 function startupSpeedCam() {
+    // Disabled modules
+    disabledModules.push("similar")
+    disabledModules.push("social")
+    disabledModules.push("trustscore")
+    disabledModules.push("graph-box")
+
+
     // If a port is paired already with the device, connect to it
     if ('serial' in navigator) {
         navigator.serial.getPorts().then(ports => {
@@ -401,7 +410,15 @@ function startupSpeedCam() {
         roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
         changeStateObj("api");
     } else {
-        createPopoverApiKey();
+        // try getting the key from the url before requesting it 
+        if (Url.get.apiKey) {
+            window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKey)
+            console.log("apikey set from url")
+            roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
+            changeStateObj("api");
+        } else {
+            createPopoverApiKey();
+        }
     }
 
     clearphoto();
@@ -501,6 +518,7 @@ function dataURLtoBlob(dataURL) {
 
 async function roundaboutRequest(requestObject, location) {
     if (!isLive) {
+        printOutForLocalMode("roundaboutRequest", { requestObject, location })
         return;
     }
     const requestUrl = `https://assets.reveb.la/${location}`;
@@ -518,6 +536,7 @@ async function roundaboutRequest(requestObject, location) {
         method: 'POST',
         headers: new Headers({
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`,
         }),
     }
 
@@ -633,6 +652,11 @@ function pauseDisplay() {
     setInterval(rollOnDisplay, 10000)
 }
 
+function openSpeedCamOnStory(target) {
+    brand = target.parentElement.dataset.domain.replaceAll(".", "");
+    openSpeedCam(brand)
+}
+
 function addStoryToDisplay(story) {
     const storyDiv = document.createElement("div");
     const imageAttributionDiv = document.createElement("div");
@@ -710,11 +734,7 @@ function addStoryToDisplay(story) {
 
     const storyOverlay = document.createElement("div")
     storyOverlay.classList.add("storyOverlay")
-    storyOverlay.addEventListener("click", (ev) => {
-        brand = ev.target.parentElement.dataset.domain.replaceAll(".", "");
-        openSpeedCam(brand)
-
-    })
+    storyOverlay.addEventListener('click', openSpeedCamOnStory)
 
     storyDiv.classList.add("story");
     storyInfoDiv.classList.add("storyInfo");
@@ -907,7 +927,7 @@ function sse() {
     // if local storage has a cookie add it to the headers
     console.log(`Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`)
     const speedcam_id = window.localStorage.getItem("speedcam_id");
-    const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id;
+    const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id + "?";
 
     // if our window is at "test.reveb.la" then we can keep going 
     // but if it is localhost we should just print out the data
@@ -1030,6 +1050,21 @@ speedCloseButton.addEventListener("click", () => {
 document.onkeydown = function (e) {
     if (e.key === "a") {
         createPopoverApiKey()
+    }
+    if (e.key === "1") {
+        stateController()
+    }
+    if (e.key === "2") {
+        changeLayout("ready")
+    }
+    if (e.key === "3") {
+        changeLayout("subvert")
+    }
+    if (e.key === "4") {
+        changeLayout("voice")
+    }
+    if (e.key === "5") {
+        changeLayout()
     }
 };
 // Set up our event listener to run the startup process

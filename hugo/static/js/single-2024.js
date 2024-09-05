@@ -571,7 +571,9 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
             const { title = false, connections = false, wikidata_id = false, core = false, political = false, social = false } = await response;
             wikidataIdList = wikidata_id;
             document.getElementsByClassName('co-name')[0].innerText = (title) ? title : "Invisible Voice";
-            document.getElementById("neoGraphTitle").style.setProperty("--subname", (title) ? `"${title}"` : "Invisible Voice");
+            if (!isSpeedcam) {
+                document.getElementById("neoGraphTitle").style.setProperty("--subname", (title) ? `"${title}"` : "Invisible Voice");
+            }
             document.getElementById("pageTitle").innerText = (title) ? `Invisible Voice - ${title}` : "Invisible Voice";
 
             if (connections) {
@@ -579,12 +581,9 @@ const loadPageCore = async (coreFile, localX = false, localY = false, wikidataid
                     const { wikidataid, fulllist } = item;
                     pageHash = connections.split('/')[2].replace('.json', '');
                     if (Url.get.vote == 'true') voteLoad();
-                    startCY(`${dataURL}${connections}`, wikidataid);
-                    if (addNewFilesToGraph) {
-                        addNewFile(`${dataURL}${connections}`, false, localX, localY, wikidataid, fulllist, container);
-                    } else {
+                    if (!skipCY) {
+                        startCY(`${dataURL}${connections}`, wikidataid);
                         addNewFile(`${dataURL}${connections}`, true, localX, localY, wikidataid, fulllist, container);
-                        addNewFilesToGraph = true;
                     }
                 });
             }
@@ -1068,7 +1067,7 @@ function moduleStartString({ type, container }) {
 }
 
 function createAndAddGenericModule({ type, container, data }) {
-    console.log(type, container, data)
+    // console.log(type, container, data)
     // This function is used to create a generic module, it will create the module, add the preview and the source
     // it will also add the module to the currentModuleState object
     // The data object should be in the following format
@@ -1153,6 +1152,36 @@ function spanString(label, translation, style = false) {
     classString = style ? `class="${style}"` : '';
     return `<span ${classString} data-i18n="${translation}">${label}</span>`
 }
+function svgHoverFragmentString(elementString, hoverText, offsetX = 0, offsetY = 0, zIndex = -1, fontSize = '16px') {
+    // this function takes in a string that is a svg element and a string that is the hover text
+    // it returns a string that is the svg element with the hover text added as a text element
+    // the text element is hidden by default, and shown when the svg element is hovered over
+    // first we get the x and y or cx and cy of the element, then we add a text element with the same x and y or cx and cy
+    // we also add a hoverTrigger class to the element, and a hoverTarget class to the text element
+    x = false
+    x = elementString.match(/x="(\d*\.?\d*)"/);
+    if (!x) {
+        x = elementString.match(/cx="(\d*\.?\d*)"/);
+    }
+    y = elementString.match(/y="(\d*\.?\d*)"/);
+    if (!y) {
+        y = elementString.match(/cy="(\d*\.?\d*)"/);
+    }
+    // check if elementString has class, if it does, we want to add hoverTrigger to the class list
+    // if it doesn't we want to add a class attribute with hoverTrigger
+    if (elementString.match(/class="/)) {
+        elementString = elementString.replace(/class="/, `class="hoverTrigger `);
+    }
+    else {
+        elementString = elementString.replace(/\/>/, `class="hoverTrigger" />`);
+    }
+
+    targetString = `<text x="${x[1] - -offsetX}" y="${y[1] - -offsetY}" fill="transparent" 
+                        class="hoverTarget" style="z-index:${zIndex};" font-size="${fontSize}" 
+                        text-anchor="middle">${hoverText}</text>`;
+
+    return elementString + targetString;
+}
 
 function lineGraphString(title, score, outOf, colourMe = false, averageScore = false, extraInfo = false, threshold = false, labelOverride = false, addKey = false) {
     // Create a line that is an svg with a line and a circle
@@ -1173,10 +1202,9 @@ function lineGraphString(title, score, outOf, colourMe = false, averageScore = f
     }
     lineString += `
     <circle cx="0" cy="5" r=".5" fill="black" />
-    <line x1="0" y1="5" x2="${scoreNum}" y2="5" stroke="black" stroke-width="1" />
-    <circle class="lineGraphDot"  cx="${scoreNum}" cy="5" r="1.1" fill="black" />
-    <text x="${scoreNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${score}</text>
-    `;
+    <line x1="0" y1="5" x2="${scoreNum}" y2="5" stroke="black" stroke-width="1" />`
+    lineDot = `<circle class="lineGraphDot"  cx="${scoreNum}" cy="5" r="1.1" fill="black" />`;
+    lineString += svgHoverFragmentString(lineDot, score, 0, -2);
 
     if (colourMe) {
         // if colour me is true, we want to colour the line and the circle
@@ -1188,16 +1216,16 @@ function lineGraphString(title, score, outOf, colourMe = false, averageScore = f
     }
     if (averageScore) {
         const averageScoreNum = (averageScore / outOf) * 100;
-        lineString += `<circle class="lineGraphDot" cx="${averageScoreNum}" cy="5" r="1.1" fill="black" />`;
-        lineString += `<text x="${averageScoreNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${averageScore}</text>`;
+        averageScoreS = `<circle class="lineGraphDot" cx="${averageScoreNum}" cy="5" r="1.1" fill="black" />`;
+        lineString += svgHoverFragmentString(averageScoreS, averageScore, 0, -2);
     }
     if (extraInfo) {
         //lineString += `<text x="100" y="5" fill="black" font-size="0.2em" text-anchor="end">${extraInfo}</text>`;
     }
     if (threshold) {
         const thresholdNum = (threshold / outOf) * 100;
-        lineString += `<circle class="lineGraphDot" cx="${thresholdNum}" cy="5" r="1.1" fill="white" stroke="black" stroke-width=".5" />`;
-        lineString += `<text x="${thresholdNum}" y="3" fill="transparent" style="z-index:-1;" font-size="0.2em" text-anchor="middle">${threshold}</text>`;
+        thresholdS = `<circle class="lineGraphDot" cx="${thresholdNum}" cy="5" r="1.1" fill="white" stroke="black" stroke-width=".5" />`;
+        lineString += svgHoverFragmentString(thresholdS, threshold, 0, -2);
     }
     label = labelOverride ? labelOverride : outOf;
     lineString += `</svg>
@@ -1245,7 +1273,12 @@ function dotGridChartString(title, score, outOf, colourMe = false, numberOfDotsW
             //let colour = Math.floor(adjustedScore / 10);
             fill = fill.replace("black", `var(--score-${adjustedScoreColor})`);
         }
-        dotString += averageScore && i == Math.floor((averageScore / outOf) * numberOfDots) ? `<circle cx="${x}" cy="${y}" r="4" fill="black"/>` : `<circle cx="${x}" cy="${y}" r="4" fill="${fill}" />`;
+        if (averageScore && i == Math.floor((averageScore / outOf) * numberOfDots)) {
+            averageCircle = `<circle cx="${x}" cy="${y}" r="4" fill="black"/>`
+            dotString += svgHoverFragmentString(averageCircle, averageScore, 0, -6, 2);
+        } else {
+            dotString += `<circle cx="${x}" cy="${y}" r="4" fill="${fill}" />`;
+        }
     }
     dotString += `</svg></div>`;
     return dotString;
@@ -2996,11 +3029,9 @@ var excludeSingleColumnModulesApp = [];
 var singleColumnModulesApp = defaultOrder
 let recalculating = false
 function recalculateList(selector = undefined) {
-    console.log("recalc")
     if (recalculating) return
     recalculating = true
     masonry = false;
-    console.log("recalc")
     debugLogging("recalculateList")
     if (selector == undefined) {
         selector = "content"
@@ -3014,10 +3045,9 @@ function recalculateList(selector = undefined) {
     container.classList.add("invisible-container");
     let currentModules;
     // get the current modules
-    currentModules = Array.from(container.children).map(x => x.dataset.module);
+    currentModules = currentModuleState[selector] == undefined ? [] : Object.keys(currentModuleState[selector].modules);
     if (container.classList.contains("masonary")) {
         masonry = true;
-        currentModules += Array.from(container.querySelectorAll(".leftColumn .contentSection, .rightColumn .contentSection")).map(x => x.dataset.module)
     }
     // get if any of the current modules are open
     openModules = Array.from(container.querySelectorAll(".contentSection")).filter(x => x.firstChild.open).map(x => x.dataset.module);
@@ -3047,7 +3077,7 @@ function recalculateList(selector = undefined) {
     // if property order isnt an array just set to defaultOrder
     if (!Array.isArray(propertyOrder)) {
         propertyOrder = defaultOrder
-        console.error("propertyOrder is not an array; setting to defaultOrder")
+        console.warn("propertyOrder is not an array; setting to defaultOrder")
     }
     if (extraModules.length > 0) {
         // insert the extra modules into the propertyOrder
@@ -3059,6 +3089,13 @@ function recalculateList(selector = undefined) {
     // we can mark off if it has been added by checking agains the currentModuleState
     if (currentModuleState[selector] !== undefined) {
         for (const type of Object.keys(currentModuleState[selector].modules)) {
+            // if we see any modules that are disabled then we should set their display to none
+            if (disabledModules.includes(type)) {
+                container.querySelectorAll(`[data-module="${type}"]`).forEach(x => x.style.display = "none")
+                continue
+            }
+
+
             if (currentModuleState[selector].cssRules == undefined) {
                 currentModuleState[selector].cssRules = []
             }
@@ -3105,13 +3142,11 @@ function recalculateList(selector = undefined) {
         }
     }
 
-    console.log(openModules)
     for (const col in cols[0]) {
         firstItem = cols[0][col]
         secondItem = cols[1][col]
         if (secondItem == undefined) {
             doubleColumnListString += `"${cols[0][col]} blank${col}" `
-            console.log("hi")
             continue
         }
 
@@ -3146,8 +3181,6 @@ function recalculateList(selector = undefined) {
 
         doubleColumnListString += `"${cols[0][col]} ${cols[1][col]}" `
     }
-
-    console.log(singleColumnListString)
     // check if html has class of single or two column
     // then we style the container with the correct grid-template-areas
     if (settingsState["singleColumn"]) {
@@ -3168,35 +3201,53 @@ function recalculateList(selector = undefined) {
     // if the splitting has already been done then we can just make sure they are
     // in the correct order and then we can just add the correct grid-template-areas
     if (masonry && cols[0][0] !== undefined) {
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
+        console.log("MASONARY")
         // we need to split the modules into 2 columns
-        if (!container.dataset.masonry) {
-            leftColumn = document.createElement("div")
-            rightColumn = document.createElement("div")
+        // First we check that the two columns are still there 
+        columns = container.querySelectorAll(".leftColumn, .rightColumn");
+        // if they are not there then we need to create them
+        if (columns.length == 0) {
+            leftColumn = document.createElement("span")
+            rightColumn = document.createElement("span")
             leftColumn.classList.add("leftColumn")
             rightColumn.classList.add("rightColumn")
             container.appendChild(leftColumn)
             container.appendChild(rightColumn)
-            container.dataset.masonry = true
+        } else {
+            leftColumn = columns[0]
+            rightColumn = columns[1]
         }
-        leftColumn = container.getElementsByClassName("leftColumn")[0]
-        rightColumn = container.getElementsByClassName("rightColumn")[0]
-
+        // we need to create the grid-template-areas for the css
         gridAreasLeft = '"' + cols[0].join('" "') + '"'
         gridAreasRight = '"' + cols[1].join('" "') + '"'
         // we can reoranise the cols[] array so that we can just loop over it
         // and add the modules to the correct column
         leftColumn.setAttribute("style", `grid-template-areas: ${gridAreasLeft}`)
         rightColumn.setAttribute("style", `grid-template-areas: ${gridAreasRight}`)
+        // we also should change the container grid-template-areas to be blank
+        container.setAttribute("style", ``)
 
-        // for (const modItem of orderedModules){
-        //     const item = container.querySelector(`.contentSection[data-module="${modItem}"]`)
-        //     if (item){
-        //     if (cols[0].includes(modItem)){
-        //         leftColumn.appendChild(item)
-        //     } else {
-        //         rightColumn.appendChild(item)
-        //     }}
-        // }
+
+        for (const modItem of orderedModules) {
+            const item = container.querySelector(`.contentSection[data-module="${modItem}"]`)
+            if (item) {
+                if (cols[0].includes(modItem)) {
+                    leftColumn.appendChild(item)
+                } else {
+                    rightColumn.appendChild(item)
+                }
+            }
+        }
     }
 
     for (const details of document.querySelectorAll("details")) {

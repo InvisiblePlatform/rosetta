@@ -57,6 +57,7 @@
                     <img class="logo" src="https://logo.clearbit.com/www.bosch.com">
                     <div class="authorArticle">Reuters</div>
                 </div>
+                <div class="storyOverlay" onclick="openSpeedCamOnStory(this)"> </div>
             </div>
             <div data-image-id="141"
                 data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
@@ -71,6 +72,7 @@
                         src="https://logo.clearbit.com/logitech.com">
                     <div class="authorArticle">Bloomberg.com</div>
                 </div>
+                <div class="storyOverlay" onclick="openSpeedCamOnStory(this)"> </div>
             </div>
             <div data-image-id="140"
                 data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
@@ -85,6 +87,7 @@
                         src="https://logo.clearbit.com/logitech.com">
                     <div class="authorArticle">Bloomberg.com</div>
                 </div>
+                <div class="storyOverlay" onclick="openSpeedCamOnStory(this)"> </div>
             </div>
             <div data-image-id="140"
                 data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
@@ -99,6 +102,7 @@
                         src="https://logo.clearbit.com/logitech.com">
                     <div class="authorArticle">Bloomberg.com</div>
                 </div>
+                <div class="storyOverlay" onclick="openSpeedCamOnStory(this)"> </div>
             </div>
             <div data-image-id="140"
                 data-url="https://www.bloomberg.com/news/2013-10-01/how-logitech-protects-its-manufacturing-secrets-in-china.html"
@@ -113,12 +117,13 @@
                         src="https://logo.clearbit.com/logitech.com">
                     <div class="authorArticle">Bloomberg.com</div>
                 </div>
+                <div class="storyOverlay" onclick="openSpeedCamOnStory(this)"> </div>
             </div>
         </div>
         <canvas id="canvas"></canvas>
         <img id="photo" alt="The screen capture will appear in this box." />
     </div>
-    <div id="speedcontent"></div>
+    <div id="speedcontent" class="masonary"></div>
     <section id="disclaimer" style="order: 100;">
         <h2>
             <div class="hideInSmall invisible-disclaimer-title">Invisible Voice</div>
@@ -129,25 +134,6 @@
         <a class="hideInSmall" data-i18n="header.here" href="#"></a>
     </section>
     <section id="popArea"> </section>
-    <section id="graph-box" class="contentSection"></section>
-    <div id="graph-container" class="contentSection">
-        <div id="sigma-container"></div>
-        <div id="wikipedia-frame" style="display: none">
-            loading...
-        </div>
-        <div id="wikipedia-frame-close" style="display: none"></div>
-        <div id="graphButtons">
-            <button type="button" class="squareButton" onclick="zoomIn()" id="graphZoomIn">
-                <div></div>
-            </button>
-            <button type="button" class="squareButton" onclick="zoomOut()" id="graphZoomOut">
-                <div></div>
-            </button>
-            <button type="button" class="squareButton" onclick="zoomReset()" id="graphZoomReset">
-                <div></div>
-            </button>
-        </div>
-    </div>
     <div id="neoGraph">
         <div id="neoGraphFilterBar"></div>
         <div id="neoGraphTopBar">
@@ -162,7 +148,7 @@
                     onclick="resetNodeInternalsOnTimeoutCy(false, 0, true)">
                 </button>
             </span>
-            <div id="neoGraphTitle">Network Graph</div>
+            <div id="neoGraphTitle" class="co-name">Network Graph</div>
             <button type="button" class="squareButton" onclick="closeNetworkGraph()" style="display: none;"
                 id="neoGraphClose"></button>
         </div>
@@ -178,7 +164,6 @@
         <h2 data-i18n="settings.title" class="sectionTitle">Settings</h2>
     </div>
     <div id="extraDisplay"></div>
-    <span class="bk-bg co-name hideInSmall" style="display:none;"></span>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 html {
     font-family: "Space Grotesk", sans-serif;
+    overscroll-behavior: none;
     --c-primary: #1a1a1a;
     --c-secondary: #595959;
     --b-secondary: #767676;
@@ -106,12 +107,11 @@ html {
         }
     }
 
-    body.speedcontent,
     &.double-column {
         --minModWidthClosed: 184px;
         --minModWidthOpen: 377px;
 
-        .invisible-container:not(.masonary) {
+        .invisible-container:not(.masonary, #speedcontent) {
             grid-template-columns: 184px 184px;
         }
 
@@ -119,6 +119,7 @@ html {
             --minModWidthClosed: 377px;
         }
     }
+
 }
 
 .invisible-container {
@@ -126,17 +127,23 @@ html {
     /* grid-template-columns: repeat(auto-fill, minmax(377px, 1fr)); */
     gap: 0.5rem;
 
-    /* padding: 0.5rem; */
-    &.masory:has(.leftColumn) {
-        --minModWidthClosed: 377px;
-        --minModWidthOpen: 377px;
-        width: unset !important;
-        max-width: unset !important;
+    &.masonary {
+        grid-template: "leftColumn rightColumn" auto / 1fr 1fr;
+    }
 
-        .leftColumn,
-        .rightColumn {
-            width: 377px;
-        }
+    &.masonary .leftColumn {
+        grid-area: leftColumn;
+    }
+
+    &.masonary .rightColumn {
+        grid-area: rightColumn;
+    }
+
+    &.masonary .rightColumn,
+    &.masonary .leftColumn {
+        row-gap: 20px;
+        display: grid;
+        padding-top: 16px;
     }
 }
 
@@ -235,6 +242,7 @@ body {
             box-sizing: content-box;
         }
     }
+
 }
 
 #neoGraphTopBar {
@@ -258,6 +266,7 @@ body {
         top: 120px;
         left: 32px;
         position: relative;
+        height: fit-content;
 
         button.out {
             background-image: url('/icon/minus.svg');
@@ -323,9 +332,8 @@ body {
         display: flex;
         align-items: center;
         white-space: nowrap;
-        font-size: 1rem;
-        font-weight: 700;
-        background-color: var(--typeColor) !important;
+        font-size: 14px;
+        background-color: var(--typeColor);
         border-radius: 100px;
 
         span {
@@ -340,8 +348,14 @@ body {
             margin-left: 8px;
         }
 
-        &:checked {
-            background-color: var(--score-unset);
+        &:disabled {
+            background-color: var(--s-tertiary);
+            color: var(--c-secondary);
+            border: 1px solid var(--s-tertiary);
+        }
+
+        &[value="0"] {
+            background-color: var(--score-unset) !important;
         }
 
         &:hover {
@@ -406,7 +420,7 @@ body {
 
     div.relation {
         border-radius: 54px;
-        min-height: 1em;
+        min-height: 16px;
         display: flex;
         flex-direction: row;
         white-space: nowrap;
@@ -583,7 +597,7 @@ ol.fakeTable {
         color: var(--s-primary);
         background-color: var(--c-primary);
         margin-block: 0.5rem;
-        margin-right: 1em;
+        margin-right: 16px;
         margin-left: auto;
 
         div:after {
@@ -1567,6 +1581,7 @@ div#content {
         display: -webkit-box;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
+        line-clamp: 4;
     }
 
     .previewSecret {
@@ -2105,6 +2120,11 @@ a {
     --iconUrl: url('/icon/net/net_chairperson_of.svg');
 }
 
+.chief_executive_officer_of {
+    --typeColor: var(--network-9);
+    --iconUrl: url('/icon/net/net_chief_executive_officer.svg');
+}
+
 .chief_executive_officer {
     --typeColor: var(--network-9);
     --iconUrl: url('/icon/net/net_chief_executive_officer.svg');
@@ -2173,6 +2193,11 @@ a {
 .parent_company_of {
     --typeColor: var(--network-3);
     --iconUrl: url('/icon/net/net_parent_company_of.svg');
+}
+
+.parent_organisation {
+    --typeColor: var(--network-5);
+    --iconUrl: url('/icon/net/net_parent_organisation.svg');
 }
 
 .parent_organisation_of {
@@ -2315,4 +2340,14 @@ input:checked+.slider:before {
 
 input:checked+.slider {
     background-color: var(--onColor);
+}
+
+svg {
+    .hoverTrigger:hover {
+        fill: var(--a-primary);
+    }
+
+    .hoverTrigger:hover+.hoverTarget {
+        fill: black;
+    }
 }
