@@ -125,7 +125,8 @@ html {
 .invisible-container {
     display: grid;
     /* grid-template-columns: repeat(auto-fill, minmax(377px, 1fr)); */
-    gap: 0.5rem;
+    gap: 8px;
+    align-content: start;
 
     &.masonary {
         grid-template: "leftColumn rightColumn" auto / 1fr 1fr;
