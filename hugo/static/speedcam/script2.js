@@ -936,6 +936,7 @@ function sse() {
         withCredentials: true,
         headers: {
             "Authorization": `Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`,
+            "Content-Type": "application/json",
         },
     });
     source.addEventListener('open', function (e) {
