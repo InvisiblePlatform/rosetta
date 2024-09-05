@@ -75,14 +75,6 @@ function getWiki(node, lang = langPref) {
     return `${wikichoice}/wiki/${wiki.replaceAll(" ", "%20")}`;
 }
 
-function getCurvature(index, maxIndex) {
-    if (maxIndex <= 0) throw new Error("Invalid maxIndex");
-    if (index < 0) return -getCurvature(-index, maxIndex);
-    const amplitude = 3.5;
-    const maxCurvature = amplitude * (1 - Math.exp(-maxIndex / amplitude)) * 0.25;
-    return (maxCurvature * index) / maxIndex;
-}
-
 //const mistakenGroups = ["Q196600", "Q1186399", "Q1186399", "Q5398426"]
 function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidataid = null, fulllist = null, container = "content") {
     if (debug) console.log(`addNewFile ${jsonloc}`)
@@ -354,62 +346,4 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
 
     createAndAddGenericModule({ type: "graph-box", data: graphBoxModuleObject, container });
     recalculateList();
-}
-
-function wikipediaPanel(id) {
-    const node = graph.getNodeAttributes(id);
-    const wikiPage = node.wiki.split('/').slice(4);
-    const wikiPageTitle = decodeURIComponent(wikiPage[wikiPage.length - 1].replaceAll("_", " "));
-    const rootWiki = node.wiki.split('/').reverse().slice(-3)[0];
-    const requestURL = `https://${rootWiki}/api/rest_v1/page/html/${wikiPage}?redirect=true`;
-    if (debug) {
-        console.log(requestURL);
-    }
-    document.getElementById("graphButtons").setAttribute("style", "");
-    fetch(requestURL, {
-        headers: { 'Api-User-Agent': "admin@invisible-voice.com" },
-        mode: 'cors',
-    })
-        .then(response => response.text())
-        .then(data => {
-            const tempObj = document.createElement("div");
-
-            tempObj.innerHTML = data;
-            const tagsToRemove = ["link", "meta", "base", "title", "script", "style"];
-            tagsToRemove.forEach(tag => {
-                while (tempObj.getElementsByTagName(tag).length > 0) {
-                    tempObj.getElementsByTagName(tag)[0].remove();
-                }
-            });
-            const tagsToRemoveEmpties = ["p", "div"];
-            tagsToRemoveEmpties.forEach(tag => {
-                const elements = tempObj.getElementsByTagName(tag);
-                Array.from(elements).forEach((element) => {
-                    if (element.innerText.trim() === "") element.remove();
-                });
-            });
-            const allLinks = tempObj.getElementsByTagName("a");
-            Array.from(allLinks).forEach((link) => {
-                link.href = ''
-                //if (link.href.startsWith("/")) {
-                //    link.href = `${wikichoice}${link.href}`;
-                //}
-                //if (link.href.startsWith("./")) {
-                //    link.href = `${wikichoice}${link.href.slice(1)}`;
-                //}
-            });
-            createGenericPopoverMenu(tempObj.outerHTML, {
-                title: `${wikiPageTitle} - Wikipedia`,
-                id: "wikipedia-frame",
-                screenLocation: "right",
-                darkenBackground: true,
-                closeButton: true
-            });
-            removeSectionsWithMatchingId();
-        })
-        .catch(() => {
-            if (debug) {
-                console.error("oh no");
-            }
-        });
 }

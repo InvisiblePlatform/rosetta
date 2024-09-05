@@ -3094,8 +3094,6 @@ function recalculateList(selector = undefined) {
                 container.querySelectorAll(`[data-module="${type}"]`).forEach(x => x.style.display = "none")
                 continue
             }
-
-
             if (currentModuleState[selector].cssRules == undefined) {
                 currentModuleState[selector].cssRules = []
             }
