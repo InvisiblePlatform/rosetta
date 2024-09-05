@@ -1054,6 +1054,7 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         headers: {
             'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ "api_session_token": Url.get.apiKey })
     }).then(response => {
         // This response might contain a cookie that we should 
         response.json().then(data => {
