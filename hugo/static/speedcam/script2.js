@@ -414,6 +414,11 @@ function startupSpeedCam() {
         if (Url.get.apiKey) {
             window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKey)
             console.log("apikey set from url")
+            // spawn a new tab to "https://assets.reveb.la/am-i-logged-in"
+            // to check if the api key is valid
+
+            window.open("https://assets.reveb.la/am-i-logged-in", "_blank");
+
             roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
             changeStateObj("api");
         } else {
