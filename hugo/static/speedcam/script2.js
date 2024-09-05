@@ -640,7 +640,6 @@ function updateDisplay() {
 function pauseDisplay() {
     timerEnabled = false
     itsOpen = false;
-    timerEnabled = false
 
     function rollOnDisplay() {
         if (!itsOpen && timerEnabled) {

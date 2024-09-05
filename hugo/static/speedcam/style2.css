@@ -64,10 +64,9 @@ body {
 
     #bottomBar::before {
         content: var(--status);
-        width: min-content;
-        white-space: nowrap;
         background-color: var(--c-primary);
         padding-inline: 80px;
+        text-align: center;
     }
 
     #bottomBar[data-brand] {
@@ -623,11 +622,12 @@ iframe {
         background-color: #fffd;
         height: 350px;
         margin-bottom: auto;
+        width: 100%;
         grid-template:
-            "logo title" 310px
-            "logo author" 40px
-            "overflow overflow" 0px /
-            240px calc(100% - 240px);
+            "a1 logo b1 title" 310px
+            "a2 logo b2 author" 40px
+            "a3 overflow b3 overflow" 0px /
+            4p 240px 4px calc(100% - 248px);
 
         .title {
             text-wrap: balance;
