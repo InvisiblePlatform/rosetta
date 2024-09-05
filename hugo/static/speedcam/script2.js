@@ -948,6 +948,7 @@ function sse() {
 
     });
     source.addEventListener('error', function (e) {
+        console.log(e)
         if (e.readyState == EventSource.CLOSED) {
             //changeStateObj("connectionLost");
         }
