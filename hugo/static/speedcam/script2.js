@@ -1059,6 +1059,7 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         // This response might contain a cookie that we should 
         response.json().then(data => {
             console.log(data)
+            console.log(response.headers.get("set-cookie"))
         })
     })
 
