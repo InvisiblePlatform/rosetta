@@ -1050,7 +1050,7 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
     // spawn a new iframe with "https://assets.reveb.la/am-i-logged-in"
     // to check if the api key is valid
     iframe = document.createElement("iframe");
-    iframe.src = "https://assets.reveb.la/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
+    iframe.src = "https://assets.reveb.la/auth/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
     iframe.style = "display: none";
     document.body.appendChild(iframe);
     iframe.onload = function () {
