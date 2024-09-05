@@ -930,7 +930,7 @@ function sse() {
     // if local storage has a cookie add it to the headers
     console.log(`Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`)
     const speedcam_id = window.localStorage.getItem("speedcam_id");
-    const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id + "?";
+    const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id;
     if (!isLive) {
         printOutForLocalMode("sse", { streamUrl })
         return;
