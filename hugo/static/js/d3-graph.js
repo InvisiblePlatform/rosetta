@@ -102,9 +102,7 @@ function addNewFile(jsonloc, original = false, localX = 0, localY = 0, wikidatai
                 }
             })
         });
-        graph.import(data = {
-            nodes: nodesToAdd
-        }, merge = true)
+        graph.import(data = { nodes: nodesToAdd }, merge = true)
         // Iterating through links
         links.map((link) => {
             const { source, target, type } = link;
@@ -173,20 +171,6 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
     const wikichoice = `https://${rootWiki}`;
     const requestURL = `${wikichoice}/api/rest_v1/page/html/${wikiPage}?redirect=true`;
     const content = document.getElementById(container);
-    const wikiPageModuleObject = {
-        location: `wikipage/${wikiPage}`,
-        source: wikiPage,
-        content: undefined,
-        preview: undefined,
-        sourceUrl: "wikiurl", // full url 
-    }
-    const wikiCardModuleObject = {
-        location: `wikicard/${wikiPage}`,
-        source: wikiPage,
-        content: undefined,
-        preview: undefined,
-        sourceUrl: "wikiurl", // full url 
-    }
     if (wikiPage[0]) {
         const wikicardframe = document.createElement("section");
         const wikifirstframe = document.createElement("section");
@@ -252,15 +236,22 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
             firstFrameFirstP = wikifirstframe.querySelector("section[data-mw-section-id]").children[0].innerText
 
             const fullWikiUrl = `${wikichoice}/wiki/${wikiPage}`;
-            wikiCardModuleObject.preview = `<div class='previewScore previewScoreWithTitle' style='--title:"${firstHeader}";'>${firstContent}</div>`
-            wikiCardModuleObject.content = wikicardframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
-            wikiCardModuleObject.sourceUrl = fullWikiUrl
-            wikiCardModuleObject.source = pageTitle
 
-            wikiPageModuleObject.preview = `<div class='previewScore previewPG'>${firstFrameFirstP}</div>`
-            wikiPageModuleObject.content = wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
-            wikiPageModuleObject.sourceUrl = fullWikiUrl
-            wikiPageModuleObject.source = pageTitle
+            const wikiCardModuleObject = {
+                location: `wikicard/${wikiPage}`,
+                source: pageTitle,
+                content: wikicardframe.innerHTML.replace(/<img/g, '<img loading=lazy '),
+                preview: `<div class='previewScore previewScoreWithTitle' style='--title:"${firstHeader}";'>${firstContent}</div>`,
+                sourceUrl: fullWikiUrl,
+            }
+
+            const wikiPageModuleObject = {
+                location: `wikipage/${wikiPage}`,
+                source: pageTitle,
+                content: wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy '),
+                preview: `<div class='previewScore previewPG'>${firstFrameFirstP}</div>`,
+                sourceUrl: fullWikiUrl,
+            }
 
             wikiCardModuleObject.content += `<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
             wikiPageModuleObject.content += `<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`

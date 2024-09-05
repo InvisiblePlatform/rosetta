@@ -564,6 +564,10 @@ function handleResponse(response, location) {
             if ("speedcams" in response) {
                 availableSpeedcams = response.speedcams;
                 window.localStorage.setItem("availableSpeedcams", JSON.stringify(availableSpeedcams));
+                if (justPickTheFirstSpeedcamId) {
+                    window.localStorage.setItem("speedcam_id", availableSpeedcams[0].id);
+                    console.log(`Speedcam ID: ${availableSpeedcams[0].id}`)
+                }
             }
             break;
         // we need a case for any speedcam/speedcam/{speedcam_id}/shot
@@ -975,6 +979,15 @@ function sse() {
         if (data.hasOwnProperty("command")) {
             console.log(data.command);
             switch (data.command) {
+                case "brand":
+                    //changeStateObj("brand");
+                    break;
+                case "assess":
+                    //changeStateObj("assess");
+                    break;
+                case "analyse":
+                    //changeStateObj("analyse");
+                    break;
                 case "shot":
                     sendRequestForScan(false);
                     break;
@@ -983,7 +996,6 @@ function sse() {
                     break;
                 case "open":
                     openSpeedCam();
-
                     break;
                 case "close":
                     closeIV();
@@ -1025,26 +1037,20 @@ function sse() {
     }
 
 }
-
+let justPickTheFirstSpeedcamId = false;
 const returnButton = document.querySelector("#speedReturn")
 const speedCloseButton = document.querySelector("#speedClose")
 if (window.localStorage.getItem("apiKeyRoundabout")) {
-    sse();
+    // if the api key is set, then we should try to connect to the server
+    // however if the speedcam_id is not set, then we should try to get it
+    if (window.localStorage.getItem("speedcam_id")) {
+        sse();
+    } else {
+        justPickTheFirstSpeedcamId = true;
+        roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
+    }
 }
 
-returnButton.addEventListener("click", () => {
-    changeLayout("subvert", true)
-    setTimeout(() => {
-        stop_sensing = false;
-    }, 20000)
-})
-
-speedCloseButton.addEventListener("click", () => {
-    changeLayout("ready")
-    setTimeout(() => {
-        stop_sensing = false;
-    }, 20000)
-})
 
 document.onkeydown = function (e) {
     if (e.key === "a") {
@@ -1066,9 +1072,20 @@ document.onkeydown = function (e) {
         changeLayout()
     }
 };
-// Set up our event listener to run the startup process
-// once loading is complete.
-window.addEventListener("load", startupSpeedCam, false);
+
+returnButton.addEventListener("click", () => {
+    changeLayout("subvert", true)
+    setTimeout(() => {
+        stop_sensing = false;
+    }, 20000)
+})
+
+speedCloseButton.addEventListener("click", () => {
+    changeLayout("ready")
+    setTimeout(() => {
+        stop_sensing = false;
+    }, 20000)
+})
 
 speedContent.addEventListener("click", (event) => {
     document.body.dataset.focus = "voice";
@@ -1116,3 +1133,6 @@ stateObj.addEventListener("click", (event) => {
     }
     changeStateObj("setupComplete")
 })
+// Set up our event listener to run the startup process
+// once loading is complete.
+window.addEventListener("load", startupSpeedCam, false);
