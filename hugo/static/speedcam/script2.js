@@ -931,7 +931,10 @@ function sse() {
     console.log(`Bearer ${window.localStorage.getItem("apiKeyRoundabout")}`)
     const speedcam_id = window.localStorage.getItem("speedcam_id");
     const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id + "?";
-
+    if (!isLive) {
+        printOutForLocalMode("sse", { streamUrl })
+        return;
+    }
     const source = new EventSource(streamUrl, {
         withCredentials: true,
         headers: {
@@ -1033,7 +1036,6 @@ function sse() {
 // but if it is localhost we should just print out the data
 if (window.location.hostname == "localhost") {
     isLive = false;
-    return;
 } else {
     isLive = true;
 }
