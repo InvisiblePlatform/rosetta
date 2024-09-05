@@ -390,12 +390,13 @@ function wikipediaPanel(id) {
             });
             const allLinks = tempObj.getElementsByTagName("a");
             Array.from(allLinks).forEach((link) => {
-                if (link.href.startsWith("/")) {
-                    link.href = `${wikichoice}${link.href}`;
-                }
-                if (link.href.startsWith("./")) {
-                    link.href = `${wikichoice}${link.href.slice(1)}`;
-                }
+                link.href = ''
+                //if (link.href.startsWith("/")) {
+                //    link.href = `${wikichoice}${link.href}`;
+                //}
+                //if (link.href.startsWith("./")) {
+                //    link.href = `${wikichoice}${link.href.slice(1)}`;
+                //}
             });
             createGenericPopoverMenu(tempObj.outerHTML, {
                 title: `${wikiPageTitle} - Wikipedia`,
