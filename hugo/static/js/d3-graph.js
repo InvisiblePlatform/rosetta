@@ -164,6 +164,7 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
                 }
             }
             console.log(`newid ${currentChoice}`);
+            if (currentChoice == '') return;
             node = graph.getNodeAttributes(currentChoice);
             id = currentChoice;
         } else {
@@ -181,15 +182,15 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
     const requestURL = `${wikichoice}/api/rest_v1/page/html/${wikiPage}?redirect=true`;
     const content = document.getElementById(container);
     const wikiPageModuleObject = {
-        location: `wikipage/${wikiPage}`, 
+        location: `wikipage/${wikiPage}`,
         source: wikiPage,
         content: undefined,
         preview: undefined,
         sourceUrl: "wikiurl", // full url 
     }
     const wikiCardModuleObject = {
-        location: `wikicard/${wikiPage}`, 
-        source: wikiPage, 
+        location: `wikicard/${wikiPage}`,
+        source: wikiPage,
         content: undefined,
         preview: undefined,
         sourceUrl: "wikiurl", // full url 
@@ -219,31 +220,31 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
             const queriesToRemove = ["link", "meta", "base", "title", "script", "style", "sup", "caption", ".thumb", ".tright", ".tleft", ".hatnote", ".nomobile"].join(", ");
             tempObj.querySelectorAll(queriesToRemove).forEach((e) => { e.remove() })
             if (!skipProfileCard) {
-            tempElement.querySelectorAll(queriesToRemove).forEach((e) => { e.remove() })
+                tempElement.querySelectorAll(queriesToRemove).forEach((e) => { e.remove() })
             }
             const tagsToRemoveEmpties = ["p", "div"];
-            tempObj.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove()})
-            if (!skipProfileCard) tempElement.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove()})
+            tempObj.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove() })
+            if (!skipProfileCard) tempElement.querySelectorAll("p, div").forEach((e) => { if (e.innerText.trim() === "") e.remove() })
             // We need to make all the href's absolute so they work, accounting for ./
             // we have to check via the attributes because the direct hrefs get rewritten
 
-            tempObj.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}`})
-            tempObj.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}`})
+            tempObj.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}` })
+            tempObj.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}` })
 
             if (!skipProfileCard) {
-            tempElement.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}`})
-            tempElement.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}`})
+                tempElement.querySelectorAll("a[href^='/']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value}` })
+                tempElement.querySelectorAll("a[href^='./']").forEach((x) => { x.attributes.href.value = `${wikichoice}${x.attributes.href.value.slice(1)}` })
             }
             wikifirstframe.appendChild(tempObj);
 
             let firstHeader = "Company Info";
             let firstContent = "No data available";
-            if (!skipProfileCard){
+            if (!skipProfileCard) {
                 // I need to get the data from the first row of infobox
                 const infoboxRows = wikicardframe.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
                 const infoboxData = [];
                 Array.from(infoboxRows).forEach((row) => {
-                    if (infoboxData.length > 0 ) return
+                    if (infoboxData.length > 0) return
                     const rowTitle = row.getElementsByTagName("th")[0];
                     const rowContent = row.getElementsByTagName("td")[0];
                     if (rowTitle && rowContent) {
@@ -259,18 +260,18 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
             firstFrameFirstP = wikifirstframe.querySelector("section[data-mw-section-id]").children[0].innerText
 
             const fullWikiUrl = `${wikichoice}/wiki/${wikiPage}`;
-            wikiCardModuleObject.preview =`<div class='previewScore previewScoreWithTitle' style='--title:"${firstHeader}";'>${firstContent}</div>` 
+            wikiCardModuleObject.preview = `<div class='previewScore previewScoreWithTitle' style='--title:"${firstHeader}";'>${firstContent}</div>`
             wikiCardModuleObject.content = wikicardframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
             wikiCardModuleObject.sourceUrl = fullWikiUrl
             wikiCardModuleObject.source = pageTitle
 
-            wikiPageModuleObject.preview =`<div class='previewScore previewPG'>${firstFrameFirstP}</div>` 
+            wikiPageModuleObject.preview = `<div class='previewScore previewPG'>${firstFrameFirstP}</div>`
             wikiPageModuleObject.content = wikifirstframe.innerHTML.replace(/<img/g, '<img loading=lazy ');
             wikiPageModuleObject.sourceUrl = fullWikiUrl
             wikiPageModuleObject.source = pageTitle
 
-            wikiCardModuleObject.content +=`<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
-            wikiPageModuleObject.content +=`<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
+            wikiCardModuleObject.content += `<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
+            wikiPageModuleObject.content += `<button class='scrollToTop squareButton' onclick='this.parentElement.children[0].children[0].scrollIntoView()'></button>`
             createAndAddGenericModule({ type: "wikipedia-first-frame", data: wikiPageModuleObject, container })
             createAndAddGenericModule({ type: "wikipedia-infocard-frame", data: wikiCardModuleObject, container })
             removeSectionsWithMatchingId();
@@ -312,7 +313,7 @@ function getWikipediaPage(id, fulllist = false, container = "content") {
             const listItem = document.createElement('span');
             listItem.innerHTML =
                 `<div class="graphListName">${itemData.label}</div>` +
-                `<div class="graphListRel relation ${itemData.type.toLowerCase().replace(" ","_")}_of">${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</div>`;
+                `<div class="graphListRel relation ${itemData.type.toLowerCase().replace(" ", "_")}_of">${itemData.type.replaceAll('_', ' ').replaceAll(' of', '')}</div>`;
             list.appendChild(listItem);
             l1list_ids.push(itemData.id);
             if (forCoNameRel == '') {
