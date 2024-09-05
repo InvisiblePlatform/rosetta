@@ -1047,9 +1047,12 @@ const speedCloseButton = document.querySelector("#speedClose")
 if (window.localStorage.getItem("apiKeyRoundabout")) {
     if (!window.localStorage.getItem("speedcam_id")) {
         justPickTheFirstSpeedcamId = true;
-        roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
+        roundaboutRequest({}, "speedcam/speedcam_endpoint/list").then(() => {
+            sse();
+        }
+    } else {
+        sse();
     }
-    sse();
 }
 
 
