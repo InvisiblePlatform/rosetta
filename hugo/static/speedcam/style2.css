@@ -238,6 +238,10 @@ body {
             display: none;
         }
 
+        #neoGraph {
+            display: grid;
+        }
+
         #speedCamButtons {
             display: grid;
         }
@@ -621,7 +625,7 @@ iframe {
 }
 
 .story.currentItem {
-    height: 100%;
+    height: 1114px;
     max-height: 100%;
     display: grid;
     grid-area: currentItem;
