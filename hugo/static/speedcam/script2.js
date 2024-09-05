@@ -1034,7 +1034,6 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
 
 returnButton.addEventListener("click", () => {
     changeLayout("subvert", true)
-    closeIV();
     setTimeout(() => {
         stop_sensing = false;
     }, 20000)
@@ -1042,7 +1041,6 @@ returnButton.addEventListener("click", () => {
 
 speedCloseButton.addEventListener("click", () => {
     changeLayout("ready")
-    closeIV();
     setTimeout(() => {
         stop_sensing = false;
     }, 20000)
