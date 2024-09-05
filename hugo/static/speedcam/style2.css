@@ -207,6 +207,10 @@ body {
         #bottomBar {
             display: flex;
         }
+
+        #neoGraph {
+            display: none;
+        }
     }
 
     &.layoutVoice {
@@ -604,7 +608,7 @@ iframe {
 .storyOverlay {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     transform: translateY(-500px);
 }
 
