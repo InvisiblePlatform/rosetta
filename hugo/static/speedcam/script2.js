@@ -932,15 +932,6 @@ function sse() {
     const speedcam_id = window.localStorage.getItem("speedcam_id");
     const streamUrl = "https://assets.reveb.la/speedcam/stream/" + speedcam_id + "?";
 
-    // if our window is at "test.reveb.la" then we can keep going 
-    // but if it is localhost we should just print out the data
-    if (window.location.hostname == "localhost") {
-        isLive = false;
-        return;
-    } else {
-        isLive = true;
-    }
-
     const source = new EventSource(streamUrl, {
         withCredentials: true,
         headers: {
@@ -1037,18 +1028,26 @@ function sse() {
     }
 
 }
+
+// if our window is at "test.reveb.la" then we can keep going 
+// but if it is localhost we should just print out the data
+if (window.location.hostname == "localhost") {
+    isLive = false;
+    return;
+} else {
+    isLive = true;
+}
+
+
 let justPickTheFirstSpeedcamId = false;
 const returnButton = document.querySelector("#speedReturn")
 const speedCloseButton = document.querySelector("#speedClose")
 if (window.localStorage.getItem("apiKeyRoundabout")) {
-    // if the api key is set, then we should try to connect to the server
-    // however if the speedcam_id is not set, then we should try to get it
-    if (window.localStorage.getItem("speedcam_id")) {
-        sse();
-    } else {
+    if (!window.localStorage.getItem("speedcam_id")) {
         justPickTheFirstSpeedcamId = true;
         roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
     }
+    sse();
 }
 
 
