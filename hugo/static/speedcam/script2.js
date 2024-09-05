@@ -414,10 +414,6 @@ function startupSpeedCam() {
         if (Url.get.apiKey) {
             window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKey)
             console.log("apikey set from url")
-            // spawn a new tab to "https://assets.reveb.la/am-i-logged-in"
-            // to check if the api key is valid
-
-            window.open("https://assets.reveb.la/am-i-logged-in", "_blank");
 
             roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
             changeStateObj("api");
@@ -551,11 +547,7 @@ async function roundaboutRequest(requestObject, location) {
             response.json().then(data => {
                 handleResponse(data, location);
             })
-            // if response has a session cookie, save it to local storage
-            responseHeaders = response.headers;
-            if (response.headers.has("Set-Cookie")) {
-                window.localStorage.setItem("api_session_cookie", response.headers.get("set-cookie"));
-            }
+            response.headers.getSetCookie("api_session_cookie")
         }).catch(err => console.error(err));
 }
 let responseHeaders = null;
@@ -1053,6 +1045,17 @@ const speedCloseButton = document.querySelector("#speedClose")
 if (window.localStorage.getItem("apiKeyRoundabout")) {
     if (!window.localStorage.getItem("speedcam_id")) {
         justPickTheFirstSpeedcamId = true;
+    }
+
+    // spawn a new iframe with "https://assets.reveb.la/am-i-logged-in"
+    // to check if the api key is valid
+    iframe = document.createElement("iframe");
+    iframe.src = "https://assets.reveb.la/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
+    iframe.style = "display: none";
+    document.body.appendChild(iframe);
+    iframe.onload = function () {
+        console.log("iframe loaded")
+        console.log(iframe.contentWindow.document.body.innerHTML)
     }
     roundaboutRequest({}, "speedcam/speedcam_endpoint/list").then(() => {
         sse();
