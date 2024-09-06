@@ -988,10 +988,12 @@ function sse() {
                     }
                     break;
                 case "analyse":
-                    if (stateObj.classList.contains("assess")) {
-                        stateController();
-                        console.log("Analyse")
-                    }
+                    setTimeout(() => {
+                        if (stateObj.classList.contains("assess")) {
+                            stateController();
+                            console.log("Analyse")
+                        }
+                    }, 1000);
                     break;
                 case "shot":
                     sendRequestForScan(false);
