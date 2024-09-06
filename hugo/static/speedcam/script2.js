@@ -1017,7 +1017,7 @@ function sse() {
                             stateController();
                             console.log("State Sent")
                         }
-                    }, 1000);
+                    }, 2000);
                     break;
                 case "getState":
                     console.log(data.state)
