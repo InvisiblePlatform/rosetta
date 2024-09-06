@@ -1185,6 +1185,9 @@ window.addEventListener("load", startupSpeedCam, false);
 if (Url.get.apiKeyRoundabout) {
     window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKeyRoundabout)
     setSearchParam("apiKey", Url.get.apiKeyRoundabout)
+    // remove the apiKeyRoundabout from the url
+    setSearchParam("apiKeyRoundabout", null)
+
     // then reload the page
     window.location.reload();
 }
