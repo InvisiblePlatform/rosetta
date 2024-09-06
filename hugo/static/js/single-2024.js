@@ -3537,7 +3537,7 @@ function createPopoverOptions() {
         })
     }
     if (isSpeedcam) {
-        popoverDiv.innerHTML += `<div id = "speedCamDebug" ><h3> SpeedCam Debug </h3>
+        popoverDiv.innerHTML = `<div id = "speedCamDebug" ><h3> SpeedCam Debug </h3>
             <h4> Current SpeedCam </h4>
             <span id="range_number">0</span>
             <span id="number_number">0</span>
@@ -3612,7 +3612,11 @@ function createGenericPopoverMenu(contentString, options = { id: false, title: f
         close.classList.add("closeButton")
         close.style = "z-index: 100; position: absolute; top: 0; right: 0; margin: 0.5em; width: 40px; height: 40px; background-color: var(--c-background); color: var(--c-light-text); border: 1px solid var(--c-border-color);";
         const closeInteriorDiv = document.createElement("div");
-        close.setAttribute("onclick", "this.parentElement.style.transform = 'scale(0)'; setTimeout(() => {this.parentElement.hidePopover(); this.parentElement.remove();}, 100)");
+        if (isSpeedcam) {
+            close.setAttribute("onclick", "this.parentElement.style.transform = 'scale(0)'; setTimeout(() => {this.parentElement.hidePopover(); this.parentElement.remove(); changeLayout('ready');}, 100)");
+        } else {
+            close.setAttribute("onclick", "this.parentElement.style.transform = 'scale(0)'; setTimeout(() => {this.parentElement.hidePopover(); this.parentElement.remove();}, 100)");
+        }
         close.appendChild(closeInteriorDiv);
 
         popoverDiv.appendChild(close);

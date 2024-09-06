@@ -1030,6 +1030,7 @@ function sse() {
                 case "settingsWindow":
                     console.log(data)
                     createPopoverOptions()
+                    changeLayout();
                     break;
                 case "setDomain":
                     console.log(data)
