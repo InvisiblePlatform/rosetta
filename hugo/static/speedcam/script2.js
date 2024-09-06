@@ -1061,6 +1061,9 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         sse();
     })
 } else {
+    if (!window.localStorage.getItem("speedcam_id")) {
+        justPickTheFirstSpeedcamId = true;
+    }
     if (Url.get.apiKey) {
         window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKey)
         console.log("apikey set from url")
