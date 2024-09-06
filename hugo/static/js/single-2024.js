@@ -3181,7 +3181,7 @@ function recalculateList(selector = undefined) {
     }
     // check if html has class of single or two column
     // then we style the container with the correct grid-template-areas
-    if (settingsState["singleColumn"]) {
+    if (settingsState["singleColumn"] && !isSpeedcam) {
         document.lastChild.classList.add("single-column")
         document.lastChild.classList.remove("double-column")
         container.setAttribute("style", `grid-template-areas: ${singleColumnListString}`)
