@@ -981,20 +981,19 @@ function sse() {
                         console.log("Brand")
                     }
                     break;
-                case "assess":
+                case "analyse":
                     setTimeout(() => {
-
                         if (stateObj.classList.contains("brand")) {
                             stateController();
-                            console.log("Assess")
+                            console.log("Analyse")
                         }
                     }, 1000);
                     break;
-                case "analyse":
+                case "assess":
                     setTimeout(() => {
-                        if (stateObj.classList.contains("assess")) {
+                        if (stateObj.classList.contains("analyse")) {
                             stateController();
-                            console.log("Analyse")
+                            console.log("Assess")
                         }
                     }, 1500);
                     break;
@@ -1011,10 +1010,10 @@ function sse() {
                     closeIV();
                     break;
                 case "sendState":
+                    updateState(data.state)
+                    updateDisplay();
                     setTimeout(() => {
-                        if (stateObj.classList.contains("analyse")) {
-                            updateState(data.state)
-                            updateDisplay();
+                        if (stateObj.classList.contains("assess")) {
                             stateController();
                             console.log("State Sent")
                         }
