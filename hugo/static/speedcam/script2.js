@@ -945,6 +945,7 @@ function sse() {
             triggerAliveLoop(30000)
             changeStateObj("connectedToServer")
             sendCommandToRoundabout("sendState", {})
+            changeLayout("ready")
         }
 
     });
@@ -1048,7 +1049,7 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         justPickTheFirstSpeedcamId = true;
     }
 
-    reqUrl = "https://assets.reveb.la/auth/login-with-api-key" + "?api_key=" + Url.get.apiKey;
+    reqUrl = "https://assets.reveb.la/auth/login-with-api-key" + "?api_key=" + window.localStorage.getItem("apiKeyRoundabout");
     fetch(reqUrl).then(response => {
         // This response might contain a cookie that we should 
         console.log(response)
@@ -1058,9 +1059,20 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
     roundaboutRequest({}, "speedcam/speedcam_endpoint/list").then(() => {
         sse();
     })
+} else {
+    if (Url.get.apiKey) {
+        window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKey)
+        console.log("apikey set from url")
+
+        roundaboutRequest({}, "speedcam/speedcam_endpoint/list");
+        changeStateObj("api");
+        reqUrl = "https://assets.reveb.la/auth/login-with-api-key" + "?api_key=" + Url.get.apiKey;
+        fetch(reqUrl).then(response => {
+            // This response might contain a cookie that we should 
+            console.log(response)
+        })
+    }
 }
-
-
 document.onkeydown = function (e) {
     if (e.key === "a") {
         createPopoverApiKey()
