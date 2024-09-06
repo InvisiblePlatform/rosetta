@@ -982,10 +982,13 @@ function sse() {
                     }
                     break;
                 case "assess":
-                    if (stateObj.classList.contains("brand")) {
-                        stateController();
-                        console.log("Assess")
-                    }
+                    setTimeout(() => {
+
+                        if (stateObj.classList.contains("brand")) {
+                            stateController();
+                            console.log("Assess")
+                        }
+                    }, 1000);
                     break;
                 case "analyse":
                     setTimeout(() => {
@@ -993,7 +996,7 @@ function sse() {
                             stateController();
                             console.log("Analyse")
                         }
-                    }, 1000);
+                    }, 1500);
                     break;
                 case "shot":
                     sendRequestForScan(false);
