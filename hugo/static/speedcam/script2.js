@@ -1027,6 +1027,10 @@ function sse() {
                     console.log(data.state)
                     changeLayout("ready")
                     break;
+                case "settingsWindow":
+                    console.log(data)
+                    createPopoverOptions()
+                    break;
                 case "setDomain":
                     console.log(data)
                     break;
