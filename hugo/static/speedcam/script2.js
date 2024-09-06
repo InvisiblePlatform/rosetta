@@ -978,16 +978,19 @@ function sse() {
                 case "brand":
                     if (!stateObj.classList.contains("brand")) {
                         stateController();
+                        console.log("Brand")
                     }
                     break;
                 case "assess":
                     if (stateObj.classList.contains("brand")) {
                         stateController();
+                        console.log("Assess")
                     }
                     break;
                 case "analyse":
                     if (stateObj.classList.contains("assess")) {
                         stateController();
+                        console.log("Analyse")
                     }
                     break;
                 case "shot":
@@ -1008,8 +1011,9 @@ function sse() {
                             updateState(data.state)
                             updateDisplay();
                             stateController();
+                            console.log("State Sent")
                         }
-                    }, 100);
+                    }, 1000);
                     break;
                 case "getState":
                     console.log(data.state)
