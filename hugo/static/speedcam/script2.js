@@ -1179,3 +1179,12 @@ stateObj.addEventListener("click", (event) => {
 // Set up our event listener to run the startup process
 // once loading is complete.
 window.addEventListener("load", startupSpeedCam, false);
+
+// if the url has a "apiKeyRoundabout" then we should set it to local storage
+// and then unset it from the url, setting it to "apiKey" in the url
+if (Url.get.apiKeyRoundabout) {
+    window.localStorage.setItem("apiKeyRoundabout", Url.get.apiKeyRoundabout)
+    setSearchParam("apiKey", Url.get.apiKeyRoundabout)
+    // then reload the page
+    window.location.reload();
+}
