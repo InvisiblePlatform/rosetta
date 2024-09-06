@@ -1048,21 +1048,10 @@ if (window.localStorage.getItem("apiKeyRoundabout")) {
         justPickTheFirstSpeedcamId = true;
     }
 
-    // spawn a new json post to "https://assets.reveb.la/am-i-logged-in",
-    // to check if the api key is still valid
-    reqUrl = "https://assets.reveb.la/auth/am-i-logged-in" + "?api_session_token=" + Url.get.apiKey;
-    fetch(reqUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ "api_session_token": Url.get.apiKey })
-    }).then(response => {
+    reqUrl = "https://assets.reveb.la/auth/login-with-api-key" + "?api_key=" + Url.get.apiKey;
+    fetch(reqUrl).then(response => {
         // This response might contain a cookie that we should 
-        response.json().then(data => {
-            console.log(data)
-            console.log(response.headers.get("set-cookie"))
-        })
+        console.log(response)
     })
 
 
