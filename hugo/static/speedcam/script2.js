@@ -1004,12 +1004,12 @@ function sse() {
                     break;
                 case "sendState":
                     setTimeout(() => {
-                        if (stateObj.classList.contains("analyse") || stateObj.classList.contains("assess")) {
+                        if (stateObj.classList.contains("analyse")) {
                             updateState(data.state)
                             updateDisplay();
                             stateController();
                         }
-                    }, 500);
+                    }, 100);
                     break;
                 case "getState":
                     console.log(data.state)
