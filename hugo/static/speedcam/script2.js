@@ -1117,7 +1117,7 @@ document.onkeydown = function (e) {
 };
 
 returnButton.addEventListener("click", () => {
-    changeLayout("subvert", true)
+    changeLayout("subvert")
     setTimeout(() => {
         stop_sensing = false;
     }, 20000)
