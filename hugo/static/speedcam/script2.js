@@ -946,8 +946,10 @@ function sse() {
             changeStateObj("connectedToServer")
             sendCommandToRoundabout("sendState", {})
             changeLayout("ready")
+            setTimeout(() => {
+                changeStateObj()
+            }, 1000);
         }
-
     });
     source.addEventListener('error', function (e) {
         console.log(e)
