@@ -252,6 +252,7 @@ async function connectSerial(initport = null) {
     } catch (error) {
         console.error("Error:", error);
         changeStateObj("noSensor", true);
+        changeLayout();
     }
 }
 let stop_sensing = false;
@@ -361,6 +362,7 @@ function startCam() {
         .catch((err) => {
             console.error(`An error occurred: ${err}`);
             changeStateObj("noCamera");
+            changeLayout();
         });
 }
 
@@ -910,10 +912,12 @@ function systemCheck() {
     // Check that the sensor is still connected
     if (!navigator.serial) {
         changeStateObj("noSensor");
+        changeLayout();
     }
     // Check that the camera is still connected
     if (!navigator.mediaDevices) {
         changeStateObj("noCamera");
+        changeLayout();
         return false
     }
     return true
@@ -1033,6 +1037,18 @@ function sse() {
                 case "resume":
                     changeLayout("subvert")
                     console.log(data)
+                    break;
+                case "subvert":
+                    changeLayout("subvert")
+                    break;
+                case "voice":
+                    changeLayout("voice")
+                    break;
+                case "ready":
+                    changeLayout("ready")
+                    break;
+                case "clean":
+                    changeLayout()
                     break;
                 case "error":
                     console.log(data.error)
