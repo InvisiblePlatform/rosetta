@@ -339,7 +339,7 @@ function runOnTargetInfo(targetInfo) {
             console.log("Skipping shot, already taken")
         } else {
             console.log("Above threshold, taking shot")
-            stateController();
+            // stateController();
             sendRequestForScan(true);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
@@ -816,10 +816,10 @@ function createPopoverApiKey() {
 
 function updateState(stateObj) {
     updated_keys = []
-    stateController();
-    setTimeout(() => {
-        stateController();
-    }, 1000);
+    // stateController();
+    //setTimeout(() => {
+    //    stateController();
+    //}, 1000);
     for (const key in stateObj) {
         if (key in speedcamState && speedcamState[key] != stateObj[key]) {
             updated_keys.push(key);
@@ -976,13 +976,19 @@ function sse() {
             console.log(data.command);
             switch (data.command) {
                 case "brand":
-                    //changeStateObj("brand");
+                    if (!stateObj.classList.contains("brand")) {
+                        stateController();
+                    }
                     break;
                 case "assess":
-                    //changeStateObj("assess");
+                    if (stateObj.classList.contains("brand")) {
+                        stateController();
+                    }
                     break;
                 case "analyse":
-                    //changeStateObj("analyse");
+                    if (stateObj.classList.contains("assess")) {
+                        stateController();
+                    }
                     break;
                 case "shot":
                     sendRequestForScan(false);
@@ -997,6 +1003,11 @@ function sse() {
                     closeIV();
                     break;
                 case "sendState":
+                    if (stateObj.classList.contains("analyse")) {
+                        setTimeout(() => {
+                            stateController();
+                        }, 500);
+                    }
                     updateState(data.state)
                     updateDisplay();
                     break;
