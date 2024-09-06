@@ -1003,7 +1003,7 @@ function sse() {
                     closeIV();
                     break;
                 case "sendState":
-                    if (stateObj.classList.contains("analyse")) {
+                    if (stateObj.classList.contains("analyse") || stateObj.classList.contains("assess")) {
                         setTimeout(() => {
                             stateController();
                         }, 500);
