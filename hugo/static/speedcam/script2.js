@@ -1046,7 +1046,12 @@ function sse() {
                     break;
                 case "getState":
                     console.log(data.state)
-                    changeLayout("ready")
+                    // changeLayout("ready")
+                    sendObject = {
+                        "stateStep": stateStep,
+                        "layout": currentLayout,
+                    }
+                    sendResponseToSSERequest("read", sendObject)
                     break;
                 case "settingsWindow":
                     console.log(data)
