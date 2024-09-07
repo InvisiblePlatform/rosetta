@@ -354,7 +354,8 @@ function runOnTargetInfo(targetInfo) {
         } else {
             console.log("Above threshold, taking shot")
             // stateController();
-            sendResponseToSSERequest("shot", {})
+            // sendResponseToSSERequest("shot", {})
+            sendRequestForScan(true);
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
                 clearTimeout(shotTimeoutObject);

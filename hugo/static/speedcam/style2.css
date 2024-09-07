@@ -153,10 +153,15 @@ body {
             --status: "State Recieved";
         }
 
+        &.api {
+            background-color: var(--score-4);
+            --icon: url(/icon/gear.svg);
+            --status: "API Connected";
+        }
+
         &.setupComplete {
             background-color: var(--score-10);
             --icon: url(/icon/tick.svg);
-
         }
 
         &.setupComplete>.status::before {
