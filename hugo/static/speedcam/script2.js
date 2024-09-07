@@ -268,6 +268,7 @@ let closeTimeoutObject = null;
 let shotTimeoutObject = null;
 let limitTimeoutObject = null;
 let readCounter = 0;
+let statesStepHistoryCounter = [];
 function runOnTargetInfo(targetInfo) {
     waitingTimeoutTime = Date.now();
     closeTimeoutTime = speedcamState.frontend.timeout_close * 1000;
@@ -279,6 +280,16 @@ function runOnTargetInfo(targetInfo) {
             "target": targetInfo,
             "stateStep": stateStep,
             "layout": currentLayout,
+        }
+        if (stateStep > 0 && statesStepHistoryCounter[0] == stateStep) {
+            statesStepHistoryCounter.push(stateStep);
+        } else {
+            statesStepHistoryCounter = [];
+        }
+
+        if (statesStepHistoryCounter.length > 5) {
+            stateStep = 0;
+            sendObject["stateReset"] = true;
         }
         sendResponseToSSERequest("read", sendObject)
         readCounter = 0;
