@@ -145,6 +145,7 @@ html {
         row-gap: 20px;
         display: grid;
         padding-top: 16px;
+        align-content: start;
     }
 }
 
@@ -469,7 +470,7 @@ ol.fakeTable {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: 377px;
+    /* grid-template-columns: var(--minModWidthOpen); */
     font-size: 14px;
     border-collapse: collapse;
     overflow: hidden;
@@ -758,7 +759,7 @@ div#content {
     padding-bottom: 16px;
 
     &:not(&.masonry) {
-        max-width: 377px;
+        max-width: var(--minModWidthOpen);
     }
 
 }
@@ -783,6 +784,10 @@ div#content {
         min-width: var(--minModWidthClosed);
         width: var(--minModWidthClosed);
         max-width: var(--minModWidthClosed);
+    }
+
+    details>div {
+        width: 100%;
     }
 
     &:has(details[open]) {
@@ -922,8 +927,6 @@ div#content {
         border-collapse: collapse;
         border-spacing: 0;
         border-top: 1px solid var(--s-tertiary);
-        max-width: 377px;
-        width: 100%;
         text-overflow: clip;
         white-space: nowrap;
 
@@ -2094,7 +2097,7 @@ a {
     &.interactionButton {
         bottom: anchor(top);
         transform-origin: center;
-        transform: translateX(calc((377px - 80px) / 2));
+        transform: translateX(calc((var(--minModWidthClosed) - 80px) / 2));
         right: unset;
         border-radius: 8px 8px 0 0;
         width: 80px;
