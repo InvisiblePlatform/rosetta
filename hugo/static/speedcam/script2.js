@@ -1050,6 +1050,9 @@ function sse() {
                     sendObject = {
                         "stateStep": stateStep,
                         "layout": currentLayout,
+                        "timerEnabled": timerEnabled,
+                        "itsOpen": itsOpen,
+                        "placement": placement,
                     }
                     sendResponseToSSERequest("read", sendObject)
                     break;
@@ -1078,6 +1081,8 @@ function sse() {
                 case "ready":
                     changeLayout("ready")
                     stateStep = 0;
+                    timerEnabled = true;
+                    itsOpen = false;
                     break;
                 case "clean":
                     changeLayout()
