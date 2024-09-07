@@ -192,15 +192,23 @@ SPEEDCAM_COMMANDS = {
     "scan": { "label": "Take Shot and Scan", "type": "button" },
     "open": { "label": "Open", "type": "button" },
     "close": { "label": "Close", "type": "button" },
+    "brand": { "label": "Brand", "type": "button" },
+    "assess": { "label": "Assess", "type": "button" },
+    "analyse": { "label": "Analyse", "type": "button" },
     "sendState": { "label": "Send State", "type": "button" },
     "getState": { "label": "Get State", "type": "button" },
     "setDomain": { "label": "Set Domain", "type": "button" },
+    "setOptions": { "label": "Set Options", "type": "button" },
+    "settingsWindow": { "label": "Settings Window", "type": "button" },
+    "clean": { "label": "Clean", "type": "button" },
+    "voice": { "label": "Voice", "type": "button" },
+    "subvert": { "label": "Subvert", "type": "button" },
     "pause": { "label": "Pause", "type": "button" },
     "resume": { "label": "Resume", "type": "button" },
     "alive": { "label": "Alive", "type": "button" },
+    "refresh": { "label": "Refresh", "type": "button" },
     "error": { "label": "Error", "type": "button" },
 }
-
 let speedcamState = {
     "currentDomain": "",
     "currentDomains": [],
@@ -341,7 +349,7 @@ function runOnTargetInfo(targetInfo) {
         } else {
             console.log("Above threshold, taking shot")
             // stateController();
-            sendRequestForScan(true);
+            sendResponseToSSERequest("shot", {})
             shotTimeoutObject = setTimeout(() => {
                 console.log("Taking shot wait over")
                 clearTimeout(shotTimeoutObject);
@@ -580,6 +588,9 @@ function handleResponse(response, location) {
 }
 
 function sendRequestForScan(include_scan = false) {
+    if (stateStep != 0) {
+        return;
+    }
     if (!isLive) {
         return;
     }
@@ -616,7 +627,7 @@ function updateDisplay() {
             topDisplay.children[child].classList.remove("lastItem")
             topDisplay.children[child].classList.add("currentItem")
             topDisplay.children[child].classList.remove("nextItem")
-            const ourdomain = topDisplay.children[child].dataset.domain
+            const ourdomain = topDisplay.children[child].dataset.brand
             setBottomBarBrand(ourdomain)
         } else if (child == (placement - 1) || (placement == 0 && child == numberOfItems - 1)) {
             topDisplay.children[child].classList.add("lastItem")
@@ -695,12 +706,6 @@ function addStoryToDisplay(story) {
     } else {
         return false;
     }
-    if (story.hasOwnProperty("title")) {
-        const titleDiv = document.createElement("div");
-        titleDiv.textContent = story.title;
-        titleDiv.classList.add("title");
-        storyInfoDiv.appendChild(titleDiv);
-    }
     if (story.hasOwnProperty("url")) {
         // add the url to the data-article-url attribute
         storyDiv.setAttribute("data-url", story.url);
@@ -713,6 +718,15 @@ function addStoryToDisplay(story) {
         cleanDomain = story.domain.replace(httpsStrip, "").replace("www.", "").replace(".", "");
         storyDiv.setAttribute("data-domain", cleanDomain);
         storyInfoDiv.innerHTML += `<img class="logo" src="https://logo.clearbit.com/${story.domain.replace(httpsStrip, "")}"></img>`
+    }
+    if (story.hasOwnProperty("brandName")) {
+        storyDiv.setAttribute("data-brand", story.brandName);
+    }
+    if (story.hasOwnProperty("title")) {
+        const titleDiv = document.createElement("div");
+        titleDiv.textContent = story.title;
+        titleDiv.classList.add("title");
+        storyInfoDiv.appendChild(titleDiv);
     }
     // If story has author or source add it to the storyInfoDiv 
     if (story.hasOwnProperty("author") || story.hasOwnProperty("source")) {
@@ -1072,6 +1086,24 @@ function sse() {
         }
     }
 
+}
+
+
+function windDown() {
+    // release the lock on the serial port
+    navigator.serial.getPorts().then(ports => {
+        if (ports.length > 0) {
+            ports[0].close();
+        }
+    });
+    // close the camera
+    video.srcObject.getTracks().forEach(track => track.stop());
+    // close the SSE
+    source.close();
+    // clear the local storage
+    window.localStorage.clear();
+    // reload the page
+    window.location.reload();
 }
 
 // if our window is at "test.reveb.la" then we can keep going 
