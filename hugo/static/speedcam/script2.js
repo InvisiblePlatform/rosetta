@@ -1090,6 +1090,7 @@ function sse() {
                     sendResponseToSSERequest("alive", {})
                     break;
                 case "refresh":
+                    windDown();
                     window.location.reload();
                     break;
                 default:
@@ -1110,12 +1111,6 @@ function windDown() {
         }
     });
     // close the camera
-    video.srcObject.getTracks().forEach(track => track.stop());
-    // close the SSE
-    source.close();
-    // clear the local storage
-    window.localStorage.clear();
-    // reload the page
     window.location.reload();
 }
 
