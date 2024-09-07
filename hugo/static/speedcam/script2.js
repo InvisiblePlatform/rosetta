@@ -1072,6 +1072,7 @@ function sse() {
                     break;
                 case "ready":
                     changeLayout("ready")
+                    stateStep = 0;
                     break;
                 case "clean":
                     changeLayout()
