@@ -275,7 +275,12 @@ function runOnTargetInfo(targetInfo) {
     // every 40 reads we should send a response to the server
     readCounter += 1;
     if (readCounter > 100) {
-        sendResponseToSSERequest("read", targetInfo)
+        sendObject = {
+            "target": targetInfo,
+            "stateStep": stateStep,
+            "layout": currentLayout,
+        }
+        sendResponseToSSERequest("read", sendObject)
         readCounter = 0;
     }
 
@@ -380,6 +385,7 @@ function startupSpeedCam() {
     disabledModules.push("social")
     disabledModules.push("trustscore")
     disabledModules.push("graph-box")
+
 
 
     // If a port is paired already with the device, connect to it
