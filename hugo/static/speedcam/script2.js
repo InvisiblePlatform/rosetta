@@ -297,7 +297,7 @@ function runOnTargetInfo(targetInfo) {
             stateStep = 0;
             sendObject["stateReset"] = true;
         }
-        sendResponseToSSERequest("read", sendObject)
+        //sendResponseToSSERequest("read", sendObject)
         readCounter = 0;
     }
 
