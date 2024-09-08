@@ -284,6 +284,7 @@ function runOnTargetInfo(targetInfo) {
             "target": targetInfo,
             "stateStep": stateStep,
             "layout": currentLayout,
+            "reason": "sensorTriggered",
         }
         if (stateStep > 0 && statesStepHistoryCounter[0] == stateStep) {
             statesStepHistoryCounter.push(stateStep);
