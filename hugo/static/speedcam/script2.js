@@ -144,6 +144,7 @@ function changeLayout(className, dontRoll = false) {
         if (!dontRoll) {
             updateDisplay();
         }
+        stateController();
     } else if (className == "voice") {
         document.body.classList.add("layoutVoice")
         itsOpen = true;
@@ -152,6 +153,7 @@ function changeLayout(className, dontRoll = false) {
         timerEnabled = false;
         //pauseDisplay();
         currentLayout = "voice";
+        stateController();
     } else if (!className) {
         setBottomBarBrand(false, true)
         currentLayout = "";
