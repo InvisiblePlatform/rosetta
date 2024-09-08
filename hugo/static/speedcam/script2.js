@@ -299,6 +299,9 @@ function runOnTargetInfo(targetInfo) {
         readCounter = 0;
     }
 
+    if (stop_sensing) {
+        return;
+    }
     if (document.getElementById("output_output")) {
         // Parse the JSON object
         document.getElementById("range_number").textContent = targetInfo.target_range;
