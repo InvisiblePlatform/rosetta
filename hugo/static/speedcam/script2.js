@@ -1059,7 +1059,7 @@ function sse() {
                     updateState(data.state)
                     updateDisplay();
                     setTimeout(() => {
-                        if (stateObj.classList.contains("assess")) {
+                        if (stateObj.classList.contains("assess") || stateObj.classList.contains("brand")) {
                             stateController();
                             console.log("State Sent")
                         }
