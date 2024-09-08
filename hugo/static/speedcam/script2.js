@@ -792,6 +792,7 @@ function rollOnDisplay() {
     if (!itsOpen && timerEnabled) {
         placement += 1;
         updateDisplay();
+        getState();
         console.log("Rolling")
     }
 }
@@ -1138,6 +1139,8 @@ if (window.location.hostname == "localhost") {
 
 function getState() {
     sendObject = {
+        "target": targetInfo,
+        "stop_sensing": stop_sensing,
         "stateStep": stateStep,
         "layout": currentLayout,
         "timerEnabled": timerEnabled,
