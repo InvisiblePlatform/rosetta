@@ -99,6 +99,7 @@ function stateController() {
         itsOpen = false;
         stateStep = 0;
     }
+    getState();
 }
 
 let currentLayout = '';
