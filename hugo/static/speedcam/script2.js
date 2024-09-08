@@ -279,7 +279,7 @@ function runOnTargetInfo(targetInfo) {
 
     // every 40 reads we should send a response to the server
     readCounter += 1;
-    if (readCounter > 100) {
+    if (readCounter > 50) {
         sendObject = {
             "target": targetInfo,
             "stateStep": stateStep,
