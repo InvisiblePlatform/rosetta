@@ -162,6 +162,8 @@ function changeLayout(className, dontRoll = false) {
         document.body.classList.add(className);
     }
     printOutForLocalMode(`Layout: ${className}`)
+    getState();
+
 }
 
 function printOutForLocalMode(string, object = null) {
@@ -1058,16 +1060,7 @@ function sse() {
                     }, 2000);
                     break;
                 case "getState":
-                    console.log(data.state)
-                    // changeLayout("ready")
-                    sendObject = {
-                        "stateStep": stateStep,
-                        "layout": currentLayout,
-                        "timerEnabled": timerEnabled,
-                        "itsOpen": itsOpen,
-                        "placement": placement,
-                    }
-                    sendResponseToSSERequest("read", sendObject)
+                    getState();
                     break;
                 case "settingsWindow":
                     console.log(data)
@@ -1140,6 +1133,16 @@ if (window.location.hostname == "localhost") {
     isLive = true;
 }
 
+function getState() {
+    sendObject = {
+        "stateStep": stateStep,
+        "layout": currentLayout,
+        "timerEnabled": timerEnabled,
+        "itsOpen": itsOpen,
+        "placement": placement,
+    }
+    sendResponseToSSERequest("read", sendObject)
+}
 
 let justPickTheFirstSpeedcamId = false;
 const returnButton = document.querySelector("#speedReturn")
