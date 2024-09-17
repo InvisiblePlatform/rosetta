@@ -271,19 +271,19 @@ body {
         height: fit-content;
 
         button.out {
-            background-image: url('/icon/minus.svg');
+            background-image: url('https://test.reveb.la/icon/minus.svg');
         }
 
         button.in {
-            background-image: url('/icon/plus.svg');
+            background-image: url('https://test.reveb.la/icon/plus.svg');
         }
 
         button.fit {
-            background-image: url('/icon/fit.svg');
+            background-image: url('https://test.reveb.la/icon/fit.svg');
         }
 
         button.recalc {
-            background-image: url('/icon/recalc.svg');
+            background-image: url('https://test.reveb.la/icon/recalc.svg');
         }
     }
 
@@ -307,7 +307,7 @@ body {
     #neoGraphClose {
         grid-area: close;
         position: relative;
-        background-image: url('/icon/close.svg');
+        background-image: url('https://test.reveb.la/icon/close.svg');
         top: 24px;
         right: 32px;
     }
@@ -543,7 +543,7 @@ ol.fakeTable {
 
         &[data-rel]::before {
             content: " ";
-            background-image: url('/icon/relarrow.svg');
+            background-image: url('https://test.reveb.la/icon/relarrow.svg');
             display: flex;
             justify-content: center;
             align-items: center;
@@ -614,22 +614,22 @@ ol.fakeTable {
 
     &#closeButton {
         grid-area: close;
-        background-image: url('/icon/close.svg');
+        background-image: url('https://test.reveb.la/icon/close.svg');
     }
 
     &#settingsButton {
         grid-area: settings;
-        background-image: url('/icon/gear.svg');
+        background-image: url('https://test.reveb.la/icon/gear.svg');
     }
 
     &#optionsButton {
         grid-area: options;
-        background-image: url('/icon/options.svg');
+        background-image: url('https://test.reveb.la/icon/options.svg');
     }
 
     &#userButton {
         grid-area: user;
-        background-image: url('/icon/person.svg');
+        background-image: url('https://test.reveb.la/icon/person.svg');
     }
 }
 
@@ -713,7 +713,7 @@ ol.fakeTable {
         position: absolute;
         top: 12px;
         left: 16px;
-        background-image: url('/icon/back.svg');
+        background-image: url('https://test.reveb.la/icon/back.svg');
         background-color: var(--s-tertiary);
     }
 
@@ -1986,17 +1986,17 @@ a {
     }
 
     &.danger {
-        mask-image: url('/icon/trust_danger.svg');
+        mask-image: url('https://test.reveb.la/icon/trust_danger.svg');
         background-color: var(--score-0);
     }
 
     &.warning {
-        mask-image: url('/icon/trust_warning.svg');
+        mask-image: url('https://test.reveb.la/icon/trust_warning.svg');
         background-color: var(--score-2);
     }
 
     &.neutral {
-        mask-image: url('/icon/trust_neutral.svg');
+        mask-image: url('https://test.reveb.la/icon/trust_neutral.svg');
         background-color: var(--score-unset);
     }
 }
@@ -2051,7 +2051,7 @@ a {
     }
 
     #Invisible-like {
-        background-image: url('/icon/thumbUp.svg');
+        background-image: url('https://test.reveb.la/icon/thumbUp.svg');
 
         &[active] {
             background-color: var(--score-10);
@@ -2059,7 +2059,7 @@ a {
     }
 
     #Invisible-dislike {
-        background-image: url('/icon/thumbDown.svg');
+        background-image: url('https://test.reveb.la/icon/thumbDown.svg');
 
         &[active] {
             background-color: var(--score-0);
@@ -2067,16 +2067,16 @@ a {
     }
 
     #Invisible-boycott {
-        background-image: url('/icon/boycottB.svg');
+        background-image: url('https://test.reveb.la/icon/boycottB.svg');
     }
 
     #Invisible-communications {
-        background-image: url('/icon/communications.svg');
+        background-image: url('https://test.reveb.la/icon/communications.svg');
     }
 
 
     .Invisible-logo {
-        background-image: url('/w/logo-w.svg');
+        background-image: url('https://test.reveb.la/w/logo-w.svg');
         place-self: start end;
         background-position: 50% 50%;
         background-repeat: no-repeat;
@@ -2092,7 +2092,7 @@ a {
     position: absolute;
     bottom: calc(anchor(bottom) + var(--scrollToggleOffset) + 16px);
     right: 16px;
-    background-image: url('/icon/closeModule.svg');
+    background-image: url('https://test.reveb.la/icon/closeModule.svg');
 
     &.interactionButton {
         bottom: anchor(top);
@@ -2111,137 +2111,137 @@ a {
 
 .author_of {
     --typeColor: var(--network-3);
-    --iconUrl: url('/icon/net/net_author_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_author_of.svg');
 }
 
 .board_member_of {
     --typeColor: var(--network-6);
-    --iconUrl: url('/icon/net/net_board_member_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_board_member_of.svg');
 }
 
 .chairperson_of {
     --typeColor: var(--network-8);
-    --iconUrl: url('/icon/net/net_chairperson_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_chairperson_of.svg');
 }
 
 .chief_executive_officer_of {
     --typeColor: var(--network-9);
-    --iconUrl: url('/icon/net/net_chief_executive_officer.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_chief_executive_officer.svg');
 }
 
 .chief_executive_officer {
     --typeColor: var(--network-9);
-    --iconUrl: url('/icon/net/net_chief_executive_officer.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_chief_executive_officer.svg');
 }
 
 .creator_of {
     --typeColor: var(--network-9);
-    --iconUrl: url('/icon/net/net_creator_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_creator_of.svg');
 }
 
 .director_of {
     --typeColor: var(--network-2);
-    --iconUrl: url('/icon/net/net_director_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_director_of.svg');
 }
 
 .division_of {
     --typeColor: var(--network-2);
-    --iconUrl: url('/icon/net/net_division_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_division_of.svg');
 }
 
 .editor-in-chief_of {
     --typeColor: var(--network-4);
-    --iconUrl: url('/icon/net/net_editor-in-chief_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_editor-in-chief_of.svg');
 }
 
 .editor_of {
     --typeColor: var(--network-5);
-    --iconUrl: url('/icon/net/net_editor_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_editor_of.svg');
 }
 
 .executive_producer_of {
     --typeColor: var(--network-10);
-    --iconUrl: url('/icon/net/net_executive_producer_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_executive_producer_of.svg');
 }
 
 .film_editor_of {
     --typeColor: var(--network-6);
-    --iconUrl: url('/icon/net/net_film_editor_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_film_editor_of.svg');
 }
 
 .founder_of {
     --typeColor: var(--network-10);
-    --iconUrl: url('/icon/net/net_founder_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_founder_of.svg');
 }
 
 .funder_of {
     --typeColor: var(--network-7);
-    --iconUrl: url('/icon/net/net_funder_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_funder_of.svg');
 }
 
 .head_coach_of {
     --typeColor: var(--network-5);
-    --iconUrl: url('/icon/net/net_head_coach_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_head_coach_of.svg');
 }
 
 .invested_in {
     --typeColor: var(--network-7);
-    --iconUrl: url('/icon/net/net_invested_in.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_invested_in.svg');
 }
 
 .owner_of {
     --typeColor: var(--network-1);
-    --iconUrl: url('/icon/net/net_owner_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_owner_of.svg');
 }
 
 .parent_company_of {
     --typeColor: var(--network-3);
-    --iconUrl: url('/icon/net/net_parent_company_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_parent_company_of.svg');
 }
 
 .parent_organisation {
     --typeColor: var(--network-5);
-    --iconUrl: url('/icon/net/net_parent_organisation.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_parent_organisation.svg');
 }
 
 .parent_organisation_of {
     --typeColor: var(--network-5);
-    --iconUrl: url('/icon/net/net_parent_organisation.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_parent_organisation.svg');
 }
 
 .partnered_with {
     --typeColor: var(--network-3);
-    --iconUrl: url('/icon/net/net_partnered_with.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_partnered_with.svg');
 }
 
 .presentor_of {
     --typeColor: var(--network-1);
-    --iconUrl: url('/icon/net/net_presentor_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_presentor_of.svg');
 }
 
 .producer_of {
     --typeColor: var(--network-8);
-    --iconUrl: url('/icon/net/net_producer_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_producer_of.svg');
 }
 
 .production_designer_of {
     --typeColor: var(--network-1);
-    --iconUrl: url('/icon/net/net_production_designer_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_production_designer_of.svg');
 }
 
 .publisher_of {
     --typeColor: var(--network-7);
-    --iconUrl: url('/icon/net/net_publisher_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_publisher_of.svg');
 }
 
 .subsidary_of {
     --typeColor: var(--network-1);
-    --iconUrl: url('/icon/net/net_subsidary_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_subsidary_of.svg');
 }
 
 .sponser_of {
     --typeColor: var(--network-7);
-    --iconUrl: url('/icon/net/net_sponser_of.svg');
+    --iconUrl: url('https://test.reveb.la/icon/net/net_sponser_of.svg');
 }
 
 .relation {
@@ -2255,8 +2255,8 @@ a {
 }
 
 .switch {
-    --onImage: url('/icon/tick.svg');
-    --offImage: url('/icon/close.svg');
+    --onImage: url('https://test.reveb.la/icon/tick.svg');
+    --offImage: url('https://test.reveb.la/icon/close.svg');
     --onColor: var(--score-10);
     --offColor: var(--score-unset);
     --onToggleColor: var(--c-white);
@@ -2275,8 +2275,8 @@ a {
     }
 
     &.bell {
-        --onImage: url('/icon/notOn.svg');
-        --offImage: url('/icon/notOff.svg');
+        --onImage: url('https://test.reveb.la/icon/notOn.svg');
+        --offImage: url('https://test.reveb.la/icon/notOff.svg');
         --onToggleColor: var(--score-10);
         --onColor: var(--c-grey);
         --offColor: var(--score-0);
@@ -2284,21 +2284,21 @@ a {
     }
 
     &.sun {
-        --onImage: url('/icon/sun.svg');
-        --offImage: url('/icon/sun.svg');
-        /* --offImage: url('/icon/moon.svg'); */
+        --onImage: url('https://test.reveb.la/icon/sun.svg');
+        --offImage: url('https://test.reveb.la/icon/sun.svg');
+        /* --offImage: url('https://test.reveb.la/icon/moon.svg'); */
     }
 
     &.grid {
-        --onImage: url('/icon/list.svg');
-        --offImage: url('/icon/grid.svg');
+        --onImage: url('https://test.reveb.la/icon/list.svg');
+        --offImage: url('https://test.reveb.la/icon/grid.svg');
         --offToggleColor: var(--c-black);
         --onColor: var(--c-black);
     }
 
     &.color {
-        --onImage: url('/icon/mono.svg');
-        --offImage: url('/icon/colour.svg');
+        --onImage: url('https://test.reveb.la/icon/mono.svg');
+        --offImage: url('https://test.reveb.la/icon/colour.svg');
         --offToggleColor: var(--c-black);
         --onColor: var(--c-black);
     }

@@ -4,10 +4,11 @@ const assetsURL = `https://assets.reveb.la`
 const dataURL = `https://test.reveb.la`
 
 const languages = ["ar", "fr", "eo", "en", "es", "de", "zh", "hi", "ca"];
+
 const translator = new Translator({
     persist: true,
     // debug: true,
-    filesLocation: `${pageHost}/i18n`
+    filesLocation: `https://test.reveb.la/i18n`
 });
 const content = document.getElementById("content");
 

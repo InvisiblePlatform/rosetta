@@ -139,6 +139,7 @@ function changeLayout(className, dontRoll = false) {
         changeStateObj()
         currentLayout = "ready";
         timerEnabled = true;
+        stop_sensing = false;
     } else if (className == "subvert") {
         document.body.classList.add("layoutSubvertisments")
         currentLayout = "subvert";
